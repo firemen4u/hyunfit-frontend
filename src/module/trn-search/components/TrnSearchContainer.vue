@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="trn-search-container-filter">
-      <h4>추천 순(필터)</h4>
+      <h4 class="trn-search-container-filter-component">추천 순(필터)</h4>
     </div>
     <div class="trn-search-bar-section">
       <!-- TrnSearhBarSection 컴포넌트 -->
@@ -38,26 +38,33 @@
   border: 4px dotted red;
   padding: 10px;
   display: flex;
+  flex-direction:column;
   width: 100%;
-}
+ }
 .trn-search-container-filter{
     border: 2px dotted rgb(0, 255, 128);
     padding:10px;
-
+    display:flex;
+    justify-content: flex-end;
+}
+.trn-search-container-filter-component{
+    margin-bottom:20px;
 }
 .trn-search-bar-section{
     border: 2px dotted rgb(0, 255, 128);
     padding:10px;
-
+    margin:10px 0px 10px 0px;
 }
 .trn-search-filter-selection{
     border: 2px dotted rgb(0, 255, 128);
     padding:10px;
+    margin:10px 0px 10px 0px;
+
 
 }
 .trn-search-result-list{
     border: 2px dotted rgb(0, 255, 128);
-    padding:10px;
+    padding: 10px;
 }
 
 

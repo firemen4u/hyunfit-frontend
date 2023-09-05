@@ -17,6 +17,7 @@
 <script setup>
 import TrnSearchContainer from '../components/TrnSearchContainer.vue'
 import TrnSearchFilterAside from '../components/TrnSearchFilterAside.vue'
+
 </script>
 
 <style scoped>
@@ -24,7 +25,6 @@ import TrnSearchFilterAside from '../components/TrnSearchFilterAside.vue'
   display: flex;
   flex-direction: column;
   width: 100%;
-
 }
 
 .trn-search-section1 {
@@ -51,4 +51,4 @@ import TrnSearchFilterAside from '../components/TrnSearchFilterAside.vue'
 .trn-search-container {
   flex-grow: 4;
 }
-</style>
+</style> 
