@@ -5,7 +5,7 @@
     </div>
     <div class="trn-search-bar-section">
       <!-- TrnSearhBarSection 컴포넌트 -->
-      <h4>search bar</h4>
+      <TrnSearchBar></TrnSearchBar>
     </div>
     <div class="trn-search-filter-selection">
       <!-- TrnSearhFilterSelection 컴포넌트 -->
@@ -32,6 +32,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import TrnSearchBar from './TrnSearchBar.vue';
+
 </script>
 <style scoped>
 .container {
@@ -52,19 +55,18 @@
 }
 .trn-search-bar-section{
     border: 2px dotted rgb(0, 255, 128);
-    padding:10px;
     margin:10px 0px 10px 0px;
 }
 .trn-search-filter-selection{
     border: 2px dotted rgb(0, 255, 128);
     padding:10px;
-    margin:10px 0px 10px 0px;
+    margin:0px 0px 10px 0px;
 
 
 }
 .trn-search-result-list{
     border: 2px dotted rgb(0, 255, 128);
-    padding: 10px;
+    padding:  10px;
 }
 
 
