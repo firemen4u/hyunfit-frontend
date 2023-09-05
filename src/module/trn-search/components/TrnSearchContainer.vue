@@ -9,8 +9,7 @@
     </div>
     <div class="trn-search-filter-selection">
       <!-- TrnSearhFilterSelection 컴포넌트 -->
-      <h4>Base Chips</h4>
-      <Button>퍼스널 트레이닝</Button>
+      <TrnSearchFilterSelectionContainer></TrnSearchFilterSelectionContainer>
     </div>
     <div class="trn-search-result-list">
       <!-- TrnSearhResultItem 컴포넌트 -->
@@ -34,6 +33,7 @@
 <script setup>
 import { ref } from 'vue'
 import TrnSearchBar from './TrnSearchBar.vue';
+import TrnSearchFilterSelectionContainer from './TrnSearchFilterSelectionContainer.vue';
 
 </script>
 <style scoped>
@@ -59,7 +59,6 @@ import TrnSearchBar from './TrnSearchBar.vue';
 }
 .trn-search-filter-selection{
     border: 2px dotted rgb(0, 255, 128);
-    padding:10px;
     margin:0px 0px 10px 0px;
 
 
