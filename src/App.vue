@@ -1,11 +1,13 @@
 <script setup>
 // import { RouterView } from 'vue-router'
-import BaseButton from '@/module/@base/components/BaseButton.vue'
-import BaseLayout from '/src/module/@base/views/BaseLayout.vue'
+import BasePage from '/src/module/@base/views/BasePage.vue'
+import MainPage from './module/main/views/MainPage.vue'
 </script>
 
 <template>
-  <BaseLayout> </BaseLayout>
+  <BasePage>
+    <MainPage></MainPage>
+  </BasePage>
 </template>
 
 <style scoped>
