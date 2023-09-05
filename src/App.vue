@@ -1,15 +1,11 @@
 <script setup>
 // import { RouterView } from 'vue-router'
-
+import BaseButton from '@/module/@base/components/BaseButton.vue'
+import BaseLayout from '/src/module/@base/views/BaseLayout.vue'
 </script>
 
 <template>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-<!-- 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  <RouterView /> -->
+  <BaseLayout> </BaseLayout>
 </template>
 
 <style scoped>
