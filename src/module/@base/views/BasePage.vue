@@ -2,9 +2,7 @@
   <v-layout ref="app">
     <BaseHeader />
     <main class="d-flex flex-column justify-center align-center mt-16">
-      <div style="width: 65%">
-        <slot></slot>
-      </div>
+      <slot></slot>
       <BaseFooter />
     </main>
   </v-layout>
