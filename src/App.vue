@@ -1,12 +1,13 @@
 <script setup>
 // import { RouterView } from 'vue-router'
 import BasePage from '/src/module/@base/views/BasePage.vue'
-import MainPage from './module/main/views/MainPage.vue'
+import TrnSearchPage from './module/trn-search/views/TrnSearchPage.vue';
 </script>
 
 <template>
   <BasePage>
-    <MainPage></MainPage>
+    <!-- <MainPage></MainPage> -->
+    <TrnSearchPage></TrnSearchPage>
   </BasePage>
 </template>
 
