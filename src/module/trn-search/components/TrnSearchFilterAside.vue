@@ -28,6 +28,8 @@ const componentsData2 = [
   { label: '여자', value: 'women' },
   { label: '상관없음', value: 'irrelevant' },
 ]
+
+
 </script>
 <style scoped>
 .container {
