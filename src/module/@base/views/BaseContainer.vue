@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 65%">
+  <div style="width: 1100px">
     <slot></slot>
   </div>
 </template>
