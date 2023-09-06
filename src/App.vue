@@ -2,11 +2,12 @@
 // import { RouterView } from 'vue-router'
 import BasePage from '/src/module/@base/views/BasePage.vue'
 import MainPage from './module/main/views/MainPage.vue'
+import SurveyPage from './module/survey/views/SurveyPage.vue';
 </script>
 
 <template>
   <BasePage>
-    <MainPage></MainPage>
+    <SurveyPage></SurveyPage>
   </BasePage>
 </template>
 
