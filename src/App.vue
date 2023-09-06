@@ -1,12 +1,10 @@
 <script setup>
-// import { RouterView } from 'vue-router'
-import SurveyPage from './module/survey/views/SurveyPage.vue';
-import TrnSearchPage from './module/trn-search/views/TrnSearchPage.vue';
+import { RouterView } from 'vue-router'
 import BasePage from '@/module/@base/views/BasePage.vue'
-import MainPage from '@/module/main/views/MainPage.vue'
 </script>
 
 <template>
   <BasePage>
+    <router-view />
   </BasePage>
 </template>
