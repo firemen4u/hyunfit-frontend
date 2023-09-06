@@ -1,7 +1,7 @@
 <template>
-  <v-layout ref="app">
+  <v-layout ref="app" class="w-100">
     <BaseHeader />
-    <main class="d-flex flex-column justify-center align-center mt-16">
+    <main class="d-flex flex-column justify-center align-center mt-16 w-100">
       <slot></slot>
       <BaseFooter />
     </main>
