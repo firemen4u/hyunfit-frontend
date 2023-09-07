@@ -5,6 +5,7 @@ import MainRtnCard from '@/module/main/components/MainRtnCard.vue'
 
 import MainSwipableCardContainer from '/src/module/main/components/MainSwipableCardContainer.vue'
 import MainTrnCard from '/src/module/main/components/MainTrnCard.vue'
+import MainFoodCard from '/src/module/main/components/MainFoodCard.vue'
 import { SwiperSlide } from 'swiper/vue'
 import MainRtnSearchCombobox from '@/module/main/components/MainRtnSearchCombobox.vue'
 
@@ -70,28 +71,65 @@ let cards = [
     flex: 4,
   },
 ]
+
+let foods = [
+  {
+    title: '',
+    imgSrc:
+      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
+    price: '',
+    priceDiscounted: '',
+  },
+  {
+    title: '',
+    imgSrc:
+      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
+    price: '',
+    priceDiscounted: '',
+  },
+  {
+    title: '',
+    imgSrc:
+      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
+    price: '',
+    priceDiscounted: '',
+  },
+  {
+    title: '',
+    imgSrc:
+      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
+    price: '',
+    priceDiscounted: '',
+  },
+  {
+    title: '',
+    imgSrc:
+      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
+    price: '',
+    priceDiscounted: '',
+  },
+]
 </script>
 
 <template>
   <MainBanner></MainBanner>
-  <MainRtnSearchCombobox></MainRtnSearchCombobox>
   <BaseContainer>
-    <section>
-      <MainSwipableCardContainer title="나만의 운동 루틴">
+    <section class="mt-20">
+      <MainSwipableCardContainer
+        title="최승열님! 이런 루틴은 어떠세요?"
+        count="4"
+      >
         <swiper-slide v-for="(card, i) in cards" :key="i">
-          <MainRtnCard :title="card.title" :src="card.src"></MainRtnCard>
+          <MainRtnCard
+            :title="card.title"
+            :src="card.src"
+            size="lg"
+          ></MainRtnCard>
         </swiper-slide>
       </MainSwipableCardContainer>
     </section>
-    <section>
-      <MainSwipableCardContainer title="최승열님! 이런 루틴은 어떠세요?">
-        <swiper-slide v-for="(card, i) in cards" :key="i">
-          <MainRtnCard :title="card.title" :src="card.src"></MainRtnCard>
-        </swiper-slide>
-      </MainSwipableCardContainer>
-    </section>
-    <section>
-      <MainSwipableCardContainer title="지금 인기있는 트레이너">
+    <section class="mt-20">
+      <MainSwipableCardContainer title="지금 인기있는 트레이너" see-more>
         <swiper-slide v-for="(card, i) in cards" :key="i">
           <MainTrnCard
             color="bg-gray-50"
@@ -101,7 +139,28 @@ let cards = [
         </swiper-slide>
       </MainSwipableCardContainer>
     </section>
+    <section class="mt-20">
+      <MainSwipableCardContainer title="양석진님만을 위한 마약" count="4">
+        <swiper-slide v-for="(food, i) in foods" :key="i">
+          <MainFoodCard :src="food.imgSrc" size="lg"></MainFoodCard>
+        </swiper-slide>
+      </MainSwipableCardContainer>
+    </section>
+    <section class="mt-20"></section>
   </BaseContainer>
 </template>
 
-<style></style>
+<style>
+.text-container {
+  max-height: 300px;
+  background-image: url('/src/assets/images/exercise-thumbnail.png');
+  background-repeat: repeat;
+}
+
+.test {
+  /* background-color: rgba(49, 49, 49, 0.3); */
+  backdrop-filter: blur(5px);
+  width: 500px;
+  height: 100px;
+}
+</style>

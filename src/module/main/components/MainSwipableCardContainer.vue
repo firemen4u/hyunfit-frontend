@@ -1,10 +1,13 @@
 <template>
-  <div class="card-container my-6 relative">
-    <div class="pl-1 text-2xl font-extrabold">
-      {{ title }}
+  <div class="card-container relative">
+    <div class="flex justify-between">
+      <div class="pl-1 text-2xl font-extrabold">
+        {{ title }}
+      </div>
+      <div v-if="seeMore" class="self-end">전체보기</div>
     </div>
     <swiper
-      :slidesPerView="5"
+      :slidesPerView="numCardsPerPage"
       :spaceBetween="10"
       :pagination="pagination"
       :navigation="navigation"
@@ -32,14 +35,18 @@ import 'swiper/css/navigation'
 // import required modules
 import { Navigation, Pagination } from 'swiper/modules'
 
-defineProps({
+const props = defineProps({
   title: String,
+  count: String,
+  seeMore: Boolean,
 })
 
+let numCardsPerPage = 5
+if (props.count) {
+  numCardsPerPage = props.count
+}
 let seed = Math.floor(Math.random() * 10000000)
-
 let modules = [Navigation, Pagination]
-
 let pagination = {
   el: `.swiper-pagination${seed}`,
   clickable: true,

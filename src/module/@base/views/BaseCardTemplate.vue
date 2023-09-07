@@ -3,7 +3,12 @@
     <slot></slot>
   </div> -->
   <div class="rounded-lg overflow-hidden shadow-md my-3" :class="color">
-    <img v-if="coverSrc" class="w-full h-24 object-cover" :src="coverSrc" />
+    <img
+      v-if="coverSrc"
+      class="w-full object-cover"
+      :src="coverSrc"
+      :class="height"
+    />
     <div class="px-2 pb-2" :class="coverSrc ? 'pt-1' : 'pt-2'">
       <slot></slot>
     </div>
@@ -11,16 +16,19 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   color: String,
   coverSrc: String,
+  size: String,
 })
-</script>
-<style scoped>
-.base-card-container {
-  height: 22vh;
-  width: 22vh;
-  max-height: 400px;
-  max-width: 400px;
+
+let height
+if (props.size === 'lg') {
+  height = 'h-40'
+} else if (props.size === 'md') {
+  height = 'h-32'
+} else {
+  height = 'h-24'
 }
-</style>
+</script>
+<style scoped></style>
