@@ -1,4 +1,5 @@
 <template>
+  <BaseContainer>
   <div class="container">
     <div class="trn-search-section1">
       <h1 class="trn-search-title">트레이너 만나기</h1>
@@ -12,9 +13,11 @@
       </div>
     </div>
   </div>
+</BaseContainer>
 </template>
 
 <script setup>
+import BaseContainer from '../../@base/views/BaseContainer.vue';
 import TrnSearchContainer from '../components/TrnSearchContainer.vue'
 import TrnSearchFilterAside from '../components/TrnSearchFilterAside.vue'
 
@@ -46,9 +49,11 @@ import TrnSearchFilterAside from '../components/TrnSearchFilterAside.vue'
 }
 
 .trn-search-filter-aside {
-  flex-grow: 1;
+  width: 30%;
+  margin-right:100px;
 }
 .trn-search-container {
-  flex-grow: 4;
+  width: 70%;
+  margin-right:30px;
 }
 </style> 

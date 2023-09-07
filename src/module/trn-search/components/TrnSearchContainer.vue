@@ -13,19 +13,9 @@
     </div>
     <div class="trn-search-result-list">
       <!-- TrnSearhResultItem 컴포넌트 -->
-      <h4>TrnSearchResultItem</h4>
-    </div>
-    <div class="trn-search-result-list">
-      <!-- TrnSearhResultItem 컴포넌트 -->
-      <h4>TrnSearchResultItem</h4>
-    </div>
-    <div class="trn-search-result-list">
-      <!-- TrnSearhResultItem 컴포넌트 -->
-      <h4>TrnSearchResultItem</h4>
-    </div>
-    <div class="trn-search-result-list">
-      <!-- TrnSearhResultItem 컴포넌트 -->
-      <h4>TrnSearchResultItem</h4>
+      <TrnSearchResultItem class="resultItem mb-3"></TrnSearchResultItem>
+      <TrnSearchResultItem></TrnSearchResultItem>
+      <TrnSearchResultItem></TrnSearchResultItem>
     </div>
   </div>
 </template>
@@ -33,9 +23,13 @@
 <script setup>
 import { ref } from 'vue'
 import TrnSearchBar from './TrnSearchBar.vue';
-import TrnSearchFilterSelectionContainer from './TrnSearchFilterSelectionContainer.vue';
+import TrnSearchFilterSelectionContainer from './TrnSearchFilterSelectionContainer.vue'
+import TrnSearchResultItem from './TrnSearchResultItem.vue';
+
 
 </script>
+
+
 <style scoped>
 .container {
   border: 4px dotted red;
@@ -60,13 +54,9 @@ import TrnSearchFilterSelectionContainer from './TrnSearchFilterSelectionContain
 .trn-search-filter-selection{
     border: 2px dotted rgb(0, 255, 128);
     margin:0px 0px 10px 0px;
-
-
 }
 .trn-search-result-list{
     border: 2px dotted rgb(0, 255, 128);
     padding:  10px;
 }
-
-
 </style>
