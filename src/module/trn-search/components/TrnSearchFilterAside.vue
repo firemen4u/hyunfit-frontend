@@ -2,14 +2,14 @@
   <div class="container">
     <div class="filter-title-section">
       <p style="font-weight: bold">필터</p>
-      <button>초기화</button>
+      <button class="text-disable text-xs">초기화</button>
     </div>
     <div class="filter-lesson-section">
-      <h4 class="filter-lesson-title">레슨 종류</h4>
+      <p class="filter-lesson-title text-ls font-bold">레슨 종류</p>
       <TrnSearchFilterContainer checkbox :data="componentsData1"></TrnSearchFilterContainer>
     </div>
     <div class="filter-trn-sex-section">
-      <h4 class="filter-trn-sex-title">트레이너 성별</h4>
+      <p class="filter-trn-sex-title font-bold">트레이너 성별</p>
       <TrnSearchFilterContainer radiobox :data="componentsData2"></TrnSearchFilterContainer>
     </div>
   </div>
@@ -33,14 +33,12 @@ const componentsData2 = [
 </script>
 <style scoped>
 .container {
-  border: 4px dotted red;
   padding: 10px;
   display: flex;
   flex-direction: row;
   gap: 30px;
 }
 .filter-title-section {
-  border: 2px dotted blue;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -48,7 +46,8 @@ const componentsData2 = [
 }
 
 .filter-lesson-section {
-  border: 2px dotted blue;
+  border-top: 1.5px solid rgb(242, 242, 242);
+
   padding: 10px;
 }
 .filter-lesson-title {
@@ -56,7 +55,7 @@ const componentsData2 = [
 }
 
 .filter-trn-sex-section {
-  border: 2px dotted blue;
+  border-top: 1.5px solid rgb(242, 242, 242);
   flex-grow: 2.5;
   padding: 10px;
 }

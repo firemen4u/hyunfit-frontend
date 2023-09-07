@@ -1,25 +1,26 @@
 <template>
   <div v-if="props.checkbox">
-    <v-checkbox
-      class="checkbox"  color="rgb(199, 53, 102)"
+    <v-checkbox 
       v-for="(item, index) in props.data"
       :key="index"
       :label="item.label"
       :value="item.value"
       v-model="selectedCheckBox"
+      color="rgb(199, 53, 102)"
       @change="print1()"
-    >
-    </v-checkbox>
+    ></v-checkbox>
   </div>
   <div v-else>
     <v-radio-group v-model="selectedRadioBox">
-      <v-radio color="rgb(199, 53, 102)"
+      <v-radio 
         v-for="(item, index) in props.data"
         :key="index"
         :label="item.label"
         :value="item.value"
+        color="rgb(199, 53, 102)"
         @change="print2()"
-      ></v-radio>
+      >
+    </v-radio>
     </v-radio-group>
   </div>
 </template>
@@ -27,7 +28,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useTrnSearchStore } from '../../../stores/trn-search';
-
+import BaseCheckBox from '../../@base/components/BaseCheckBox.vue';
 // 이거 받아서 보내줘야 하는거 생각하기
 const props = defineProps({
   checkbox: Boolean,
@@ -37,6 +38,7 @@ const props = defineProps({
 
 function print1() {
   trnSearchStore.updateLessonTypes(selectedCheckBox.value);
+  console.log(selectedCheckBox.value)
 }
 
 function print2() {
