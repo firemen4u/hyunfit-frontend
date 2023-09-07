@@ -30,8 +30,8 @@
   </BaseCardTemplate>
 </template>
 <script setup>
-import BaseCardTemplate from '@/module/@base/views/BaseCardTemplate.vue'
-import BaseLabel from '@/module/@base/views/BaseLabel.vue'
+import BaseCardTemplate from '@/module/@base/components/BaseCardTemplate.vue'
+import BaseLabel from '@/module/@base/components/BaseLabel.vue'
 import HeartSvg from '@/module/@base/svg/HeartSvg.vue'
 import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import TrophySvg from '@/module/@base/svg/TrophySvg.vue'
