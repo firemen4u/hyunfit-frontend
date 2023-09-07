@@ -44,6 +44,6 @@
 
 <script setup>
 defineProps({
-  size: String,
+  size: Number,
 })
 </script>
