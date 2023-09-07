@@ -91,10 +91,40 @@
                 subTitle="소제목"
                 ptCount="1"
               />
+              <button @click="toggleModal" type="button">Open Modal</button>
             </div>
             <template class="border-solid border-4 border-orange-400">
               <div></div>
             </template>
+          </div>
+        </div>
+        <div>*************************모달테스트***********************</div>
+        <div>
+          <div class="home">
+            <MbrRsvReviewModal @close="toggleModal" :modalActive="modalActive">
+              <div class="modal-content">
+                <div class="modal-wrap">
+                  <div class="items-center align-middle">
+                    <p class="text-2xl font-bold mb-6">수업이 맘에 들었다면</p>
+                    <p class="text-lg text-gray-500">리뷰를 남겨주세요</p>
+                    <div class="mt-5 mb-3">
+                      <div>
+                        <MbrRsvReviewStars></MbrRsvReviewStars>
+                        <p>선택한 별점: {{ selectedRating }}</p>
+                      </div>
+                      <div class="flex flex-col items-center mt-3 mb-3">
+                        <textarea
+                          class="w-full h-48 rounded-lg border-solid border-2 border-gray-300 p-4"
+                          id="fd"
+                          placeholder="리뷰 작성하기 &#10;트레이너와의 수업이 어땠는지 작성해주세요!"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </MbrRsvReviewModal>
+            <button @click="toggleModal" type="button">Open Modal</button>
           </div>
         </div>
       </div>
@@ -105,6 +135,9 @@
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import MbrRsvTrainCard from '/src/module/mbr-reservation/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
+import MbrRsvReviewModal from '../components/MbrRsvReviewModal.vue'
+import MbrRsvReviewStars from '../components/MbrRsvReviewModal.vue'
+import { ref } from 'vue'
 const profileImageUrl =
   'https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfNiAg/MDAxNjE0MjM5MDE5NDky.PRUBGVPV9zDpuus_gRK8TRkc6OQ1bj2OeR8xpgIOZU4g._h3ecE-etq93eBQJgbKPSA7LNsDcG8AQpCKEHNc58hMg.JPEG.kikisoyun/IMG_1160.JPG?type=w800'
 const avatarImageUrl =
@@ -114,7 +147,23 @@ const profileImageUrl2 =
   'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb9OSgq%2FbtstfPDvgwy%2F2qJ7Ck73VKjAkzHAd7R5L0%2Fimg.jpg'
 const avatarImageUrl2 =
   'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd3DAvL%2FbtstcPRGzk2%2FyEF3KBvZwJgQcfnNQyN0zK%2Fimg.jpg'
-const lastDate2 = '2023-08-13'
+
+const showReviewModal = ref(false)
+
+const openReviewModal = () => {
+  showReviewModal.value = true
+}
+
+const closeReviewModal = () => {
+  showReviewModal.value = false
+}
+
+const modalActive = ref(false)
+
+const toggleModal = () => {
+  modalActive.value = !modalActive.value
+}
+const selectedRating = ref(0)
 </script>
 <style scope>
 .MbrRsvTrainCard:hover {
