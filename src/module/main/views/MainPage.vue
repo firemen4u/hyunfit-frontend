@@ -112,7 +112,7 @@ let foods = [
 </script>
 
 <template>
-  <BaseContainer>
+  <BaseContainer :footer="false">
     <MainBanner></MainBanner>
     <BaseBodyWrapper>
       <section class="mt-20">
@@ -124,7 +124,7 @@ let foods = [
             <MainRtnCard
               :title="card.title"
               :src="card.src"
-              size="lg"
+              card-size="lg"
             ></MainRtnCard>
           </swiper-slide>
         </MainSwipableCardContainer>
@@ -143,7 +143,11 @@ let foods = [
       <section class="mt-20">
         <MainSwipableCardContainer title="양석진님만을 위한 마약" count="4">
           <swiper-slide v-for="(food, i) in foods" :key="i">
-            <MainFoodCard :src="food.imgSrc" size="lg"></MainFoodCard>
+            <MainFoodCard
+              title="곤드레 단백질 쉐이크"
+              :src="food.imgSrc"
+              card-size="lg"
+            ></MainFoodCard>
           </swiper-slide>
         </MainSwipableCardContainer>
       </section>

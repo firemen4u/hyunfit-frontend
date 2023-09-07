@@ -10,10 +10,10 @@ let hasFooter = props.footer ? props.footer : true
 </script>
 <template>
   <v-layout ref="app" class="w-100">
-    <BaseHeader />
+    <BaseHeader v-if="hasHeader" />
     <main class="d-flex flex-column justify-center align-center mt-16 w-100">
       <slot></slot>
-      <BaseFooter />
+      <BaseFooter v-if="hasFooter" />
     </main>
   </v-layout>
 </template>

@@ -21,9 +21,9 @@
 import { StarSvg } from '@/module/@base/svg'
 const props = defineProps({
   compact: Boolean,
-  rating: String,
+  rating: Number,
   reviewCount: Number,
-  size: String,
+  size: Number,
 })
 
 let starSize = props.size ? props.size : 20
