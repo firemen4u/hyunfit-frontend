@@ -1,5 +1,5 @@
 <script setup>
-import BaseContainer from '@/module/@base/views/BaseContainer.vue'
+import { BaseBodyWrapper, BaseContainer } from '@/module/@base/views'
 import MainBanner from '@/module/main/components/MainBanner.vue'
 import MainRtnCard from '@/module/main/components/MainRtnCard.vue'
 
@@ -112,41 +112,43 @@ let foods = [
 </script>
 
 <template>
-  <MainBanner></MainBanner>
   <BaseContainer>
-    <section class="mt-20">
-      <MainSwipableCardContainer
-        title="최승열님! 이런 루틴은 어떠세요?"
-        count="4"
-      >
-        <swiper-slide v-for="(card, i) in cards" :key="i">
-          <MainRtnCard
-            :title="card.title"
-            :src="card.src"
-            size="lg"
-          ></MainRtnCard>
-        </swiper-slide>
-      </MainSwipableCardContainer>
-    </section>
-    <section class="mt-20">
-      <MainSwipableCardContainer title="지금 인기있는 트레이너" see-more>
-        <swiper-slide v-for="(card, i) in cards" :key="i">
-          <MainTrnCard
-            color="bg-gray-50"
-            :title="card.title"
-            :src="card.src"
-          ></MainTrnCard>
-        </swiper-slide>
-      </MainSwipableCardContainer>
-    </section>
-    <section class="mt-20">
-      <MainSwipableCardContainer title="양석진님만을 위한 마약" count="4">
-        <swiper-slide v-for="(food, i) in foods" :key="i">
-          <MainFoodCard :src="food.imgSrc" size="lg"></MainFoodCard>
-        </swiper-slide>
-      </MainSwipableCardContainer>
-    </section>
-    <section class="mt-20"></section>
+    <MainBanner></MainBanner>
+    <BaseBodyWrapper>
+      <section class="mt-20">
+        <MainSwipableCardContainer
+          title="최승열님! 이런 루틴은 어떠세요?"
+          count="4"
+        >
+          <swiper-slide v-for="(card, i) in cards" :key="i">
+            <MainRtnCard
+              :title="card.title"
+              :src="card.src"
+              size="lg"
+            ></MainRtnCard>
+          </swiper-slide>
+        </MainSwipableCardContainer>
+      </section>
+      <section class="mt-20">
+        <MainSwipableCardContainer title="지금 인기있는 트레이너" see-more>
+          <swiper-slide v-for="(card, i) in cards" :key="i">
+            <MainTrnCard
+              color="bg-gray-50"
+              :title="card.title"
+              :src="card.src"
+            ></MainTrnCard>
+          </swiper-slide>
+        </MainSwipableCardContainer>
+      </section>
+      <section class="mt-20">
+        <MainSwipableCardContainer title="양석진님만을 위한 마약" count="4">
+          <swiper-slide v-for="(food, i) in foods" :key="i">
+            <MainFoodCard :src="food.imgSrc" size="lg"></MainFoodCard>
+          </swiper-slide>
+        </MainSwipableCardContainer>
+      </section>
+      <section class="mt-20"></section>
+    </BaseBodyWrapper>
   </BaseContainer>
 </template>
 
