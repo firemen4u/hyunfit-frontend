@@ -1,5 +1,5 @@
 <script setup>
-import BaseContainer from '/src/module/@base/views/BaseContainer.vue'
+import { BaseBodyWrapper } from '/src/module/@base/views'
 import { FacebookSvg, InstagramSvg, YoutubeSvg } from '/src/module/@base/svg'
 let infoData = [
   { href: '', title: '브랜드소개' },
@@ -12,7 +12,7 @@ let infoData = [
 
 <template>
   <footer class="text-center flex flex-column w-100 items-center">
-    <BaseContainer>
+    <BaseBodyWrapper>
       <!-- 상단바 -->
       <div class="util flex items-center justify-between py-4 text-white">
         <!-- 텍스트 -->
@@ -103,7 +103,7 @@ let infoData = [
           </div>
         </div>
       </div>
-    </BaseContainer>
+    </BaseBodyWrapper>
   </footer>
 </template>
 
