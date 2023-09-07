@@ -9,64 +9,114 @@
       </div>
     </div>
     <div>
-      <!-- 생년월일 입력 -->
-      <input
-        type="date"
-        id="birthdate"
+      <v-text-field
+        class="mx-atuo mb-2"
+        label="생년월일"
+        variant="outlined"
+        placeholder="YYYYMMDD"
+        clearable
+        hint="YYYYMMDD 형식으로 써주세요"
         v-model="birthdate"
-        class="input-field"
-      />
+      ></v-text-field>
+      <!-- 성별 입력 (라디오 버튼 - TE) -->
+      <div class="flex w-full relative mb-6">
+        <input type="radio" id="option0" name="tabs" class="appearance-none" />
+        <input
+          type="radio"
+          id="option0"
+          name="tabs"
+          class="appearance-none"
+          v-model="gender"
+          value="남자"
+        />
+        <label
+          for="option0"
+          class="cursor-pointer w-1/3 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md py-2 border border-gray-500"
+          >남자</label
+        >
 
-      <!-- 성별 입력 (라디오 버튼) -->
-      <div class="radio-group">
-        <input type="radio" id="male" value="남성" v-model="gender" />
-        <label for="male" class="radio-label">남성</label>
-        <input type="radio" id="female" value="여성" v-model="gender" />
-        <label for="female" class="radio-label">여성</label>
-        <input type="radio" id="none" value="선택안함" v-model="gender" />
-        <label for="none" class="radio-label">선택안함</label>
+        <input
+          type="radio"
+          id="option1"
+          name="tabs"
+          class="appearance-none"
+          v-model="gender"
+          value="여자"
+        />
+        <label
+          for="option1"
+          class="cursor-pointer w-1/3 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md py-2 border border-gray-500"
+          >여자</label
+        >
+
+        <input
+          type="radio"
+          id="option2"
+          name="tabs"
+          class="appearance-none"
+          v-model="gender"
+          value="선택 안함"
+        />
+        <label
+          for="option2"
+          class="cursor-pointer w-1/3 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md py-2 border border-gray-500"
+          >선택 안함</label
+        >
+
+        <div
+          class="w-1/3 flex-[2_2_0%] items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md p-0 h-full bg-red-400 absolute transform transition-transform tabAnim"
+        ></div>
       </div>
 
       <!-- 키 입력 -->
-      <input
-        placeholder="키"
-        type="number"
-        id="height"
+      <v-text-field
+        class="mb-2"
+        label="키"
+        variant="outlined"
+        suffix="cm"
+        clearable
+        hint="소수점 첫번째 자리까지 입력할수있습니다."
         v-model="height"
-        class="input-field"
-      />
+      ></v-text-field>
 
       <!-- 몸무게 입력 -->
-      <input
-        placeholder="몸무게"
-        type="number"
-        id="weight"
+      <v-text-field
+        class="mb-2"
+        label="몸무게"
+        variant="outlined"
+        suffix="kg"
+        clearable
+        hint="소수점 첫번째 자리까지 입력할수있습니다."
         v-model="weight"
-        class="input-field"
-      />
+      ></v-text-field>
 
       <!-- 정보 수집 동의 (체크박스) -->
       <div>
-        <input type="checkbox" id="consent" v-model="consent" />
-        <label for="consent" class="checkbox-label"
-          >키, 몸무게 입력시 민갑 정보수집에 동의합니다</label
-        >
+        <v-checkbox
+          label="키, 몸무게 입력시 민갑 정보수집에 동의합니다"
+          v-model="consent"
+          @change="logData"
+        ></v-checkbox>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      birthdate: '', // 생년월일
-      gender: '', // 성별
-      height: '', // 키
-      weight: '', // 몸무게
-      consent: false, // 정보 수집 동의 여부
-    }
-  },
+<script setup>
+import { ref } from 'vue'
+
+const birthdate = ref('') // 생년월일
+const gender = ref('') // 성별
+const height = ref('') // 키
+const weight = ref('') // 몸무게
+const consent = ref('') // 정보 수집 동의 여부
+
+function logData() {
+  console.log('생년월일:', birthdate.value)
+  console.log('성별:', gender.value)
+  console.log('키:', height.value)
+  console.log('몸무게:', weight.value)
+  console.log('정보 수집 동의 여부:', consent.value)
 }
 </script>
 
@@ -82,57 +132,6 @@ export default {
   justify-content: center;
 }
 
-.input-field {
-  width: 100%; /* 입력 칸 너비 설정 */
-  padding: 8px;
-  margin-bottom: 12px;
-  background-color: #f0f0f0; /* 회색 배경색 설정 */
-  border: 1px solid #ccc; /* 테두리 설정 */
-  border-radius: 4px; /* 테두리 둥글게 만들기 */
-}
-
-.radio-group {
-  display: flex;
-  align-items: center;
-  gap: 16px; /* 라디오 버튼 사이 간격 설정 */
-}
-
-.radio-label {
-  cursor: pointer;
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-/* 라디오 버튼 체크 표시 없애기 */
-.radio-group input[type='radio'] {
-  display: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  border: 2px solid #ccc; /* 선택되지 않은 상태의 외곽선 */
-  border-radius: 50%; /* 원 모양으로 만들기 */
-  width: 16px; /* 가로 크기 조절 */
-  height: 16px; /* 세로 크기 조절 */
-  margin-right: 4px; /* 라벨과의 간격 조절 */
-  background-color: transparent; /* 배경색 투명하게 */
-  cursor: pointer;
-}
-
-/* 라디오 버튼 선택시의 스타일 */
-.radio-group input[type='radio']:checked {
-  border-color: #007bff; /* 선택된 상태의 외곽선 색상 */
-  background-color: #007bff; /* 선택된 상태의 배경색 */
-}
-
-.checkbox-label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .title {
   /* 제목 스타일 */
   font-size: 1.2em;
@@ -143,5 +142,21 @@ export default {
   /* 부제목 스타일 */
   font-size: 0.8em;
   color: gray;
+}
+
+.tabAnim {
+  z-index: -9;
+}
+
+#option0:checked ~ div {
+  --tw-translate-x: 0%;
+}
+
+#option1:checked ~ div {
+  --tw-translate-x: 100%;
+}
+
+#option2:checked ~ div {
+  --tw-translate-x: 200%;
 }
 </style>

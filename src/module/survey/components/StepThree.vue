@@ -9,12 +9,14 @@
       <tbody>
         <tr v-for="(question, index) in surveyQuestions" :key="index">
           <td>
-            <label>
+            <label class="custom-radio">
               <input
-                type="checkbox"
-                v-model="selectedOptions[index]"
-                @change="logSelectedOptions"
+                type="radio"
+                :value="index"
+                v-model="selectedOption"
+                @change="logSelectedOption"
               />
+              <span class="custom-radio-button"></span>
               {{ question }}
             </label>
           </td>
@@ -36,13 +38,13 @@ export default {
         '홈트레이닝 고급자에요!',
         '홈트레이닝 정도는 쉬워요!',
       ],
-      selectedOptions: [false, false, false, false, false, false], // 선택한 옵션 저장
+      selectedOption: null, // 선택한 옵션 저장
     }
   },
   methods: {
-    logSelectedOptions() {
+    logSelectedOption() {
       // 선택한 옵션을 콘솔에 출력
-      console.log(this.selectedOptions)
+      console.log(this.selectedOption)
     },
   },
 }
@@ -92,12 +94,30 @@ export default {
   background-color: #f0f0f0;
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
+.custom-radio {
+  position: relative;
+  display: inline-block;
+  padding-left: 30px; /* 여백을 조절하여 체크박스 크기 조절 가능 */
+  cursor: pointer;
 }
 
-.survey-table input[type='checkbox'] {
-  margin-right: 8px;
+.custom-radio input[type='radio'] {
+  display: none;
+}
+
+.custom-radio-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px; /* 체크박스 크기 조절 가능 */
+  height: 20px; /* 체크박스 크기 조절 가능 */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+}
+
+.custom-radio input[type='radio']:checked + .custom-radio-button {
+  background-color: #d23360d2; /* 체크된 상태의 배경색 설정 */
+  border-color: #d23360d2; /* 체크된 상태의 테두리 색 설정 */
 }
 </style>
