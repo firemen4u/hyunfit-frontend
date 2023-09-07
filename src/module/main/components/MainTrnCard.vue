@@ -9,15 +9,7 @@
         />
       </div>
       <div>
-        <div class="flex">
-          <StarSvg size="20" class="self-center"></StarSvg>
-          <div class="rating-value-wrapper font-extrabold text-lg self-center">
-            4.9
-          </div>
-          <div class="text-gray-400 font-thin text-xxs self-end ml-1 mb-1">
-            (10)
-          </div>
-        </div>
+        <BaseRating compact rating="4.9" reviewCount="10" />
       </div>
     </div>
     <div class="p-2">
@@ -29,8 +21,7 @@
 </template>
 
 <script setup>
-import BaseCardTemplate from '@/module/@base/views/BaseCardTemplate.vue'
-import StarSvg from '@/module/@base/svg/StarSvg.vue'
+import { BaseCardTemplate, BaseRating } from '@/module/@base/components'
 defineProps({
   src: {
     type: String,
