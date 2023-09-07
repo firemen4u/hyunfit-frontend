@@ -14,8 +14,6 @@
     <div class="trn-search-result-list">
       <!-- TrnSearhResultItem 컴포넌트 -->
       <TrnSearchResultItem class="resultItem mb-3"></TrnSearchResultItem>
-      <TrnSearchResultItem></TrnSearchResultItem>
-      <TrnSearchResultItem></TrnSearchResultItem>
     </div>
   </div>
 </template>
