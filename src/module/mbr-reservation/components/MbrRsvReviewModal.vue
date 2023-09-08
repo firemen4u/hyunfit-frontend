@@ -1,27 +1,101 @@
 <template>
   <transition name="modal-animation">
-    <div v-show="modalActive" class="modal">
+    <div v-show="modalActive" class="modal" @click="close">
       <transition name="modal-animation-inner">
-        <div v-show="modalActive" class="modal-inner text-center rounded-lg">
+        <div
+          v-show="modalActive"
+          class="modal-inner text-center rounded-lg"
+          @click.stop
+        >
           <i @click="close" class="far fa-times-circle"></i>
           <!-- Modal Content -->
+          <div class="modal-content">
+            <div class="modal-wrap">
+              <div class="items-center align-middle">
+                <p class="text-2xl font-bold mb-6">수업이 맘에 들었다면</p>
+                <p class="text-lg text-gray-500">리뷰를 남겨주세요</p>
+                <div class="mt-5 mb-3">
+                  <div>
+                    <div class="d-flex flex-column align-center justify-center">
+                      <v-rating
+                        v-model="rating"
+                        class="ma-2"
+                        density="compact"
+                        hover
+                      ></v-rating>
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-center mt-3 mb-3">
+                    <textarea
+                      v-model="reviewText"
+                      class="w-full h-48 rounded-lg border-solid border-2 border-gray-300 p-4"
+                      id="fd"
+                      placeholder="리뷰 작성하기 &#10;트레이너와의 수업이 어땠는지 작성해주세요!"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <slot />
-          <button @click="close" type="button" class="rounded-lg">Close</button>
+          <button @click="submit" type="button" class="rounded-lg">
+            리뷰 등록하기
+          </button>
         </div>
       </transition>
     </div>
   </transition>
 </template>
 
-<script>
+<!-- <script>
 export default {
   props: ['modalActive'],
   setup(props, { emit }) {
     const close = () => {
       emit('close')
     }
+    const submit = () => {
+      // 처리할 로직을 여기에 추가
+      emit('submit')
+    }
+    return { close, submit }
+  },
+}
+</script> -->
 
-    return { close }
+<script>
+import { ref } from 'vue'
+
+export default {
+  props: ['modalActive', 'cardData'], // cardData 프로퍼티 추가
+  setup(props, { emit }) {
+    const close = () => {
+      // 모달이 닫힐 때 reviewText 초기화
+      reviewText.value = ''
+      emit('close')
+    }
+
+    const submit = () => {
+      // 모달을 닫기 전에 카드에 있는 정보를 가져옴
+      const cardInfo = {
+        // trainerName: props.cardData.trainerName,
+        // memberName: props.cardData.memberName,
+        // reviewRating: props.cardData.reviewRating,
+        reviewText: reviewText.value,
+      }
+
+      // 카드 정보를 콘솔에 출력
+      console.log('Card Information:', cardInfo)
+
+      // 모달을 닫음
+      emit('close')
+
+      // 모달이 닫힐 때 reviewText 초기화
+      reviewText.value = ''
+    }
+    const reviewText = ref('')
+
+    return { close, submit, reviewText }
   },
 }
 </script>
