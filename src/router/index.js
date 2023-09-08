@@ -3,6 +3,7 @@ import MainPage from '/src/module/main/views/MainPage.vue'
 import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
 import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
 import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
+import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/mbr-reservation',
       name: 'mbr-reservation',
       component: MbrRsvPage,
+    },
+    {
+      path: '/trn-detail',
+      name: 'trn-detail',
+      component: TrnDetailPage,
     },
   ],
 })

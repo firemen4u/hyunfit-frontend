@@ -7,7 +7,6 @@ import MainSwipableCardContainer from '/src/module/main/components/MainSwipableC
 import MainTrnCard from '/src/module/main/components/MainTrnCard.vue'
 import MainFoodCard from '/src/module/main/components/MainFoodCard.vue'
 import { SwiperSlide } from 'swiper/vue'
-import MainRtnSearchCombobox from '@/module/main/components/MainRtnSearchCombobox.vue'
 
 let cards = [
   {
@@ -112,7 +111,7 @@ let foods = [
 </script>
 
 <template>
-  <BaseContainer :footer="false">
+  <BaseContainer>
     <MainBanner></MainBanner>
     <BaseBodyWrapper>
       <section class="mt-20">
