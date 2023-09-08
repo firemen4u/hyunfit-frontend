@@ -4,6 +4,8 @@ import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
 import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
 import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
 import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
+import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
+import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +35,17 @@ const router = createRouter({
       name: 'ai-training',
       component: AITrainingPage,
     },
+      path: '/trn-detail',
+      name: 'trn-detail',
+      component: TrnDetailPage,
+    },
+    {
+      path: '/PtRoom',
+      name: 'PtRoom',
+      component: PtRoomPage,
+    },
   ],
 })
 
 export default router
+

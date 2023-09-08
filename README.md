@@ -33,3 +33,8 @@ npm run build
 ```sh
 npm run lint
 ```
+### Install OpenVidu
+
+```sh
+npm install openvidu-browser
+```

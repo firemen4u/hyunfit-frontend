@@ -54,9 +54,9 @@ let infoData = [
         </div>
         <!-- SNS 아이콘 -->
         <div class="icon-container flex items-center">
-          <YoutubeSvg size="30" class="ml-5" />
-          <InstagramSvg size="25" class="ml-5" />
-          <FacebookSvg size="25" class="ml-5" />
+          <YoutubeSvg :size="30" class="ml-5" />
+          <InstagramSvg :size="25" class="ml-5" />
+          <FacebookSvg :size="25" class="ml-5" />
         </div>
       </div>
       <hr class="solid" />
