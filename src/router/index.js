@@ -3,6 +3,7 @@ import MainPage from '/src/module/main/views/MainPage.vue'
 import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
 import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
 import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
+import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,7 +28,13 @@ const router = createRouter({
       name: 'mbr-reservation',
       component: MbrRsvPage,
     },
+    {
+      path: '/PtRoom',
+      name: 'PtRoom',
+      component: PtRoomPage,
+    },
   ],
 })
 
 export default router
+
