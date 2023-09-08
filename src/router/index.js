@@ -3,6 +3,7 @@ import MainPage from '/src/module/main/views/MainPage.vue'
 import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
 import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
 import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
+import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/mbr-reservation',
       name: 'mbr-reservation',
       component: MbrRsvPage,
+    },
+    {
+      path: '/ai-training',
+      name: 'ai-training',
+      component: AITrainingPage,
     },
   ],
 })
