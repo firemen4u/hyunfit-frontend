@@ -1,7 +1,7 @@
 <template>
   <v-chip
     v-if="chip"
-    class="ma-2"
+    class="mr-1"
     color="rgb(199, 53, 102)"
     text-color="white"
     @click:close="chip = false"

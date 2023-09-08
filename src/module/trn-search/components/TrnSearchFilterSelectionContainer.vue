@@ -13,12 +13,6 @@ import BaseChip from '../../@base/components/BaseChip.vue'
 import { useTrnSearchStore } from '../../../stores/trn-search';
 import { ref, computed } from 'vue'
 
-const props = defineProps({
-  radiobox: Array,
-  checkbox: Array,
-  value: String,
-})
-
 const trnSearchStore = useTrnSearchStore();
 console.log("BaseChip" + trnSearchStore.allOptions);
 
@@ -34,6 +28,9 @@ const options = computed(() => {
 </script>
 <style scope>
 .filter-selection-container {
+  display:flex;
+  align-items: center;
   height:46px;
+
 }
 </style>

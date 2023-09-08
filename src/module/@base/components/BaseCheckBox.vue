@@ -1,30 +1,37 @@
 <template>
   <div>
     <v-checkbox
-      :modelValue="modelValue"
-      @update:modelValue="emitUpdate"
-      :label="label"
       :color="color"
       :value="value"
       :hide-details="hideDetails"
-    ></v-checkbox>
+      :style="`font-size: ${fontSize}`"
+    >
+    <template v-slot:label>
+            <div :class="`text-${size}`">{{ label }}</div></template
+          >
+  </v-checkbox>
+    
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    modelValue: Boolean, // 체크 상태를 v-model로 받음
+<script setup>
+  const props = defineProps ({
     label: String, // 라벨 텍스트
     color: String, // 색상
     value: String, // 값
     hideDetails: Boolean, // 세부 정보 숨김 여부
-  },
-  methods: {
-    emitUpdate(value) {
-      // 체크 상태가 변경될 때 이벤트를 상위 컴포넌트에 전달
-      this.$emit('update:modelValue', value)
-    },
-  },
-}
+    size: String,
+  })
+
+  let fontSize = '16px'
+  if (props.size === 'sm') {
+    fontSize = '14px'
+  }
+  else if (props.size === 'lg') {
+    fontSize = '18px'
+  }
+  else if (props.size === 'xl') {
+    fontSize = '20px'
+  }
 </script>
+
