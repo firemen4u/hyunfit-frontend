@@ -47,7 +47,7 @@ watch(loading, _ => {
         @click="loading = !loading"
         variant="outlined"
       >
-        <SearchSvg size="25"></SearchSvg>
+        <SearchSvg :size="25"></SearchSvg>
         <template v-slot:loader>
           <v-progress-circular
             indeterminate

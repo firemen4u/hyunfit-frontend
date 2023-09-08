@@ -9,7 +9,7 @@
         />
       </div>
       <div>
-        <BaseRating compact rating="4.9" reviewCount="10" />
+        <BaseRating compact :rating="4.9" :reviewCount="10" />
       </div>
     </div>
     <div class="p-2">
