@@ -4,15 +4,19 @@
       <div
         class="trn-title-container item flex flex-row items-end align-baseline"
       >
-        <p class="trn-subtitle mr-2 text-lg">{{result.trainerName}}</p>
-        <p class="trn-subtitle text-xs">{{result.category}}</p>
+        <p class="trn-subtitle mr-2 text-lg">{{ result.trainerName }}</p>
+        <p class="trn-subtitle text-xs">{{ result.category }}</p>
       </div>
       <div class="trn-content item text-xs">
         <p>
           {{ result.contents }}
         </p>
       </div>
-      <BaseRating compact :rating="result.rating" :review-count="result.reviewCount"></BaseRating>
+      <BaseRating
+        compact
+        :rating="result.rating"
+        :review-count="result.reviewCount"
+      ></BaseRating>
     </div>
     <div class="trn-img flex justify-center items-center">
       <img src="src\assets\images\trainer-img.png" alt="예시 이미지" />
@@ -20,16 +24,14 @@
   </div>
 </template>
 <script setup>
-import BaseCheckBox from '../../@base/components/BaseCheckBox.vue';
+import BaseCheckBox from '../../@base/components/BaseCheckBox.vue'
 import BaseRating from '../../@base/components/BaseRating.vue'
 
 const props = defineProps({
-  result: Object
+  result: Object,
 })
-
-
 </script>
-<style scope>
+<style scoped>
 .card-container {
   display: flex;
   flex-direction: row;
@@ -47,5 +49,4 @@ const props = defineProps({
 .item {
   margin-bottom: 10px;
 }
-
 </style>
