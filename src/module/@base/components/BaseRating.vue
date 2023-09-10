@@ -43,7 +43,7 @@
 </template>
 <script setup>
 import { EmptyStarSvg, FullStarSvg, HalfStarSvg } from '@/module/@base/svg'
-import { ref, computed, defineEmits } from 'vue'
+import { ref, computed } from 'vue'
 
 const props = defineProps({
   compact: Boolean,

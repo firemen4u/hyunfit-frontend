@@ -93,7 +93,7 @@ onMounted(() => {
           alt=""
         />
       </div>
-      <div class="container flex mt-6">
+      <div class="flex mt-6 justify-between">
         <div class="profile-container mr-10">
           <div class="profile">
             <div class="text-2xl font-black">이준영</div>
@@ -288,7 +288,7 @@ hr.solid {
 .info-navbar {
   position: sticky;
   top: 64px;
-  z-index: 100;
+  z-index: 10;
 }
 .profile-container {
   width: 65%;

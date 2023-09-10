@@ -9,6 +9,10 @@ import FacebookSvg from './FacebookSvg.vue'
 import FullStarSvg from './FullStarSvg.vue'
 import HalfStarSvg from './HalfStarSvg.vue'
 import EmptyStarSvg from './EmptyStarSvg.vue'
+import HyunfitLogoGradientSvg from './HyunfitLogoGradientSvg.vue'
+import HyunfitLogoMonoSvg from './HyunfitLogoMonoSvg.vue'
+import DownArrowSvg from './DownArrowSvg.vue'
+import EditPencilSvg from './EditPencilSvg.vue'
 
 export {
   HeartSvg,
@@ -22,4 +26,8 @@ export {
   FullStarSvg,
   HalfStarSvg,
   EmptyStarSvg,
+  HyunfitLogoGradientSvg,
+  HyunfitLogoMonoSvg,
+  DownArrowSvg,
+  EditPencilSvg,
 }
