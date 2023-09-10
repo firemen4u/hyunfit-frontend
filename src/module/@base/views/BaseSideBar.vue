@@ -32,7 +32,8 @@ const props = defineProps({
 /* 사이드 바 스타일링 */
 .sidebar {
   width: 250px;
-  top: 80px;
+  top: 100px;
+  height: 500px;
   margin-right: 1500px;
   background-color: #eee;
   position: fixed;
