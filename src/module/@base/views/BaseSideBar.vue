@@ -1,7 +1,7 @@
 <template>
   <span class="sidebar">
     <!-- 사이드 바 헤더 -->
-    <SidebarHeader :sidebarTitle="sidebarTitle" />
+    <SidebarHeader :sidebarHeader="sidebarHeader" />
 
     <!-- 카테고리 -->
     <Category :categoryTitle="categoryTitle" />
@@ -22,7 +22,7 @@ import Category from '/src/module/@base/components/BaseSideBarCategory.vue'
 import Subcategory from '/src/module/@base/components/BaseSideBarSubcategory.vue'
 
 const props = defineProps({
-  sidebarTitle: String,
+  sidebarHeader: String,
   categoryTitle: String,
   subcategories: Array, // 예시: [{ title: '서브 카테고리 1', link: '/link1' }, ...]
 })
