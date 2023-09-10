@@ -6,11 +6,11 @@ const props = defineProps({
 })
 </script>
 <template>
-  <v-layout ref="app" class="w-100">
-    <BaseHeader v-if="!noheader" />
+  <BaseHeader v-if="!noheader" />
+  <div ref="app" class="w-100">
     <main class="d-flex flex-column justify-center align-center mt-16 w-100">
       <slot></slot>
       <BaseFooter v-if="!nofooter" />
     </main>
-  </v-layout>
+  </div>
 </template>
