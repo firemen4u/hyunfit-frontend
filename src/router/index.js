@@ -35,6 +35,7 @@ const router = createRouter({
       name: 'ai-training',
       component: AITrainingPage,
     },
+    {
       path: '/trn-detail',
       name: 'trn-detail',
       component: TrnDetailPage,
@@ -48,4 +49,3 @@ const router = createRouter({
 })
 
 export default router
-

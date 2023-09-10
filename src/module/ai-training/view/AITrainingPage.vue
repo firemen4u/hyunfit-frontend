@@ -1,7 +1,13 @@
 <template>
   <div class="ai-training-container flex">
-    <AITrainingMyVideo></AITrainingMyVideo>
-    <AITrainingTeachingVideo></AITrainingTeachingVideo>
+    <AITrainingMyVideo
+      v-if="data.myVideoStatus.value !== 3"
+      :myVideoStatus="data.myVideoStatus"
+    ></AITrainingMyVideo>
+    <AITrainingTeachingVideo
+      v-if="data.teachingVideoStatus.value !== 3"
+      :teachingVideoStatus="data.teachingVideoStatus"
+    ></AITrainingTeachingVideo>
     <AITrainingStatusContainer></AITrainingStatusContainer>
     <AITrainingTimer></AITrainingTimer>
     <div class="ai-training-info">
@@ -11,6 +17,7 @@
   </div>
 </template>
 <script setup>
+import { ref } from 'vue'
 import {
   AITrainingStatusContainer,
   AITrainingTimer,
@@ -18,6 +25,16 @@ import {
   AITrainingBottomBar,
   AITrainingTeachingVideo,
 } from '/src/module/ai-training/component'
+
+// 1일 때는 전체화면, 2일 때는 화면 1/2, 3일 떄는 컴포넌트 사용하지 않기
+// store에 상태 값을 넣어둬서 계속 이 부분을 관리해줘야 함
+
+const data = {
+  myVideoStatus: ref(1),
+  teachingVideoStatus: ref(3),
+}
+console.log(data.myVideoStatus.value)
+console.log(data.teachingVideoStatus.value)
 </script>
 
 <style scoped>
