@@ -1,7 +1,7 @@
 <template>
   <BaseContainer>
     <BaseSideBar
-      :sidebarTitle="sidebarTitle"
+      :sidebarHeader="sidebarHeader"
       :categoryTitle="mainCategory"
       :subcategories="subcategories"
     />
@@ -127,7 +127,7 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
-const sidebarTitle = '사이드 바 헤더'
+const sidebarHeader = '마이페이지'
 const mainCategory = '카테고리'
 const subcategories = [
   { id: 1, title: '서브 카테고리 1', link: '/link1' },
