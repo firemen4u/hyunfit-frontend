@@ -1,7 +1,7 @@
 <template>
   <div class="category font-bold text-lg">
     <!-- 카테고리 내용 -->
-    <h3>{{ categoryTitle }}</h3>
+    <p class="">{{ categoryTitle }}</p>
   </div>
 </template>
 
