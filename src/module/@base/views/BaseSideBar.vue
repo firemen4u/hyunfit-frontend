@@ -1,5 +1,5 @@
 <template>
-  <span class="sidebar">
+  <span class="sidebar rounded-lg">
     <!-- 사이드 바 헤더 -->
     <SidebarHeader :sidebarHeader="sidebarHeader" />
 
@@ -37,7 +37,6 @@ const props = defineProps({
   margin-right: 1500px;
   background-color: #eee;
   position: fixed;
-  padding: 20px;
   overflow: hidden;
 }
 </style>

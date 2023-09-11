@@ -16,5 +16,7 @@ const props = defineProps({
 .category {
   background-color: #f0f0f0;
   padding: 10px;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 </style>
