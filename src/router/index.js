@@ -3,8 +3,10 @@ import MainPage from '/src/module/main/views/MainPage.vue'
 import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
 import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
 import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
+import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
 import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
+import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
 import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
 
@@ -32,6 +34,11 @@ const router = createRouter({
       component: MbrRsvPage,
     },
     {
+      path: '/ai-training',
+      name: 'ai-training',
+      component: AITrainingPage,
+    },
+    {
       path: '/trn-detail',
       name: 'trn-detail',
       component: TrnDetailPage,
@@ -40,6 +47,11 @@ const router = createRouter({
       path: '/PtRoom',
       name: 'PtRoom',
       component: PtRoomPage,
+    },
+    {
+      path: '/rsvsample',
+      name: 'RsvSample',
+      component: RsvSample,
     },
     {
       path: '/mbr-myPage',
