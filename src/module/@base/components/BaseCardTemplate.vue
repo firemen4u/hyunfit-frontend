@@ -19,11 +19,11 @@
 const props = defineProps({
   color: String,
   coverSrc: String,
-  size: String,
+  cardSize: String,
 })
 
 let height
-if (props.size === 'lg') {
+if (props.cardSize === 'lg') {
   height = 'h-40'
 } else if (props.size === 'md') {
   height = 'h-32'

@@ -1,6 +1,12 @@
 <script setup>
 import { BaseBodyWrapper } from '/src/module/@base/views'
-import { FacebookSvg, InstagramSvg, YoutubeSvg } from '/src/module/@base/svg'
+import {
+  FacebookSvg,
+  InstagramSvg,
+  YoutubeSvg,
+  HyunfitLogoMonoSvg,
+} from '/src/module/@base/svg'
+
 let infoData = [
   { href: '', title: '브랜드소개' },
   { href: '', title: '이용약관' },
@@ -54,20 +60,16 @@ let infoData = [
         </div>
         <!-- SNS 아이콘 -->
         <div class="icon-container flex items-center">
-          <YoutubeSvg size="30" class="ml-5" />
-          <InstagramSvg size="25" class="ml-5" />
-          <FacebookSvg size="25" class="ml-5" />
+          <YoutubeSvg :size="30" class="ml-5" />
+          <InstagramSvg :size="25" class="ml-5" />
+          <FacebookSvg :size="25" class="ml-5" />
         </div>
       </div>
       <hr class="solid" />
 
       <div class="info flex my-8">
         <!-- 로고 -->
-        <img
-          src="/src/assets/images/hyunfit-logo-footer.png"
-          alt=""
-          class="logo object-none self-start"
-        />
+        <HyunfitLogoMonoSvg :size="130" color="#FDEEEE" />
         <!-- 텍스트 -->
         <div class="footer-texts flex flex-column items-start ml-12 text-sm">
           <div>(주)현핏</div>
@@ -112,7 +114,7 @@ footer {
   background-color: #212121;
 }
 .logo {
-  height: 2rem;
+  height: 20px;
   object-fit: cover;
 }
 .footer-texts {
