@@ -6,6 +6,8 @@ import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
 import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
 import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
+import ReportPage from '@/module/report/views/ReportPage.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -43,6 +45,11 @@ const router = createRouter({
       path: '/mbr-myPage',
       name: 'mbr-myPage',
       component: MbrmyPage,
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: ReportPage,
     },
   ],
 })
