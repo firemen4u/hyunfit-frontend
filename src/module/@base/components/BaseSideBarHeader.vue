@@ -1,7 +1,7 @@
 <template>
-  <div class="sidebar-header">
+  <div class="sidebar-header text-2xl">
     <!-- 사이드 바 헤더 내용 -->
-    <h2>{{ sidebarHeader }}</h2>
+    <p class="">{{ sidebarHeader }}</p>
   </div>
 </template>
 
