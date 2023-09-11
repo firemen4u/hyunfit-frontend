@@ -3,16 +3,16 @@
     <div class="empty-container item bg-transparent"></div>
     <div class="status-navigation-container item">
       <button class="buttons">
-        <img src="src\assets\images\volume-high.png" />
+        <img src="/src/assets/images/volume-high.png" />
       </button>
       <button class="buttons">
-        <img src="src\assets\images\volume-high.png" />
+        <img src="/src/assets/images/volume-high.png" />
       </button>
       <button class="buttons">
-        <img src="src\assets\images\volume-high.png" />
+        <img src="/src/assets/images/volume-high.png" />
       </button>
       <button class="buttons">
-        <img src="src\assets\images\volume-high.png" />
+        <img src="/src/assets/images/volume-high.png" />
       </button>
     </div>
     <button class="skip-button skip-item">

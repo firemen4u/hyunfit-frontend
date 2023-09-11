@@ -19,7 +19,7 @@
       ></BaseRating>
     </div>
     <div class="trn-img flex justify-center items-center">
-      <img src="src\assets\images\trainer-img.png" alt="예시 이미지" />
+      <img src="/src/assets/images/trainer-img.png" alt="예시 이미지" />
     </div>
   </div>
 </template>
