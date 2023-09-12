@@ -2,39 +2,197 @@
   <div class="ai-training-container flex">
     <AITrainingMyVideo
       v-if="data.myVideoStatus.value !== 3"
-      :myVideoStatus="data.myVideoStatus"
+      :myVideoStatus="data.myVideoStatus.value"
     ></AITrainingMyVideo>
     <AITrainingTeachingVideo
       v-if="data.teachingVideoStatus.value !== 3"
-      :teachingVideoStatus="data.teachingVideoStatus"
+      :teachingVideoStatus="data.teachingVideoStatus.value"
     ></AITrainingTeachingVideo>
-    <AITrainingStatusContainer></AITrainingStatusContainer>
-    <AITrainingTimer></AITrainingTimer>
-    <div class="ai-training-info">
-      <span class="info"> 전체가 다 나오는지 확인해주세요!</span>
-    </div>
-    <AITrainingBottomBar></AITrainingBottomBar>
+    <AITrainingStatusContainer
+      v-if="data.trainingStatus.value == 1"
+      :trainingStatus="data.trainingStatus.value"
+    >
+    </AITrainingStatusContainer>
+    <AITrainingTimer
+      v-if="data.timerStatus.value == 1"
+      :timerStatus="data.timerStatus.value"
+    ></AITrainingTimer>
+    <AITrainingInfo
+      v-if="data.info.value == 1"
+      :trainingInfo="data.infoContent.value"
+    ></AITrainingInfo>
+    <AITrainingBottomBar
+      v-if="data.bottomBarStatus.value == 1"
+      :trainingProgressStatus="data.trainingProgressStatus.value"
+      :limitTime="data.limitTime.value"
+      @skip="handleSkip"
+      :key="rerenderKey"
+    ></AITrainingBottomBar>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
   AITrainingStatusContainer,
   AITrainingTimer,
   AITrainingMyVideo,
   AITrainingBottomBar,
   AITrainingTeachingVideo,
+  AITrainingInfo,
 } from '/src/module/ai-training/component'
-
-// 1일 때는 전체화면, 2일 때는 화면 1/2, 3일 떄는 컴포넌트 사용하지 않기
-// store에 상태 값을 넣어둬서 계속 이 부분을 관리해줘야 함
+const INTRO = 1
+const WARMUP = 2
+const GUIDE = 3
+const EXCERCISE = 4
+const EXIT = 5
 
 const data = {
-  myVideoStatus: ref(1),
-  teachingVideoStatus: ref(3),
+  trainingProgressStatus: ref(0),
+  myVideoStatus: ref(0),
+  teachingVideoStatus: ref(0),
+  info: ref(0),
+  trainingStatus: ref(0),
+  timerStatus: ref(0),
+  bottomBarStatus: ref(1),
+  infoContent: ref(''),
+  limitTime: ref(-1),
+  routine: [],
 }
-console.log(data.myVideoStatus.value)
-console.log(data.teachingVideoStatus.value)
+const rerenderKey = ref(0)
+onMounted(() => {
+  updateStatus(1)
+})
+
+function handleSkip() {
+  rerenderKey.value += 1
+  updateStatus()
+}
+
+const statusMap = new Map([
+  [
+    'INTRO',
+    {
+      trainingProgressStatus: 1,
+      myVideoStatus: 1,
+      teachingVideoStatus: 3,
+      info: 0,
+      trainingStatus: 0,
+      timerStatus: 1,
+      infoContent: '',
+      limitTime: -1,
+      routine: [],
+    },
+  ],
+  [
+    'WARMUP',
+    {
+      trainingProgressStatus: 1,
+      myVideoStatus: 1,
+      teachingVideoStatus: 2,
+      info: 0,
+      trainingStatus: 0,
+      timerStatus: 1,
+      infoContent: '',
+      limitTime: -1,
+      routine: [],
+    },
+  ],
+  [
+    'GUIDE',
+    {
+      trainingProgressStatus: ref(0),
+      myVideoStatus: ref(0),
+      teachingVideoStatus: ref(0),
+      info: ref(0),
+      trainingStatus: ref(0),
+      timerStatus: ref(0),
+      bottomBarStatus: ref(1),
+      infoContent: ref(''),
+      limitTime: ref(-1),
+      routine: [],
+    },
+  ],
+  [
+    'EXERCISE',
+    {
+      trainingProgressStatus: ref(0),
+      myVideoStatus: ref(0),
+      teachingVideoStatus: ref(0),
+      info: ref(0),
+      trainingStatus: ref(0),
+      timerStatus: ref(0),
+      bottomBarStatus: ref(1),
+      infoContent: ref(''),
+      limitTime: ref(-1),
+      routine: [],
+    },
+  ],
+  [
+    'EXIT',
+    {
+      trainingProgressStatus: ref(0),
+      myVideoStatus: ref(0),
+      teachingVideoStatus: ref(0),
+      info: ref(0),
+      trainingStatus: ref(0),
+      timerStatus: ref(0),
+      bottomBarStatus: ref(1),
+      infoContent: ref(''),
+      limitTime: ref(-1),
+      routine: [],
+    },
+  ],
+])
+
+function updateStatus() {
+  data.trainingProgressStatus.value += 1
+  let newStatus = data.trainingProgressStatus.value
+
+  data.value = statusMap.get(newStatus)
+  switch (newStatus) {
+    case INTRO:
+      const introData = statusMap.get('INTRO')
+      data.trainingProgressStatus.value = introData.trainingProgressStatus
+      data.myVideoStatus.value = introData.myVideoStatus
+      data.teachingVideoStatus.value = introData.teachingVideoStatus
+      data.info.value = introData.info
+      data.trainingStatus.value = introData.trainingStatus
+      data.timerStatus.value = introData.timerStatus
+      data.infoContent.value = introData.infoContent
+      data.limitTime.value = introData.limitTime
+      data.routine = introData.routine
+      console.log('data', data)
+      console.log('INTRO data', statusMap.get('INTRO'))
+      break
+    case WARMUP:
+      data.value = newStatus.get('WARMUP')
+      break
+    // 잠깐 안내 창만 키우고 -> 있다가 함
+    case GUIDE:
+      data.info.value = 1
+      data.infoContent.value = '운동 이름'
+      data.myVideoStatus.value = 3
+      data.teachingVideoStatus.value = 1
+      data.trainingStatus.value = 1
+      data.timerStatus.value = 1
+      data.limitTime.value = 10 //임시
+      break
+    // reps 끝날때 10초 쉬는 시간 가지기 -> 영상 정지
+    case EXCERCISE:
+      data.myVideoStatus.value = 2
+      data.teachingVideoStatus.value = 2
+      data.trainingStatus.value = data.timerStatus.value = 1
+      data.limitTime.value = 10 //임시
+      break
+    case EXIT:
+      data.myVideoStatus.value = 3
+      data.teachingVideoStatus.value = 3
+      data.trainingStatus.value = 3
+      data.timerStatus.value = 0
+      data.limitTime.value = 2 //임시
+      break
+  }
+}
 </script>
 
 <style scoped>

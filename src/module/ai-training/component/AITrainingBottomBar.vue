@@ -15,15 +15,55 @@
         <img src="/src/assets/images/volume-high.png" />
       </button>
     </div>
-    <button class="skip-button skip-item">
-      <div class="progress-bar"></div>
+    <button class="skip-button skip-item" @click="skipClick()">
+      <Transition :duration="1000">
+        <div
+          class="progress-bar-wrapper"
+          :style="{ width: (timeLeft / props.limitTime) * 100 + '%' }"
+        >
+          <div class="progress-bar"></div>
+        </div>
+      </Transition>
       <span class="skip-text font-extrabold">Skip</span>
       다음
     </button>
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+
+const emit = defineEmits(['skip'])
+const props = defineProps({
+  limitTime: Number,
+  trainingProgressStatus: Number,
+})
+
+console.log('durations', props.limitTime)
+
+function skipClick() {
+  console.log('skipClick 남은시간', props.limitTime)
+  emit('skip')
+}
+const timeLeft = ref(0)
+function startCountdown() {
+  let interval = setInterval(() => {
+    console.log('남은시간', timeLeft.value)
+    timeLeft.value--
+    if (timeLeft.value === 0) {
+      console.log('인터벌 삭제')
+      clearInterval(interval)
+      skipClick() // 0초일 때 click 함수 실행
+    }
+  }, 1000)
+}
+
+onMounted(() => {
+  console.log('mounted')
+  timeLeft.value = props.limitTime
+  console.log('watch', timeLeft.value)
+  if (timeLeft.value < 0) return
+  startCountdown()
+})
 </script>
 <style scoped>
 .status-navigation-container {
@@ -59,7 +99,6 @@ import { ref, onMounted } from 'vue'
   margin: 10px;
   border-radius: 10px;
 }
-
 .skip-item {
   width: 200px;
   height: 50px;
@@ -86,17 +125,22 @@ import { ref, onMounted } from 'vue'
 
 .progress-bar {
   position: absolute;
-  width: 100%;
+  width: 200px;
   height: 100%;
+  z-index: 2;
   background-color: rgb(0, 0, 0);
-  z-index: -1;
   border-radius: 10px;
+}
+.progress-bar-wrapper {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 10;
   animation-timing-function: linear;
   animation-iteration-count: 1;
-  animation-duration: 10s;
   animation-name: progress;
 }
-
 @keyframes progress {
   0% {
     width: 0%; /* 시작 상태에서 너비를 0%로 유지 */

@@ -1,16 +1,15 @@
 <template>
   <div
     class="my-video bg-orange-200"
-    :class="props.myVideoStatus.value === 1 ? 'w-full' : 'w-1/2'"
+    :class="props.myVideoStatus === 1 ? 'w-full' : 'w-1/2'"
   ></div>
 </template>
 <script setup>
-import { defineProps } from 'vue'
-
+console.log('myVideo : ' + props.myVideoStatus)
 const props = defineProps({
   myVideoStatus: Number,
 })
 
-console.log(props.myVideoStatus.value)
+console.log('In My Video : ' + props.myVideoStatus)
 </script>
 <style scoped></style>
