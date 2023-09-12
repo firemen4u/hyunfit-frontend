@@ -20,7 +20,7 @@ const headerPages = [
     routeNames: ['trn-search', 'trn-detail'],
     url: '/trn-search',
   },
-  { displayName: '리포트', routeNames: [''], url: '/reports' },
+  { displayName: '리포트', routeNames: ['report'], url: '/report' },
 ]
 
 const profileMenus = [

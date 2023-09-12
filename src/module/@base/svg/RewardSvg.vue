@@ -6,7 +6,7 @@
     id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    viewBox="0 0 393.568 393.568"
+    viewBox="5 0 380 380"
     xml:space="preserve"
     fill="#000000"
   >
