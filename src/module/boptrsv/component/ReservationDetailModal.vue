@@ -13,18 +13,24 @@
           <!--카테고리-->
           <div class="flex flex-col mr-4 items-center">
             <div class="rsvdetail-category">예약번호</div>
-            <div class="rsvdetail-category">예약상태</div>
             <div class="rsvdetail-category">예약일자</div>
             <div class="rsvdetail-category">예약시간</div>
+            <div class="rsvdetail-category">예약상태</div>
             <div class="rsvdetail-category">회 원 명</div>
           </div>
           <!--정보-->
           <div class="flex flex-col items-center">
-            <div class="info-gray-box">39</div>
-            <div class="info-gray-box">예약확정</div>
-            <div class="info-gray-box">2023-09-30</div>
-            <div class="info-gray-box">14:00</div>
-            <div class="info-gray-box">길동</div>
+            <div class="info-gray-box">{{ reservationData.ptSeq }}</div>
+            <div class="info-gray-box">
+              {{ formatDate(reservationData.ptReservationDate) }}
+            </div>
+            <div class="info-gray-box">
+              {{ formatTime(reservationData.ptReservationDate) }}
+            </div>
+            <div class="info-gray-box">
+              {{ reservationData.ptReservationStatus }}
+            </div>
+            <div class="info-gray-box">{{ reservationData.mbrName }}</div>
           </div>
         </div>
         <!--고객요청사항-->
@@ -47,14 +53,28 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
-  props: ['show'],
+  props: {
+    reservationData: Object,
+    show: Boolean,
+  },
   methods: {
     closeModal() {
       this.$emit('close')
     },
     entryPtRoom() {
       window.open('http://localhost:5173/PtRoom', '_blank')
+    },
+    formatDate(timestamp) {
+      return moment(timestamp).format('YYYY-MM-DD')
+    },
+    formatTime(timestamp) {
+      const date = new Date(timestamp)
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+
+      return `${hours}:${minutes}`
     },
   },
 }
