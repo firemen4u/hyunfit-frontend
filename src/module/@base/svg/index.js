@@ -13,6 +13,7 @@ import HyunfitLogoGradientSvg from './HyunfitLogoGradientSvg.vue'
 import HyunfitLogoMonoSvg from './HyunfitLogoMonoSvg.vue'
 import DownArrowSvg from './DownArrowSvg.vue'
 import EditPencilSvg from './EditPencilSvg.vue'
+import CloudArrowUpSvg from './CloudArrowUpSvg.vue'
 
 export {
   HeartSvg,
@@ -30,4 +31,5 @@ export {
   HyunfitLogoMonoSvg,
   DownArrowSvg,
   EditPencilSvg,
+  CloudArrowUpSvg,
 }
