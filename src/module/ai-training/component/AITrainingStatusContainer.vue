@@ -25,7 +25,7 @@
   </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const setCounts = ref(props.setCount) // 세트의 숫자
 const setStatuses = ref(['past', 'future', 'future']) // 상태 값

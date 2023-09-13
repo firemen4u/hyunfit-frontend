@@ -1,7 +1,7 @@
 <template>
   <div
     class="teaching-video bg-white"
-    :class="props.teachingVideoStatus === 1 ? 'w-full' : 'w-1/2'"
+    :class="props.teachingVideoStatus === 'Full' ? 'w-full' : 'w-1/2'"
   >
     <video
       src="https://alycecloud-website.s3.ap-northeast-2.amazonaws.com/video/warming_up.mp4"

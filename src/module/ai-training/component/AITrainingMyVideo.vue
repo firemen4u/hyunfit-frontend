@@ -1,7 +1,7 @@
 <template>
   <div
     class="my-video bg-orange-200"
-    :class="props.myVideoStatus === 1 ? 'w-full' : 'w-1/2'"
+    :class="props.myVideoStatus === 'FULL' ? 'w-full' : 'w-1/2'"
   ></div>
 </template>
 <script setup>

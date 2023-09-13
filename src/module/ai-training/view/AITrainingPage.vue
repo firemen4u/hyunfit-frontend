@@ -1,30 +1,29 @@
 <template>
   <div class="ai-training-container flex">
     <AITrainingMyVideo
-      v-if="data.myVideoStatus.value !== 3"
-      :myVideoStatus="data.myVideoStatus.value"
+      v-if="data.myVideoWidth.value !== 'NONE'"
+      :myVideoStatus="data.myVideoWidth.value"
     ></AITrainingMyVideo>
     <AITrainingTeachingVideo
-      v-if="data.teachingVideoStatus.value !== 3"
-      :teachingVideoStatus="data.teachingVideoStatus.value"
+      v-if="data.teachingVideoWidth.value !== 'NONE'"
+      :teachingVideoStatus="data.teachingVideoWidth.value"
     ></AITrainingTeachingVideo>
     <AITrainingStatusContainer
-      v-if="data.trainingStatus.value == 1"
-      :trainingStatus="data.trainingStatus.value"
+      v-if="data.countContainerVisible.value === 'ON'"
+      :trainingStatus="data.countContainerVisible.value"
     >
     </AITrainingStatusContainer>
     <AITrainingTimer
-      v-if="data.timerStatus.value == 1"
-      :timerStatus="data.timerStatus.value"
+      v-if="data.timerVisible.value === 'ON'"
+      :timerVisible="data.timerVisible.value"
     ></AITrainingTimer>
     <AITrainingInfo
-      v-if="data.info.value == 1"
+      v-if="data.infoContainerVisible.value === 'ON'"
       :trainingInfo="data.infoContent.value"
     ></AITrainingInfo>
     <AITrainingBottomBar
-      v-if="data.bottomBarStatus.value == 1"
       :trainingProgressStatus="data.trainingProgressStatus.value"
-      :limitTime="data.limitTime.value"
+      :timerLimit="data.timerLimit.value"
       @skip="handleSkip"
       :key="rerenderKey"
     ></AITrainingBottomBar>
@@ -32,6 +31,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import {
   AITrainingStatusContainer,
   AITrainingTimer,
@@ -40,6 +40,12 @@ import {
   AITrainingTeachingVideo,
   AITrainingInfo,
 } from '/src/module/ai-training/component'
+
+axios.get('서버의 AIP 엔드포인트 URL')
+  .then(response => {
+    
+  })
+
 const INTRO = 1
 const WARMUP = 2
 const GUIDE = 3
@@ -48,14 +54,13 @@ const EXIT = 5
 
 const data = {
   trainingProgressStatus: ref(0),
-  myVideoStatus: ref(0),
-  teachingVideoStatus: ref(0),
-  info: ref(0),
-  trainingStatus: ref(0),
-  timerStatus: ref(0),
-  bottomBarStatus: ref(1),
+  myVideoWidth: ref(''), // FULL, HALF, NONE
+  teachingVideoWidth: ref(''), // FULL, HALF, NONE
+  infoContainerVisible: ref(''), // ON, OFF
+  countContainerVisible: ref(''), // ON, OFF
+  timerVisible: ref(''), // ON, OFF
   infoContent: ref(''),
-  limitTime: ref(-1),
+  timerLimit: ref(-1),
   routine: [],
 }
 const rerenderKey = ref(0)
@@ -73,72 +78,69 @@ const statusMap = new Map([
     'INTRO',
     {
       trainingProgressStatus: 1,
-      myVideoStatus: 1,
-      teachingVideoStatus: 3,
-      info: 0,
-      trainingStatus: 0,
-      timerStatus: 1,
+      myVideoWidth: 'FULL',
+      teachingVideoWidth: 'NONE',
+      infoContainerVisible: 'OFF',
+      countContainerVisible: 'OFF',
+      timerVisible: 'OFF',
       infoContent: '',
-      limitTime: -1,
+      timerLimit: -1,
       routine: [],
     },
   ],
   [
     'WARMUP',
     {
-      trainingProgressStatus: 1,
-      myVideoStatus: 1,
-      teachingVideoStatus: 2,
-      info: 0,
-      trainingStatus: 0,
-      timerStatus: 1,
+      trainingProgressStatus: 2,
+      myVideoWidth: 'HALF',
+      teachingVideoWidth: 'HALF',
+      infoContainerVisible: 'OFF',
+      countContainerVisible: 'OFF',
+      timerVisible: 'ON',
       infoContent: '',
-      limitTime: -1,
+      timerLimit: 100,
       routine: [],
     },
   ],
   [
     'GUIDE',
     {
-      trainingProgressStatus: ref(0),
-      myVideoStatus: ref(0),
-      teachingVideoStatus: ref(0),
-      info: ref(0),
-      trainingStatus: ref(0),
-      timerStatus: ref(0),
-      bottomBarStatus: ref(1),
-      infoContent: ref(''),
-      limitTime: ref(-1),
+      trainingProgressStatus: 3,
+      myVideoWidth: 'NONE',
+      teachingVideoWidth: 'HALF',
+      infoContainerVisible: 'OFF',
+      countContainerVisible: 'ON',
+      timerVisible: 'ON',
+      infoContent: '',
+      timerLimit: 10,
       routine: [],
     },
   ],
   [
     'EXERCISE',
     {
-      trainingProgressStatus: ref(0),
-      myVideoStatus: ref(0),
-      teachingVideoStatus: ref(0),
-      info: ref(0),
-      trainingStatus: ref(0),
-      timerStatus: ref(0),
-      bottomBarStatus: ref(1),
-      infoContent: ref(''),
-      limitTime: ref(-1),
+      trainingProgressStatus: 4,
+      myVideoWidth: 'NONE',
+      teachingVideoWidth: 'HALF',
+      infoContainerVisible: 'OFF',
+      countContainerVisible: 'ON',
+      timerVisible: 'ON',
+      infoContent: '',
+      timerLimit: 100,
       routine: [],
     },
   ],
   [
     'EXIT',
     {
-      trainingProgressStatus: ref(0),
-      myVideoStatus: ref(0),
-      teachingVideoStatus: ref(0),
-      info: ref(0),
-      trainingStatus: ref(0),
-      timerStatus: ref(0),
-      bottomBarStatus: ref(1),
-      infoContent: ref(''),
-      limitTime: ref(-1),
+      trainingProgressStatus: 5,
+      myVideoWidth: 'NONE',
+      teachingVideoWidth: 'HALF',
+      infoContainerVisible: 'OFF',
+      countContainerVisible: 'ON',
+      timerVisible: 'ON',
+      infoContent: '',
+      timerLimit: -1,
       routine: [],
     },
   ],
@@ -151,45 +153,52 @@ function updateStatus() {
   data.value = statusMap.get(newStatus)
   switch (newStatus) {
     case INTRO:
-      const introData = statusMap.get('INTRO')
+      var introData = statusMap.get('INTRO')
       data.trainingProgressStatus.value = introData.trainingProgressStatus
-      data.myVideoStatus.value = introData.myVideoStatus
-      data.teachingVideoStatus.value = introData.teachingVideoStatus
-      data.info.value = introData.info
-      data.trainingStatus.value = introData.trainingStatus
-      data.timerStatus.value = introData.timerStatus
+      data.myVideoWidth.value = introData.myVideoWidth
+      data.teachingVideoWidth.value = introData.teachingVideoWidth
+      data.infoContainerVisible.value = introData.infoContainerVisible
+      data.countContainerVisible.value = introData.countContainerVisible
+      data.timerVisible.value = introData.timerVisible
       data.infoContent.value = introData.infoContent
-      data.limitTime.value = introData.limitTime
+      data.timerLimit.value = introData.timerLimit
       data.routine = introData.routine
-      console.log('data', data)
-      console.log('INTRO data', statusMap.get('INTRO'))
       break
     case WARMUP:
-      data.value = newStatus.get('WARMUP')
+      var warmUpData = statusMap.get('WARMUP')
+      data.trainingProgressStatus.value = warmUpData.trainingProgressStatus
+      data.myVideoWidth.value = warmUpData.myVideoWidth
+      data.teachingVideoWidth.value = warmUpData.teachingVideoWidth
+      data.infoContainerVisible.value = warmUpData.infoContainerVisible
+      data.countContainerVisible.value = warmUpData.countContainerVisible
+      data.timerVisible.value = warmUpData.timerVisible
+      data.infoContent.value = warmUpData.infoContent
+      data.timerLimit.value = warmUpData.timerLimit
+      data.routine = warmUpData.routine
       break
     // 잠깐 안내 창만 키우고 -> 있다가 함
     case GUIDE:
       data.info.value = 1
       data.infoContent.value = '운동 이름'
-      data.myVideoStatus.value = 3
-      data.teachingVideoStatus.value = 1
-      data.trainingStatus.value = 1
-      data.timerStatus.value = 1
-      data.limitTime.value = 10 //임시
+      data.myVideoWidth.value = 3
+      data.teachingVideoWidth.value = 1
+      data.countContainerVisible.value = 1
+      data.timerVisible.value = 1
+      data.timerLimit.value = 10 //임시
       break
     // reps 끝날때 10초 쉬는 시간 가지기 -> 영상 정지
     case EXCERCISE:
-      data.myVideoStatus.value = 2
-      data.teachingVideoStatus.value = 2
-      data.trainingStatus.value = data.timerStatus.value = 1
-      data.limitTime.value = 10 //임시
+      data.myVideoWidth.value = 2
+      data.teachingVideoWidth.value = 2
+      data.countContainerVisible.value = data.timerVisible.value = 1
+      data.timerLimit.value = 10 //임시
       break
     case EXIT:
-      data.myVideoStatus.value = 3
-      data.teachingVideoStatus.value = 3
-      data.trainingStatus.value = 3
-      data.timerStatus.value = 0
-      data.limitTime.value = 2 //임시
+      data.myVideoWidth.value = 3
+      data.teachingVideoWidth.value = 3
+      data.countContainerVisible.value = 3
+      data.timerVisible.value = 0
+      data.timerLimit.value = 2 //임시
       break
   }
 }

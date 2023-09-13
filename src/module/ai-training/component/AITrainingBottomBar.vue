@@ -19,7 +19,7 @@
       <Transition :duration="1000">
         <div
           class="progress-bar-wrapper"
-          :style="{ width: (timeLeft / props.limitTime) * 100 + '%' }"
+          :style="{ width: (timeLeft / props.timerLimit) * 100 + '%' }"
         >
           <div class="progress-bar"></div>
         </div>
@@ -34,14 +34,14 @@ import { ref, onMounted, watch } from 'vue'
 
 const emit = defineEmits(['skip'])
 const props = defineProps({
-  limitTime: Number,
+  timerLimit: Number,
   trainingProgressStatus: Number,
 })
 
-console.log('durations', props.limitTime)
+console.log('durations', props.timerLimit)
 
 function skipClick() {
-  console.log('skipClick 남은시간', props.limitTime)
+  console.log('skipClick 남은시간', props.timerLimit)
   emit('skip')
 }
 const timeLeft = ref(0)
@@ -59,7 +59,7 @@ function startCountdown() {
 
 onMounted(() => {
   console.log('mounted')
-  timeLeft.value = props.limitTime
+  timeLeft.value = props.timerLimit
   console.log('watch', timeLeft.value)
   if (timeLeft.value < 0) return
   startCountdown()
