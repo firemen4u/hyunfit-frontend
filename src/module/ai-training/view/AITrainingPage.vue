@@ -41,10 +41,10 @@ import {
   AITrainingInfo,
 } from '/src/module/ai-training/component'
 
-axios.get('서버의 AIP 엔드포인트 URL')
-  .then(response => {
-    
-  })
+// axios.get('서버의 AIP 엔드포인트 URL')
+//   .then(response => {
+
+//   })
 
 const INTRO = 1
 const WARMUP = 2
