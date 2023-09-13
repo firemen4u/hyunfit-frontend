@@ -33,7 +33,7 @@
 
 <script setup>
 import { ref, defineProps } from 'vue'
-
+import { FullStarSvg } from '/src/module/@base/svg'
 const props = defineProps({
   label: String,
   prependIcon: String,
@@ -42,11 +42,4 @@ const props = defineProps({
 const files = ref([])
 </script>
 <style scoped>
-.v-input__details > .v-icon,
-.v-input__prepend > .v-icon,
-.v-input__append > .v-icon {
-  font-size: 299px;
-  opacity: var(--v-medium-emphasis-opacity);
-}
 </style>
-
