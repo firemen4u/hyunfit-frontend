@@ -10,6 +10,7 @@ import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
 import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
 import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
 import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
+import ReportPage from '@/module/report/views/ReportPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,6 +69,11 @@ const router = createRouter({
       path: '/bo-excNew',
       name: 'bo-BoExcNewPage',
       component: BoExcNewPage,
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: ReportPage,
     },
   ],
 })

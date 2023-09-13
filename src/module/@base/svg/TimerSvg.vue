@@ -1,0 +1,48 @@
+<template>
+  <svg
+    :width="size"
+    :height="size"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g
+      id="SVGRepo_tracerCarrier"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></g>
+    <g id="SVGRepo_iconCarrier">
+      <g id="Calendar / Timer">
+        <path
+          id="Vector"
+          d="M12 13V9M21 6L19 4M10 2H14M12 21C7.58172 21 4 17.4183 4 13C4 8.58172 7.58172 5 12 5C16.4183 5 20 8.58172 20 13C20 17.4183 16.4183 21 12 21Z"
+          :stroke="getColor()"
+          :stroke-width="getStrokeWidth()"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<script setup>
+const props = defineProps({
+  size: Number,
+  color: String,
+  stroke: Number,
+})
+
+function getColor() {
+  if (props.color) {
+    return props.color
+  } else return '#000000'
+}
+function getStrokeWidth() {
+  if (props.stroke) {
+    return props.stroke
+  }
+  return 1.6
+}
+</script>
