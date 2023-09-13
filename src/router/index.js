@@ -8,6 +8,8 @@ import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
 import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
 import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
+import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
+import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
 
 const router = createRouter({
@@ -57,6 +59,16 @@ const router = createRouter({
       path: '/mbr-myPage',
       name: 'mbr-myPage',
       component: MbrmyPage,
+    },
+    {
+      path: '/bo-rtnBoard',
+      name: 'bo-BoRtnBoardPage',
+      component: BoRtnBoardPage,
+    },
+    {
+      path: '/bo-excNew',
+      name: 'bo-BoExcNewPage',
+      component: BoExcNewPage,
     },
     {
       path: '/report',

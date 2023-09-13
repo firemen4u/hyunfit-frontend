@@ -13,9 +13,11 @@ import HyunfitLogoGradientSvg from './HyunfitLogoGradientSvg.vue'
 import HyunfitLogoMonoSvg from './HyunfitLogoMonoSvg.vue'
 import DownArrowSvg from './DownArrowSvg.vue'
 import EditPencilSvg from './EditPencilSvg.vue'
+import CloudArrowUpSvg from './CloudArrowUpSvg.vue'
 import CircleCheckSvg from './CircleCheckSvg.vue'
 import TimerSvg from './TimerSvg.vue'
-import CalorieSvg from './CalorieSvg.vue'
+import CalorieSvg from './CalorieSvg.vue
+
 export {
   HeartSvg,
   RewardSvg,
@@ -32,6 +34,7 @@ export {
   HyunfitLogoMonoSvg,
   DownArrowSvg,
   EditPencilSvg,
+  CloudArrowUpSvg,
   CircleCheckSvg,
   CalorieSvg,
   TimerSvg,
