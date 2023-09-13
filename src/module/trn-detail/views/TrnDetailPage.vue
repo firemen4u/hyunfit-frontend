@@ -337,7 +337,7 @@ hr.solid {
   width: auto;
 }
 
-.v-date-picker-month__day .v-btn {
+.trn-detail-date-picker .v-date-picker-month__day .v-btn {
   height: 30px;
   width: 30px;
   font-size: 0.75rem;
