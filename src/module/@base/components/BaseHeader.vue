@@ -25,10 +25,11 @@ const headerPages = [
   },
   {
     displayName: '화상트레이닝',
-    childUrls: ['trn-search', 'trn-detail'],
+    childUrls: ['trn-search', 'trn-detail', 'mbr-reservation'],
     url: '/trn-search',
     menus: [
       { menuName: '트레이너 찾기', url: '/trn-search' },
+      { menuName: '내 예약', url: '/mbr-reservation' },
       { menuName: '트레이너 피드백', url: '/trn-feedback' },
     ],
   },
