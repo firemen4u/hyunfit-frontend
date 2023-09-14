@@ -16,7 +16,7 @@ import EditPencilSvg from './EditPencilSvg.vue'
 import CloudArrowUpSvg from './CloudArrowUpSvg.vue'
 import CircleCheckSvg from './CircleCheckSvg.vue'
 import TimerSvg from './TimerSvg.vue'
-import CalorieSvg from './CalorieSvg.vue
+import CalorieSvg from './CalorieSvg.vue'
 
 export {
   HeartSvg,
