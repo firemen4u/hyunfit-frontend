@@ -30,14 +30,14 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onUnmounted } from 'vue'
 
 const emit = defineEmits(['skip'])
 const props = defineProps({
   timerLimit: Number,
-  trainingProgressStatus: Number,
 })
 
+let interval = ref(null)
 console.log('durations', props.timerLimit)
 
 function skipClick() {
@@ -46,7 +46,7 @@ function skipClick() {
 }
 const timeLeft = ref(0)
 function startCountdown() {
-  let interval = setInterval(() => {
+  interval.value = setInterval(() => {
     console.log('남은시간', timeLeft.value)
     timeLeft.value--
     if (timeLeft.value === 0) {
@@ -63,6 +63,13 @@ onMounted(() => {
   console.log('watch', timeLeft.value)
   if (timeLeft.value < 0) return
   startCountdown()
+})
+
+// 재랜더링할 때,
+onUnmounted(() => {
+  if (interval.value) {
+    clearInterval(interval.value)
+  }
 })
 </script>
 <style scoped>

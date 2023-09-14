@@ -22,7 +22,6 @@
       :trainingInfo="data.infoContent.value"
     ></AITrainingInfo>
     <AITrainingBottomBar
-      :trainingProgressStatus="data.trainingProgressStatus.value"
       :timerLimit="data.timerLimit.value"
       @skip="handleSkip"
       :key="rerenderKey"
@@ -41,38 +40,19 @@ import {
   AITrainingInfo,
 } from '/src/module/ai-training/component'
 
-// axios.get('서버의 AIP 엔드포인트 URL')
-//   .then(response => {
+// 1. 전역 변수
+let loading = ref(true)
+let newStatus = ref(1)
+let srcList = [ref('')]
 
-//   })
-
+const rerenderKey = ref(0)
 const INTRO = 1
 const WARMUP = 2
 const GUIDE = 3
 const EXCERCISE = 4
 const EXIT = 5
 
-const data = {
-  trainingProgressStatus: ref(0),
-  myVideoWidth: ref(''), // FULL, HALF, NONE
-  teachingVideoWidth: ref(''), // FULL, HALF, NONE
-  infoContainerVisible: ref(''), // ON, OFF
-  countContainerVisible: ref(''), // ON, OFF
-  timerVisible: ref(''), // ON, OFF
-  infoContent: ref(''),
-  timerLimit: ref(-1),
-  routine: [],
-}
-const rerenderKey = ref(0)
-onMounted(() => {
-  updateStatus(1)
-})
-
-function handleSkip() {
-  rerenderKey.value += 1
-  updateStatus()
-}
-
+// MAP 형태의 고정 상태 값
 const statusMap = new Map([
   [
     'INTRO',
@@ -107,7 +87,7 @@ const statusMap = new Map([
     {
       trainingProgressStatus: 3,
       myVideoWidth: 'NONE',
-      teachingVideoWidth: 'HALF',
+      teachingVideoWidth: 'FULL',
       infoContainerVisible: 'OFF',
       countContainerVisible: 'ON',
       timerVisible: 'ON',
@@ -117,10 +97,10 @@ const statusMap = new Map([
     },
   ],
   [
-    'EXERCISE',
+    'EXCERCISE',
     {
       trainingProgressStatus: 4,
-      myVideoWidth: 'NONE',
+      myVideoWidth: 'HALF',
       teachingVideoWidth: 'HALF',
       infoContainerVisible: 'OFF',
       countContainerVisible: 'ON',
@@ -145,16 +125,61 @@ const statusMap = new Map([
     },
   ],
 ])
+// 화면을 조절하는 데이터
+const data = {
+  trainingProgressStatus: ref(0),
+  myVideoWidth: ref('FULL'), // FULL, HALF, NONE
+  teachingVideoWidth: ref('NONE'), // FULL, HALF, NONE
+  infoContainerVisible: ref(''), // ON, OFF
+  countContainerVisible: ref(''), // ON, OFF
+  timerVisible: ref(''), // ON, OFF
+  infoContent: ref(''),
+  timerLimit: ref(-1),
+  exercisesData: [ref()],
+  exerciseIndex: ref(0),
+  exerciesURL: ref('')
+}
+
+function init() {
+  try {
+    axios.get('http://localhost:8080/routines/1').then(response => {
+      console.log('API 통신 성공')
+      console.log('API 통신 값', response.data)
+      data.exercisesData.value = response.data
+      loading.value = false
+    })
+  } catch (error) {
+    console.error('데이터를 가져오는 중 에러 발생 : ', error)
+  }
+}
+
+function handleSkip() {
+  rerenderKey.value += 1
+  console.log('클릭했을 때', data.exercisesData.value)
+
+  for (const ex of data.exercisesData.value.exercises) {
+    console.log('검사 중', ex)
+  }
+  updateStatus()
+}
+
+onMounted(() => {
+  init()
+})
+
+function isLastExercise() {
+  let currentIndex = data.exerciseIndex.value++
+  console.log('isLastExercise ', currentIndex)
+  let size = data.exercisesData.value.exercises.length
+  console.log('isLastExercise', size)
+  if (currentIndex === size - 1) return true
+}
 
 function updateStatus() {
-  data.trainingProgressStatus.value += 1
-  let newStatus = data.trainingProgressStatus.value
-
-  data.value = statusMap.get(newStatus)
-  switch (newStatus) {
+  console.log('update() 함수 안에서', newStatus.value)
+  switch (newStatus.value) {
     case INTRO:
       var introData = statusMap.get('INTRO')
-      data.trainingProgressStatus.value = introData.trainingProgressStatus
       data.myVideoWidth.value = introData.myVideoWidth
       data.teachingVideoWidth.value = introData.teachingVideoWidth
       data.infoContainerVisible.value = introData.infoContainerVisible
@@ -163,10 +188,11 @@ function updateStatus() {
       data.infoContent.value = introData.infoContent
       data.timerLimit.value = introData.timerLimit
       data.routine = introData.routine
+      console.log('INTRO CASE 호출')
+      newStatus.value = WARMUP
       break
     case WARMUP:
       var warmUpData = statusMap.get('WARMUP')
-      data.trainingProgressStatus.value = warmUpData.trainingProgressStatus
       data.myVideoWidth.value = warmUpData.myVideoWidth
       data.teachingVideoWidth.value = warmUpData.teachingVideoWidth
       data.infoContainerVisible.value = warmUpData.infoContainerVisible
@@ -174,31 +200,58 @@ function updateStatus() {
       data.timerVisible.value = warmUpData.timerVisible
       data.infoContent.value = warmUpData.infoContent
       data.timerLimit.value = warmUpData.timerLimit
+      // 워밍업 영상은 그냥 고정박아두기
       data.routine = warmUpData.routine
+      console.log('WARMUP CASE 호출')
+      newStatus.value = GUIDE
       break
-    // 잠깐 안내 창만 키우고 -> 있다가 함
     case GUIDE:
-      data.info.value = 1
+      // 가이드부터 운동 데이터 넣기
+      var guideData = statusMap.get('GUIDE')
+      console.log('GUIDE', guideData)
       data.infoContent.value = '운동 이름'
-      data.myVideoWidth.value = 3
-      data.teachingVideoWidth.value = 1
-      data.countContainerVisible.value = 1
-      data.timerVisible.value = 1
-      data.timerLimit.value = 10 //임시
+      data.myVideoWidth.value = guideData.myVideoWidth
+      data.teachingVideoWidth.value = guideData.teachingVideoWidth
+      data.countContainerVisible.value = guideData.countContainerVisible
+      data.timerVisible.value = guideData.timerVisible
+      data.infoContent.value = guideData.infoContent
+      data.timerLimit.value = guideData.timerLimit
+      data.routine =
+        data.exercisesData.value.exercises[data.exerciseIndex.value].excUrl
+      console.log(
+        'GUIDE CASE URL',
+        data.exercisesData.value.exercises[data.exerciseIndex.value].excUrl
+      )
+      newStatus.value = EXCERCISE
+      console.log('GUIDE CASE 호출')
       break
-    // reps 끝날때 10초 쉬는 시간 가지기 -> 영상 정지
     case EXCERCISE:
-      data.myVideoWidth.value = 2
-      data.teachingVideoWidth.value = 2
-      data.countContainerVisible.value = data.timerVisible.value = 1
-      data.timerLimit.value = 10 //임시
+      // 운동 데이터 넣기
+      var exerciseCaseData = statusMap.get('EXCERCISE')
+      data.myVideoWidth.value = exerciseCaseData.myVideoWidth
+      data.teachingVideoWidth.value = exerciseCaseData.teachingVideoWidth
+      data.countContainerVisible.value = exerciseCaseData.countContainerVisible
+      data.timerLimit.value = exerciseCaseData.timerLimit
+      data.timerVisible.value = exerciseCaseData.timerVisible
+      data.infoContent.value = exerciseCaseData.infoContent
+      data.routine =
+        data.exercisesData.value.exercises[data.exerciseIndex.value].excUrl
+      if (isLastExercise()) {
+        newStatus.value = EXIT
+      } else {
+        newStatus.value = GUIDE
+      }
+      console.log('EXCERCISE CASE 호출')
       break
     case EXIT:
-      data.myVideoWidth.value = 3
-      data.teachingVideoWidth.value = 3
-      data.countContainerVisible.value = 3
-      data.timerVisible.value = 0
-      data.timerLimit.value = 2 //임시
+      var exitData = statusMap.get('EXIT')
+      data.myVideoWidth.value = exitData.myVideoWidth
+      data.teachingVideoWidth.value = exitData.teachingVideoWidth
+      data.countContainerVisible.value = exitData.countContainerVisible
+      data.timerVisible.value = exitData.timerVisible
+      data.timerLimit.value = -1
+      // 새로운 버튼 만들어야 함 -> 그냥 새로운 컴포넌트로 보내기로 함(전체 페이지가 있는)
+      console.log('EXIT CASE 호출')
       break
   }
 }
