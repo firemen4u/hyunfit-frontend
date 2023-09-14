@@ -9,6 +9,7 @@ import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
 import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
 import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
+import TrnFeedBackPage from '/src/module/trn-feedback/views/TrnFeedBackPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/report',
       name: 'report',
       component: ReportPage,
+    },
+    {
+      path: '/trn-feedback',
+      name: 'trn-feedback',
+      component: TrnFeedBackPage,
     },
   ],
 })
