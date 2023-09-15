@@ -1,23 +1,87 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import MainPage from '/src/module/main/views/MainPage.vue'
+import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
+import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
+import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
+import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
+import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
+import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
+import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
+import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
+import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
+import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
+import ReportPage from '@/module/report/views/ReportPage.vue'
+import TrnFeedBackPage from '/src/module/trn-feedback/views/TrnFeedBackPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'main',
+      component: MainPage,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-  ]
+      path: '/survey',
+      name: 'survey',
+      component: SurveyPage,
+    },
+    {
+      path: '/trn-search',
+      name: 'trn-search',
+      component: TrnSearchPage,
+    },
+    {
+      path: '/mbr-reservation',
+      name: 'mbr-reservation',
+      component: MbrRsvPage,
+    },
+    {
+      path: '/ai-training',
+      name: 'ai-training',
+      component: AITrainingPage,
+    },
+    {
+      path: '/trn-detail',
+      name: 'trn-detail',
+      component: TrnDetailPage,
+    },
+    {
+      path: '/PtRoom',
+      name: 'PtRoom',
+      component: PtRoomPage,
+    },
+    {
+      path: '/rsvsample',
+      name: 'RsvSample',
+      component: RsvSample,
+    },
+    {
+      path: '/mbr-myPage',
+      name: 'mbr-myPage',
+      component: MbrmyPage,
+    },
+    {
+      path: '/bo-rtnBoard',
+      name: 'bo-BoRtnBoardPage',
+      component: BoRtnBoardPage,
+    },
+    {
+      path: '/bo-excNew',
+      name: 'bo-BoExcNewPage',
+      component: BoExcNewPage,
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: ReportPage,
+    },
+    {
+      path: '/trn-feedback',
+      name: 'trn-feedback',
+      component: TrnFeedBackPage,
+    },
+  ],
 })
 
 export default router
