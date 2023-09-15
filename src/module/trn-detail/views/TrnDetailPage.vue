@@ -295,7 +295,7 @@ hr.solid {
 }
 .pt-aside {
   width: 30%;
-  //position: sticky;
+  position: sticky;
   top: 20px;
 }
 
