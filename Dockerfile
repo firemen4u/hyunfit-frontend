@@ -12,7 +12,7 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY ./private/fullchain.pem /etc/nginx/certs/fullchain.pem
 COPY ./private/privkey.pem /etc/nginx/certs/privkey.pem
 
-COPY ./private/nginx.conf /etc/nginx/nginx.conf
+COPY ./private/default /etc/nginx/sites-available/
 
 EXPOSE 80
 EXPOSE 443
