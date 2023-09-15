@@ -36,8 +36,13 @@
         <!--고객요청사항-->
         <div class="flex flex-col gap-2 ml-4 mb-4">
           <div class="font-semibold">고객요청사항</div>
-          <div class="needs-gray-box">
-            현재 다리가 조금 아파서 상체 위주의 운동을 하고 싶어요!
+          <div class="sticker-container">
+            <BaseCheckChip
+              class="mr-2 mb-2"
+              v-for="(option, index) in options"
+              :key="index"
+              :label="option"
+            />
           </div>
         </div>
         <div class="flex divider"></div>
@@ -52,12 +57,26 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import moment from 'moment'
+import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
+</script>
+<script>
 export default {
   props: {
     reservationData: Object,
     show: Boolean,
+  },
+  data() {
+    return {
+      options: [
+        '운동이 처음이에요',
+        '살을 빼고 싶어요',
+        '코어를 강화하고 싶어요',
+        '부상 이력이 있어요',
+        '식단 조언도 함께 받고 싶어요',
+      ],
+    }
   },
   methods: {
     closeModal() {
@@ -124,6 +143,9 @@ export default {
   padding: 10px;
   display: inline-block;
   border-radius: 5px;
+}
+.sticker-container {
+  width: 400px;
 }
 .ptEntryButton {
   width: 125px;

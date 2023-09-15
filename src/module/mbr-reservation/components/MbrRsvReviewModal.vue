@@ -12,8 +12,15 @@
           <div class="modal-content">
             <div class="modal-wrap">
               <div class="items-center align-middle">
-                <p class="text-2xl font-bold mb-6">수업이 맘에 들었다면</p>
-                <p class="text-lg text-gray-500">리뷰를 남겨주세요</p>
+                <p class="text-2xl font-bold mb-6">오늘 수업은 어떠셨나요??</p>
+                <div class="sticker-container">
+                  <BaseCheckChip
+                    class="mr-2 mb-2"
+                    v-for="(option, index) in options"
+                    :key="index"
+                    :label="option"
+                  />
+                </div>
                 <div class="mt-5 mb-3">
                   <div>
                     <div class="d-flex flex-column align-center justify-center">
@@ -63,11 +70,25 @@ export default {
 }
 </script> -->
 
-<script>
+<script setup>
 import { ref } from 'vue'
+import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
+</script>
 
+<script>
 export default {
   props: ['modalActive', 'cardData'], // cardData 프로퍼티 추가
+  data() {
+    return {
+      options: [
+        '운동이 처음이에요',
+        '살을 빼고 싶어요',
+        '코어를 강화하고 싶어요',
+        '부상 이력이 있어요',
+        '식단 조언도 함께 받고 싶어요',
+      ],
+    }
+  },
   setup(props, { emit }) {
     const close = () => {
       // 모달이 닫힐 때 reviewText 초기화
