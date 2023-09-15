@@ -2,7 +2,7 @@
   <!--최상위 div-->
   <div class="rsv-list-container">
     <div class="rsv-list-header flex items-center bg-gray-100 text-black h-9">
-      <div class="ml-4">오늘 예약 현황 ({{ rsvCnt }}건)</div>
+      <div class="ml-4">오늘 예약 현황 ({{ rsvCnt() }}건)</div>
     </div>
     <div class="rsv-list-inner">
       <div class="flex flex-col bg-white mt-6 mb-6">
@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import ReservaionDetailModal from '/src/module/boptrsv/component/ReservationDetailModal.vue'
+import ReservaionDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
 import axios from 'axios'
 import moment from 'moment'
 </script>
@@ -58,7 +58,9 @@ export default {
   created() {
     console.log('create')
     axios
-      .get('http://localhost:8080/trainers/1/personal-training')
+      .get(
+        'http://localhost:8080/trainers/' + this.trnSeq + '/personal-training'
+      )
       .then(response => {
         console.log('reseponse')
         this.reservations = response.data
@@ -99,6 +101,9 @@ export default {
         }
       }
     },
+    rsvCnt() {
+      return this.reservations.length
+    },
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD')
     },
@@ -118,12 +123,8 @@ export default {
       showDetail: false,
       selectedReservation: null,
       reservations: [],
+      trnSeq: 1,
     }
-  },
-  computed: {
-    rsvCnt() {
-      return this.reservations.length
-    },
   },
 }
 </script>
