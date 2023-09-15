@@ -6,7 +6,8 @@ import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
 import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
 import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
-import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
+import ReservationManagingPage from '/src/module/bo/trn/views/ReservationManagingPage.vue'
+import FeedbackManagingPage from '/src/module/bo/trn/views/FeedbackManagingPage.vue'
 import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
 import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
 import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
@@ -47,14 +48,19 @@ const router = createRouter({
       component: TrnDetailPage,
     },
     {
-      path: '/PtRoom',
-      name: 'PtRoom',
+      path: '/ptroom',
+      name: 'ptroom',
       component: PtRoomPage,
     },
     {
-      path: '/rsvsample',
-      name: 'RsvSample',
-      component: RsvSample,
+      path: '/pt-rsv-manage',
+      name: 'pt-rsv-manage',
+      component: ReservationManagingPage,
+    },
+    {
+      path: '/pt-fb-manage',
+      name: 'pt-fb-manage',
+      component: FeedbackManagingPage,
     },
     {
       path: '/mbr-myPage',
