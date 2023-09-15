@@ -9,8 +9,8 @@ RUN npm run build
 # production stage
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-COPY /app/private/fullchain.crt /etc/nginx/certs/fullchain.pem
-COPY /app/private/privkey.key /etc/nginx/certs/privkey.pem
+COPY /app/private/fullchain.pem /etc/nginx/certs/fullchain.pem
+COPY /app/private/privkey.pem /etc/nginx/certs/privkey.pem
 
 COPY /app/nginx.conf /etc/nginx/nginx.conf
 
