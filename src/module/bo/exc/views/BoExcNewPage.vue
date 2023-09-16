@@ -228,7 +228,7 @@ import { BoFileInput, BoRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { token } from './config.js'
+import { FILE_SERVER_TOKEN } from '/src/config.js'
 
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
@@ -331,7 +331,7 @@ const submit = async () => {
     // header 코드
     const config = {
       headers: {
-        token: token,
+        token: FILE_SERVER_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
     }
