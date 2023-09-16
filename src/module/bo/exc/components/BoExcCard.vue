@@ -32,12 +32,12 @@ const props = defineProps({
 /* 스타일링 코드 */
 </style> -->
 <template>
-  <div class="w-1/5 flex flex-col bg-white">
+  <div class="w-full flex flex-col bg-white">
     <div>
       <img class="exc-img" src="/src/assets/images/exercise-thumbnail.png" />
     </div>
-    <div>운동 이름 : {{ exercise.excName }}</div>
-    <div>운동 설명 : {{ exercise.excContent }}</div>
+    <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
+    <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
     <div>{{ exercise.excSetCount }}</div>
   </div>
 </template>
@@ -52,5 +52,8 @@ const props = defineProps({
 /* 스타일을 원하는 대로 수정하세요. */
 .exc-img {
   max-width: 100%;
+}
+.exc-content {
+  text-overflow: ellipsis;
 }
 </style>

@@ -12,9 +12,9 @@
           <div>검색창</div>
         </div>
         <div class="border-4 border-black border-dashed">
-          <BoExcBoardFilterContainer class="flex justify-between w-72" />
-          <div class="flex flex-col border-dashed border-4 border-yellow-400">
-            <div v-if="exercises.length > 0">
+          <BoExcBoardFilterContainer class="flex justify-between" />
+          <div class="w-full border-dashed border-4 border-yellow-400">
+            <div v-if="exercises.length > 0" class="flex flex-wrap">
               <div v-for="exercise in exercises" :key="exercise.excSeq">
                 <BoExcCard :exercise="exercise" />
               </div>
