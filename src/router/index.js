@@ -11,6 +11,7 @@ import ReservationManagingPage from '/src/module/bo/trn/views/ReservationManagin
 import FeedbackManagingPage from '/src/module/bo/trn/views/FeedbackManagingPage.vue'
 import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
 import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
+import BoExcBoardPage from '/src/module/bo/exc/views/BoExcBoardPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
 import TrnFeedBackPage from '/src/module/trn-feedback/views/TrnFeedBackPage.vue'
 
@@ -86,6 +87,11 @@ const router = createRouter({
       path: '/trn-feedback',
       name: 'trn-feedback',
       component: TrnFeedBackPage,
+    },
+    {
+      path: '/bo-excBoard',
+      name: 'bo-BoExcBoardPage',
+      component: BoExcBoardPage,
     },
   ],
 })
