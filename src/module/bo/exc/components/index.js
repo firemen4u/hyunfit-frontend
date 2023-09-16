@@ -1,4 +1,5 @@
 import BoExcCard from './BoExcCard.vue'
 import BoFileInput from './BoFileInput.vue'
 import BoRadioButton from './BoRadioButton.vue'
-export { BoExcCard, BoFileInput, BoRadioButton }
+import BoExcBoardFilterContainer from './BoExcBoardFilterContainer.vue'
+export { BoExcCard, BoFileInput, BoRadioButton, BoExcBoardFilterContainer }
