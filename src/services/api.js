@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { API_BASE_URL } from '/src/config'
+import { BACKEND_API_BASE_URL } from '/src/config'
 
 let axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: BACKEND_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
