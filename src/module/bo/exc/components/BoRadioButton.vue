@@ -5,6 +5,7 @@
       :key="index"
       :label="option.label"
       :value="option.value"
+      class="custom-radio"
     ></v-radio>
   </v-radio-group>
 </template>
@@ -18,3 +19,7 @@ const props = defineProps({
 
 const selectedValue = ref(null)
 </script>
+<style scoped>
+.custom-radio {
+}
+</style>

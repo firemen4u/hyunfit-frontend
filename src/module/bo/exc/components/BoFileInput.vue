@@ -4,9 +4,10 @@
     color="#d23361"
     counter
     :label="label"
-    :prepend-icon="prependIcon"
+    prepend-icon="none"
     variant="solo"
     show-size="1000"
+    hide-details
   >
     <template v-slot:selection="{ fileNames }">
       <template v-for="(fileName, index) in fileNames" :key="fileName">
@@ -36,10 +37,8 @@ import { ref, defineProps } from 'vue'
 import { FullStarSvg } from '/src/module/@base/svg'
 const props = defineProps({
   label: String,
-  prependIcon: String,
 })
 
 const files = ref([])
 </script>
-<style scoped>
-</style>
+<style scoped></style>
