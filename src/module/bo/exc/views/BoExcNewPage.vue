@@ -6,17 +6,13 @@
       :subcategories="subcategories"
     />
     <BaseBodyWrapper>
-      <div class="제일큰 pt-10 border-dashed border-4 border-blue-400">
-        <div
-          class="루틴목록이랑검색창있는div flex justify-between border-dashed border-4 border-yellow-400"
-        >
+      <div class="제일큰 pt-10">
+        <div class="루틴목록이랑검색창있는div flex justify-between">
           <div class="text-2xl font-bold">운동 등록</div>
         </div>
         <form @submit.prevent="submit">
           <div>
-            <div
-              class="exc-content-wrap border-4 border-green-400 border-dashed"
-            >
+            <div class="exc-content-wrap">
               <div class="flex items-center">
                 <p class="col-1">운동 이름</p>
                 <v-text-field
@@ -40,10 +36,14 @@
                   single-line
                 ></v-textarea>
               </div>
-              <div class="flex">
+              <div class="flex justify-between">
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 종류</p>
-                  <BoRadioButton :options="radioOptions1" v-model="exc_type" />
+                  <BoRadioButton
+                    :options="radioOptions1"
+                    v-model="exc_type"
+                    hide-details
+                  />
                 </div>
 
                 <div class="flex items-center mt-4">
@@ -51,10 +51,11 @@
                   <BoRadioButton
                     :options="radioOptions2"
                     v-model="exc_difficulty"
+                    hide-details
                   />
                 </div>
               </div>
-              <div class="flex">
+              <div class="flex justify-between">
                 <div class="flex items-center mt-4">
                   <p class="col-1">1회당 칼로리 소모량</p>
                   <v-text-field
@@ -81,7 +82,7 @@
                   ></v-text-field>
                 </div>
               </div>
-              <div class="flex">
+              <div class="flex justify-between">
                 <div class="flex items-center mt-4">
                   <p class="col-1">세트당 동작 횟수</p>
                   <v-text-field
@@ -108,24 +109,21 @@
                 </div>
               </div>
             </div>
-            <div
-              class="exc-target-wrap border-4 border-dashed border-fuchsia-500"
-            >
+            <div class="exc-target-wrap">
               <div class="">
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 부위</p>
-                  <v-container>
-                    <v-select
-                      v-model="selectedBodyParts"
-                      :items="target_items"
-                      chips
-                      clearable
-                      hide-details
-                      label="부위"
-                      multiple
-                      bg-color="white"
-                    ></v-select>
-                  </v-container>
+                  <v-select
+                    v-model="selectedBodyParts"
+                    :items="target_items"
+                    chips
+                    clearable
+                    hide-details
+                    label="부위"
+                    multiple
+                    bg-color="white"
+                    class=""
+                  ></v-select>
                 </div>
               </div>
               <div class="">
@@ -172,35 +170,38 @@
                 </div>
               </div>
             </div>
-            <div class="flex flex-col border-4 border-dashed border-purple-600">
-              파일 업로드 구간
-              <div class="flex items-center mb-2">
+            <div class="flex flex-col">
+              <hr />
+              <p class="mt-8 mb-8 font-bold text-lg">운동 데이터 업로드</p>
+              <div class="flex items-center mb-4">
                 <CloudArrowUpSvg size="30" color="gray" />
                 <BoFileInput
                   v-model="files_exc_model"
                   label="모델 데이터"
-                  prependIcon="none"
                 ></BoFileInput>
-
+              </div>
+              <div class="flex items-center mb-4">
                 <PictureSvg size="30" color="gray" />
                 <BoFileInput
+                  class="mr-4"
                   v-model="files_exc_preview"
                   label="운동 프리뷰 영상"
                 ></BoFileInput>
-              </div>
-              <div>
+
+                <PictureSvg size="30" color="gray" />
                 <BoFileInput
                   v-model="files_exc_view"
                   label="운동 영상"
                 ></BoFileInput>
               </div>
-              <div>
+              <div class="flex items-center mb-4">
+                <PictureSvg size="30" color="gray" />
                 <BoFileInput
+                  class="mr-4"
                   v-model="files_exc_view_row_qual"
                   label="썸네일 운동 영상"
                 ></BoFileInput>
-              </div>
-              <div>
+                <PictureSvg size="30" color="gray" />
                 <BoFileInput
                   v-model="files_exc_mp3"
                   label="음성파일"
@@ -208,7 +209,9 @@
               </div>
             </div>
           </div>
-          <v-btn type="submit">등록하기</v-btn>
+          <div class="text-center mt-10 mb-10">
+            <v-btn type="submit" class="bg-primary w-48 h-36">등록하기</v-btn>
+          </div>
         </form>
       </div>
     </BaseBodyWrapper>
@@ -386,8 +389,15 @@ const submit = async () => {
 <style scope>
 .col-1 {
   width: 200px;
+  margin-left: 10px;
 }
 .v-input__prepend {
   width: 1px;
+}
+.v-text-field {
+  width: 300px;
+}
+.v-radio-group .v-input__control {
+  width: 300px;
 }
 </style>
