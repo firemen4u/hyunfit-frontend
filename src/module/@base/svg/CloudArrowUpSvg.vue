@@ -3,8 +3,8 @@
   <svg
     :height="size"
     :width="size"
-    viewBox="0 0 24 24"
-    fill="none"
+    viewBox="0 0 1920 1920"
+    fill="#000000"
     xmlns="http://www.w3.org/2000/svg"
   >
     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

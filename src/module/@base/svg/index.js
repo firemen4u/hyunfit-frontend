@@ -17,6 +17,7 @@ import CloudArrowUpSvg from './CloudArrowUpSvg.vue'
 import CircleCheckSvg from './CircleCheckSvg.vue'
 import TimerSvg from './TimerSvg.vue'
 import CalorieSvg from './CalorieSvg.vue'
+import PictureSvg from './PictureSvg.vue'
 
 export {
   HeartSvg,
@@ -38,4 +39,5 @@ export {
   CircleCheckSvg,
   CalorieSvg,
   TimerSvg,
+  PictureSvg,
 }
