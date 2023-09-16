@@ -32,7 +32,7 @@ const props = defineProps({
 /* 스타일링 코드 */
 </style> -->
 <template>
-  <div class="w-full flex flex-col bg-white">
+  <div class="exc-card flex flex-col bg-white">
     <div>
       <img class="exc-img" src="/src/assets/images/exercise-thumbnail.png" />
     </div>
@@ -50,10 +50,15 @@ const props = defineProps({
 
 <style scoped>
 /* 스타일을 원하는 대로 수정하세요. */
+.exc-card {
+  width: 180px;
+}
 .exc-img {
   max-width: 100%;
 }
 .exc-content {
   text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
