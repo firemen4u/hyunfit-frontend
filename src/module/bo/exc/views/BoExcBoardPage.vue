@@ -8,28 +8,29 @@
     <BaseBodyWrapper>
       <div class="제일큰 pt-10">
         <div class="운동목록이랑검색창있는div flex justify-between">
-          <div>운동 목록</div>
-          <div>
-            <input
-              type="text"
-              v-model="searchText"
-              placeholder="운동 검색"
-              class="border-2 border-solid border-gray-400"
-            />
-          </div>
+          <div class="text-3xl font-bold">운동 목록</div>
         </div>
 
-        <div class="border-4 border-black border-dashed">
-          <BoExcBoardFilterContainer
-            class="flex justify-between"
-            @updateExcType="updateExcType"
-          />
-
-          <!-- 생략 -->
-          <hr />
-          <!-- 생략 -->
-          <div class="w-full border-dashed border-4 border-yellow-400">
-            <div v-if="paginatedExercises.length > 0" class="flex flex-wrap">
+        <div class="content-wrap p-2 mt-5 mb-20 shadow-md border-2 border-gray-100 rounded-lg">
+          <div class="flex justify-between items-center">
+            <BoExcBoardFilterContainer
+              class="flex"
+              @updateExcType="updateExcType"
+            />
+            <div>
+              <input
+                type="text"
+                v-model="searchText"
+                placeholder=" 🔎 운동 검색"
+                class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
+              />
+            </div>
+          </div>
+          <div class="exc-wrap w-full">
+            <div
+              v-if="paginatedExercises.length > 0"
+              class="flex flex-wrap ml-4"
+            >
               <div
                 v-for="exercise in paginatedExercises"
                 :key="exercise.excSeq"
@@ -39,7 +40,7 @@
             </div>
             <div v-else>해당하는 운동이 없습니다.</div>
           </div>
-          <!-- 생략 -->
+
           <BasePagination v-model="currentPage" :total-pages="totalPages" />
         </div>
       </div>
@@ -77,7 +78,7 @@ const updateExcType = value => {
   console.log('After reset:', currentPage.value) // 로그 추가
 }
 
-const itemsPerPage = ref(7) // 한 페이지당 표시될 아이템 수
+const itemsPerPage = ref(10) // 한 페이지당 표시될 아이템 수
 const currentPage = ref(1) // 현재 페이지
 
 const totalPages = computed(() => {
@@ -141,4 +142,8 @@ watch(currentPage, (newVal, oldVal) => {
   console.log('BoExcBoardPage currentPage changed:', newVal, oldVal) // 로그 추가
 })
 </script>
-<style lang=""></style>
+<style scoped>
+.exc-wrap {
+  height: 500px;
+}
+</style>

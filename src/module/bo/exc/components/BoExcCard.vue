@@ -1,7 +1,9 @@
 <template>
-  <div class="exc-card flex flex-col bg-white">
+  <div
+    class="exc-card flex flex-col shadow-md rounded-lg hover:translate-y-[-10px] hover:bg-gray-100"
+  >
     <div>
-      <img class="exc-img" src="/src/assets/images/exercise-thumbnail.png" />
+      <img class="exc-img" src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdAJq71%2FbtsteQJsEa7%2FntSCTKbwomKjVIpQusuLwk%2Fimg.jpg" />
     </div>
     <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
     <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
@@ -18,7 +20,9 @@ const props = defineProps({
 <style scoped>
 /* 스타일을 원하는 대로 수정하세요. */
 .exc-card {
-  width: 180px;
+  width: 200px;
+  padding: 20px;
+  margin: 5px;
 }
 .exc-img {
   max-width: 100%;

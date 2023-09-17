@@ -1,10 +1,11 @@
 <!-- BoExcBoardFilterContainer.vue -->
 <template>
-  <div>
+  <div class="h-20">
     <button
       v-for="(item, index) in items"
       :key="index"
       @click="handleButtonClick(item.value)"
+      class="w-24 mr-10 hover:text-lg focus-within:font-bold focus:text-lg"
     >
       {{ item.label }}
     </button>
