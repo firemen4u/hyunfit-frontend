@@ -72,9 +72,12 @@ const selectedExcType = ref(null) // 선택한 excType을 저장할 변수
 // 검색 텍스트와 필터링된 운동 목록
 const updateExcType = value => {
   selectedExcType.value = value // 선택한 excType 업데이트
+  console.log('Before reset:', currentPage.value) // 로그 추가
+  currentPage.value = 1 // 페이지를 1로 초기화
+  console.log('After reset:', currentPage.value) // 로그 추가
 }
 
-const itemsPerPage = ref(5) // 한 페이지당 표시될 아이템 수
+const itemsPerPage = ref(7) // 한 페이지당 표시될 아이템 수
 const currentPage = ref(1) // 현재 페이지
 
 const totalPages = computed(() => {
@@ -124,6 +127,18 @@ const fetchExercises = async () => {
 // 컴포넌트가 마운트된 후 API로부터 데이터를 가져옵니다.
 onMounted(() => {
   fetchExercises()
+})
+
+watch(searchText, () => {
+  currentPage.value = 1 // 검색어가 바뀔 때 페이지를 1로 초기화
+  console.log(
+    '검색어 바뀌어서 1로초기화 currentPage.value :',
+    currentPage.value
+  )
+})
+
+watch(currentPage, (newVal, oldVal) => {
+  console.log('BoExcBoardPage currentPage changed:', newVal, oldVal) // 로그 추가
 })
 </script>
 <style lang=""></style>

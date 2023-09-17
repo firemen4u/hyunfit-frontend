@@ -25,6 +25,7 @@ const items = [
 ]
 
 const handleButtonClick = value => {
+  console.log('Button clicked:', value) // 로그 추가
   emit('updateExcType', value) // excType 값 변경을 알림
 }
 </script>
