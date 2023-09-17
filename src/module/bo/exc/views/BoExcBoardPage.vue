@@ -29,16 +29,18 @@
           <hr />
           <!-- 생략 -->
           <div class="w-full border-dashed border-4 border-yellow-400">
-            <div v-if="filteredExercises.length > 0" class="flex flex-wrap">
-              <div v-for="exercise in filteredExercises" :key="exercise.excSeq">
+            <div v-if="paginatedExercises.length > 0" class="flex flex-wrap">
+              <div
+                v-for="exercise in paginatedExercises"
+                :key="exercise.excSeq"
+              >
                 <BoExcCard :exercise="exercise" />
               </div>
             </div>
             <div v-else>해당하는 운동이 없습니다.</div>
           </div>
           <!-- 생략 -->
-
-          <BasePagination />
+          <BasePagination v-model="currentPage" :total-pages="totalPages" />
         </div>
       </div>
     </BaseBodyWrapper>
@@ -52,7 +54,7 @@ import {
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { defineProps, ref, onMounted, computed } from 'vue'
+import { defineProps, ref, onMounted, computed, watch } from 'vue'
 
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
@@ -71,6 +73,19 @@ const selectedExcType = ref(null) // 선택한 excType을 저장할 변수
 const updateExcType = value => {
   selectedExcType.value = value // 선택한 excType 업데이트
 }
+
+const itemsPerPage = ref(5) // 한 페이지당 표시될 아이템 수
+const currentPage = ref(1) // 현재 페이지
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredExercises.value.length / itemsPerPage.value)
+})
+// 페이지에 따라 나눌 운동 목록
+const paginatedExercises = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredExercises.value.slice(start, end)
+})
 
 const filteredExercises = computed(() => {
   let result = exercises.value

@@ -17,6 +17,7 @@ import { defineEmits } from 'vue'
 const emit = defineEmits([])
 
 const items = [
+  { label: '전체 목록', value: null },
   { label: '상체', value: 1 },
   { label: '하체', value: 2 },
   { label: '전신', value: 3 },
