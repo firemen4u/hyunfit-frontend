@@ -11,7 +11,9 @@
           <div class="text-3xl font-bold">운동 목록</div>
         </div>
 
-        <div class="content-wrap p-2 mt-5 mb-20 shadow-md border-2 border-gray-100 rounded-lg">
+        <div
+          class="content-wrap p-2 mt-5 mb-20 shadow-md border-2 border-gray-100 rounded-lg"
+        >
           <div class="flex justify-between items-center">
             <BoExcBoardFilterContainer
               class="flex"
@@ -35,7 +37,7 @@
                 v-for="exercise in paginatedExercises"
                 :key="exercise.excSeq"
               >
-                <BoExcCard :exercise="exercise" />
+                <BoExcCard :exercise="exercise" @openModal="openModal" />
               </div>
             </div>
             <div v-else>해당하는 운동이 없습니다.</div>
@@ -44,6 +46,11 @@
           <BasePagination v-model="currentPage" :total-pages="totalPages" />
         </div>
       </div>
+      <BoExcCardModal
+        :show="showModal"
+        :exercise="selectedExercise"
+        @update:show="showModal = $event"
+      />
     </BaseBodyWrapper>
   </BaseContainer>
 </template>
@@ -51,6 +58,7 @@
 import {
   BoExcCard,
   BoExcBoardFilterContainer,
+  BoExcCardModal,
 } from '/src/module/bo/exc/components'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
@@ -141,6 +149,16 @@ watch(searchText, () => {
 watch(currentPage, (newVal, oldVal) => {
   console.log('BoExcBoardPage currentPage changed:', newVal, oldVal) // 로그 추가
 })
+
+//모달창
+const showModal = ref(false) // 모달 상태를 관리할 변수
+const selectedExercise = ref(null) // 선택된 운동을 저장할 변수
+
+// 모달을 띄우는 함수
+const openModal = exercise => {
+  selectedExercise.value = exercise
+  showModal.value = true
+}
 </script>
 <style scoped>
 .exc-wrap {
