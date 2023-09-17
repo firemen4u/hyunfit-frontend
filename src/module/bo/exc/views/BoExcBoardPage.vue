@@ -9,18 +9,34 @@
       <div class="제일큰 pt-10">
         <div class="운동목록이랑검색창있는div flex justify-between">
           <div>운동 목록</div>
-          <div>검색창</div>
+          <div>
+            <input
+              type="text"
+              v-model="searchText"
+              placeholder="운동 검색"
+              class="border-2 border-solid border-gray-400"
+            />
+          </div>
         </div>
+
         <div class="border-4 border-black border-dashed">
-          <BoExcBoardFilterContainer class="flex justify-between" />
+          <BoExcBoardFilterContainer
+            class="flex justify-between"
+            @updateExcType="updateExcType"
+          />
+
+          <!-- 생략 -->
+          <hr />
+          <!-- 생략 -->
           <div class="w-full border-dashed border-4 border-yellow-400">
-            <div v-if="exercises.length > 0" class="flex flex-wrap">
-              <div v-for="exercise in exercises" :key="exercise.excSeq">
+            <div v-if="filteredExercises.length > 0" class="flex flex-wrap">
+              <div v-for="exercise in filteredExercises" :key="exercise.excSeq">
                 <BoExcCard :exercise="exercise" />
               </div>
             </div>
-            <div v-else>데이터를 불러오는 중입니다...</div>
+            <div v-else>해당하는 운동이 없습니다.</div>
           </div>
+          <!-- 생략 -->
 
           <BasePagination />
         </div>
@@ -36,7 +52,7 @@ import {
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { defineProps, ref, onMounted } from 'vue'
+import { defineProps, ref, onMounted, computed } from 'vue'
 
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
@@ -47,8 +63,38 @@ const subcategories = [
   { id: 4, title: '루틴 등록', link: '/link4' },
 ]
 
-const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
+const searchText = ref('') // 검색 텍스트를 저장할 ref 변수
 
+const selectedExcType = ref(null) // 선택한 excType을 저장할 변수
+
+// 검색 텍스트와 필터링된 운동 목록
+const updateExcType = value => {
+  selectedExcType.value = value // 선택한 excType 업데이트
+}
+
+const filteredExercises = computed(() => {
+  let result = exercises.value
+
+  // excType에 따른 필터링
+  if (selectedExcType.value !== null) {
+    result = result.filter(
+      exercise => exercise.excType === selectedExcType.value
+    )
+  }
+
+  // 검색어에 따른 필터링
+  if (searchText.value) {
+    result = result.filter(exercise => {
+      return exercise.excName
+        .toLowerCase()
+        .includes(searchText.value.toLowerCase())
+    })
+  }
+
+  return result
+})
+
+const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 // API를 통해 운동 목록을 가져오는 함수
 const fetchExercises = async () => {
   try {

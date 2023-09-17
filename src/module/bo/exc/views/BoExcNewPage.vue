@@ -284,14 +284,18 @@ const files_exc_mp3 = ref([])
 // 라디오 그룹 데이터
 // 운동 종류
 const radioOptions1 = [
-  { label: '헬스', value: '1' },
-  { label: '요가', value: '2' },
+  { label: '상체', value: '1' },
+  { label: '하체', value: '2' },
+  { label: '전신', value: '3' },
+  { label: '유산소', value: '4' },
 ]
 // 운동 난이도
 const radioOptions2 = [
-  { label: '상', value: '3' },
-  { label: '중', value: '2' },
-  { label: '하', value: '1' },
+  { label: '초급', value: '1' },
+  { label: '초중급', value: '2' },
+  { label: '중급', value: '3' },
+  { label: '중상급', value: '4' },
+  { label: '상급', value: '5' },
 ]
 
 //submit 시키기
