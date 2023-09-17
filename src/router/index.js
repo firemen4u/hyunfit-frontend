@@ -43,7 +43,7 @@ const router = createRouter({
       component: AITrainingPage,
     },
     {
-      path: '/trn-detail',
+      path: '/trainers/:trnId',
       name: 'trn-detail',
       component: TrnDetailPage,
     },

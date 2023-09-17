@@ -18,6 +18,7 @@ import CircleCheckSvg from './CircleCheckSvg.vue'
 import TimerSvg from './TimerSvg.vue'
 import CalorieSvg from './CalorieSvg.vue'
 import PictureSvg from './PictureSvg.vue'
+import DumbbellSvg from './DumbbellSvg.vue'
 
 export {
   HeartSvg,
@@ -40,4 +41,5 @@ export {
   CalorieSvg,
   TimerSvg,
   PictureSvg,
+  DumbbellSvg,
 }
