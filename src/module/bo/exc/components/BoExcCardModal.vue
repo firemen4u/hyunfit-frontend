@@ -1,7 +1,7 @@
 <!-- ExcInfoModal.vue -->
 <template>
-  <div v-if="show" class="modal">
-    <div class="modal-content relative">
+  <div v-if="show" class="modal" @click="closeModal">
+    <div class="modal-content relative" @click.stop>
       <button @click="closeModal" class="absolute right-4 top-2">Close</button>
       <div>
         <img
