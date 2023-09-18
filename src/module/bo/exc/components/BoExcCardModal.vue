@@ -82,7 +82,6 @@
 </template>
 
 <script setup>
-
 const props = defineProps(['show', 'exercise'])
 const emit = defineEmits([])
 
