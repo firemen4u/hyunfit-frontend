@@ -9,8 +9,8 @@ let axiosInstance = axios.create({
 })
 
 // Function to handle GET requests
-function get(url) {
-  return axiosInstance
+async function get(url) {
+  return await axiosInstance
     .get(url)
     .then(response => {
       return response.data
@@ -21,8 +21,8 @@ function get(url) {
 }
 
 // Function to handle POST requests
-function post(url, data) {
-  return axiosInstance
+async function post(url, data) {
+  return await axiosInstance
     .post(url, data)
     .then(response => response.data)
     .catch(error => {

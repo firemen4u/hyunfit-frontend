@@ -44,7 +44,7 @@
 
 <script setup>
 import { BaseContainer, BaseBodyWrapper } from '/src/module/@base/views'
-import TrnFeedBackComponent from '../components/TrnFeedBackComponent.vue'
+import TrnFeedBackComponent from '../components/MbrPtFeedBackComponent.vue'
 import axios from 'axios'
 </script>
 

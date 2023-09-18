@@ -16,8 +16,6 @@
 </template>
 
 <script setup>
-import { defineEmits } from 'vue'
-
 const props = defineProps({
   exercise: Object, // 운동 정보를 props로 받습니다.
 })
