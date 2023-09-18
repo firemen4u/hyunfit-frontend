@@ -39,7 +39,7 @@
               <div class="flex justify-between">
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 종류</p>
-                  <BoRadioButton
+                  <BoExcRadioButton
                     :options="radioOptions1"
                     v-model="exc_type"
                     hide-details
@@ -48,7 +48,7 @@
 
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 난이도</p>
-                  <BoRadioButton
+                  <BoExcRadioButton
                     :options="radioOptions2"
                     v-model="exc_difficulty"
                     hide-details
@@ -175,37 +175,37 @@
               <p class="mt-8 mb-8 font-bold text-lg">운동 데이터 업로드</p>
               <div class="flex items-center mb-4">
                 <CloudArrowUpSvg size="30" color="gray" />
-                <BoFileInput
+                <BoExcFileInput
                   v-model="files_exc_model"
                   label="모델 데이터"
-                ></BoFileInput>
+                ></BoExcFileInput>
               </div>
               <div class="flex items-center mb-4">
                 <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <BoExcFileInput
                   class="mr-4"
                   v-model="files_exc_preview"
                   label="운동 프리뷰 영상"
-                ></BoFileInput>
+                ></BoExcFileInput>
 
                 <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <BoExcFileInput
                   v-model="files_exc_view"
                   label="운동 영상"
-                ></BoFileInput>
+                ></BoExcFileInput>
               </div>
               <div class="flex items-center mb-4">
                 <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <BoExcFileInput
                   class="mr-4"
                   v-model="files_exc_view_row_qual"
                   label="썸네일 운동 영상"
-                ></BoFileInput>
+                ></BoExcFileInput>
                 <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <BoExcFileInput
                   v-model="files_exc_mp3"
                   label="음성파일"
-                ></BoFileInput>
+                ></BoExcFileInput>
               </div>
             </div>
           </div>
@@ -224,7 +224,7 @@ import {
   BaseSideBar,
 } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
-import { BoFileInput, BoRadioButton } from '/src/module/bo/exc/components'
+import { BoExcFileInput, BoExCRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
