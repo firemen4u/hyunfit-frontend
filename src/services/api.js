@@ -10,12 +10,10 @@ let axiosInstance = axios.create({
 
 // Function to handle GET requests
 function get(url) {
-  console.log('url', url)
   return axiosInstance
     .get(url)
     .then(response => {
-      response.data
-      console.log(response)
+      return response.data
     })
     .catch(error => {
       throw error
@@ -54,7 +52,7 @@ function remove(url) {
 
 function setToken(token) {
   axiosInstance = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: BACKEND_API_BASE_URL,
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
