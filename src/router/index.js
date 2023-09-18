@@ -14,6 +14,7 @@ import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
 import BoExcBoardPage from '/src/module/bo/exc/views/BoExcBoardPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
 import TrnFeedBackPage from '/src/module/trn-feedback/views/TrnFeedBackPage.vue'
+import LoginPage from '/src/module/main/views/LoginPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/',
       name: 'main',
       component: MainPage,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
     },
     {
       path: '/survey',
