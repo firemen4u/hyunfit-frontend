@@ -21,8 +21,8 @@ function get(url) {
 }
 
 // Function to handle POST requests
-function post(url, data) {
-  return axiosInstance
+async function post(url, data) {
+  return await axiosInstance
     .post(url, data)
     .then(response => response.data)
     .catch(error => {
@@ -61,8 +61,8 @@ function setToken(token) {
 }
 
 const ApiClient = {
-  get: url => get(url),
-  post: (url, data) => post(url, data),
+  get: async url => await get(url),
+  post: async (url, data) => await post(url, data),
   put: (url, data) => put(url, data),
   delete: url => remove(url),
   setToken: token => setToken(token),

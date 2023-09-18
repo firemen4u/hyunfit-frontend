@@ -2,15 +2,19 @@
 // https://soomgo.com/profile/users/195673?prev=searchPro&hasFilter=false&serviceSelected=true&from=pro_list&serviceInfo=%7B%22id%22%3A88,%22name%22%3A%22%ED%8D%BC%EC%8A%A4%EB%84%90%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%8B%9D%28PT%29%22,%22slug%22%3A%22%ED%8D%BC%EC%8A%A4%EB%84%90%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%8B%9D%22%7D
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { BaseRating } from '/src/module/@base/components'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount, computed } from 'vue'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import TrnDetailTimeslotContainer from '@/module/trn-detail/components/TrnDetailTimeslotContainer.vue'
 import BaseChipGroup from '@/module/@base/components/BaseChipGroup.vue'
-import { getTrnDetail } from '@/module/trn-detail/services/trnDetailApi'
+import {
+  getTrnDetail,
+  postPersonalTraining,
+} from '@/module/trn-detail/services/trnDetailApi'
 import ReviewStickerGroup from '@/module/trn-detail/components/ReviewStickerGroup.vue'
 import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
 import QnASection from '@/module/trn-detail/components/QnASection.vue'
+import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
 
 let trnData = ref([])
 const route = useRoute()
@@ -29,8 +33,18 @@ let certificates = [
 ]
 let sectionFocus = ref(1)
 
-let dateSelected = ref(null)
-let timeSelected = ref('')
+const dateSelected = ref(null)
+const timeSelected = ref('')
+const datetimeSelected = computed(() => {
+  if (dateSelected.value && timeSelected.value) {
+    return TrnDetailDateUtils.toDateFromDateAndTimeStr(
+      dateSelected.value,
+      timeSelected.value
+    )
+  }
+  return null
+})
+
 let optionSelected = ref([])
 let reservationConfirmLoading = ref(false)
 function resetDateSelected() {
@@ -38,9 +52,17 @@ function resetDateSelected() {
   optionSelected.value = []
 }
 
-function confirmReservation() {
+async function confirmReservation() {
   reservationConfirmLoading.value = true
-  setTimeout(() => (reservationConfirmLoading.value = false), 3000)
+  const data = {
+    mbrSeq: 1,
+    trnSeq: 1,
+    ptReservationDate: datetimeSelected.value,
+    ptNoteStickers: options.join(','),
+  }
+  let result = await postPersonalTraining(data)
+  console.log(result)
+  reservationConfirmLoading.value = false
 }
 
 async function initPage() {
@@ -241,15 +263,18 @@ onMounted(() => {
         <div class="pt-aside h-36">
           <div class="text-lg font-black mb-2">트레이너 레슨 예약하기</div>
           <div class="trn-detail-date-picker-wrapper">
-            <v-locale-provider locale="ko">
+            <v-locale-provider locale="ko" disabled>
               <v-date-picker
+                disabled
                 v-model="dateSelected"
-                class="trn-detail-date-picker"
                 hide-actions
+                class="trn-detail-date-picker"
                 show-adjacent-months
                 max-width="100%"
                 :min="Date.now()"
                 color="#D23361"
+                title=""
+                header=""
                 @update:modelValue="resetDateSelected()"
               ></v-date-picker
             ></v-locale-provider>
@@ -259,6 +284,7 @@ onMounted(() => {
               <TrnDetailTimeslotContainer
                 :modelValue="timeSelected"
                 @update:modelValue="value => (timeSelected = value)"
+                :disabled="reservationConfirmLoading"
               />
             </div>
           </div>
@@ -270,19 +296,38 @@ onMounted(() => {
               더욱 개인화된 트레이닝을 받을 수 있어요!
             </div>
             <div class="chips-wrapper mt-5">
-              <BaseChipGroup v-model="optionSelected" :items="options" />
+              <BaseChipGroup
+                v-model="optionSelected"
+                :items="options"
+                :disabled="reservationConfirmLoading"
+              />
             </div>
           </div>
           <v-btn
             v-if="timeSelected"
             :loading="reservationConfirmLoading"
+            :disabled="reservationConfirmLoading"
             color="primary"
             height="50"
             class="w-full mt-10"
             @click="confirmReservation"
           >
-            <div class="py-4 text-bold">10월 22일 오후 2시 예약</div>
+            <div class="py-4 text-bold">
+              {{ TrnDetailDateUtils.formattedDatetime(datetimeSelected) }}
+            </div>
           </v-btn>
+          <v-dialog
+            v-model="reservationConfirmLoading"
+            :scrim="false"
+            persistent
+            width="auto"
+          >
+            <v-card color="primary">
+              <v-progress-linear indeterminate color="white" class="mb-0" />
+
+              예약중이에요. 잠시만 기다려주세요!
+            </v-card>
+          </v-dialog>
         </div>
       </div>
     </BaseBodyWrapper>
