@@ -6,7 +6,7 @@ import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
 import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
 import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
-import MbrMyPage from '/src/module/mbr-mypage/views/MbrMyPage.vue'
+import MbrMypage from '/src/module/mbr-mypage/views/MbrMypage.vue'
 import ReservationManagingPage from '/src/module/bo/trn/views/ReservationManagingPage.vue'
 import FeedbackManagingPage from '/src/module/bo/trn/views/FeedbackManagingPage.vue'
 import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
@@ -72,7 +72,7 @@ const router = createRouter({
     {
       path: '/mbr-myPage',
       name: 'mbr-myPage',
-      component: MbrMyPage,
+      component: MbrMypage,
     },
     {
       path: '/bo-rtnBoard',
