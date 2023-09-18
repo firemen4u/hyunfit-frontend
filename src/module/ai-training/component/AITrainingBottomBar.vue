@@ -24,13 +24,12 @@
           <div class="progress-bar"></div>
         </div>
       </Transition>
-      <span class="skip-text font-extrabold">Skip</span>
-      다음
+      <div class="skip-text font-extrabold">Skip 다음</div>
     </button>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, watch, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const emit = defineEmits(['skip'])
 const props = defineProps({
@@ -38,12 +37,11 @@ const props = defineProps({
 })
 
 let interval = ref(null)
-console.log('durations', props.timerLimit)
-
 function skipClick() {
-  console.log('skipClick 남은시간', props.timerLimit)
+  console.log('skipClick 제한 시간', props.timerLimit)
   emit('skip')
 }
+
 const timeLeft = ref(0)
 function startCountdown() {
   interval.value = setInterval(() => {
@@ -58,14 +56,11 @@ function startCountdown() {
 }
 
 onMounted(() => {
-  console.log('mounted')
   timeLeft.value = props.timerLimit
-  console.log('watch', timeLeft.value)
   if (timeLeft.value < 0) return
   startCountdown()
 })
 
-// 재랜더링할 때,
 onUnmounted(() => {
   if (interval.value) {
     clearInterval(interval.value)
@@ -116,7 +111,10 @@ onUnmounted(() => {
 
 .skip-button {
   position: relative;
-  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
   width: 200px;
   border-radius: 10px;
   background-color: rgba(41, 41, 41, 0.8);
@@ -130,30 +128,12 @@ onUnmounted(() => {
   color: white;
 }
 
-.progress-bar {
-  position: absolute;
-  width: 200px;
-  height: 100%;
-  z-index: 2;
-  background-color: rgb(0, 0, 0);
-  border-radius: 10px;
-}
 .progress-bar-wrapper {
   position: absolute;
   width: 0%;
   height: 100%;
   overflow: hidden;
   z-index: 10;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
-  animation-name: progress;
-}
-@keyframes progress {
-  0% {
-    width: 0%; /* 시작 상태에서 너비를 0%로 유지 */
-  }
-  100% {
-    width: 100%; /* 100%로 진행하여 전체 프로그레스 바 채우기 */
-  }
+  border-radius: 10%;
 }
 </style>
