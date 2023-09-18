@@ -17,12 +17,14 @@ let times = [
   { displayText: '오후 9:00', value: '21:00' },
 ]
 
-const props = defineProps({ modelValue: String })
+const props = defineProps({ modelValue: String, disabled: Boolean })
 const emit = defineEmits(['update:modelValue'])
 </script>
 
 <template>
-  <div class="grid grid-cols-3 gap-y-2 justify-between justify-items-center">
+  <div
+    class="trn-detail-timeslot-container grid grid-cols-3 gap-y-2 justify-between justify-items-center"
+  >
     <v-btn
       v-for="(t, idx) in times"
       :key="idx"
@@ -33,6 +35,7 @@ const emit = defineEmits(['update:modelValue'])
       :value="t.value"
       @click="$emit('update:modelValue', t.value)"
       :color="modelValue === t.value ? 'primary' : ''"
+      :disabled="disabled"
     >
       <div
         class="text-xs text-neutral-600 tracking-wide"
@@ -44,4 +47,8 @@ const emit = defineEmits(['update:modelValue'])
   </div>
 </template>
 
-<style scoped></style>
+<style>
+.trn-detail-timeslot-container .v-btn.v-btn--disabled {
+  color: white;
+}
+</style>
