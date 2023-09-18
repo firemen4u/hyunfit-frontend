@@ -82,7 +82,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
 
 const props = defineProps(['show', 'exercise'])
 const emit = defineEmits([])
@@ -190,7 +189,7 @@ const formatDate = dateString => {
 }
 
 .exc-img {
-  width: 100%px; /* 혹은 원하는 값, 예: max-width: 300px; */
+  width: 100%; /* 혹은 원하는 값, 예: max-width: 300px; */
   height: 200px;
   /*max-height: 50%;  혹은 원하는 값, 예: max-height: 300px; */
   object-fit: contain; /* 비율 유지 */
