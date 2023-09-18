@@ -32,7 +32,10 @@
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import BoExcCard from '../components/BoExcCard.vue'
+import {
+  BoExcCard,
+  BoExcBoardFilterContainer,
+} from '/src/module/bo/exc/components'
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
 const subcategories = [
