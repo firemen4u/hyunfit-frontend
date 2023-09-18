@@ -1,8 +1,8 @@
 <script setup>
 let times = [
-  { displayText: '오전 7:00', value: '7:00' },
-  { displayText: '오전 8:00', value: '8:00' },
-  { displayText: '오전 9:00', value: '9:00' },
+  { displayText: '오전 7:00', value: '07:00' },
+  { displayText: '오전 8:00', value: '08:00' },
+  { displayText: '오전 9:00', value: '09:00' },
   { displayText: '오전 10:00', value: '10:00' },
   { displayText: '오전 11:00', value: '11:00' },
   { displayText: '오후 12:00', value: '12:00' },
@@ -17,7 +17,11 @@ let times = [
   { displayText: '오후 9:00', value: '21:00' },
 ]
 
-const props = defineProps({ modelValue: String, disabled: Boolean })
+const props = defineProps({
+  modelValue: String,
+  disabled: Boolean,
+  reservedTimeslots: Array,
+})
 const emit = defineEmits(['update:modelValue'])
 </script>
 
@@ -35,10 +39,10 @@ const emit = defineEmits(['update:modelValue'])
       :value="t.value"
       @click="$emit('update:modelValue', t.value)"
       :color="modelValue === t.value ? 'primary' : ''"
-      :disabled="disabled"
+      :disabled="props.disabled || props.reservedTimeslots?.includes(t.value)"
     >
       <div
-        class="text-xs text-neutral-600 tracking-wide"
+        class="btn-content text-xs text-neutral-600 tracking-wide"
         :class="modelValue === t.value ? 'text-white font-black' : ''"
       >
         {{ t.displayText }}
@@ -50,5 +54,9 @@ const emit = defineEmits(['update:modelValue'])
 <style>
 .trn-detail-timeslot-container .v-btn.v-btn--disabled {
   color: white;
+  background-color: rgba(241, 241, 241, 0.65);
+}
+.trn-detail-timeslot-container .v-btn.v-btn--disabled .btn-content {
+  color: #b4b4b4;
 }
 </style>
