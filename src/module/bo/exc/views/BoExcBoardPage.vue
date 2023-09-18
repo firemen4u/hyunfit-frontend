@@ -63,7 +63,7 @@ import {
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { defineProps, ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
