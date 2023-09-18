@@ -8,10 +8,9 @@ let axiosInstance = axios.create({
   },
 })
 
-// Function to handle GET requests
-async function get(url) {
+async function get(url, config = {}) {
   return await axiosInstance
-    .get(url)
+    .get(url, config)
     .then(response => {
       return response.data
     })
@@ -61,8 +60,8 @@ function setToken(token) {
 }
 
 const ApiClient = {
-  get: url => get(url),
-  post: (url, data) => post(url, data),
+  get: async (url, config) => await get(url, config),
+  post: async (url, data) => await post(url, data),
   put: (url, data) => put(url, data),
   delete: url => remove(url),
   setToken: token => setToken(token),
