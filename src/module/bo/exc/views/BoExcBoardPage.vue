@@ -6,8 +6,8 @@
       :subcategories="subcategories"
     />
     <BaseBodyWrapper>
-      <div class="제일큰 pt-10">
-        <div class="운동목록이랑검색창있는div flex justify-between">
+      <div class="pt-10">
+        <div class="flex justify-between">
           <div class="text-3xl font-bold">운동 목록</div>
         </div>
 
