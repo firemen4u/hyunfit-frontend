@@ -233,10 +233,10 @@ import { FILE_SERVER_TOKEN } from '/src/config.js'
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
 const subcategories = [
-  { id: 1, title: '운동 관리', link: '/link1' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnboard' },
+  { id: 1, title: '운동 관리', link: '/bo-excBoard' },
+  { id: 2, title: '루틴 관리', link: '/bo-rtnBoard' },
   { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/link4' },
+  { id: 4, title: '루틴 등록', link: '/bo-rtnNew' },
 ]
 
 const target_items = ref([
@@ -327,11 +327,14 @@ const submit = async () => {
   }
   try {
     // exercise 등록하는 api 호출
-    const response = await axios.post('http://localhost:8080/exercises', values)
-    console.log(response.data)
+    const firstApiResponse = await axios.post(
+      'http://localhost:8080/exercises',
+      values
+    )
+    console.log(firstApiResponse.data)
 
     // exercise에 등록된 exc_seq 가져오기
-    const excSeq = response.data.excSeq
+    const excSeq = firstApiResponse.data.excSeq
     // header 코드
     const config = {
       headers: {
@@ -361,32 +364,43 @@ const submit = async () => {
         }
       }
       try {
-        const response = await axios.post(
+        const secondApiResponse = await axios.post(
           `http://ryulrudaga.com:48000/api/firemen/${type}`,
           formData,
           config
         )
-        console.log(`Uploaded ${type}: ${response.data}`)
+        console.log(`Uploaded ${type}: ${secondApiResponse.data}`)
+        // Promise를 반환, 성공 또는 실패를 상위 함수에게 전달
+        return Promise.resolve()
       } catch (error) {
         console.log(`Failed to upload ${type}`, error)
+        return Promise.reject(error)
       }
     }
 
-    // 각 파일을 업로드합니다.
-    await uploadFile(files_exc_model.value[0], 'model')
-    await uploadFile(files_exc_preview.value[0], 'file')
-    await uploadFile(files_exc_view.value[0], 'file')
-    await uploadFile(files_exc_view_row_qual.value[0], 'file')
-    await uploadFile(files_exc_mp3.value[0], 'file')
+    // 파일 업로드 작업을 모두 기다림
+    await Promise.all([
+      uploadFile(files_exc_model.value[0], 'model'),
+      uploadFile(files_exc_preview.value[0], 'file'),
+      uploadFile(files_exc_view.value[0], 'file'),
+      uploadFile(files_exc_view_row_qual.value[0], 'file'),
+      uploadFile(files_exc_mp3.value[0], 'file'),
+    ])
+
+    // // 각 파일을 업로드합니다.
+    // await uploadFile(files_exc_model.value[0], 'model')
+    // await uploadFile(files_exc_preview.value[0], 'file')
+    // await uploadFile(files_exc_view.value[0], 'file')
+    // await uploadFile(files_exc_view_row_qual.value[0], 'file')
+    // await uploadFile(files_exc_mp3.value[0], 'file')
 
     alert('등록 성공!')
+    window.location.reload() // 페이지 새로고침
   } catch (error) {
     console.error(error)
-    console.error(error.response.data)
+    console.error(error.firstApiResponse.data)
     alert('등록 실패!')
   }
-
-  alert(JSON.stringify(values, null, 2))
 }
 </script>
 
