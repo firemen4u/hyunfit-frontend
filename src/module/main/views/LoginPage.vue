@@ -104,16 +104,12 @@ export default {
       await axios
         .post('http://localhost:8080/auth/' + this.selectedRole, this.user)
         .then(response => {
-          console.log('data : ', response.data)
-          console.log('-----------------------', response)
-          console.log('headers : ', response.headers.get('authorization'))
           this.token = response.headers.get('authorization')
-          ApiClient.setToken(this.token)
+          ApiClient.setTokenOnLocalStorage(this.token)
           this.$router.push('/')
         })
         .catch(error => {
           alert('loginfail')
-          console.error('API 요청 실패:', error)
         })
 
       await ApiClient.get('http://localhost:8080/' + this.selectedRole + 's/me')

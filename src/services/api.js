@@ -8,10 +8,20 @@ let axiosInstance = axios.create({
   },
 })
 
+function appendAuthorization(config) {
+  let authorization = localStorage.getItem('Authorization')
+  if (config.headers === undefined) {
+    config['headers'] = {}
+  }
+  config.headers['Authorization'] = authorization
+}
+
 async function get(url, config = {}) {
+  appendAuthorization(config)
   return await axiosInstance
     .get(url, config)
     .then(response => {
+      console.log(response)
       return response.data
     })
     .catch(error => {
@@ -20,9 +30,10 @@ async function get(url, config = {}) {
 }
 
 // Function to handle POST requests
-async function post(url, data) {
+async function post(url, data, config) {
+  appendAuthorization(config)
   return await axiosInstance
-    .post(url, data)
+    .post(url, data, config)
     .then(response => response.data)
     .catch(error => {
       throw error
@@ -30,37 +41,35 @@ async function post(url, data) {
 }
 
 // Function to handle PUT requests
-function put(url, data) {
+function put(url, data, config) {
+  appendAuthorization(config)
   return axiosInstance
     .put(url, data)
-    .then(response => response.data)
+    .then(response => {
+      response.data
+    })
     .catch(error => {
       throw error
     })
 }
 
 // Function to handle DELETE requests
-function remove(url) {
+function remove(url, config) {
+  appendAuthorization(config)
   return axiosInstance
-    .delete(url)
+    .delete(url, config)
     .then(response => response.data)
     .catch(error => {
       throw error
     })
 }
 
-function setToken(token) {
-  console.log(token)
-  if (token.startsWith('Bearer ')) {
-    token = token.replace('Bearer ', '')
-  }
-  axiosInstance = axios.create({
-    baseURL: BACKEND_API_BASE_URL,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  })
+function setTokenOnLocalStorage(token) {
+  localStorage.setItem('Authorization', token)
+}
+
+function removeTokenOnLocalStorage(token) {
+  localStorage.removeItem('Authorization', token)
 }
 
 const ApiClient = {
@@ -68,7 +77,8 @@ const ApiClient = {
   post: async (url, data) => await post(url, data),
   put: (url, data) => put(url, data),
   delete: url => remove(url),
-  setToken: token => setToken(token),
+  setTokenOnLocalStorage: token => setTokenOnLocalStorage(token),
+  removeTokenOnLocalStorage: token => removeTokenOnLocalStorage(token),
 }
 
 export default ApiClient

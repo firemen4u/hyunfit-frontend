@@ -83,6 +83,7 @@ export default {
       this.$emit('close')
     },
     entryPtRoom() {
+      let ptSeq = this.reservationData.ptSeq
       window.open('http://localhost:5173/PtRoom', '_blank')
     },
     formatDate(timestamp) {
