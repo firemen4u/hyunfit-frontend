@@ -103,11 +103,11 @@ export default {
               this.lastSquatStartTime = currentTime
             }
           } else if (prediction[i].probability > 0.9) {
-            console.log(
-              '기본자세',
-              currentTime - this.lastSquatStartTime,
-              currentTime - this.lastSquatStartTime >= minSquatDuration
-            )
+            // console.log(
+            //   '기본자세',
+            //   currentTime - this.lastSquatStartTime,
+            //   currentTime - this.lastSquatStartTime >= minSquatDuration
+            // )
             if (
               flag &&
               currentTime - this.lastSquatStartTime >= minSquatDuration

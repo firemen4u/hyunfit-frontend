@@ -76,7 +76,6 @@ function init() {
           countContainerVisible: true,
           timerVisible: true,
           timerLimit: 10,
-          responseData: seq,
           previewUrl: `${baseURL}preview_video_${seq.excSeq}`,
         })
         // Exercise

@@ -36,7 +36,7 @@
         {{ props.squatsCount }}
       </p>
       <div class="reps-remain ml-20 font-extrabold">
-        /{{ props.progressQueue?.responseData.excRepCountPerSet }}
+        /{{ props.progressQueue?.responseData?.excRepCountPerSet }}
       </div>
     </div>
   </div>
@@ -84,6 +84,14 @@ const emit = defineEmits(['skip'])
 let interval = ref(null)
 let showInfo = ref(true)
 
+onMounted(() => {
+  setTimeout(() => {
+    showInfo.value = false // 2초 후에 div를 숨깁니다.
+  }, 2000)
+  if (timeLeft.value < 0) return
+  checkExercies(props.progressQueue?.responseData.excSetCount)
+})
+
 function calcCalorie() {
   totalCalorie *= props.progressQueue.excCaloriesPerRep
 }
@@ -99,10 +107,44 @@ function skipClick() {
   emit('skip')
 }
 
-function startCountdown() {
+function checkExercies(setsCount) {
+  // Warmup과 Guide 때는 운동을 진행하지 않음
+  if (!props.progressQueue?.responseData) {
+    console.log('운동하는 시간이 아니에요-----------')
+    startCountDown()
+    return
+  }
+  
+  let currentCount = 1
+  console.log('운동 진입', setsCount)
+
+  // 운동이 끝날때까지 계속 진행
+  while (currentCount != setsCount) {
+    console.log('쉬는 시간, 세트 수 체크', currentCount)
+    console.log('진입할 때 남은 시간 체크 : ', timeLeft.value)
+    currentCount++
+
+    // 쉬는 시간 - 운동 시간 번갈아가면서 체크하기
+
+    startCountDown()
+    if (timeLeft.value != 10) {
+      console.log('운동 끝나고 나서 진입-===============')
+      console.log('timeLeft : ', timeLeft.value)
+      console.log('timeLeft : ', props.progressQueue?.timerLimit)
+      timeLeft.value = 10
+    } else {
+      console.log('쉬는 시간 진입-===============')
+      console.log('timeLeft : ', timeLeft.value)
+      timeLeft.value = props.progressQueue?.timerLimit
+    }
+  }
+}
+
+function startCountDown() {
+  console.log('startCountDown')
   interval.value = setInterval(() => {
-    console.log('남은시간', timeLeft.value)
     timeLeft.value--
+    console.log('timeLeft Value ', timeLeft.value--)
     if (timeLeft.value === 0) {
       console.log('인터벌 삭제')
       clearInterval(interval)
@@ -110,14 +152,6 @@ function startCountdown() {
     }
   }, 1000)
 }
-
-onMounted(() => {
-  setTimeout(() => {
-    showInfo.value = false // 5초 후에 div를 숨깁니다.
-  }, 2000)
-  if (timeLeft.value < 0) return
-  startCountdown()
-})
 
 onUnmounted(() => {
   if (interval.value) {
