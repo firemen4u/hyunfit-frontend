@@ -13,25 +13,36 @@
           <!--카테고리-->
           <div class="flex flex-col mr-4 items-center">
             <div class="rsvdetail-category">예약번호</div>
-            <div class="rsvdetail-category">예약상태</div>
             <div class="rsvdetail-category">예약일자</div>
             <div class="rsvdetail-category">예약시간</div>
+            <div class="rsvdetail-category">예약상태</div>
             <div class="rsvdetail-category">회 원 명</div>
           </div>
           <!--정보-->
           <div class="flex flex-col items-center">
-            <div class="info-gray-box">39</div>
-            <div class="info-gray-box">예약확정</div>
-            <div class="info-gray-box">2023-09-30</div>
-            <div class="info-gray-box">14:00</div>
-            <div class="info-gray-box">길동</div>
+            <div class="info-gray-box">{{ reservationData.ptSeq }}</div>
+            <div class="info-gray-box">
+              {{ formatDate(reservationData.ptReservationDate) }}
+            </div>
+            <div class="info-gray-box">
+              {{ formatTime(reservationData.ptReservationDate) }}
+            </div>
+            <div class="info-gray-box">
+              {{ reservationData.ptReservationStatus }}
+            </div>
+            <div class="info-gray-box">{{ reservationData.mbrName }}</div>
           </div>
         </div>
         <!--고객요청사항-->
         <div class="flex flex-col gap-2 ml-4 mb-4">
           <div class="font-semibold">고객요청사항</div>
-          <div class="needs-gray-box">
-            현재 다리가 조금 아파서 상체 위주의 운동을 하고 싶어요!
+          <div class="sticker-container">
+            <BaseCheckChip
+              class="mr-2 mb-2"
+              v-for="(option, index) in options"
+              :key="index"
+              :label="option"
+            />
           </div>
         </div>
         <div class="flex divider"></div>
@@ -46,15 +57,43 @@
   </div>
 </template>
 
+<script setup>
+import moment from 'moment'
+import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
+</script>
 <script>
 export default {
-  props: ['show'],
+  props: {
+    reservationData: Object,
+    show: Boolean,
+  },
+  data() {
+    return {
+      options: [
+        '운동이 처음이에요',
+        '살을 빼고 싶어요',
+        '코어를 강화하고 싶어요',
+        '부상 이력이 있어요',
+        '식단 조언도 함께 받고 싶어요',
+      ],
+    }
+  },
   methods: {
     closeModal() {
       this.$emit('close')
     },
     entryPtRoom() {
       window.open('http://localhost:5173/PtRoom', '_blank')
+    },
+    formatDate(timestamp) {
+      return moment(timestamp).format('YYYY-MM-DD')
+    },
+    formatTime(timestamp) {
+      const date = new Date(timestamp)
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+
+      return `${hours}:${minutes}`
     },
   },
 }
@@ -104,6 +143,9 @@ export default {
   padding: 10px;
   display: inline-block;
   border-radius: 5px;
+}
+.sticker-container {
+  width: 400px;
 }
 .ptEntryButton {
   width: 125px;

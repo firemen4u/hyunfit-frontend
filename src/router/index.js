@@ -5,9 +5,17 @@ import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
 import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
 import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
 import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
-import PtRoomPage from '/src/module/PtRoom/views/PtRoomPage.vue'
-import RsvSample from '/src/module/boptrsv/views/RsvSample.vue'
-import MbrmyPage from '/src/module/mbr-mypage/views/MbrmyPage.vue'
+import PtRoomPage from '/src/module/pt-room/views/PtRoomPage.vue'
+import MbrMypage from '/src/module/mbr-mypage/views/MbrMypage.vue'
+import ReservationManagingPage from '/src/module/bo/trn/views/ReservationManagingPage.vue'
+import FeedbackManagingPage from '/src/module/bo/trn/views/FeedbackManagingPage.vue'
+import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
+import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
+import BoExcBoardPage from '/src/module/bo/exc/views/BoExcBoardPage.vue'
+import ReportPage from '@/module/report/views/ReportPage.vue'
+import TrnFeedBackPage from '/src/module/mbr-pt-feedback/views/MbrPtFeedBackPage.vue'
+import LoginPage from '/src/module/main/views/LoginPage.vue'
+import PtReservationCompletePage from '@/module/pt-reservation/views/PtReservationCompletionPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,12 +26,17 @@ const router = createRouter({
       component: MainPage,
     },
     {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
+    },
+    {
       path: '/survey',
       name: 'survey',
       component: SurveyPage,
     },
     {
-      path: '/trn-search',
+      path: '/trainers',
       name: 'trn-search',
       component: TrnSearchPage,
     },
@@ -38,26 +51,69 @@ const router = createRouter({
       component: AITrainingPage,
     },
     {
-      path: '/trn-detail',
+      path: '/trainers/:trnId',
       name: 'trn-detail',
       component: TrnDetailPage,
     },
     {
-      path: '/PtRoom',
-      name: 'PtRoom',
+      path: '/ptroom',
+      name: 'ptroom',
       component: PtRoomPage,
     },
     {
-      path: '/rsvsample',
-      name: 'RsvSample',
-      component: RsvSample,
+      path: '/pt-rsv-manage',
+      name: 'pt-rsv-manage',
+      component: ReservationManagingPage,
+    },
+    {
+      path: '/pt-fb-manage',
+      name: 'pt-fb-manage',
+      component: FeedbackManagingPage,
     },
     {
       path: '/mbr-myPage',
       name: 'mbr-myPage',
-      component: MbrmyPage,
+      component: MbrMypage,
+    },
+    {
+      path: '/bo-rtnBoard',
+      name: 'bo-BoRtnBoardPage',
+      component: BoRtnBoardPage,
+    },
+    {
+      path: '/bo-excNew',
+      name: 'bo-BoExcNewPage',
+      component: BoExcNewPage,
+    },
+    {
+      path: '/report',
+      name: 'report',
+      component: ReportPage,
+    },
+    {
+      path: '/mbr-pt-feedback',
+      name: 'mbr-pt-feedback',
+      component: TrnFeedBackPage,
+    },
+    {
+      path: '/bo-excBoard',
+      name: 'bo-BoExcBoardPage',
+      component: BoExcBoardPage,
+    },
+    {
+      path: '/reservations',
+      name: 'pt-reservations',
+      component: PtReservationCompletePage,
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // Scroll to the top of the page on route change
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
 })
 
 export default router

@@ -1,21 +1,18 @@
 import axios from 'axios'
-import { API_BASE_URL } from '/src/config'
+import { BACKEND_API_BASE_URL } from '/src/config'
 
 let axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: BACKEND_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Function to handle GET requests
-function get(url) {
-  console.log('url', url)
-  return axiosInstance
-    .get(url)
+async function get(url, config = {}) {
+  return await axiosInstance
+    .get(url, config)
     .then(response => {
-      response.data
-      console.log(response)
+      return response.data
     })
     .catch(error => {
       throw error
@@ -23,8 +20,8 @@ function get(url) {
 }
 
 // Function to handle POST requests
-function post(url, data) {
-  return axiosInstance
+async function post(url, data) {
+  return await axiosInstance
     .post(url, data)
     .then(response => response.data)
     .catch(error => {
@@ -53,8 +50,12 @@ function remove(url) {
 }
 
 function setToken(token) {
+  console.log(token)
+  if (token.startsWith('Bearer ')) {
+    token = token.replace('Bearer ', '')
+  }
   axiosInstance = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: BACKEND_API_BASE_URL,
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -63,8 +64,8 @@ function setToken(token) {
 }
 
 const ApiClient = {
-  get: url => get(url),
-  post: (url, data) => post(url, data),
+  get: async (url, config) => await get(url, config),
+  post: async (url, data) => await post(url, data),
   put: (url, data) => put(url, data),
   delete: url => remove(url),
   setToken: token => setToken(token),
