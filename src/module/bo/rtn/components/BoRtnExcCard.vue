@@ -11,9 +11,18 @@
     </div>
     <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
     <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
+    <div class="exc-content">
+      운동 시간 :
+      {{
+        ((exercise.excSetCount * exercise.excTimePerSetInSec) / 60).toFixed(1)
+      }}
+    </div>
   </div>
-  <!-- ... 기존 코드 ... -->
-  <div><button @click="registerExercise">등록하기</button></div>
+  <div class="text-center mt-2">
+    <button class="register-btn rounded-md" @click="registerExercise">
+      등록하기
+    </button>
+  </div>
 </template>
 
 <script setup>
@@ -42,9 +51,20 @@ const registerExercise = () => {
 .exc-img {
   max-width: 100%;
 }
+.exc-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .exc-content {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+.register-btn {
+  width: 100px;
+  border: solid 1px;
+  border-color: rgb(158, 157, 157);
+  background-color: rgb(210, 210, 210);
 }
 </style>
