@@ -9,12 +9,13 @@ import PtRoomPage from '/src/module/pt-room/views/PtRoomPage.vue'
 import MbrMypage from '/src/module/mbr-mypage/views/MbrMypage.vue'
 import ReservationManagingPage from '/src/module/bo/trn/views/ReservationManagingPage.vue'
 import FeedbackManagingPage from '/src/module/bo/trn/views/FeedbackManagingPage.vue'
-import BoRtnBoardPage from '/src/module/bo/exc/views/BoRtnBoardPage.vue'
 import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
 import BoExcBoardPage from '/src/module/bo/exc/views/BoExcBoardPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
 import TrnFeedBackPage from '/src/module/mbr-pt-feedback/views/MbrPtFeedBackPage.vue'
 import LoginPage from '/src/module/main/views/LoginPage.vue'
+import BoRtnBoardPage from '/src/module/bo/rtn/views/BoRtnBoardPage.vue'
+import BoRtnNewPage from '/src/module/bo/rtn/views/BoRtnNewPage.vue'
 import PtReservationCompletePage from '@/module/pt-reservation/views/PtReservationCompletionPage.vue'
 
 const router = createRouter({
@@ -101,6 +102,11 @@ const router = createRouter({
       component: BoExcBoardPage,
     },
     {
+      path: '/bo-rtnNew',
+      name: 'bo-BoRtnNewPage',
+      component: BoRtnNewPage,
+    },
+    {
       path: '/reservations',
       name: 'pt-reservations',
       component: PtReservationCompletePage,
@@ -115,5 +121,4 @@ const router = createRouter({
     }
   },
 })
-
 export default router
