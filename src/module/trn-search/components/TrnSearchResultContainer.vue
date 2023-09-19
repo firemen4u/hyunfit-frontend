@@ -1,0 +1,60 @@
+<script setup>
+import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
+
+const props = defineProps({
+  items: Array,
+})
+</script>
+<template>
+  <a
+    v-for="(data, i) in items"
+    :key="i"
+    class="card-container"
+    :href="'trainers/' + data.trnId"
+  >
+    <div class="trn-contents">
+      <div
+        class="trn-title-container item flex flex-row items-end align-baseline"
+      >
+        <p class="trn-subtitle mr-2 text-lg">{{ data.trnName }}</p>
+        <p class="trn-subtitle text-xs">{{ data.trnTypeName }}</p>
+      </div>
+      <div class="trn-content item text-xs">
+        <p>
+          {{ data.trnShortDescription }}
+        </p>
+      </div>
+      <BaseCompactRating
+        :rating="data.averageReviewRating"
+        :reviewCount="data.reviewCount"
+        :icon-size="20"
+        font-size="lg"
+      ></BaseCompactRating>
+    </div>
+    <div
+      class="trn-img-wrapper flex justify-center items-center overflow-hidden"
+    >
+      <img :src="data.trnProfileUrl" alt="예시 이미지" class="rounded-lg" />
+    </div>
+  </a>
+</template>
+
+<style scoped>
+.card-container {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1.5px solid rgb(242, 242, 242);
+}
+.trn-contents {
+  width: 80%;
+  margin-right: 30px;
+}
+.trn-img-wrapper {
+  width: 100px;
+}
+.item {
+  margin-bottom: 10px;
+}
+</style>

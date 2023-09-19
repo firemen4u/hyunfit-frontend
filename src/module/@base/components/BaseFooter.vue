@@ -17,7 +17,7 @@ let infoData = [
 </script>
 
 <template>
-  <footer class="text-center flex flex-column w-100 items-center">
+  <footer class="text-center flex flex-column w-full items-center">
     <BaseBodyWrapper>
       <!-- 상단바 -->
       <div class="util flex items-center justify-between py-4 text-white">

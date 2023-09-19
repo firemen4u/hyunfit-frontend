@@ -1,65 +1,52 @@
+<script setup>
+import RefreshSvg from '@/module/@base/svg/RefreshSvg.vue'
+
+const emit = defineEmits(['reset'])
+function resetFilter(e) {
+  e.target.closest('button').classList.add('clicked')
+  emit('reset')
+  setTimeout(() => {
+    e.target.closest('button').classList.remove('clicked')
+  }, 300)
+}
+</script>
 <template>
   <div class="container">
-    <div class="filter-title-section">
-      <p style="font-weight: bold">필터</p>
-      <button class="text-disable text-xs">초기화</button>
+    <div class="flex justify-between mb-5 items-end">
+      <p class="font-bold text-lg">필터</p>
+      <button
+        class="reset-btn text-sm flex items-center px-2"
+        @click="resetFilter"
+      >
+        <span class="mr-1 text-gray-600">초기화</span>
+        <RefreshSvg size="14" color="#4B5563" />
+      </button>
     </div>
-    <div class="filter-lesson-section">
-      <p class="filter-lesson-title text-ls font-bold">레슨 종류</p>
-      <TrnSearchFilterContainer checkbox :data="componentsData1"></TrnSearchFilterContainer>
-    </div>
-    <div class="filter-trn-sex-section">
-      <p class="filter-trn-sex-title font-bold">트레이너 성별</p>
-      <TrnSearchFilterContainer radiobox :data="componentsData2"></TrnSearchFilterContainer>
-    </div>
+    <slot></slot>
   </div>
 </template>
-<script setup>
-import TrnSearchFilterContainer from './TrnSearchFilterContainer.vue'
-
-const componentsData1 = [
-  { label: '퍼스널 트레이닝(PT)', value: 'pt' },
-  { label: '필라테스', value: 'pilates' },
-  { label: '요가', value: 'yoga' },
-]
-
-const componentsData2 = [
-  { label: '남자', value: 'men' },
-  { label: '여자', value: 'women' },
-  { label: '상관없음', value: 'irrelevant' },
-]
-
-
-</script>
 <style scoped>
-.container {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 30px;
+.reset-btn {
+  opacity: 50%;
+  transition: opacity 0.2s ease-in-out;
 }
-.filter-title-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 10px;
+.reset-btn:hover {
+  opacity: 100%;
 }
-
-.filter-lesson-section {
-  border-top: 1.5px solid rgb(242, 242, 242);
-
-  padding: 10px;
-}
-.filter-lesson-title {
-  padding-bottom: 10px;
+.reset-btn.clicked {
+  animation: clickAnimation 0.3s ease; /* 애니메이션 적용 */
+  transform-origin: center;
 }
 
-.filter-trn-sex-section {
-  border-top: 1.5px solid rgb(242, 242, 242);
-  flex-grow: 2.5;
-  padding: 10px;
-}
-.filter-trn-sex-title {
-  padding-bottom: 10px;
+@keyframes clickAnimation {
+  0% {
+    transform: scale(1); /* 초기 크기 */
+  }
+  50% {
+    transform: scale(0.9); /* 0.1 작아짐 */
+  }
+  100% {
+    transform: scale(1); /* 원래 크기로 복원 */
+  }
 }
 </style>
