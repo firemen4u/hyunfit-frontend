@@ -11,7 +11,7 @@
         <div class="content mt-10">
           <p class="font-bold text-2xl pl-5">회원 정보 수정</p>
           <hr class="mbr-hr border-2 border-gray-400" />
-          <div class="p-2 flex flex-col items-center">
+          <div class="p-2 flex flex-col items-center" v-if="response !== null">
             <div class="p-2 bg-white font-normal w-2/3">
               <div>
                 <div class="p-2 flex h-24">
@@ -19,44 +19,41 @@
                   <v-text-field
                     class="mx-atuo mb-2"
                     label="이름(닉네임)"
-                    model-value="김진우"
+                    v-model="response.mbrName"
                     variant="outlined"
                     placeholder="이름(닉네임)"
                     clearable
                     hint="회원님의 이름/닉네임을 써주세요"
                   ></v-text-field>
-                  <!-- v-model 추가 해줘야한다.-->
                 </div>
 
-                <div class="p-2 flex h-24">
+                <!-- <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">이메일</p>
                   <v-text-field
                     class="mx-atuo mb-2"
                     label="이메일"
-                    model-value="jinwoo@jjang.com"
+                    v-model="response?"
                     variant="outlined"
                     placeholder="abcdefg@email.com"
                     clearable
                     hint="이메일 형식으로 써주세요"
                   ></v-text-field>
-                  <!-- v-model 추가 해줘야한다.-->
-                </div>
+                </div> -->
 
                 <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">생년월일</p>
                   <v-text-field
                     class="mx-atuo mb-2"
                     label="생년월일"
-                    model-value="19951125"
                     variant="outlined"
+                    v-model="response.mbrBirthdate"
                     placeholder="YYYYMMDD"
                     clearable
                     hint="YYYYMMDD 형식으로 써주세요"
                   ></v-text-field>
-                  <!-- v-model 추가 해줘야한다.-->
                 </div>
 
-                <div class="p-2 flex h-24">
+                <!-- <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">추천 운동</p>
                   <div class="flex flex-col justify-center items-start">
                     <p class="text-gray-400 text-sm">
@@ -70,45 +67,47 @@
                       설정하기
                     </button>
                   </div>
-
-                  <!-- v-model 추가 해줘야한다.-->
-                </div>
+                </div> -->
                 <hr class="mbr-hr" />
                 <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">키</p>
                   <v-text-field
                     class="mb-2"
                     label="키"
-                    model-value="175"
+                    v-model="response.mbrHeight"
                     variant="outlined"
                     suffix="cm"
                     clearable
                     hint="소수점 첫번째 자리까지 입력할수있습니다."
                   ></v-text-field>
-                  <!-- v-model 추가 해줘야한다.-->
                 </div>
                 <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">몸무게</p>
                   <v-text-field
                     class="mb-2"
                     label="몸무게"
-                    model-value="75"
+                    v-model="response.mbrWeight"
                     variant="outlined"
                     suffix="kg"
                     clearable
                     hint="소수점 첫번째 자리까지 입력할수있습니다."
                   ></v-text-field>
-                  <!-- v-model 추가 해줘야한다.-->
                 </div>
                 <hr class="mbr-hr" />
                 <div>
                   <div>
                     <a class="text-gray-300" href="/">회원 탈퇴하기</a>
                     <div class="flex justify-center items-center">
-                      <P class="mr-4">수정된 내용을 저장하시겠어요?</P
-                      ><button
-                        class="bg-primary mt-2 p-2 pr-16 pl-16 rounded-md"
-                        onclick="/"
+                      <p class="mr-4">수정된 내용을 저장하시겠어요?</p>
+
+                      <button
+                        class="mt-2 p-2 pr-16 pl-16 rounded-md"
+                        @click="sendData"
+                        :class="{
+                          'bg-primary ': isButtonActive,
+                          'bg-gray-300': !isButtonActive,
+                        }"
+                        :disabled="!isButtonActive"
                       >
                         저장하기
                       </button>
@@ -125,8 +124,65 @@
 </template>
 
 <script setup>
+import { ref, onMounted, computed, onBeforeMount } from 'vue'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
+import ApiClient from '/src/services/api.js'
+
+const response = ref(null)
+
+let originMbrName = null
+let originBirthdate = null
+let originMbrHeight = null
+let originMbrWeight = null
+
+const isButtonActive = computed(() => {
+  if (response.value === null) return false
+  return (
+    response.value.mbrName !== originMbrName ||
+    response.value.mbrBirthdate !== originBirthdate ||
+    response.value.mbrHeight !== originMbrHeight ||
+    response.value.mbrWeight !== originMbrWeight
+  )
+})
+
+async function init() {
+  response.value = await ApiClient.get('/members/me')
+  console.log('데이터 도착함')
+  try {
+    const jsDate = new Date(response.value.mbrBirthdate)
+    response.value.mbrBirthdate = jsDate
+      .toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      .replace(/\s|\./g, '')
+
+    originMbrName = response.value.mbrName
+    originBirthdate = response.value.mbrBirthdate
+    originMbrHeight = response.value.mbrHeight
+    originMbrWeight = response.value.mbrWeight
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+}
+
+onBeforeMount(() => {
+  init()
+})
+
+onMounted(async () => {
+  console.log('마운트됨')
+})
+
+function sendData() {
+  console.log('sendData()')
+  console.log('response', response?.value)
+  console.log('URL', `/members/${response?.value.mbrId}`)
+  ApiClient.put(`/members/${response?.value.mbrId}`, response?.value)
+}
+
 const sidebarHeader = '마이페이지'
 const mainCategory = '카테고리'
 const subcategories = [

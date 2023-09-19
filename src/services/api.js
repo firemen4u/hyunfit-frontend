@@ -30,7 +30,7 @@ async function get(url, config = {}) {
 }
 
 // Function to handle POST requests
-async function post(url, data, config) {
+async function post(url, data, config = {}) {
   appendAuthorization(config)
   return await axiosInstance
     .post(url, data, config)
@@ -41,10 +41,11 @@ async function post(url, data, config) {
 }
 
 // Function to handle PUT requests
-function put(url, data, config) {
+function put(url, data, config = {}) {
   appendAuthorization(config)
+  console.log(config)
   return axiosInstance
-    .put(url, data)
+    .put(url, data, config)
     .then(response => {
       response.data
     })
@@ -54,7 +55,7 @@ function put(url, data, config) {
 }
 
 // Function to handle DELETE requests
-function remove(url, config) {
+function remove(url, config = {}) {
   appendAuthorization(config)
   return axiosInstance
     .delete(url, config)
@@ -75,7 +76,7 @@ function removeTokenOnLocalStorage(token) {
 const ApiClient = {
   get: async (url, config) => await get(url, config),
   post: async (url, data) => await post(url, data),
-  put: (url, data) => put(url, data),
+  put: (url, data, config) => put(url, data, config),
   delete: url => remove(url),
   setTokenOnLocalStorage: token => setTokenOnLocalStorage(token),
   removeTokenOnLocalStorage: token => removeTokenOnLocalStorage(token),
