@@ -57,6 +57,7 @@ function startCountdown() {
 
 onMounted(() => {
   timeLeft.value = props.timerLimit
+  console.log('status container', )
   if (timeLeft.value < 0) return
   startCountdown()
 })

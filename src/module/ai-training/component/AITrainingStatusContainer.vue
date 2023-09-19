@@ -6,7 +6,7 @@
   >
     <p class="reps-title text-2xl font-bold text-white mb-4">Sec</p>
     <span class="resps-count text-7xl font-bold text-white mb-4">
-      {{ remainingTime }}</span
+      {{ timeLeft }}</span
     >
   </div>
   <!-- RepsCount -->
@@ -32,15 +32,19 @@
       class="reps-count-container flex flex-col items-center justify-center bg-[#4e4e4f] text-white w-full h-3/5 rounded-md"
     >
       <span class="reps-title text-lg font-bold">Reps</span>
-      <p class="resps-count text-6xl font-bold text-[#00E77B]">0</p>
+      <p class="resps-count text-6xl font-bold text-[#00E77B]">
+        {{ props.squatsCount }}
+      </p>
       <div class="reps-remain ml-20 font-extrabold">
-        /{{ props.progressQueue.excSetCount }}
+        /{{ props.progressQueue?.responseData.excRepCountPerSet }}
       </div>
     </div>
   </div>
   <!-- Info -->
-  <div class="ai-training-info">
-    <span class="info"> </span>
+  <div v-if="showInfo" class="ai-training-info-container">
+    <div class="ai-training-info">
+      <span class="info">{{ props.progressQueue?.timerLimit }}</span>
+    </div>
   </div>
   <!-- BottomBar Container -->
   <div class="bottom-bar-container">
@@ -67,22 +71,34 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const setStatuses = ref(['past', 'future', 'future']) // 상태 값
-
 const props = defineProps({
   progressQueue: Object,
+  squatsCount: Number,
 })
 
-const emit = defineEmits(['skip'])
+let totalCalorie = 0
 
-// 필요한 거 맞고
+const setStatuses = ref(['past', 'future', 'future']) // 상태 값
+const timeLeft = ref(props.progressQueue?.timerLimit)
+const emit = defineEmits(['skip'])
 let interval = ref(null)
+let showInfo = ref(true)
+
+function calcCalorie() {
+  totalCalorie *= props.progressQueue.excCaloriesPerRep
+}
+
+function info() {
+  console.log('info 함수 실행')
+  showInfo.value = false
+  console.log('info 함수 종료')
+}
+
 function skipClick() {
   console.log('skipClick 제한 시간', props.progressQueue?.timerLimit)
   emit('skip')
 }
 
-const timeLeft = ref(-1)
 function startCountdown() {
   interval.value = setInterval(() => {
     console.log('남은시간', timeLeft.value)
@@ -96,7 +112,9 @@ function startCountdown() {
 }
 
 onMounted(() => {
-  timeLeft.value = props.progressQueue?.timerLimit
+  setTimeout(() => {
+    showInfo.value = false // 5초 후에 div를 숨깁니다.
+  }, 2000)
   if (timeLeft.value < 0) return
   startCountdown()
 })
@@ -135,10 +153,29 @@ onUnmounted(() => {
   font-weight: 900;
   text-align: center;
   background: linear-gradient(111deg, rgb(133, 0, 38) 8%, rgb(249, 76, 16) 93%);
-  -webkit-background-clip: text; /* 텍스트에 그라데이션을 적용하기 위해 필요한 속성입니다. */
+  -webkit-background-clip: text;
   background-clip: text;
 }
+.ai-training-info-container {
+  position: absolute;
 
+  width: 100%;
+  height: 100%;
+  background-color: rgb(102, 102, 102);
+}
+.ai-training-info {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  height: 15%;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50px;
+}
 /* bottomBar CSS */
 .status-navigation-container {
   display: flex;
