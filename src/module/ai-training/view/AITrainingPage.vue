@@ -1,69 +1,138 @@
 <template>
+  <div v-if="loading == true">
+    <h1 class="loading">로딩중</h1>
+  </div>
   <div class="ai-training-container flex">
     <AITrainingMyVideo
-      v-if="data.myVideoStatus.value !== 3"
-      :myVideoStatus="data.myVideoStatus"
+      v-if="currentItem?.myVideoWidth !== 'NONE'"
+      :progressQueue="currentItem"
+      @squatsCountUpdated="squatsCount = $event"
     ></AITrainingMyVideo>
     <AITrainingTeachingVideo
-      v-if="data.teachingVideoStatus.value !== 3"
-      :teachingVideoStatus="data.teachingVideoStatus"
+      v-if="currentItem?.teachingVideoWidth !== 'NONE'"
+      :progressQueue="currentItem"
     ></AITrainingTeachingVideo>
-    <AITrainingStatusContainer></AITrainingStatusContainer>
-    <AITrainingTimer></AITrainingTimer>
-    <div class="ai-training-info">
-      <span class="info"> 전체가 다 나오는지 확인해주세요!</span>
-    </div>
-    <AITrainingBottomBar></AITrainingBottomBar>
+    <AITrainingStatusContainer
+      :progressQueue="currentItem"
+      :squatsCount="squatsCount"
+      @skip="handleSkip"
+      :key="rerenderKey"
+    >
+    </AITrainingStatusContainer>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import axios from 'axios'
 import {
   AITrainingStatusContainer,
-  AITrainingTimer,
   AITrainingMyVideo,
-  AITrainingBottomBar,
   AITrainingTeachingVideo,
 } from '/src/module/ai-training/component'
 
-// 1일 때는 전체화면, 2일 때는 화면 1/2, 3일 떄는 컴포넌트 사용하지 않기
-// store에 상태 값을 넣어둬서 계속 이 부분을 관리해줘야 함
+let loading = ref(true)
+const baseURL = 'https://api.hyunfit.life/routines/'
+const rerenderKey = ref(0)
+const progressQueue = ref([])
+let currentIndex = ref(0)
+const currentItem = computed(() => {
+  if (progressQueue.value && currentIndex.value < progressQueue.value.length) {
+    return progressQueue.value[currentIndex.value]
+  }
+  return null
+})
 
-const data = {
-  myVideoStatus: ref(1),
-  teachingVideoStatus: ref(3),
+let squatsCount = ref(0)
+
+function init() {
+  try {
+    axios.get('https://api.hyunfit.life/routines/1').then(response => {
+      console.log('"API 통신 성공" \n API 통신 값', response.data)
+      // Intro
+      progressQueue.value.push({
+        myVideoWidth: 'FULL',
+        teachingVideoWidth: 'NONE',
+        infoContainerVisible: false,
+        countContainerVisible: false,
+        timerVisible: false,
+        timerLimit: -1,
+      })
+      // WarmUp
+      progressQueue.value.push({
+        myVideoWidth: 'HALF',
+        teachingVideoWidth: 'HALF',
+        infoContainerVisible: false,
+        countContainerVisible: false,
+        timerVisible: true,
+        timerLimit: 100,
+      })
+      for (const seq of response.data.exercises) {
+        console.log(seq)
+        // Guide
+        progressQueue.value.push({
+          myVideoWidth: 'NONE',
+          teachingVideoWidth: 'FULL',
+          infoContainerVisible: false,
+          countContainerVisible: true,
+          timerVisible: true,
+          timerLimit: 10,
+          responseData: seq,
+          previewUrl: `${baseURL}preview_video_${seq.excSeq}`,
+        })
+        // Exercise
+        progressQueue.value.push({
+          myVideoWidth: 'HALF',
+          teachingVideoWidth: 'HALF',
+          infoContainerVisible: false,
+          countContainerVisible: true,
+          timerVisible: true,
+          timerLimit: seq.excTimePerSetInSec,
+          responseData: seq,
+          exerciseUrl: `${baseURL}exercise_video_${seq.excSeq}`,
+        })
+      }
+      // Exit
+      progressQueue.value.push({
+        myVideoWidth: 'NONE',
+        teachingVideoWidth: 'HALF',
+        infoContainerVisible: false,
+        countContainerVisible: true,
+        timerVisible: true,
+        timerLimit: -1,
+      })
+      setTimeout(() => {
+        loading.value = false
+      }, 5000)
+    })
+  } catch (error) {
+    console.error('데이터를 가져오는 중 에러 발생 : ', error)
+  }
 }
-console.log(data.myVideoStatus.value)
-console.log(data.teachingVideoStatus.value)
-</script>
 
+function handleSkip() {
+  rerenderKey.value += 1
+  currentIndex.value++
+  progressQueue[currentIndex.value]
+}
+
+onMounted(() => {
+  init()
+})
+
+// 모델 넣기
+</script>
 <style scoped>
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  transform: translate(-50%, -50%);
+}
 .ai-training-container {
   position: relative;
   height: 100vh;
   width: 100vw;
   background-color: azure;
-}
-.info {
-  color: transparent;
-  font-size: 35px;
-  font-weight: 900;
-  text-align: center;
-  background: linear-gradient(111deg, rgb(133, 0, 38) 8%, rgb(249, 76, 16) 93%);
-  -webkit-background-clip: text; /* 텍스트에 그라데이션을 적용하기 위해 필요한 속성입니다. */
-  background-clip: text;
-}
-.ai-training-info {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  height: 15%;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50px;
 }
 </style>

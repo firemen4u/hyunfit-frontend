@@ -15,15 +15,58 @@
         <img src="/src/assets/images/volume-high.png" />
       </button>
     </div>
-    <button class="skip-button skip-item">
-      <div class="progress-bar"></div>
-      <span class="skip-text font-extrabold">Skip</span>
-      다음
+    <button class="skip-button skip-item" @click="skipClick()">
+      <Transition :duration="1000">
+        <div
+          class="progress-bar-wrapper"
+          :style="{ width: (timeLeft / props.timerLimit) * 100 + '%' }"
+        >
+          <div class="progress-bar"></div>
+        </div>
+      </Transition>
+      <div class="skip-text font-extrabold">Skip 다음</div>
     </button>
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const emit = defineEmits(['skip'])
+const props = defineProps({
+  timerLimit: Number,
+})
+
+let interval = ref(null)
+function skipClick() {
+  console.log('skipClick 제한 시간', props.timerLimit)
+  emit('skip')
+}
+
+const timeLeft = ref(0)
+function startCountdown() {
+  interval.value = setInterval(() => {
+    console.log('남은시간', timeLeft.value)
+    timeLeft.value--
+    if (timeLeft.value === 0) {
+      console.log('인터벌 삭제')
+      clearInterval(interval)
+      skipClick() // 0초일 때 click 함수 실행
+    }
+  }, 1000)
+}
+
+onMounted(() => {
+  timeLeft.value = props.timerLimit
+  console.log('status container', )
+  if (timeLeft.value < 0) return
+  startCountdown()
+})
+
+onUnmounted(() => {
+  if (interval.value) {
+    clearInterval(interval.value)
+  }
+})
 </script>
 <style scoped>
 .status-navigation-container {
@@ -59,7 +102,6 @@ import { ref, onMounted } from 'vue'
   margin: 10px;
   border-radius: 10px;
 }
-
 .skip-item {
   width: 200px;
   height: 50px;
@@ -70,7 +112,10 @@ import { ref, onMounted } from 'vue'
 
 .skip-button {
   position: relative;
-  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
   width: 200px;
   border-radius: 10px;
   background-color: rgba(41, 41, 41, 0.8);
@@ -84,25 +129,12 @@ import { ref, onMounted } from 'vue'
   color: white;
 }
 
-.progress-bar {
+.progress-bar-wrapper {
   position: absolute;
-  width: 100%;
+  width: 0%;
   height: 100%;
-  background-color: rgb(0, 0, 0);
-  z-index: -1;
-  border-radius: 10px;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
-  animation-duration: 10s;
-  animation-name: progress;
-}
-
-@keyframes progress {
-  0% {
-    width: 0%; /* 시작 상태에서 너비를 0%로 유지 */
-  }
-  100% {
-    width: 100%; /* 100%로 진행하여 전체 프로그레스 바 채우기 */
-  }
+  overflow: hidden;
+  z-index: 10;
+  border-radius: 10%;
 }
 </style>
