@@ -224,7 +224,7 @@ import {
   BaseSideBar,
 } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
-import { BoExcFileInput, BoExCRadioButton } from '/src/module/bo/exc/components'
+import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
