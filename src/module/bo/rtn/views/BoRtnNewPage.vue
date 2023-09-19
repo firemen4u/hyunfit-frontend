@@ -165,6 +165,8 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import BoRtnExcListModal from '/src/module/bo/rtn/components/BoRtnExcListModal.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
+import { FILE_SERVER_TOKEN } from '/src/config.js'
+import axios from 'axios'
 
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
@@ -274,27 +276,69 @@ const updateExercises = updatedExercises => {
   exercisesFromModal.value = updatedExercises
 }
 
-const sendDataToAPI = () => {
-  const payload = {
-    admSeq: '1',
-    rtnName: rtn_name.value,
-    rtnContent: rtn_content.value,
-    rtnDuration: rtn_duration.value,
-    rtnGoal: rtn_goal.value,
-    rtnTarget: rtn_target.value,
-    rtnExperienceLevel: rtn_experience_level.value,
-    rtnKneeHealthConsidered: rtn_knee_health_considered.value,
-    rtnNoiseConsidered: rtn_noise_considered.value,
-    rtnLongSitter: rtn_long_sitter.value,
-    rtnNeckShoulderFocused: rtn_neck_shoulder_focused.value,
-    rtnBackDiskConsidered: rtn_back_disk_considered.value,
-    rtnRewardPoint: rtn_reward_point.value,
-    // ... 다른 필드
-    exercises: exercisesFromModal.value,
-  }
-
+// 데이터 전송
+const sendDataToAPI = async () => {
   // API 전송 로직
-  console.log('Data sent to API:', JSON.stringify(payload, null, 2)) // 콘솔에 로깅
+  try {
+    const payload = {
+      admSeq: '1',
+      rtnName: rtn_name.value,
+      rtnContent: rtn_content.value,
+      rtnDuration: rtn_duration.value,
+      rtnGoal: rtn_goal.value,
+      rtnTarget: rtn_target.value,
+      rtnExperienceLevel: rtn_experience_level.value,
+      rtnKneeHealthConsidered: rtn_knee_health_considered.value,
+      rtnNoiseConsidered: rtn_noise_considered.value,
+      rtnLongSitter: rtn_long_sitter.value,
+      rtnNeckShoulderFocused: rtn_neck_shoulder_focused.value,
+      rtnBackDiskConsidered: rtn_back_disk_considered.value,
+      rtnRewardPoint: rtn_reward_point.value,
+      exercises: exercisesFromModal.value,
+    }
+
+    // 첫 번째 API 호출
+    const firstApiResponse = await axios.post(
+      'http://localhost:8080/routines',
+      payload
+    )
+    const rtnSeq = firstApiResponse.data.rtnSeq
+
+    console.log(`Received rtnSeq: ${rtnSeq}`)
+
+    // 파일 업로드 설정
+    const config = {
+      headers: {
+        token: FILE_SERVER_TOKEN, // 이 변수를 미리 설정해야 합니다.
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+    const formData = new FormData()
+    // 파일 확장자 동적으로 추출
+    const file = rtn_thumbnail_url.value[0]
+    const splitFileName = file.name.split('.')
+    const extension = splitFileName.pop()
+
+    // 파일 이름 동적으로 설정
+    const fileName = `routine_thumbnail_${rtnSeq}.${extension}`
+    formData.append('file', file, fileName)
+    console.log(fileName)
+
+    // 두 번째 API 호출: 파일 업로드
+    const secondApiResponse = await axios.post(
+      'http://ryulrudaga.com:48000/api/firemen/file',
+      formData,
+      config
+    )
+
+    console.log('Data sent to API:', JSON.stringify(payload, null, 2)) // 콘솔에 로깅
+    console.log(`File upload success: ${secondApiResponse.data}`)
+    alert('등록 성공!')
+    window.location.reload() // 페이지 새로고침
+  } catch (error) {
+    console.error(error)
+    alert('등록 실패!')
+  }
 }
 </script>
 <style scoped></style>
