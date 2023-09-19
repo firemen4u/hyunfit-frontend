@@ -50,6 +50,10 @@ function remove(url) {
 }
 
 function setToken(token) {
+  console.log(token)
+  if (token.startsWith('Bearer ')) {
+    token = token.replace('Bearer ', '')
+  }
   axiosInstance = axios.create({
     baseURL: BACKEND_API_BASE_URL,
     headers: {
