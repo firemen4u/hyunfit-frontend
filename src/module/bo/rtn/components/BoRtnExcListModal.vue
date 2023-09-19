@@ -34,7 +34,9 @@
     @update:show="showModal = $event"
   />
   <div v-for="exercise in registeredExercises" :key="exercise.excSeq">
-    운동 이름: {{ exercise.excName }}
+    운동 이름: {{ exercise.excName }} , 운동 시간 :
+    {{ ((exercise.excSetCount * exercise.excTimePerSetInSec) / 60).toFixed(1) }}
+    분
     <button @click="removeExercise(exercise)">X</button>
     <!-- 삭제 버튼 -->
   </div>
@@ -42,6 +44,8 @@
     <button @click="submitExercises">선택 완료</button>
     <button @click="clearExercises">초기화</button>
   </div>
+  <div>{{ message }}</div>
+  <!-- 메시지 출력 -->
 </template>
 
 <script setup>
@@ -56,6 +60,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 
 const registeredExercises = ref([]) // 등록된 운동을 저장할 변수
 const emit = defineEmits(['update:exercises']) // emit 정의
+const message = ref('') // 메시지를 저장할 변수
 
 // registeredExercises 배열에 운동 추가
 const addRegisteredExercise = exercise => {
@@ -70,19 +75,33 @@ const removeExercise = exerciseToRemove => {
   if (index !== -1) {
     registeredExercises.value.splice(index, 1)
   }
+  if (message.value !== '') {
+    message.value = '다시 선택완료를 눌러주세요.'
+  }
 }
 
 // registeredExercises 배열 초기화
 const clearExercises = () => {
   registeredExercises.value = []
+  message.value = '초기화되었습니다.' // 초기화 메시지 설정
 }
 
 const submitExercises = () => {
   emit('update:exercises', registeredExercises.value) // 상위 컴포넌트에 전달
   console.log(
     'Exercises sent:',
-    JSON.stringify(registeredExercises.value, null, 2)
-  ) // 콘솔에 로깅
+    JSON.stringify(registeredExercises.value, null, 2) // 콘솔에 로깅
+  )
+  // 운동 이름
+  const exerciseNames = registeredExercises.value.map(e => e.excName).join(', ')
+  // 총 시간을 분 단위로 계산
+  const totalMinutes = registeredExercises.value.reduce((acc, curr) => {
+    return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
+  }, 0)
+
+  message.value = `선택이 완료되었습니다. 선택이 완료된 운동: ${exerciseNames}, 총 시간: ${totalMinutes.toFixed(
+    1
+  )} 분` // 총 시간 추가
 }
 
 const searchText = ref('') // 검색 텍스트를 저장할 ref 변수

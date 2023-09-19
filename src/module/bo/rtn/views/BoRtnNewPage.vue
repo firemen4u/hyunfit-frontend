@@ -14,7 +14,7 @@
         <div class="rtn-name">
           <p class="col-1">루틴 이름</p>
           <v-text-field
-            v-model="exc_name"
+            v-model="rtn_name"
             clearable
             maxlength="20"
             placeholder="20자 내로 작성하세요"
@@ -26,7 +26,7 @@
         <div class="rtn-content">
           <p class="col-1">루틴 설명</p>
           <v-textarea
-            v-model="exc_content"
+            v-model="rtn_content"
             clearable
             placeholder="50자 내로 작성하세요"
             maxlength="50"
@@ -40,8 +40,9 @@
           <div>
             <v-file-input
               label="File input"
-              v-model="files"
+              v-model="rtn_thumbnail_url"
               @change="previewImage"
+              @click:clear="imageUrl = null"
             ></v-file-input>
             <div v-if="imageUrl">
               <img :src="imageUrl" alt="Image Preview" width="200" />
@@ -235,6 +236,9 @@ const rtn_back_disk_considered_radio = [
 ]
 
 //submit 시키기
+const rtn_name = ref('')
+const rtn_content = ref('')
+const rtn_duration = ref('')
 const rtn_goal = ref('')
 const rtn_target = ref('')
 const rtn_experience_level = ref('')
@@ -243,14 +247,14 @@ const rtn_noise_considered = ref('')
 const rtn_long_sitter = ref('')
 const rtn_neck_shoulder_focused = ref('')
 const rtn_back_disk_considered = ref('')
-
+const rtn_reward_point = ref('')
 // 운동 목록 모달 보여주는 곳
 const showModal = ref(false)
 const toggleModal = () => {
   showModal.value = !showModal.value
 }
 
-const files = ref([]) // 선택한 파일을 저장할 ref 변수
+const rtn_thumbnail_url = ref('') // 이미지 파일
 const imageUrl = ref(null) // 이미지 미리보기 URL을 저장할 ref 변수
 
 // 파일 미리보기를 생성하는 함수
@@ -259,9 +263,8 @@ const previewImage = () => {
   reader.addEventListener('load', () => {
     imageUrl.value = reader.result
   })
-
-  if (files.value && files.value[0]) {
-    reader.readAsDataURL(files.value[0])
+  if (rtn_thumbnail_url.value && rtn_thumbnail_url.value[0]) {
+    reader.readAsDataURL(rtn_thumbnail_url.value[0])
   }
 }
 
@@ -273,6 +276,19 @@ const updateExercises = updatedExercises => {
 
 const sendDataToAPI = () => {
   const payload = {
+    admSeq: '1',
+    rtnName: rtn_name.value,
+    rtnContent: rtn_content.value,
+    rtnDuration: rtn_duration.value,
+    rtnGoal: rtn_goal.value,
+    rtnTarget: rtn_target.value,
+    rtnExperienceLevel: rtn_experience_level.value,
+    rtnKneeHealthConsidered: rtn_knee_health_considered.value,
+    rtnNoiseConsidered: rtn_noise_considered.value,
+    rtnLongSitter: rtn_long_sitter.value,
+    rtnNeckShoulderFocused: rtn_neck_shoulder_focused.value,
+    rtnBackDiskConsidered: rtn_back_disk_considered.value,
+    rtnRewardPoint: rtn_reward_point.value,
     // ... 다른 필드
     exercises: exercisesFromModal.value,
   }
