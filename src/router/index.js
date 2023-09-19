@@ -16,6 +16,7 @@ import TrnFeedBackPage from '/src/module/mbr-pt-feedback/views/MbrPtFeedBackPage
 import LoginPage from '/src/module/main/views/LoginPage.vue'
 import BoRtnBoardPage from '/src/module/bo/rtn/views/BoRtnBoardPage.vue'
 import BoRtnNewPage from '/src/module/bo/rtn/views/BoRtnNewPage.vue'
+import PtReservationCompletePage from '@/module/pt-reservation/views/PtReservationCompletionPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,7 +37,7 @@ const router = createRouter({
       component: SurveyPage,
     },
     {
-      path: '/trn-search',
+      path: '/trainers',
       name: 'trn-search',
       component: TrnSearchPage,
     },
@@ -105,6 +106,19 @@ const router = createRouter({
       name: 'bo-BoRtnNewPage',
       component: BoRtnNewPage,
     },
+    {
+      path: '/reservations',
+      name: 'pt-reservations',
+      component: PtReservationCompletePage,
+    },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // Scroll to the top of the page on route change
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
 })
 export default router

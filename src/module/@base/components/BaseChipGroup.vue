@@ -1,6 +1,7 @@
 <script setup>
 defineProps({
   items: Array,
+  disabled: Boolean,
 })
 </script>
 
@@ -14,6 +15,7 @@ defineProps({
       variant="outlined"
       selected-class="active-chip"
       :ripple="false"
+      :disabled="disabled"
     >
       {{ item }}
     </v-chip>

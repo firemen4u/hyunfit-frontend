@@ -2,49 +2,98 @@
 // https://soomgo.com/profile/users/195673?prev=searchPro&hasFilter=false&serviceSelected=true&from=pro_list&serviceInfo=%7B%22id%22%3A88,%22name%22%3A%22%ED%8D%BC%EC%8A%A4%EB%84%90%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%8B%9D%28PT%29%22,%22slug%22%3A%22%ED%8D%BC%EC%8A%A4%EB%84%90%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%8B%9D%22%7D
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { BaseRating } from '/src/module/@base/components'
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount, computed } from 'vue'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import TrnDetailTimeslotContainer from '@/module/trn-detail/components/TrnDetailTimeslotContainer.vue'
 import BaseChipGroup from '@/module/@base/components/BaseChipGroup.vue'
-import { getTrnDetail } from '@/module/trn-detail/services/trnDetailApi'
-import ReviewStickerGroup from '@/module/trn-detail/components/ReviewStickerGroup.vue'
+import {
+  getTrnDetail,
+  postPersonalTraining,
+  getTrnAllReservedTimeslots,
+} from '@/module/trn-detail/services/trnDetailApi'
+
+import UiHandler from '@/module/trn-detail/services/trnDetailUiHandler'
+
+import ReviewStickerGroup from '@/module/trn-detail/components/TrnDetailReviewStickerGroup.vue'
 import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
-import QnASection from '@/module/trn-detail/components/QnASection.vue'
+import QnASection from '@/module/trn-detail/components/TrnDetailQnASection.vue'
+import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
+import PtReservationConfirmLoadingModal from '@/module/pt-reservation/components/PtReservationConfirmLoadingModal.vue'
+import {
+  ptReservationOptions,
+  trnCertificatesSrc,
+} from '@/module/trn-detail/stores/trnDetailCommon'
+import router from '@/router'
 
 let trnData = ref([])
 const route = useRoute()
-let options = [
-  '운동이 처음이에요',
-  '살을 빼고 싶어요',
-  '코어를 강화하고 싶어요',
-  '부상 이력이 있어요',
-  '식단 조언도 함께 받고 싶어요',
-]
 
-let certificates = [
-  'https://fs.hyunfit.life/api/hyunfit/file/pt-certificate-1.jpg',
-  'https://fs.hyunfit.life/api/hyunfit/file/pt-certificate-2.jpg',
-  'https://fs.hyunfit.life/api/hyunfit/file/pt-certificate-3.jpg',
-]
 let sectionFocus = ref(1)
+const trnDetailPageDatePicker = ref(null)
+const dateSelected = ref(null)
+const timeSelected = ref('')
+const reservedTimeslots = ref([])
+const datetimeSelected = computed(() => {
+  if (dateSelected.value && timeSelected.value) {
+    return TrnDetailDateUtils.toDateFromDateAndTimeStr(
+      dateSelected.value,
+      timeSelected.value
+    )
+  }
+  return null
+})
 
-let dateSelected = ref(null)
-let timeSelected = ref('')
-let optionSelected = ref([])
+let ptReservationOptionSelected = ref([])
 let reservationConfirmLoading = ref(false)
-function resetDateSelected() {
+let reservationFailureReason = ref('')
+let reservationResultModalOpen = computed(() => {
+  return (
+    reservationConfirmLoading.value || reservationFailureReason.value !== ''
+  )
+})
+
+function okClickedOnReservationResultModal() {
+  reservationConfirmLoading.value = false
+  reservationFailureReason.value = ''
+}
+async function reloadTimeslots(date) {
   timeSelected.value = null
-  optionSelected.value = []
+  ptReservationOptionSelected.value = []
+  let params = TrnDetailDateUtils.toTimeslotSearchDTO(date)
+  let result = await getTrnAllReservedTimeslots(route.params.trnId, params)
+  reservedTimeslots.value = result.timeslots?.map(dateStr => {
+    const timeParts = dateStr.split(' ')[1].split(':')
+    return `${timeParts[0]}:${timeParts[1]}`
+  })
 }
 
-function confirmReservation() {
+async function confirmReservation() {
   reservationConfirmLoading.value = true
-  setTimeout(() => (reservationConfirmLoading.value = false), 3000)
+  const data = {
+    mbrSeq: 1,
+    trnSeq: 1,
+    ptReservationDate: datetimeSelected.value,
+    ptNoteStickers: ptReservationOptionSelected.value.join(','),
+  }
+  // reservationFailureReason.value = 'Error Code 405'
+  try {
+    let result = await postPersonalTraining(data)
+    await router.push({ name: 'pt-reservations' })
+  } catch (error) {
+    reservationFailureReason.value = error
+  }
 }
-
+async function reloadDatePicker(date) {
+  await UiHandler.reloadDatePicker(
+    trnDetailPageDatePicker,
+    route.params.trnId,
+    date
+  )
+}
 async function initPage() {
   trnData.value = await getTrnDetail(route.params.trnId)
+  await reloadDatePicker(new Date())
 }
 
 onBeforeMount(() => {
@@ -182,7 +231,7 @@ onMounted(() => {
                 <div class="flex">
                   <div
                     class="h-28 w-28 border-2 border-neutral-100 rounded-lg mr-4 flex itmes-center"
-                    v-for="(c, i) in certificates"
+                    v-for="(c, i) in trnCertificatesSrc"
                     :key="i"
                   >
                     <img :src="c" alt="" class="object-cover" />
@@ -240,17 +289,23 @@ onMounted(() => {
 
         <div class="pt-aside h-36">
           <div class="text-lg font-black mb-2">트레이너 레슨 예약하기</div>
-          <div class="trn-detail-date-picker-wrapper">
+          <div
+            class="trn-detail-date-picker-wrapper"
+            ref="trnDetailPageDatePicker"
+          >
             <v-locale-provider locale="ko">
               <v-date-picker
                 v-model="dateSelected"
-                class="trn-detail-date-picker"
                 hide-actions
+                class="trn-detail-date-picker"
                 show-adjacent-months
                 max-width="100%"
                 :min="Date.now()"
                 color="#D23361"
-                @update:modelValue="resetDateSelected()"
+                title=""
+                header=""
+                @update:modelValue="date => reloadTimeslots(date)"
+                @update:displayDate="date => reloadDatePicker(date)"
               ></v-date-picker
             ></v-locale-provider>
           </div>
@@ -259,6 +314,8 @@ onMounted(() => {
               <TrnDetailTimeslotContainer
                 :modelValue="timeSelected"
                 @update:modelValue="value => (timeSelected = value)"
+                :disabled="reservationConfirmLoading"
+                :reservedTimeslots="reservedTimeslots"
               />
             </div>
           </div>
@@ -270,19 +327,32 @@ onMounted(() => {
               더욱 개인화된 트레이닝을 받을 수 있어요!
             </div>
             <div class="chips-wrapper mt-5">
-              <BaseChipGroup v-model="optionSelected" :items="options" />
+              <BaseChipGroup
+                v-model="ptReservationOptionSelected"
+                :items="ptReservationOptions"
+                :disabled="reservationConfirmLoading"
+              />
             </div>
           </div>
           <v-btn
             v-if="timeSelected"
             :loading="reservationConfirmLoading"
+            :disabled="reservationConfirmLoading"
             color="primary"
             height="50"
             class="w-full mt-10"
             @click="confirmReservation"
           >
-            <div class="py-4 text-bold">10월 22일 오후 2시 예약</div>
+            <div class="font-bold">
+              {{ TrnDetailDateUtils.formattedDatetime(datetimeSelected) }}
+            </div>
           </v-btn>
+
+          <PtReservationConfirmLoadingModal
+            v-model="reservationResultModalOpen"
+            :failure-reason="reservationFailureReason"
+            @click:ok="okClickedOnReservationResultModal"
+          />
         </div>
       </div>
     </BaseBodyWrapper>
@@ -322,6 +392,16 @@ hr.solid {
 </style>
 
 <style>
+.trn-detail-date-picker .trn-detail-disabled-btn {
+  cursor: default;
+}
+.trn-detail-date-picker .trn-detail-disabled-btn .v-btn__overlay {
+  background-color: rgba(161, 113, 113, 0) !important;
+}
+.trn-detail-date-picker .trn-detail-disabled-btn .v-btn__content {
+  color: rgba(0, 0, 0, 0.2) !important;
+}
+
 .trn-detail-date-picker-wrapper .v-picker-title {
   display: none;
 }
