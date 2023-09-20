@@ -39,7 +39,6 @@
                     hint="이메일 형식으로 써주세요"
                   ></v-text-field>
                 </div> -->
-
                 <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">생년월일</p>
                   <v-text-field
@@ -49,10 +48,10 @@
                     v-model="response.mbrBirthdate"
                     placeholder="YYYYMMDD"
                     clearable
-                    hint="YYYYMMDD 형식으로 써주세요"
+                    :hint="birthdateHint"
+                    @input="validateBirthdate"
                   ></v-text-field>
                 </div>
-
                 <!-- <div class="p-2 flex h-24">
                   <p class="mr-2 mt-4 w-1/6">추천 운동</p>
                   <div class="flex flex-col justify-center items-start">
@@ -128,13 +127,19 @@ import { ref, onMounted, computed, onBeforeMount } from 'vue'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import ApiClient from '/src/services/api.js'
+import _ from 'lodash'
 
 const response = ref(null)
+let putData = {
+  updateData: Object,
+}
 
 let originMbrName = null
 let originBirthdate = null
 let originMbrHeight = null
 let originMbrWeight = null
+
+const birthdateError = ref('')
 
 const isButtonActive = computed(() => {
   if (response.value === null) return false
@@ -144,6 +149,34 @@ const isButtonActive = computed(() => {
     response.value.mbrHeight !== originMbrHeight ||
     response.value.mbrWeight !== originMbrWeight
   )
+})
+
+const validateBirthdate = () => {
+  const regex = /^(\d{4})(\d{2})(\d{2})$/
+  const year = parseInt(response.value.mbrBirthdate.slice(0, 4))
+  const month = parseInt(response.value.mbrBirthdate.slice(4, 6))
+  const day = parseInt(response.value.mbrBirthdate.slice(6, 8))
+  const result =
+    regex.test(response.value.mbrBirthdate) &&
+    year >= 1900 &&
+    month >= 1 &&
+    month <= 12 &&
+    day >= 1 &&
+    day <= 31
+
+  if (!result) {
+    birthdateError.value = '올바른 형식의 생년월일을 입력하세요.'
+  } else {
+    birthdateError.value = '' // 유효한 경우 오류 메시지를 지움
+  }
+}
+
+const birthdateHint = computed(() => {
+  if (birthdateError.value) {
+    return birthdateError.value // 오류 메시지가 있는 경우 표시
+  } else {
+    return 'YYYYMMDD 형식으로 써주세요' // 오류 메시지가 없는 경우 기본 힌트 표시
+  }
 })
 
 async function init() {
@@ -179,10 +212,22 @@ onMounted(async () => {
 function sendData() {
   console.log('sendData()')
   console.log('response', response?.value)
-  console.log('URL', `/members/${response?.value.mbrId}`)
-  ApiClient.put(`/members/${response?.value.mbrId}`, response?.value)
-}
+  console.log('mbrBirthDate', response?.value.mbrBirthdate)
 
+  const year = parseInt(response.value.mbrBirthdate.slice(0, 4))
+  const month = parseInt(response.value.mbrBirthdate.slice(4, 6))
+  const day = parseInt(response.value.mbrBirthdate.slice(6, 8))
+
+  const timeStampDate = new Date(year, month, day)
+
+  putData = _.cloneDeep(response.value)
+  putData.mbrBirthdate = timeStampDate
+  console.log('putData : ', putData)
+  console.log('putData.updateData : ', putData.mbrBirthdate)
+  console.log('response value', response.value.mbrBirthdate)
+
+  ApiClient.put(`/members/${response?.value.mbrId}`, putData)
+}
 const sidebarHeader = '마이페이지'
 const mainCategory = '카테고리'
 const subcategories = [
