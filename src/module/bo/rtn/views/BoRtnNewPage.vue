@@ -1,5 +1,5 @@
-<template lang="">
-  <BaseContainer>
+<template>
+  <BaseContainer admin-menu>
     <BaseSideBar
       :sidebarHeader="sidebarHeader"
       :categoryTitle="mainCategory"
@@ -44,7 +44,7 @@
           <div class="flex rtn-thumnail items-center">
             <p class="col-1">루틴 썸네일</p>
             <div class="flex items-center">
-              <PictureSvg size="30" color="gray" />
+              <PictureSvg :size="30" color="gray" />
               <v-file-input
                 class="rtn-thumnail-input mr-5"
                 label="썸네일 이미지"

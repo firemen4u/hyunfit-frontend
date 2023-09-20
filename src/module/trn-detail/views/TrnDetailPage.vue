@@ -79,7 +79,7 @@ async function confirmReservation() {
   // reservationFailureReason.value = 'Error Code 405'
   try {
     let result = await postPersonalTraining(data)
-    await router.push({ name: 'pt-reservations' })
+    await router.push({ name: 'pt-reservation-completed' })
   } catch (error) {
     reservationFailureReason.value = error
   }
