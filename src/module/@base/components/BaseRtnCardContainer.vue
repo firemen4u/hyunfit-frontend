@@ -3,6 +3,7 @@
 <template>
   <div>
     <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
+    
     <BaseRtnCardGroup :routines="routines" />
   </div>
 </template>

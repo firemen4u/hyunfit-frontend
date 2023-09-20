@@ -17,9 +17,6 @@ const selectedRoutine = ref(null) // 선택된 루틴 정보를 담을 변수
 const openModal = routine => {
   showModal.value = true
   selectedRoutine.value = routine
-  console.log(routine.exercises[0])
-  console.log(routine.exercises[1])
-  console.log(routine.exercises[2])
 }
 function srcUrlOf(rtnSeq) {
   return `${FILE_SERVER_HYUNFIT_URL}/routine_thumbnail_${rtnSeq}.jpg`
@@ -29,18 +26,15 @@ function srcUrlOf(rtnSeq) {
   <v-dialog v-model="showModal" width="auto">
     <div class="card-container">
       <div class="bg-white">
-        <p>루틴안의 운동 정보</p>
         <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
-        <div v-if="selectedRoutine.value">
-          <ul>
-            <li
-              v-for="exercise in selectedRoutine.value.exercises"
-              :key="exercise.excSeq"
-            >
-              {{ exercise.excName }}
-            </li>
-          </ul>
+        <div v-if="selectedRoutine" class="flex">
+          <BoExcCard
+            v-for="exercise in selectedRoutine"
+            :exercise="exercise"
+            :key="exercise.excSeq"
+          />
         </div>
+        <div><v-btn> Button </v-btn></div>
       </div>
     </div>
     <v-card>
@@ -58,7 +52,7 @@ function srcUrlOf(rtnSeq) {
     <div
       v-for="data in routines"
       :key="data.rtnSeq"
-      @click="openModal(data)"
+      @click="openModal(data.exercises)"
       class="rtn-card rounded-lg overflow-hidden shadow-md my-3 bg-white"
     >
       <img
