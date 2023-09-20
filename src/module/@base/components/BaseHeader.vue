@@ -15,22 +15,22 @@ const props = defineProps({
 })
 
 const headerPages = [
-  { displayName: '홈', destination: pathNames.mainPage },
+  { displayName: '홈', destination: pathNames.main },
   {
     displayName: 'AI트레이닝',
-    destination: pathNames.mbrRoutineBoardPage,
+    destination: pathNames.mbrRoutineBoard,
     menus: [
-      { menuName: '루틴', destination: pathNames.mbrRoutineBoardPage },
-      { menuName: '리포트', destination: pathNames.reportPage },
+      { menuName: '루틴', destination: pathNames.mbrRoutineBoard },
+      { menuName: '리포트', destination: pathNames.report },
     ],
   },
   {
     displayName: '화상트레이닝',
-    destination: pathNames.trnSearchPage,
+    destination: pathNames.trnSearch,
     menus: [
-      { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
-      { menuName: '내 예약', destination: pathNames.mbrRsvPage },
-      { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedbackPage },
+      { menuName: '트레이너 찾기', destination: pathNames.trnSearch },
+      { menuName: '내 예약', destination: pathNames.mbrReservation },
+      { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedback },
     ],
   },
 ]
@@ -47,7 +47,7 @@ const adminPages = [
 ]
 
 const profileMenus = [
-  { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
+  { displayName: '운동환경 재설정', destination: pathNames.survey },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
   { displayName: '비밀번호 변경', destination: '/' },
   { displayName: '로그아웃', destination: '/' },

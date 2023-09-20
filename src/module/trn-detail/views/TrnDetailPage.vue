@@ -19,7 +19,7 @@ import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
 import QnASection from '@/module/trn-detail/components/TrnDetailQnASection.vue'
 import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
-import PtReservationConfirmLoadingModal from '@/module/mbr-rsv-completion/components/PtReservationConfirmLoadingModal.vue'
+import PtReservationConfirmLoadingModal from '@/module/pt-reservation/components/PtReservationConfirmLoadingModal.vue'
 import {
   ptReservationOptions,
   trnCertificatesSrc,
