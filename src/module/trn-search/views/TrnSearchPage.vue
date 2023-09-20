@@ -25,6 +25,12 @@ const genderOptions = [
   { label: '상관없음', value: 302 },
 ]
 
+const searchOrderOptions = [
+  { name: '추천순', option: 'FIRE_SCORE' },
+  { name: '평점 높은순', option: 'RATING' },
+  { name: '리뷰 많은순', option: 'REVIEW_COUNT' },
+]
+
 let selectedLessonTypes = ref([])
 let selectedGender = ref(null)
 let searchKeyword = ref('')
@@ -33,7 +39,7 @@ let selectedFilterOptions = computed(() => {
   return selectedLessonTypes.value.concat(genderOption)
 })
 
-let searchOrder = ref('')
+let selectedSearchOrder = ref(searchOrderOptions[0])
 
 let trnSearchResults = ref([])
 
@@ -49,7 +55,7 @@ function resetFilter() {
 
 async function search() {
   const params = {
-    order: 'FIRE_SCORE',
+    order: selectedSearchOrder.value.option,
   }
   if (selectedLessonTypes.value)
     params['trainerTypes'] = selectedLessonTypes.value.join(',')
@@ -61,7 +67,10 @@ async function search() {
 
   await loadData(params)
 }
-
+function updateSearchOrder(selectedOrder) {
+  selectedSearchOrder.value = selectedOrder
+  search()
+}
 async function loadData(params = {}) {
   trnSearchResults.value = await TrnSearchApi.getTrainers(params)
 }
@@ -104,7 +113,11 @@ onBeforeMount(() => {
                 />
               </template>
               <template v-slot:search-order-selector
-                ><TrnSearchOrderSelector />
+                ><TrnSearchOrderSelector
+                  :model-value="selectedSearchOrder"
+                  :options="searchOrderOptions"
+                  @update:modelValue="order => updateSearchOrder(order)"
+                />
               </template>
               <template v-slot:filter-chip-group>
                 <FilterChipGroup :items="selectedFilterOptions" />

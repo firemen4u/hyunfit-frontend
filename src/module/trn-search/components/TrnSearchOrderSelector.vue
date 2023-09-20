@@ -1,24 +1,40 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue'
 
+const props = defineProps({
+  modelValue: Object,
+  options: Array,
+})
+const emit = defineEmits(['update:option', 'update:modelValue'])
+const innerModelValue = ref(props.modelValue)
+function updateOption() {
+  emit('update:option')
+  emit('update:modelValue', innerModelValue.value)
+}
+</script>
 <template>
-  <v-select
-    class="w-52"
-    single-line
-    label="Select"
-    :items="[
-      'California',
-      'Colorado',
-      'Florida',
-      'Georgia',
-      'Texas',
-      'Wyoming',
-    ]"
-    variant="solo"
-    append-icon="none"
-    density="compact"
-  >
-    <template v-slot:append-inner><div /> </template>
-  </v-select>
+  <div class="h-11">
+    <v-select
+      v-model="innerModelValue"
+      class="selector w-40"
+      single-line
+      flat
+      label="Select"
+      :items="props.options"
+      item-title="name"
+      :item-value="item => item"
+      variant="outlined"
+      density="compact"
+      hide-details
+      @update:modelValue="updateOption()"
+    >
+      <template v-slot:prepend-icon> </template>
+    </v-select>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.selector {
+  height: 44px;
+}
+</style>

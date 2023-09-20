@@ -52,6 +52,17 @@ let reservationResultModalOpen = computed(() => {
     reservationConfirmLoading.value || reservationFailureReason.value !== ''
   )
 })
+let lazyLoadedProfileImageUrl = ref(null)
+const hasProfileImage = ref(true)
+const profileDialogOpen = ref(false)
+function setDefaultBanner(e) {
+  if (e.target.src === null) return
+  hasProfileImage.value = false
+}
+
+function openProfileDialog() {
+  profileDialogOpen.value = true
+}
 
 function okClickedOnReservationResultModal() {
   reservationConfirmLoading.value = false
@@ -76,9 +87,9 @@ async function confirmReservation() {
     ptReservationDate: datetimeSelected.value,
     ptNoteStickers: ptReservationOptionSelected.value.join(','),
   }
-  // reservationFailureReason.value = 'Error Code 405'
   try {
     let result = await postPersonalTraining(data)
+    reservationConfirmLoading.value = false
     await router.push(pathNames.ptReservationCompleted)
   } catch (error) {
     reservationFailureReason.value = error
@@ -91,9 +102,13 @@ async function reloadDatePicker(date) {
     date
   )
 }
+function lazyLoadProfileImage(url) {
+  lazyLoadedProfileImageUrl.value = url
+}
 async function initPage() {
   trnData.value = await getTrnDetail(route.params.trnId)
   await reloadDatePicker(new Date())
+  lazyLoadProfileImage(trnData.value.trnProfileUrl)
 }
 
 onBeforeMount(() => {
@@ -125,19 +140,45 @@ onMounted(() => {
   <BaseContainer>
     <div class="banner w-full flex items-center">
       <img
-        :src="trnData.trnProfileUrl"
+        v-if="hasProfileImage"
+        :src="lazyLoadedProfileImageUrl"
         alt="Banner Image"
         class="banner-img object-cover w-100"
       />
+      <div v-else class="banner-default-img w-100"></div>
     </div>
 
     <BaseBodyWrapper ref="root">
       <div class="profile-image mt-40">
-        <img
-          class="rounded-lg border-white border-2 w-24 border-solid"
-          :src="trnData.trnProfileUrl"
-          alt=""
-        />
+        <div v-if="hasProfileImage">
+          <button @click="openProfileDialog()">
+            <img
+              class="rounded-lg border-white border-2 w-32 border-solid"
+              :src="lazyLoadedProfileImageUrl"
+              alt=""
+              @error="e => setDefaultBanner(e)"
+            />
+          </button>
+          <v-dialog
+            v-model="profileDialogOpen"
+            class="trn-detail-profile-dialog"
+            width="auto"
+          >
+            <img
+              class="dialog-img rounded-lg"
+              :src="lazyLoadedProfileImageUrl"
+              alt=""
+              @error="e => setDefaultBanner(e)"
+            />
+          </v-dialog>
+        </div>
+        <div v-else>
+          <img
+            class="rounded-lg border-white border-2 w-32 border-solid"
+            src="/src/assets/images/default-user-profile.jpg"
+            alt=""
+          />
+        </div>
       </div>
       <div class="flex mt-6 justify-between">
         <div class="profile-container mr-10">
@@ -151,11 +192,14 @@ onMounted(() => {
           <div
             class="summary-container bg-neutral-50 py-6 flex justify-around rounded my-10"
           >
-            <div class="flex flex-col items-center">
+            <div class="flex flex-col items-center" v-if="trnData.trnPtCount">
               <div class="text-xs">수업</div>
               <div class="text-xl font-black">{{ trnData.trnPtCount }}회</div>
             </div>
-            <div class="flex flex-col items-center">
+            <div
+              class="flex flex-col items-center"
+              v-if="trnData.reviews?.length"
+            >
               <div class="text-xs">리뷰</div>
               <BaseCompactRating
                 :rating="trnData.averageReviewRating"
@@ -360,6 +404,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.dialog-img {
+  width: 30vw;
+}
 hr.solid {
   border-top: 1px solid #d5d5d5;
 }
@@ -389,9 +436,19 @@ hr.solid {
   height: 210px;
   object-position: 50% 20%;
 }
+.banner .banner-default-img {
+  height: 210px;
+  object-position: 50% 20%;
+  background-color: #d23361;
+}
 </style>
 
 <style>
+.trn-detail-profile-dialog .v-overlay__scrim {
+  backdrop-filter: blur(8px);
+  background: none;
+  opacity: 1;
+}
 .trn-detail-date-picker .trn-detail-disabled-btn {
   cursor: default;
 }
