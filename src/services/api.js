@@ -21,7 +21,6 @@ async function get(url, config = {}) {
   return await axiosInstance
     .get(url, config)
     .then(response => {
-      console.log(response)
       return response.data
     })
     .catch(error => {

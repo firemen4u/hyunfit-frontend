@@ -3,10 +3,18 @@ import { BaseBodyWrapper, BaseContainer } from '@/module/@base/views'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { Bar, Line } from 'vue-chartjs'
 import { Colors } from '/src/common'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onBeforeMount } from 'vue'
 import { CircleCheckSvg, CalorieSvg, TimerSvg } from '@/module/@base/svg'
 import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import ReportExcTimelineContainer from '@/module/report/components/ReportExcTimelineContainer.vue'
+import {
+  expChartOptions,
+  calorieChartOptions,
+} from '@/module/report/services/optionsProvider'
+import ReportUiHandler from '@/module/report/services/reportUiHandler'
+import ReportApi from '@/module/report/services/reportApi'
+import ReportMonthPicker from '@/module/report/components/ReportMonthPicker.vue'
+import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
 
 let today = new Date('December 26, 2010')
 let calorieChart = ref(null)
@@ -53,86 +61,7 @@ let calorieChartData = {
   ],
 }
 
-let expChartOptions = {
-  responsive: false,
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      ticks: {
-        font: {
-          size: 10,
-        },
-      },
-    },
-    y: {
-      ticks: {
-        font: {
-          size: 11,
-        },
-      },
-    },
-  },
-  layout: {
-    padding: {
-      bottom: 5,
-      left: 5,
-      right: 16,
-      top: 16,
-    },
-  },
-  interaction: {
-    intersect: false,
-  },
-  plugins: {
-    legend: {
-      display: false, // 범례 숨김
-    },
-  },
-}
-
-let calorieChartOptions = {
-  responsive: false,
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      // display: false,
-      grid: {
-        display: false,
-      },
-      ticks: {
-        font: {
-          size: 10,
-        },
-      },
-    },
-    y: {
-      // display: false,
-      // beginAtZero: true,
-      grid: {
-        display: false,
-      },
-      ticks: {
-        font: {
-          size: 11,
-        },
-      },
-    },
-  },
-  layout: {
-    padding: {
-      bottom: 5,
-      left: 5,
-      right: 16,
-      top: 16,
-    },
-  },
-  plugins: {
-    legend: {
-      display: false, // 범례 숨김
-    },
-  },
-}
-
+const reportData = ref(null)
 function createDateList() {
   const startDate = new Date('2023-08-01')
   const endDate = new Date('2023-08-31')
@@ -150,33 +79,19 @@ function createDateList() {
 
   return dateList
 }
-function parseDateString(dateString) {
-  if (dateString == null) return null
-  const parts = dateString.split('-')
-  return new Date(parts[0], parts[1] - 1, parts[2])
-}
 
-function renderDatePicker() {
-  const dayElements = reportPageDatePickerWrapper.value.querySelectorAll(
-    '.v-date-picker-month__days div'
-  )
-  const exercisedDates = dates.map(parseDateString)
-  dayElements.forEach(element => {
-    const calDateStr = element.getAttribute('data-v-date')
-    if (calDateStr == null) return
-    let calDate = parseDateString(calDateStr)
-    if (exercisedDates.some(eDates => calDate.getDate() === eDates.getDate())) {
-      const btn = element.querySelector('button')
-      if (btn.classList.contains('v-btn--active') === false) {
-        btn.classList.remove('bg-transparent')
-        btn.classList.add('bg-exercised')
-      }
-    }
-  })
+async function init() {
+  const now = new Date()
+  const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+  let endDate = new Date(now.getFullYear(), now.getMonth(), 1)
+  endDate = new Date(endDate.setMonth(endDate.getMonth() + 1))
+  const params = TrnDetailDateUtils.toSearchDTO(startDate, endDate)
+  reportData.value = await ReportApi.getReport(1, params)
 }
 
 onMounted(() => {
-  renderDatePicker()
+  init()
+  ReportUiHandler.renderDatePicker(reportPageDatePickerWrapper, dates)
 
   const watchCalorieChart = watch(
     () => calorieChart.value.chart,
@@ -197,12 +112,15 @@ onMounted(() => {
     }
   )
 })
+const reportDate = ref('2023-09')
 </script>
 
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
+      reportDate: {{ reportDate }}
       <div class="report-summary-container w-full py-10 mb-2">
+        <ReportMonthPicker v-model="reportDate" />
         <div class="report-title">리포트</div>
         <div class="report-summary-wrapper flex justify-between">
           <div

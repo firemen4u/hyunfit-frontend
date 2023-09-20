@@ -12,6 +12,8 @@ import EmptyStarSvg from './EmptyStarSvg.vue'
 import HyunfitLogoGradientSvg from './HyunfitLogoGradientSvg.vue'
 import HyunfitLogoMonoSvg from './HyunfitLogoMonoSvg.vue'
 import DownArrowSvg from './DownArrowSvg.vue'
+import LeftArrowSvg from './LeftArrowSvg.vue'
+import RightArrowSvg from './RightArrowSvg.vue'
 import EditPencilSvg from './EditPencilSvg.vue'
 import CloudArrowUpSvg from './CloudArrowUpSvg.vue'
 import CircleCheckSvg from './CircleCheckSvg.vue'
@@ -35,6 +37,8 @@ export {
   HyunfitLogoGradientSvg,
   HyunfitLogoMonoSvg,
   DownArrowSvg,
+  LeftArrowSvg,
+  RightArrowSvg,
   EditPencilSvg,
   CloudArrowUpSvg,
   CircleCheckSvg,
