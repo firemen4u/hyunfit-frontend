@@ -76,7 +76,7 @@
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import MbrRsvTrainCard from '/src/module/mbr-reservation/components/MbrRsvTrainCard.vue'
+import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import { ref } from 'vue'
 const profileImageUrl =
