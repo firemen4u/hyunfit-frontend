@@ -9,7 +9,7 @@
       :src="coverSrc"
       :class="height"
     />
-    <div class="px-2 pb-2" :class="coverSrc ? 'pt-1' : 'pt-2'">
+    <div class="px-3 pb-2" :class="coverSrc ? 'pt-2' : 'pt-3'">
       <slot></slot>
     </div>
   </div>
