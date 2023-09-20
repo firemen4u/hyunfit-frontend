@@ -30,7 +30,7 @@ const headerPages = [
     menus: [
       { menuName: '트레이너 찾기', url: '/trainers' },
       { menuName: '내 예약', url: '/mbr-reservation' },
-      { menuName: '트레이너 피드백', url: '/trn-feedback' },
+      { menuName: '트레이너 피드백', url: '/mbr-pt-feedback' },
     ],
   },
 ]
