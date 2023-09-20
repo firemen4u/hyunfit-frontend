@@ -91,7 +91,7 @@ const avatarImageUrl2 =
 
 const selectedRating = ref(0)
 </script>
-<style scope>
+<style scoped>
 .MbrRsvTrainCard:hover {
   transform: translateY(-2px);
 }

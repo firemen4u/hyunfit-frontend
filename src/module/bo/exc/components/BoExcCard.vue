@@ -37,6 +37,11 @@ const handleClick = () => {
 .exc-img {
   max-width: 100%;
 }
+.exc-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .exc-content {
   text-overflow: ellipsis;
   white-space: nowrap;

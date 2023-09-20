@@ -1,6 +1,6 @@
 <template>
   <div
-    class="content-wrap p-2 mt-5 mb-20 shadow-md border-2 border-gray-100 rounded-lg"
+    class="content-wrap p-2 mt-5 mb-4 shadow-md border-2 border-gray-100 rounded-lg"
   >
     <div class="flex justify-between items-center">
       <BoExcBoardFilterContainer class="flex" @updateExcType="updateExcType" />
@@ -33,19 +33,41 @@
     :exercise="selectedExercise"
     @update:show="showModal = $event"
   />
-  <div v-for="exercise in registeredExercises" :key="exercise.excSeq">
-    운동 이름: {{ exercise.excName }} , 운동 시간 :
-    {{ ((exercise.excSetCount * exercise.excTimePerSetInSec) / 60).toFixed(1) }}
-    분
-    <button @click="removeExercise(exercise)">X</button>
-    <!-- 삭제 버튼 -->
+  <div class="flex justify-between">
+    <div class="p-2">
+      <p class="text-lg font-bold">선택한 운동 목록</p>
+    </div>
+    <div class="p-2">
+      <p class="text-lg font-bold">
+        총 시간 : {{ totalMinutes.toFixed(1) }} 분
+        <!-- 총 시간 추가 -->
+      </p>
+    </div>
+    <div class="">
+      <button @click="clearExercises" class="bg-gray-200 p-2 rounded-md">
+        초기화
+      </button>
+    </div>
   </div>
-  <div>
-    <button @click="submitExercises">선택 완료</button>
-    <button @click="clearExercises">초기화</button>
+  <div class="flex flex-wrap">
+    <div v-for="exercise in registeredExercises" :key="exercise.excSeq">
+      <div
+        class="flex justify-between p-2 bg-primary w-80 mb-2 mr-2 rounded-lg"
+      >
+        <p>이름: {{ exercise.excName }}</p>
+        <p>
+          소요 시간 :
+          {{
+            ((exercise.excSetCount * exercise.excTimePerSetInSec) / 60).toFixed(
+              1
+            )
+          }}
+          분
+        </p>
+        <button @click="removeExercise(exercise)">❌</button>
+      </div>
+    </div>
   </div>
-  <div>{{ message }}</div>
-  <!-- 메시지 출력 -->
 </template>
 
 <script setup>
@@ -60,11 +82,18 @@ import { ref, onMounted, computed, watch } from 'vue'
 
 const registeredExercises = ref([]) // 등록된 운동을 저장할 변수
 const emit = defineEmits(['update:exercises']) // emit 정의
-const message = ref('') // 메시지를 저장할 변수
+
+// 총 시간 계산
+const totalMinutes = computed(() => {
+  return registeredExercises.value.reduce((acc, curr) => {
+    return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
+  }, 0)
+}) // 총 시간을 계산하는 computed property를 추가
 
 // registeredExercises 배열에 운동 추가
 const addRegisteredExercise = exercise => {
   registeredExercises.value.push(exercise)
+  emit('update:exercises', registeredExercises.value)
 }
 
 // registeredExercises 배열에 운동 삭제
@@ -75,15 +104,11 @@ const removeExercise = exerciseToRemove => {
   if (index !== -1) {
     registeredExercises.value.splice(index, 1)
   }
-  if (message.value !== '') {
-    message.value = '다시 선택완료를 눌러주세요.'
-  }
 }
 
 // registeredExercises 배열 초기화
 const clearExercises = () => {
   registeredExercises.value = []
-  message.value = '초기화되었습니다.' // 초기화 메시지 설정
 }
 
 const submitExercises = () => {
@@ -92,16 +117,6 @@ const submitExercises = () => {
     'Exercises sent:',
     JSON.stringify(registeredExercises.value, null, 2) // 콘솔에 로깅
   )
-  // 운동 이름
-  const exerciseNames = registeredExercises.value.map(e => e.excName).join(', ')
-  // 총 시간을 분 단위로 계산
-  const totalMinutes = registeredExercises.value.reduce((acc, curr) => {
-    return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
-  }, 0)
-
-  message.value = `선택이 완료되었습니다. 선택이 완료된 운동: ${exerciseNames}, 총 시간: ${totalMinutes.toFixed(
-    1
-  )} 분` // 총 시간 추가
 }
 
 const searchText = ref('') // 검색 텍스트를 저장할 ref 변수

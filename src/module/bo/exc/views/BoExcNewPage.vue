@@ -404,7 +404,7 @@ const submit = async () => {
 }
 </script>
 
-<style scope>
+<style scoped>
 .col-1 {
   width: 200px;
   margin-left: 10px;

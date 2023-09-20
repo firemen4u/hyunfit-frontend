@@ -1,11 +1,12 @@
 <template>
-  <v-radio-group v-model="selectedValue" inline>
+  <v-radio-group class="radio-wrap" v-model="selectedValue" inline>
     <v-radio
       v-for="(option, index) in options"
       :key="index"
       :label="option.label"
       :value="option.value"
       class="custom-radio"
+      hide-details
     ></v-radio>
   </v-radio-group>
 </template>
@@ -20,6 +21,7 @@ const props = defineProps({
 const selectedValue = ref(null)
 </script>
 <style scoped>
-.custom-radio {
+.radio-wrap {
+  width: 300px;
 }
 </style>
