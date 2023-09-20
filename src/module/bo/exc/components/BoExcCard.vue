@@ -11,13 +11,12 @@
     </div>
     <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
     <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
-    <div>{{ exercise.excSeq }}</div>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
-  exercise: Object, // 운동 정보를 props로 받습니다.
+  exercise: Object, 
 })
 
 const emit = defineEmits([])
@@ -28,7 +27,6 @@ const handleClick = () => {
 </script>
 
 <style scoped>
-/* 스타일을 원하는 대로 수정하세요. */
 .exc-card {
   width: 200px;
   padding: 20px;

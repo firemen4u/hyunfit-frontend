@@ -1,10 +1,17 @@
 // ParentComponent.vue
 
 <template>
-  <div>
-    <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
-    
-    <BaseRtnCardGroup :routines="routines" />
+  <div class="all-content-wrap">
+    <div class="rtn-board-header-wrap">
+        <div class="rtn-board-header flex justify-between">
+            <div>루틴 목록</div>
+          <div>검색창</div>
+        </div>
+    </div>
+    <div>
+      <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
+      <BaseRtnCardGroup :routines="routines" />
+    </div>
   </div>
 </template>
 

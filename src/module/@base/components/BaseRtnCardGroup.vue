@@ -4,7 +4,7 @@ import HeartSvg from '@/module/@base/svg/HeartSvg.vue'
 import BaseLabel from '@/module/@base/components/BaseLabel.vue'
 import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
-import BoExcCard from '/src/module/bo/exc/components/BoExcCard.vue'
+import BoExcCard from '/src/module/@base/components/BaseExcCard.vue'
 
 const props = defineProps({
   routines: Array,
@@ -27,7 +27,7 @@ function srcUrlOf(rtnSeq) {
     <div class="card-container">
       <div class="bg-white">
         <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
-        <div v-if="selectedRoutine" class="flex">
+        <div v-if="selectedRoutine" class="flex flex-wrap">
           <BoExcCard
             v-for="exercise in selectedRoutine"
             :exercise="exercise"
