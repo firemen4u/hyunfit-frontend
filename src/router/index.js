@@ -59,7 +59,10 @@ const pathNames = {
     name: 'boRtnNewPage',
     parent: () => pathNames.boRtnBoardPage.name,
   },
-  ptReservationCompleted: { name: 'ptReservationCompleted' },
+  ptReservationCompleted: {
+    name: 'ptReservationCompleted',
+    parent: () => pathNames.trnSearch.name,
+  },
   mbrRoutineBoard: {
     name: 'mbrRoutineBoard',
     parent: () => pathNames.mbrRoutineBoard.name,

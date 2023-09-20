@@ -24,7 +24,7 @@ import {
   ptReservationOptions,
   trnCertificatesSrc,
 } from '@/module/trn-detail/stores/trnDetailCommon'
-import router from '@/router'
+import router, { pathNames } from '@/router'
 
 let trnData = ref([])
 const route = useRoute()
@@ -79,7 +79,7 @@ async function confirmReservation() {
   // reservationFailureReason.value = 'Error Code 405'
   try {
     let result = await postPersonalTraining(data)
-    await router.push({ name: 'pt-reservation-completed' })
+    await router.push(pathNames.ptReservationCompleted)
   } catch (error) {
     reservationFailureReason.value = error
   }
