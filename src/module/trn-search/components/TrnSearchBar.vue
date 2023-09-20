@@ -15,7 +15,7 @@
   >
     <template v-slot:append-inner>
       <button @click="search" class="p-2">
-        <SearchSvg size="30" color="#AAAAAA" />
+        <SearchSvg :size="30" color="#AAAAAA" />
       </button>
     </template>
     <template v-slot:label>나를 위한 서비스 검색하기</template>

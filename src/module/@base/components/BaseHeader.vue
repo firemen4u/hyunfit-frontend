@@ -1,46 +1,63 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-
 import {
   HyunfitLogoGradientSvg,
   DownArrowSvg,
   EditPencilSvg,
 } from '@/module/@base/svg'
+import router, { pathNames } from '@/router'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 
 const props = defineProps({
   page: String,
+  adminMenu: Boolean,
 })
 
 const headerPages = [
-  { displayName: '홈', childUrls: ['main'], url: '/' },
+  { displayName: '홈', destination: pathNames.main },
   {
     displayName: 'AI트레이닝',
-    childUrls: ['report'],
-    url: '/',
+    destination: pathNames.mbrRoutineBoard,
     menus: [
-      { menuName: '루틴', url: '/' },
-      { menuName: '리포트', url: '/report' },
+      { menuName: '루틴', destination: pathNames.mbrRoutineBoard },
+      { menuName: '리포트', destination: pathNames.report },
     ],
   },
   {
     displayName: '화상트레이닝',
-    childUrls: ['trn-search', 'trn-detail', 'mbr-reservation'],
-    url: '/trn-search',
+    destination: pathNames.trnSearch,
     menus: [
-      { menuName: '트레이너 찾기', url: '/trainers' },
-      { menuName: '내 예약', url: '/mbr-reservation' },
-      { menuName: '트레이너 피드백', url: '/trn-feedback' },
+      { menuName: '트레이너 찾기', destination: pathNames.trnSearch },
+      { menuName: '내 예약', destination: pathNames.mbrReservation },
+      { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedback },
     ],
   },
 ]
 
-const profileMenus = [
-  { displayName: '운동환경 재설정', url: '/' },
-  { displayName: '마이페이지', url: '/mbr-mypage' },
-  { displayName: '비밀번호 변경', url: '/' },
-  { displayName: '로그아웃', url: '/' },
+const adminPages = [
+  {
+    displayName: '운동관리',
+    destination: pathNames.boExcBoardPage,
+  },
+  {
+    displayName: '루틴관리',
+    destination: pathNames.boRtnBoardPage,
+  },
 ]
+
+const profileMenus = [
+  { displayName: '운동환경 재설정', destination: pathNames.survey },
+  { displayName: '마이페이지', destination: pathNames.mbrMyPage },
+  { displayName: '비밀번호 변경', destination: '/' },
+  { displayName: '로그아웃', destination: '/' },
+]
+function getPages(isAdmin) {
+  return isAdmin ? adminPages : headerPages
+}
+function getMenus(isAdmin) {
+  return isAdmin ? [] : profileMenus
+}
 
 let menuOpen = ref(false)
 let profileMenu = ref(null)
@@ -49,8 +66,8 @@ let userName = '지수'
 function closeMenuOutsideClick(event) {
   if (
     menuOpen.value &&
-    !profileMenu.value.contains(event.target) &&
-    !profileMenuButton.value.contains(event.target)
+    !profileMenu.value?.contains(event.target) &&
+    !profileMenuButton.value?.contains(event.target)
   ) {
     menuOpen.value = false
     window.removeEventListener('click', closeMenuOutsideClick)
@@ -64,9 +81,6 @@ function toggleMenu() {
 }
 
 const route = useRoute()
-const currentRouteName = computed(() => {
-  return route.name
-})
 
 const activeMenuIndex = ref(-1)
 const menuActivationHandler = (index, hasMenu) => {
@@ -79,10 +93,21 @@ const isActivatedMenu = index => {
   return activeMenuIndex.value === index
 }
 
-const isCurrentPage = pg => {
-  return pg.childUrls.some(includedUrl =>
-    currentRouteName.value.startsWith(includedUrl)
-  )
+const pageItemClasses = pg => {
+  if (pathNames[route.name]?.parent() === pg.destination.name) {
+    return 'text-black font-black'
+  }
+  return 'text-gray-400 font-medium hover:text-gray-800 hover:font-bold'
+}
+const menuItemClasses = pg => {
+  if (route.name === pg.destination.name) {
+    return 'text-gray-800 font-bold'
+  }
+  return 'text-gray-400 font-medium hover:text-gray-800 hover:font-bold'
+}
+const lastMenuItemClasses = (idx, pg) => {
+  if (idx < pg.menus.length - 1) return 'mb-3'
+  else return ''
 }
 </script>
 
@@ -92,28 +117,24 @@ const isCurrentPage = pg => {
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
         <div class="flex items-center">
-          <a href="/" class="mr-10">
+          <a @click="router.push(pathNames.main)" class="mr-10 cursor-pointer">
             <HyunfitLogoGradientSvg :size="140" />
           </a>
-
           <div
-            v-for="(pg, i) in headerPages"
+            v-for="(pg, i) in getPages(adminMenu)"
             :key="i"
             class="my-2 relative"
             @mouseenter="menuActivationHandler(i, pg.menus)"
             @mouseleave="menuDeactivationHandler(pg.menus)"
           >
             <div class="h-full flex items-center justify-start">
-              <a
-                :href="pg.url"
-                class="px-3 mx-1 py-2"
-                :class="
-                  isCurrentPage(pg)
-                    ? 'text-black font-black'
-                    : 'text-neutral-400 font-medium hover:text-gray-700'
-                "
-                >{{ pg.displayName }}</a
+              <button
+                @click="router.push(pg.destination)"
+                class="px-3 mx-1 py-2 transition-all"
+                :class="pageItemClasses(pg)"
               >
+                {{ pg.displayName }}
+              </button>
             </div>
             <transition
               enter-active-class="transition ease-out duration-100"
@@ -128,16 +149,20 @@ const isCurrentPage = pg => {
                 class="header-hover-menu-wrapper absolute px-2 py-8 self-center pt-1"
               >
                 <div
-                  class="header-hover-menu bg-white rounded-md flex flex-col items-center px-2 py-2"
+                  class="header-hover-menu bg-white rounded-md flex flex-col items-center px-2 py-3"
                 >
-                  <a
+                  <button
                     v-for="(menu, m_idx) in pg.menus"
-                    class="text-neutral-600 mx-3"
-                    :class="m_idx < pg.menus.length - 1 ? 'mb-2' : ''"
+                    class="mx-4 transition-all"
+                    :class="[
+                      lastMenuItemClasses(m_idx, pg),
+                      menuItemClasses(menu),
+                    ]"
                     :key="m_idx"
-                    :href="menu.url"
-                    >{{ menu.menuName }}</a
+                    @click="router.push(menu.destination)"
                   >
+                    {{ menu.menuName }}
+                  </button>
                 </div>
               </div>
             </transition>
@@ -179,24 +204,26 @@ const isCurrentPage = pg => {
               >
                 <div class="py-1 px-2 flex items-center flex-col">
                   <img
-                    class="h-20 w-20 rounded-full mr-1 object-cover"
+                    class="h-24 w-24 rounded-full mr-1 object-cover"
                     src="/src/assets/images/goat-jisu.png"
                     alt=""
                   />
                   <div
-                    class="profile-edit-button absolute mt-13 ml-14 rounded-full p-1"
+                    class="profile-edit-button absolute mt-16 ml-16 rounded-full p-1"
                   >
                     <EditPencilSvg :size="18" />
                   </div>
-                  <div class="text-xl my-2">안녕하세요, {{ userName }}님.</div>
+                  <div class="text-xl my-4">안녕하세요, {{ userName }}님.</div>
                 </div>
+                <BaseDivider class="mx-5 my-2" />
                 <div class="py-1 px-2" role="none">
                   <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                   <a
-                    v-for="(menu, i) in profileMenus"
+                    v-for="(menu, i) in getMenus(adminMenu)"
                     :key="i"
-                    :href="menu.url"
-                    class="text-gray-700 block px-4 py-2 text-sm rounded-md"
+                    @click="router.push(menu.destination)"
+                    class="block px-4 py-2 text-base cursor-pointer transition-all"
+                    :class="menuItemClasses(menu)"
                     role="menuitem"
                     tabindex="-1"
                   >
@@ -239,6 +266,7 @@ const isCurrentPage = pg => {
   background-color: #f6e1e7;
 }
 .profile-menu a:hover {
-  background-color: #f6e1e7;
+  //background-color: #f6e1e7;
+  //cursor: pointer;
 }
 </style>

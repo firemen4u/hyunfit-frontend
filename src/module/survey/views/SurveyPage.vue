@@ -1,5 +1,6 @@
 <template>
-  <!-- <v-stepper :items="items" style="width: 1000px">
+  <BaseContainer nofooter>
+    <!-- <v-stepper :items="items" style="width: 1000px">
     <template v-for="(step, index) in items" :key="index" v-slot:item="props">
       {{ index }}
       <v-card style="height: 600px" class="border">
@@ -11,27 +12,28 @@
     </template>
   </v-stepper> -->
 
-  <v-stepper :items="['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']">
-    <template v-slot:item.1>
-      <v-card title=" " flat class="card-shape"><Step1></Step1></v-card>
-    </template>
+    <v-stepper :items="['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']">
+      <template v-slot:item.1>
+        <v-card title=" " flat class="card-shape"><Step1></Step1></v-card>
+      </template>
 
-    <template v-slot:item.2>
-      <v-card title=" " flat class="card-shape"><Step2></Step2></v-card>
-    </template>
+      <template v-slot:item.2>
+        <v-card title=" " flat class="card-shape"><Step2></Step2></v-card>
+      </template>
 
-    <template v-slot:item.3>
-      <v-card title=" " flat class="card-shape"><Step3></Step3></v-card>
-    </template>
+      <template v-slot:item.3>
+        <v-card title=" " flat class="card-shape"><Step3></Step3></v-card>
+      </template>
 
-    <template v-slot:item.4>
-      <v-card title=" " flat class="card-shape"><Step4></Step4></v-card>
-    </template>
+      <template v-slot:item.4>
+        <v-card title=" " flat class="card-shape"><Step4></Step4></v-card>
+      </template>
 
-    <template v-slot:item.5>
-      <v-card title=" " flat class="card-shape"><Step5></Step5></v-card>
-    </template>
-  </v-stepper>
+      <template v-slot:item.5>
+        <v-card title=" " flat class="card-shape"><Step5></Step5></v-card>
+      </template>
+    </v-stepper>
+  </BaseContainer>
 </template>
 
 <script>
@@ -41,9 +43,11 @@ import Step2 from '@/module/survey/components/StepTwo.vue'
 import Step3 from '@/module/survey/components/StepThree.vue'
 import Step4 from '@/module/survey/components/StepFour.vue'
 import Step5 from '@/module/survey/components/StepFive.vue'
+import BaseContainer from '@/module/@base/views/BaseContainer.vue'
 
 export default {
   components: {
+    BaseContainer,
     VStepper,
     Step1,
     Step2,

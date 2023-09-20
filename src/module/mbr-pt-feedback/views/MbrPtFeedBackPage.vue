@@ -45,15 +45,15 @@
 <script setup>
 import { BaseContainer, BaseBodyWrapper } from '/src/module/@base/views'
 import TrnFeedBackComponent from '../components/MbrPtFeedBackComponent.vue'
-import axios from 'axios'
+import ApiClient from '/src/services/api.js'
 </script>
 
 <script>
 export default {
   data() {
     return {
-      mbrSeq: 1,
-      mbrName: '홍길동',
+      mbrSeq: 0,
+      mbrName: '',
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       sendingMonth: null,
@@ -62,13 +62,19 @@ export default {
   },
   async created() {
     await this.initializedMonth()
-    await axios
-      .get('http://localhost:8080/members/' + this.mbrSeq + '/feedback', {
+    let responseUser = await ApiClient.get('http://localhost:8080/members/me')
+    console.log(responseUser)
+    this.mbrName = responseUser.mbrName
+    await ApiClient.get(
+      'http://localhost:8080/members/' + responseUser.mbrSeq + '/feedback',
+      {
         params: { date: this.year + '-' + this.sendingMonth },
-      })
+      }
+    )
       .then(response => {
-        if (response.data !== '') {
-          this.responseFeedbackData = response.data
+        console.log(response)
+        if (response !== '') {
+          this.responseFeedbackData = response
         } else {
           this.responseFeedbackData = '이달의 피드백이 존재하지않아요!'
         }
@@ -78,14 +84,18 @@ export default {
       })
   },
   methods: {
-    getFeedback() {
-      axios
-        .get('http://localhost:8080/members/' + this.mbrSeq + '/feedback', {
+    async getFeedback() {
+      let responseUser = await ApiClient.get('http://localhost:8080/members/me')
+      await ApiClient.get(
+        'http://localhost:8080/members/' + responseUser.mbrSeq + '/feedback',
+        {
           params: { date: this.year + '-' + this.sendingMonth },
-        })
+        }
+      )
         .then(response => {
-          if (response.data !== '') {
-            this.responseFeedbackData = response.data
+          console.log(response)
+          if (response !== '') {
+            this.responseFeedbackData = response
           } else {
             this.responseFeedbackData = '이달의 피드백이 존재하지않아요!'
           }

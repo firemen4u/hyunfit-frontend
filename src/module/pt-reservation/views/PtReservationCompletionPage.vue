@@ -2,13 +2,13 @@
 import PtReservationCompletionEffect from '@/module/pt-reservation/components/PtReservationCompletionEffect.vue'
 import { BaseContainer } from '@/module/@base/views'
 import BaseBodyWrapper from '@/module/@base/views/BaseBodyWrapper.vue'
-import router from '@/router'
+import router, { pathNames } from '@/router'
 
 async function gotoMbrReservation() {
-  await router.push({ name: 'mbr-reservation' })
+  await router.push(pathNames.mbrReservation)
 }
 async function gotoMain() {
-  await router.push({ name: 'main' })
+  await router.push(pathNames.main)
 }
 </script>
 

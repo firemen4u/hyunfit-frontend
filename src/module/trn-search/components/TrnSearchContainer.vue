@@ -1,8 +1,9 @@
 <template>
   <div class="container">
-    <div class="mt-2 mb-5 flex flex-col">
-      <slot name="search-order-selector"> </slot>
-
+    <div class="mb-5 flex flex-col">
+      <div class="order-selector flex items-end justify-end flex-col">
+        <slot name="search-order-selector"> </slot>
+      </div>
       <BaseDivider />
     </div>
 
@@ -10,7 +11,7 @@
       <slot name="search-bar"> </slot>
     </div>
 
-    <div class="trn-search-filter-selection h-10 mt-2">
+    <div class="trn-search-filter-selection h-2 mt-2">
       <slot name="filter-chip-group"></slot>
     </div>
 
@@ -30,3 +31,10 @@ defineProps({
   filterOptions: Array,
 })
 </script>
+
+<style scoped>
+.order-selector {
+  margin: 10px 0;
+  height: 60px;
+}
+</style>
