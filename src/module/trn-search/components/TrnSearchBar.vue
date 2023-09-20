@@ -1,37 +1,41 @@
 <template>
-    <v-card-text color="grey-lighten-3" class="pa-0" max-width="100%">
-      <v-text-field
-        :loading="loading"
-        density="compact"
-        variant="solo"
-        label="나를 위한 서비스 검색하기"
-        append-inner-icon="mdi-magnify"
-        single-line
-        hide-details
-        clearable
-        @click:append-inner="onClick"
-        v-model="searchText"
-      ></v-text-field>
-    </v-card-text>
+  <v-text-field
+    :loading="loading"
+    label="나를 위한 서비스 검색하기"
+    single-line
+    hide-details
+    clearable
+    flat
+    bg-color="#F8F8F8"
+    autofocus
+    variant="flat"
+    @keyup.enter="search"
+    :disabled="loading"
+    type="text"
+  >
+    <template v-slot:append-inner>
+      <button @click="search" class="p-2">
+        <SearchSvg size="30" color="#AAAAAA" />
+      </button>
+    </template>
+    <template v-slot:label>나를 위한 서비스 검색하기</template>
+  </v-text-field>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import SearchSvg from '@/module/@base/svg/SearchSvg.vue'
 
-const loaded = ref(false);
-const loading = ref(false);
-const searchText = ref();
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-const onClick = () => {
-  loading.value = true;
+const emit = defineEmits(['click:search'])
 
-  setTimeout(() => {
-    loading.value = false;
-    loaded.value = true;
-    console.log(searchText.value);
-  },);
-};
+function search() {
+  emit('click:search')
+}
 </script>
-<style scope>
-
-</style>
+<style scoped></style>

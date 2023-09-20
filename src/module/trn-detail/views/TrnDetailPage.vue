@@ -158,11 +158,10 @@ onMounted(() => {
             <div class="flex flex-col items-center">
               <div class="text-xs">리뷰</div>
               <BaseCompactRating
-                compact
                 :rating="trnData.averageReviewRating"
                 :reviewCount="trnData.reviews?.length"
-                icon-size="sm"
-                font-size="lg"
+                icon-size="22"
+                font-size="xl"
               ></BaseCompactRating>
             </div>
             <div class="flex flex-col items-center">
@@ -331,6 +330,7 @@ onMounted(() => {
                 v-model="ptReservationOptionSelected"
                 :items="ptReservationOptions"
                 :disabled="reservationConfirmLoading"
+                :filter="true"
               />
             </div>
           </div>
