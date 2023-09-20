@@ -10,16 +10,20 @@
             class="text-sm text-gray-600 items-center rounded-xl text-center text-white bg-primary mb-1 pt-0.5 pb-0.5 pr-3 pl-3"
             style="display: inline-block; min-width: auto"
           >
-            {{ trainDay }}
+            Day {{ daysDiff }}
           </p>
         </div>
         <div class="text-gray-900 font-bold mb-2 flex justify-between">
           <div class="flex items-center">
             <p class="train-type text-xl font-bold mr-4 align-middle">
-              {{ trainType }}
+              {{ props.responseData.trnTypeName }}
             </p>
             <p class="train-datetime text-base align-middle text-gray-500">
-              {{ trainDatetime }}
+              {{
+                dateUtil.timestampToFullDate(
+                  props.responseData.ptReservationDate
+                )
+              }}
             </p>
           </div>
           <p class="text-gray-400 text-xl font-bold">></p>
@@ -29,16 +33,16 @@
     <div class="rsv-train-info w-84 bg-white flex leading-normal rounded-r-lg">
       <div
         class="trainer-profile-img h-24 w-24 bg-cover overflow-hidden rounded-lg mr-4"
-        :style="`background-image: url('${trainerProfileImageUrl}')`"
+        :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
         title="trainer profile img"
       ></div>
       <div class="">
         <div>
           <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
-            {{ trainTrainerName }}
+            {{ props.responseData.trnName }}
           </p>
           <p class="train-content text-gray-700">
-            {{ trainContent }}
+            {{ props.responseData.trainContent }}
           </p>
         </div>
       </div>
@@ -47,17 +51,29 @@
 </template>
 
 <script setup>
+import dateUtil from '/src/utils/date.js'
+import { onMounted, onBeforeMount, ref } from 'vue'
+
 const props = defineProps({
-  profileImageUrl: String,
-  trainerProfileImageUrl: String,
-  trainDay: String,
-  trainType: String,
-  trainDatetime: String,
-  trainTrainerName: String,
-  trainContent: String,
-  avatarImageUrl: String,
-  lastClassDate: String,
+  responseData: Object,
+})
+let daysDiff = ref('')
+
+function calcDay() {
+  const today = new Date()
+  const timeDiff = today - props.responseData.ptReservationDate
+  daysDiff.value = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
+  if (daysDiff.value > 0) daysDiff.value = `+ ${daysDiff.value}`
+
+  console.log('날짜 계산', daysDiff.value)
+}
+
+onBeforeMount(() => {
+  calcDay()
 })
 
-console.log(props.value)
+onMounted(() => {
+  console.log('mounted')
+}),
+  console.log('자식 컴포넌트', props.responseData)
 </script>

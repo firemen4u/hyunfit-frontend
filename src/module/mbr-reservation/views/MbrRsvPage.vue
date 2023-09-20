@@ -30,14 +30,7 @@
             <MbrRsvTrainCard
               v-for="training in filteredTrainings"
               :key="training.id"
-              :trainerProfileImageUrl="training.trnProfileUrl"
-              :trainDay="training.id"
-              :trainType="training.trnTypeName"
-              trainDatetime="안녕하세요"
-              trainTrainerName="고요한 선생님"
-              trainContent="업무스트레스 모두 날리는 명상 요가"
-              :avatarImageUrl="avatarImageUrl"
-              lastClassDate="23.08.30"
+              :responseData="training"
             ></MbrRsvTrainCard>
             <!-- <MbrRsvTrainCard
               :trainerProfileImageUrl="profileImageUrl2"
@@ -47,6 +40,7 @@
               trainTrainerName="고윤정 선생님"
               trainContent="머리 어깨 무릎 팔 다 풀어봅시다"
               :avatarImageUrl="avatarImageUrl2"
+              :response="response.value.personalTrainingDTOList"
               lastClassDate="23.08.22"
             ></MbrRsvTrainCard> -->
           </div>
@@ -95,7 +89,7 @@ const filteredTrainings = computed(() => {
   )
 
   return response.value.personalTrainingDTOList.filter(
-    training => training.status === 1
+    training => training.ptReservationStatus  === 1
   )
 })
 
@@ -112,7 +106,6 @@ async function init() {
     console.error('API 요청 실패:', error)
   }
 }
-
 
 onBeforeMount(() => {
   init()
