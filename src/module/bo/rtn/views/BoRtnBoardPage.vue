@@ -20,7 +20,11 @@
           </div>
           <div class="bg-red p-2 border-dashed border-4 border-yellow-400">
             루틴 하나 씩 들어가는 곳
-            <div>카드 하나씩 들어가는 곳 <BoExcCard /></div>
+            <div class="bg-blue-500">
+              카드 하나씩 들어가는 곳
+
+              <BaseRtnCardContainer />
+            </div>
           </div>
           <BasePagination />
         </div>
@@ -29,13 +33,16 @@
   </BaseContainer>
 </template>
 <script setup>
-import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
-import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import {
-  BoExcCard,
-  BoExcBoardFilterContainer,
-} from '/src/module/bo/exc/components'
+  BaseBodyWrapper,
+  BaseContainer,
+  BaseSideBar,
+} from '/src/module/@base/views'
+import {
+  BaseRtnCardContainer,
+  BaseRtnCardGroup,
+} from '/src/module/@base/components'
+
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
 const subcategories = [

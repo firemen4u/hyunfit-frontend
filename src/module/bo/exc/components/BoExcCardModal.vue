@@ -53,7 +53,7 @@
         <div class="modal-sub-wrap">
           <p>생성 일자</p>
           <p>:</p>
-          <p>{{ formatDate(exercise.excCreatedDate) }}</p>
+          <p>{{ dateUtil.timestampToFullDate(exercise.excCreatedDate) }}</p>
         </div>
         <div class="modal-sub-wrap">
           <p>타겟 부위</p>
@@ -82,6 +82,8 @@
 </template>
 
 <script setup>
+import dateUtil from '/src/utils/date.js'
+
 const props = defineProps(['show', 'exercise'])
 const emit = defineEmits([])
 

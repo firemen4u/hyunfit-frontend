@@ -228,7 +228,7 @@ import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { FILE_SERVER_TOKEN } from '/src/config.js'
+import { FILE_SERVER_TOKEN, FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 
 const sidebarHeader = '관리페이지'
 const mainCategory = 'AI 트레이닝'
@@ -365,7 +365,7 @@ const submit = async () => {
       }
       try {
         const secondApiResponse = await axios.post(
-          `http://ryulrudaga.com:48000/api/firemen/${type}`,
+          `${FILE_SERVER_HYUNFIT_URL}/${type}`,
           formData,
           config
         )
@@ -386,13 +386,6 @@ const submit = async () => {
       uploadFile(files_exc_view_row_qual.value[0], 'file'),
       uploadFile(files_exc_mp3.value[0], 'file'),
     ])
-
-    // // 각 파일을 업로드합니다.
-    // await uploadFile(files_exc_model.value[0], 'model')
-    // await uploadFile(files_exc_preview.value[0], 'file')
-    // await uploadFile(files_exc_view.value[0], 'file')
-    // await uploadFile(files_exc_view_row_qual.value[0], 'file')
-    // await uploadFile(files_exc_mp3.value[0], 'file')
 
     alert('등록 성공!')
     window.location.reload() // 페이지 새로고침
