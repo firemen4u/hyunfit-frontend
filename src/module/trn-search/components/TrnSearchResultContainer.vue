@@ -25,6 +25,7 @@ const props = defineProps({
         </p>
       </div>
       <BaseCompactRating
+        v-if="data.reviewCount"
         :rating="data.averageReviewRating"
         :reviewCount="data.reviewCount"
         :icon-size="20"
@@ -34,7 +35,12 @@ const props = defineProps({
     <div
       class="trn-img-wrapper flex justify-center items-center overflow-hidden"
     >
-      <img :src="data.trnProfileUrl" alt="예시 이미지" class="rounded-lg" />
+      <img
+        :src="data.trnProfileUrl"
+        :alt="data.trnName"
+        onerror="javascript:this.src='/src/assets/images/default-user-profile.jpg'"
+        class="trn-profile-image rounded-lg"
+      />
     </div>
   </a>
 </template>

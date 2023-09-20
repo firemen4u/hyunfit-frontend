@@ -1,6 +1,6 @@
 <template>
   <span
-    class="flex whitespace-nowrap rounded-[0.27rem] bg-neutral-100 px-[0.5em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.75em] font-bold leading-none text-neutral-500"
+    class="flex items-center whitespace-nowrap rounded-sm bg-neutral-100 px-1 py-1 text-center text-[0.75em] font-bold leading-none text-neutral-500"
   >
     <slot></slot>
   </span>
