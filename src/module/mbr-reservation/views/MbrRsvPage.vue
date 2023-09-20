@@ -1,7 +1,7 @@
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
-      <div class="mbr-rsv-container w-full h-full">
+      <div class="mbr-rsv-container w-full h-full" v-if="response !== null">
         <div class="mbr-rsv-banner-container h-1/5 overflow-hidden relative">
           <div class="banner-img w-full">
             <img
@@ -28,26 +28,27 @@
             title="예약한 트레이너의 카드"
           >
             <MbrRsvTrainCard
-              :trainerProfileImageUrl="profileImageUrl"
-              trainDday="오늘"
-              trainType="퍼스널트레이닝(PT)"
-              trainDatetime="09.07 수 오후 2:00"
+              v-for="training in filteredTrainings"
+              :key="training.id"
+              :trainerProfileImageUrl="training.trnProfileUrl"
+              :trainDay="training.id"
+              :trainType="training.trnTypeName"
+              trainDatetime="안녕하세요"
               trainTrainerName="고요한 선생님"
               trainContent="업무스트레스 모두 날리는 명상 요가"
               :avatarImageUrl="avatarImageUrl"
               lastClassDate="23.08.30"
             ></MbrRsvTrainCard>
-
-            <MbrRsvTrainCard
+            <!-- <MbrRsvTrainCard
               :trainerProfileImageUrl="profileImageUrl2"
-              trainDday="D-2"
+              trainDay="D-2"
               trainType="필라테스"
               trainDatetime="09.09 - 14:00"
               trainTrainerName="고윤정 선생님"
               trainContent="머리 어깨 무릎 팔 다 풀어봅시다"
               :avatarImageUrl="avatarImageUrl2"
               lastClassDate="23.08.22"
-            ></MbrRsvTrainCard>
+            ></MbrRsvTrainCard> -->
           </div>
         </div>
         <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
@@ -76,9 +77,50 @@
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
+import { ref, onBeforeMount, onMounted, computed } from 'vue'
 import MbrRsvTrainCard from '/src/module/mbr-reservation/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
-import { ref } from 'vue'
+import ApiClient from '/src/services/api.js'
+import dateUtil from '/src/utils/date.js'
+
+let memberSource = ''
+const response = ref(null)
+
+const filteredTrainings = computed(() => {
+  console.log(
+    'response Data : ',
+    response.value.personalTrainingDTOList.filter(
+      training => training.ptReservationStatus === 1
+    )
+  )
+
+  return response.value.personalTrainingDTOList.filter(
+    training => training.status === 1
+  )
+})
+
+async function init() {
+  try {
+    memberSource = await ApiClient.get('/members/me')
+    response.value = await ApiClient.get(
+      `/members/${memberSource.mbrSeq}/personal-trainings?offset=5&limit=5`
+    )
+
+    console.log('데이터 도착', response.value)
+    console.log('예약 리스트', response.value.personalTrainingDTOList)
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+}
+
+
+onBeforeMount(() => {
+  init()
+})
+
+onMounted(() => {
+  console.log('마운트 됨')
+})
 const profileImageUrl =
   'https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfNiAg/MDAxNjE0MjM5MDE5NDky.PRUBGVPV9zDpuus_gRK8TRkc6OQ1bj2OeR8xpgIOZU4g._h3ecE-etq93eBQJgbKPSA7LNsDcG8AQpCKEHNc58hMg.JPEG.kikisoyun/IMG_1160.JPG?type=w800'
 const avatarImageUrl =

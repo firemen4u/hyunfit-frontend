@@ -10,7 +10,7 @@
             class="text-sm text-gray-600 items-center rounded-xl text-center text-white bg-primary mb-1 pt-0.5 pb-0.5 pr-3 pl-3"
             style="display: inline-block; min-width: auto"
           >
-            {{ trainDday }}
+            {{ trainDay }}
           </p>
         </div>
         <div class="text-gray-900 font-bold mb-2 flex justify-between">
@@ -50,7 +50,7 @@
 const props = defineProps({
   profileImageUrl: String,
   trainerProfileImageUrl: String,
-  trainDday: String,
+  trainDay: String,
   trainType: String,
   trainDatetime: String,
   trainTrainerName: String,
@@ -58,4 +58,6 @@ const props = defineProps({
   avatarImageUrl: String,
   lastClassDate: String,
 })
+
+console.log(props.value)
 </script>
