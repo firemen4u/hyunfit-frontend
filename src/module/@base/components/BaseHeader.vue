@@ -36,7 +36,7 @@ const headerPages = [
 ]
 
 const profileMenus = [
-  { displayName: '계정설정', url: '/' },
+  { displayName: '운동환경 재설정', url: '/' },
   { displayName: '마이페이지', url: '/mbr-mypage' },
   { displayName: '비밀번호 변경', url: '/' },
   { displayName: '로그아웃', url: '/' },
