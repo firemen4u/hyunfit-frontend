@@ -24,7 +24,7 @@ import {
   ptReservationOptions,
   trnCertificatesSrc,
 } from '@/module/trn-detail/stores/trnDetailCommon'
-import router from '@/router'
+import router, { pathNames } from '@/router'
 
 let trnData = ref([])
 const route = useRoute()
@@ -56,7 +56,6 @@ let lazyLoadedProfileImageUrl = ref(null)
 const hasProfileImage = ref(true)
 const profileDialogOpen = ref(false)
 function setDefaultBanner(e) {
-  console.log(e)
   if (e.target.src === null) return
   hasProfileImage.value = false
 }
@@ -88,11 +87,10 @@ async function confirmReservation() {
     ptReservationDate: datetimeSelected.value,
     ptNoteStickers: ptReservationOptionSelected.value.join(','),
   }
-  // reservationFailureReason.value = 'Error Code 405'
   try {
     let result = await postPersonalTraining(data)
     reservationConfirmLoading.value = false
-    // await router.push({ name: 'pt-reservations' })
+    await router.push(pathNames.ptReservationCompleted)
   } catch (error) {
     reservationFailureReason.value = error
   }
