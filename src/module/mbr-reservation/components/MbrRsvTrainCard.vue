@@ -52,7 +52,7 @@
 
 <script setup>
 import dateUtil from '/src/utils/date.js'
-import { onMounted, onBeforeMount, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
   responseData: Object,
@@ -67,13 +67,9 @@ function calcDay() {
 
   console.log('날짜 계산', daysDiff.value)
 }
-
-onBeforeMount(() => {
-  calcDay()
-})
-
 onMounted(() => {
   console.log('mounted')
+  calcDay()
 }),
   console.log('자식 컴포넌트', props.responseData)
 </script>

@@ -28,7 +28,7 @@
             title="예약한 트레이너의 카드"
           >
             <MbrRsvTrainCard
-              v-for="training in filteredTrainings"
+              v-for="training in filteredReservingTrainings"
               :key="training.id"
               :responseData="training"
             ></MbrRsvTrainCard>
@@ -48,7 +48,8 @@
         <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
           <div class="mbr-rsv-history-item m-3">
             <p class="text-2xl font-bold mt-10 mb-8">지난 예약</p>
-            <div v-for="index in 5" :key="index" class="mbr-rsv-history-card">
+            <div v-for="training in filteredReservedTrainings" 
+            :key="training.id" class="mbr-rsv-history-card">
               <MbrRsvHistoryCard
                 profileImageUrl="https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfMjk4/MDAxNjE0MjM5MDIwMTk5.aJVYERC3dCXww1NgFcRjSCGsvFMkl58NJC6ee--69vYg.jLPZXJ3t8x-sj8wJmuIXtAOQxeEOagLtDftS7zZFgtAg.JPEG.kikisoyun/IMG_1146.JPG?type=w800"
                 trainerName="고윤정 트레이너"
@@ -56,7 +57,7 @@
                 time="2H"
                 type="퍼스널트레이닝(PT)"
                 subTitle="소제목"
-                :ptCount="6 - index"
+                :responseData="training"
               />
             </div>
 
@@ -80,7 +81,7 @@ import dateUtil from '/src/utils/date.js'
 let memberSource = ''
 const response = ref(null)
 
-const filteredTrainings = computed(() => {
+const filteredReservingTrainings = computed(() => {
   console.log(
     'response Data : ',
     response.value.personalTrainingDTOList.filter(
@@ -88,11 +89,30 @@ const filteredTrainings = computed(() => {
     )
   )
 
+  console.log(
+    'response Data NOT 1: ',
+    response.value.personalTrainingDTOList.filter(
+      training => training.ptReservationStatus !== 1
+    )
+  )
+
   return response.value.personalTrainingDTOList.filter(
-    training => training.ptReservationStatus  === 1
+    training => training.ptReservationStatus === 1
   )
 })
+const filteredReservedTrainings = computed(() => {
 
+  console.log(
+    'response Data NOT 1: ',
+    response.value.personalTrainingDTOList.filter(
+      training => training.ptReservationStatus !== 1
+    )
+  )
+
+  return response.value.personalTrainingDTOList.filter(
+    training => training.ptReservationStatus !== 1
+  )
+})
 async function init() {
   try {
     memberSource = await ApiClient.get('/members/me')
