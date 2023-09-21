@@ -5,7 +5,7 @@
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img
         class="mx-auto h-10 w-auto"
-        @click="this.$router.push('/')"
+        @click="moveToMain"
         src="/src/assets/images/mainLogo.png"
       />
     </div>
@@ -86,6 +86,7 @@
 <script>
 import axios from 'axios'
 import ApiClient from '/src/services/api.js'
+import router, { pathNames } from '@/router'
 export default {
   setup() {},
   data() {
@@ -100,6 +101,9 @@ export default {
     }
   },
   methods: {
+    moveToMain() {
+      router.push(pathNames.mainPage)
+    },
     async loginForm() {
       await axios
         .post('http://localhost:8080/auth/' + this.selectedRole, this.user)
