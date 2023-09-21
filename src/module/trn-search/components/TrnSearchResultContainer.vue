@@ -6,9 +6,7 @@ const props = defineProps({
   items: Array,
 })
 function gotoTrnDetail(trnId) {
-  console.log('trnId', { trnId })
-  console.log('return value', pathNames.trnDetailPage.params({ trnId }))
-  router.push(pathNames.trnDetailPage.params({ trnId }))
+  router.push(pathNames.trnDetailPage.with({ trnId }))
 }
 </script>
 <template>
