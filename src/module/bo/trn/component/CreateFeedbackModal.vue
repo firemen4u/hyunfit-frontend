@@ -87,6 +87,8 @@ export default {
         'http://localhost:8080/trainer-feedbacks/write-feedback',
         sendingData
       )
+      this.$emit('close')
+      location.reload()
     },
     async getGptFeedback(sendingData) {
       let response = await ApiClient.post(
