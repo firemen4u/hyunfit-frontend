@@ -7,14 +7,28 @@
       <div class="w-76 h-11">
         <img src="/src/assets/images/mainLogo.png" />
       </div>
+      <div
+        class="buttonContainer flex justify-between items-center"
+        v-if="bottonAfterJoin"
+      >
+        <input
+          class="button"
+          type="button"
+          @click="joinSession('17', '123')"
+          value="상담생성(트레이너)"
+        />
+        <input
+          class="button"
+          type="button"
+          @click="joinSession('0', '123')"
+          value="상담시작(사용자)"
+        />
+      </div>
       <div class="ressoningTime">
         <RessoningTime></RessoningTime>
       </div>
     </div>
     <div id="ptCamContainer" class="flex flex-col justify-center">
-      <button class="start-button" v-if="showButton" @click="startPt">
-        <img src="/src/assets/images/start-button.png" />
-      </button>
       <div
         id="after-join"
         class="flex justify-evenly"
@@ -61,7 +75,7 @@ import RessoningTime from '../components/RessoningTimeComponent.vue'
 </script>
 <script>
 import { OpenVidu } from 'openvidu-browser'
-import ApiClient from '/src/services/api.js'
+import axios from 'axios'
 
 export default {
   data() {
@@ -75,16 +89,9 @@ export default {
       isAudioMuted: false,
       videoImgPath: '/src/assets/images/Vector.png',
       audioImgPath: '/src/assets/images/microphone.png',
-      showButton: true,
     }
   },
   methods: {
-    async startPt() {
-      this.showButton = false
-      let userRole = localStorage.getItem('userRole')
-      let sessionId = localStorage.getItem('ptSeq')
-      this.joinSession(userRole, sessionId)
-    },
     async getToken(currUserRole, mySessionId) {
       if (currUserRole == 0) {
         return await this.createToken(mySessionId)
@@ -94,19 +101,27 @@ export default {
       }
     },
     async createSession(ptSeq) {
-      const response = await ApiClient.post(
+      const response = await axios.post(
         'http://localhost:8080/openvidu/sessions',
-        { ptSeq }
+        { ptSeq },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          'Access-Control-Allow-Origin': 'http://localhost:8080',
+        }
       )
-      return response.sessionId
+      return response.data.sessionId
     },
 
     async createToken(sessionId) {
-      const response = await ApiClient.post(
+      const response = await axios.post(
         'http://localhost:8080/openvidu/sessions/' + sessionId + '/connections',
-        {}
+        {},
+        {
+          headers: { 'Content-Type': 'application/json' },
+          'Access-Control-Allow-Origin': 'http://localhost:8080',
+        }
       )
-      return response.token
+      return response.data.token
     },
 
     joinSession(currUserRole, mySessionId) {
@@ -179,7 +194,7 @@ export default {
       this.subscriber = undefined
       this.OV = undefined
 
-      window.close()
+      window.removeEventListener('beforeunload', this.leaveSession)
     },
   },
   beforeUnmount() {
@@ -229,12 +244,5 @@ video {
   height: 50px;
   border-radius: 10%;
   background-color: white;
-}
-.start-button {
-  position: fixed;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
 }
 </style>
