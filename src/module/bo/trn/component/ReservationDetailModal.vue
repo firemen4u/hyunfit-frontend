@@ -83,7 +83,9 @@ export default {
       this.$emit('close')
     },
     entryPtRoom() {
-      let ptSeq = this.reservationData.ptSeq
+      console.log(this.reservationData)
+      localStorage.setItem('ptSeq', this.reservationData.ptSeq)
+      localStorage.setItem('userRole', this.reservationData.trnSeq)
       window.open('http://localhost:5173/PtRoom', '_blank')
     },
     formatDate(timestamp) {
