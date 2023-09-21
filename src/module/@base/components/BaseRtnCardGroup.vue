@@ -34,7 +34,7 @@ function srcUrlOf(rtnSeq) {
             :key="exercise.excSeq"
           />
         </div>
-        <div><v-btn> Button </v-btn></div>
+        <div><v-btn> 루틴 시작하기 </v-btn></div>
       </div>
     </div>
     <v-card>
@@ -103,5 +103,10 @@ function srcUrlOf(rtnSeq) {
 .rtn-card-title {
   width: 165px;
   height: 55px;
+}
+
+.card-container {
+  width: 1000px;
+  height: 650px;
 }
 </style>
