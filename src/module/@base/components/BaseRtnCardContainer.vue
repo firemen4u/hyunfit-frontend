@@ -45,7 +45,7 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 const routines = ref([])
 const searchTerm = ref('')
 const loggedInUser = ref(null)
-const itemsPerPage = 4
+const itemsPerPage = 16
 const currentPage = ref(1)
 
 const filteredRoutines = computed(() => {
