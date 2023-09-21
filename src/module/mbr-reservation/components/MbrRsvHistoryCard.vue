@@ -41,7 +41,7 @@
 
       <div class="flex justify-between text-gray-500">
         <div>{{ subTitle }}</div>
-        <div>{{ ptCount }}번째 수업 완료</div>
+        <div>{{ props.ptCounts }}번째 수업 완료</div>
       </div>
     </div>
   </div>
@@ -51,14 +51,18 @@
 import { ref } from 'vue'
 import { BaseRating } from '/src/module/@base/components'
 import MbrRsvReviewModal from '/src/module/mbr-reservation/components/MbrRsvReviewModal.vue'
+// const props = defineProps({
+//   profileImageUrl: String,
+//   trainerName: String,
+//   day: String,
+//   time: String,
+//   type: String,
+//   subTitle: String,
+//   ptCount: Number,
+// })
+
 const props = defineProps({
-  profileImageUrl: String,
-  trainerName: String,
-  day: String,
-  time: String,
-  type: String,
-  subTitle: String,
-  ptCount: Number,
+  responseData : Object,
 })
 
 const showReviewModal = ref(false)
