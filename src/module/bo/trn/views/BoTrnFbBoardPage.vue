@@ -1,5 +1,5 @@
 <template>
-  <BaseContainer footer="false">
+  <BaseContainer category="trainer" footer="false">
     <BaseBodyWrapper>
       <BaseSideBar
         :sidebarHeader="sidebarHeader"

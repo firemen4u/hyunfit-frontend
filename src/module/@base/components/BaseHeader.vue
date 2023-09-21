@@ -11,7 +11,7 @@ import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 
 const props = defineProps({
   page: String,
-  adminMenu: Boolean,
+  category: String,
 })
 
 const headerPages = [
@@ -46,6 +46,17 @@ const adminPages = [
   },
 ]
 
+const trainerPages = [
+  {
+    displayName: '예약현황',
+    destination: pathNames.boTrnRsvBoardPage,
+  },
+  {
+    displayName: '피드백 현황',
+    destination: pathNames.boTrnFbBoardPage,
+  },
+]
+
 const profileMenus = [
   { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
@@ -53,11 +64,15 @@ const profileMenus = [
   { displayName: '로그인', destination: pathNames.loginPage },
   { displayName: '로그아웃', destination: '/' },
 ]
-function getPages(isAdmin) {
-  return isAdmin ? adminPages : headerPages
+function getPages() {
+  if (props.category === 'admin') return adminPages
+  else if (props.category === 'trainer') return trainerPages
+  return headerPages
 }
-function getMenus(isAdmin) {
-  return isAdmin ? [] : profileMenus
+function getMenus() {
+  if (props.category === 'admin') return []
+  else if (props.category === 'trainer') return []
+  return profileMenus
 }
 
 let menuOpen = ref(false)
@@ -125,7 +140,7 @@ const lastMenuItemClasses = (idx, pg) => {
             <HyunfitLogoGradientSvg :size="140" />
           </a>
           <div
-            v-for="(pg, i) in getPages(adminMenu)"
+            v-for="(pg, i) in getPages()"
             :key="i"
             class="my-2 relative"
             @mouseenter="menuActivationHandler(i, pg.menus)"
@@ -223,7 +238,7 @@ const lastMenuItemClasses = (idx, pg) => {
                 <div class="py-1 px-2" role="none">
                   <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                   <a
-                    v-for="(menu, i) in getMenus(adminMenu)"
+                    v-for="(menu, i) in getMenus()"
                     :key="i"
                     @click="router.push(menu.destination)"
                     class="block px-4 py-2 text-base cursor-pointer transition-all"
