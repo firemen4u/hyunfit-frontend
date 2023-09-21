@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import BaseRtnCardGroup from '/src/module/@base/components/BaseRtnCardGroup.vue'
 import ApiClient from '/src/services/api'
 import router, { pathNames } from '@/router'
@@ -45,15 +45,26 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 const routines = ref([])
 const searchTerm = ref('')
 const loggedInUser = ref(null)
-const itemsPerPage = 16
+const itemsPerPage = 12
 const currentPage = ref(1)
 
+// const filteredRoutines = computed(() => {
+//   const filtered = routines.value.filter(routine =>
+//     routine.rtnName.toLowerCase().includes(searchTerm.value.toLowerCase())
+//   )
+//   console.log('Filtered Routines:', filtered) // 로그 추가
+//   return filtered
+// })
+
 const filteredRoutines = computed(() => {
-  const filtered = routines.value.filter(routine =>
+  return routines.value.filter(routine =>
     routine.rtnName.toLowerCase().includes(searchTerm.value.toLowerCase())
   )
-  console.log('Filtered Routines:', filtered) // 로그 추가
-  return filtered
+})
+
+// onPageChange 추가
+watch(currentPage, newVal => {
+  console.log('currentPage changed:', newVal)
 })
 
 const totalPages = computed(() =>
@@ -78,7 +89,10 @@ const handlePageChange = page => {
 
 onMounted(async () => {
   try {
-    routines.value = await ApiClient.get('/routines')
+    // routines.value = await ApiClient.get('/routines')
+    const fetchedRoutines = await ApiClient.get('/routines')
+    routines.value = fetchedRoutines.sort((a, b) => b.rtnSeq - a.rtnSeq) // seq로 정렬
+    console.log('Sorted Routines by seq:', routines.value)
     let fetchedUser = null
 
     try {
