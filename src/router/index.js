@@ -19,69 +19,140 @@ import BoRtnNewPage from '/src/module/bo/rtn/views/BoRtnNewPage.vue'
 import MbrRsvCompletionPage from '@/module/mbr-rsv-completion/views/MbrRsvCompletionPage.vue'
 import MbrRtnBoardPage from '@/module/mbr-rtn-board/views/MbrRtnBoardPage.vue'
 function buildPath(page, params, query) {
-  console.log(page, params)
   return {
     name: page.name,
     params: params,
     query: query,
   }
 }
-function routeTo(name, param, query) {}
 const pathNames = {
-  mainPage: { name: 'mainPage', parent: () => pathNames.mainPage.name },
-  loginPage: { name: 'loginPage' },
-  surveyPage: { name: 'surveyPage', parent: () => '' },
+  mainPage: {
+    name: 'mainPage',
+    parent: () => pathNames.mainPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
+  loginPage: {
+    name: 'loginPage',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
+  surveyPage: {
+    name: 'surveyPage',
+    parent: () => '',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
   trnSearchPage: {
     name: 'trnSearchPage',
     parent: () => pathNames.trnSearchPage.name,
-    params: params => buildPath(name, params),
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   mbrRsvPage: {
     name: 'mbrRsvPage',
     parent: () => pathNames.trnSearchPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   aiTrainingPage: {
     name: 'aiTrainingPage',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   trnDetailPage: {
     name: 'trnDetailPage',
     parent: () => pathNames.trnSearchPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
-  ptRoomPage: { name: 'ptRoom' },
-  boTrnRsvBoardPage: { name: 'boTrnRsvBoardPage' },
-  boTrnFbBoardPage: { name: 'boTrnFbBoardPage' },
-  mbrMyPage: { name: 'mbrMyPage', parent: () => '' },
+  ptRoomPage: {
+    name: 'ptRoom',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
+  boTrnRsvBoardPage: {
+    name: 'boTrnRsvBoardPage',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
+  boTrnFbBoardPage: {
+    name: 'boTrnFbBoardPage',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
+  mbrMyPage: {
+    name: 'mbrMyPage',
+    parent: () => '',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
   reportPage: {
     name: 'reportPage',
     parent: () => pathNames.mbrRtnBoardPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   mbrPtFeedbackPage: {
     name: 'mbrPtFeedbackPage',
     parent: () => pathNames.trnSearchPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   boExcBoardPage: {
     name: 'boExcBoardPage',
     parent: () => pathNames.boExcBoardPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   boExcNewPage: {
     name: 'boExcNewPage',
     parent: () => pathNames.boExcBoardPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   boRtnBoardPage: {
     name: 'boRtnBoardPage',
     parent: () => pathNames.boRtnBoardPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   boRtnNewPage: {
     name: 'boRtnNewPage',
     parent: () => pathNames.boRtnBoardPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   mbrRsvCompletionPage: {
     name: 'mbrRsvCompletionPage',
     parent: () => pathNames.trnSearchPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
   mbrRtnBoardPage: {
     name: 'mbrRtnBoardPage',
     parent: () => pathNames.mbrRtnBoardPage.name,
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
   },
 }
 
