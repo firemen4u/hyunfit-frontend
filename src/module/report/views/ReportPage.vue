@@ -87,6 +87,8 @@ async function init() {
   endDate = new Date(endDate.setMonth(endDate.getMonth() + 1))
   const params = TrnDetailDateUtils.toSearchDTO(startDate, endDate)
   reportData.value = await ReportApi.getReport(1, params)
+
+  console.log(reportData.value)
 }
 
 onMounted(() => {
