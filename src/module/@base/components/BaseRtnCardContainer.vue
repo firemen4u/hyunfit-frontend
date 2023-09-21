@@ -1,56 +1,110 @@
 // ParentComponent.vue
 
 <template>
-  <div class="all-content-wrap bg-black">
+  <div class="all-content-wrap">
     <div class="rtn-board-header-wrap">
-      <div class="rtn-board-header flex justify-between">
-        <div>루틴 목록</div>
-        <div>
-          <input
-            type="text"
-            v-model="searchTerm"
-            placeholder="루틴 검색..."
-            class="border p-2 rounded"
-          />
+      <div class="font-bold text-3xl">루틴 목록</div>
+      <div class="rtn-board-header">
+        <!-- admSeq가 있는 경우에만 "등록하기" 버튼을 표시 -->
+        <div class="flex justify-end mt-5 mr-6 mb-5">
+          <div>
+            <input
+              type="text"
+              v-model="searchTerm"
+              placeholder="루틴 검색..."
+              class="border p-2 rounded"
+            />
+          </div>
         </div>
       </div>
     </div>
     <div>
       <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
-      <BaseRtnCardGroup :routines="filteredRoutines" />
+      <BaseRtnCardGroup :routines="currentRoutines" />
     </div>
+    <div class="flex justify-end mt-5 mr-6">
+      <v-btn
+        v-if="loggedInUser && loggedInUser.admSeq"
+        @click="goToNewRtnPage"
+        color="primary"
+      >
+        등록하기
+      </v-btn>
+    </div>
+    <BasePagination :totalPages="totalPages" v-model="currentPage" />
   </div>
 </template>
 
-<script>
-import BaseRtnCardGroup from '/src/module/@base/components/BaseRtnCardGroup.vue' // 자식 컴포넌트 임포트
-import ApiClient from '/src/services/api' // ApiClient 임포트
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import BaseRtnCardGroup from '/src/module/@base/components/BaseRtnCardGroup.vue'
+import ApiClient from '/src/services/api'
+import router, { pathNames } from '@/router'
+import BasePagination from '/src/module/@base/components/BasePagination.vue'
 
-export default {
-  components: {
-    BaseRtnCardGroup, // 자식 컴포넌트 등록
-  },
-  data() {
-    return {
-      routines: [], // API 결과를 저장할 배열
-      searchTerm: '', // 추가: 검색어를 저장할 변수
-    }
-  },
-  computed: {
-    // 추가: 검색어에 따라 루틴을 필터링
-    filteredRoutines() {
-      return this.routines.filter(routine =>
-        routine.rtnName.toLowerCase().includes(this.searchTerm.toLowerCase())
-      )
-    },
-  },
-  async mounted() {
+const routines = ref([])
+const searchTerm = ref('')
+const loggedInUser = ref(null)
+const itemsPerPage = 4
+const currentPage = ref(1)
+
+const filteredRoutines = computed(() => {
+  const filtered = routines.value.filter(routine =>
+    routine.rtnName.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+  console.log('Filtered Routines:', filtered) // 로그 추가
+  return filtered
+})
+
+const totalPages = computed(() =>
+  Math.ceil(filteredRoutines.value.length / itemsPerPage)
+)
+
+const currentRoutines = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  console.log('Start Index:', startIndex) // 로그 추가
+  console.log('End Index:', endIndex) // 로그 추가
+  const slicedRoutines = filteredRoutines.value.slice(startIndex, endIndex)
+  console.log('Current Page Routines:', slicedRoutines) // 로그 추가
+  return slicedRoutines
+})
+
+const handlePageChange = page => {
+  console.log('Changing to page:', page)
+  currentPage.value = page
+  console.log('Current Routines After Change:', currentRoutines.value)
+}
+
+onMounted(async () => {
+  try {
+    routines.value = await ApiClient.get('/routines')
+    let fetchedUser = null
+
     try {
-      // API 호출
-      this.routines = await ApiClient.get('/routines') // API의 경로를 입력해주세요
+      fetchedUser = await ApiClient.get('/members/me')
     } catch (error) {
-      console.error('API 호출 중 에러 발생:', error)
+      console.log('멤버 로그인 안 됨')
     }
-  },
+
+    if (!fetchedUser) {
+      try {
+        fetchedUser = await ApiClient.get('/admins/me')
+      } catch (error) {
+        console.log('관리자 로그인 안 됨')
+      }
+    }
+
+    if (fetchedUser) {
+      loggedInUser.value = fetchedUser
+    }
+  } catch (error) {
+    console.error('API 호출 중 에러 발생:', error)
+  }
+  console.log('Routines Fetched:', routines.value)
+})
+
+const goToNewRtnPage = () => {
+  router.push(pathNames.boRtnNewPage)
 }
 </script>
