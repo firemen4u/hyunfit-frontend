@@ -81,6 +81,7 @@ export default {
   methods: {
     closeModal() {
       this.$emit('close')
+      location.reload()
     },
     enterPtRoom() {
       localStorage.setItem('ptSeq', this.reservationData.ptSeq)
