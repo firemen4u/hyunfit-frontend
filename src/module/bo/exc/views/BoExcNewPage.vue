@@ -1,5 +1,5 @@
 <template>
-  <BaseContainer admin-menu>
+  <BaseContainer category="admin">
     <BaseSideBar
       :sidebarHeader="sidebarHeader"
       :categoryTitle="mainCategory"

@@ -1,5 +1,6 @@
 <template>
-  <BaseContainer admin-menu>
+  <BaseContainer category="admin">
+
     <BaseBodyWrapper>
       <div class="pt-10">
         <div>

@@ -1,11 +1,6 @@
 <template>
-  <BaseContainer footer="false">
+  <BaseContainer category="trainer" footer="false">
     <BaseBodyWrapper>
-      <BaseSideBar
-        :sidebarHeader="sidebarHeader"
-        :categoryTitle="categoryTitle"
-        :subcategories="subcategories"
-      ></BaseSideBar>
       <div class="rsv-container flex justify-center">
         <div class="rsv-list-outer mb-10" ref="listOuter">
           <div v-if="showCardList" class="rsv-smr-card-container">
@@ -28,11 +23,7 @@
 
 <script setup>
 import ReservationList from '/src/module/bo/trn/component/ReservationList.vue'
-import {
-  BaseContainer,
-  BaseBodyWrapper,
-  BaseSideBar,
-} from '/src/module/@base/views'
+import { BaseContainer, BaseBodyWrapper } from '/src/module/@base/views'
 import ReservationSummaryCard from '../component/ReservationSummaryCard.vue'
 </script>
 
@@ -40,12 +31,6 @@ import ReservationSummaryCard from '../component/ReservationSummaryCard.vue'
 export default {
   data() {
     return {
-      sidebarHeader: '백오피스',
-      categoryTitle: '회원관리',
-      subcategories: [
-        { title: '예약현황', link: '/pt-rsv-manage' },
-        { title: '피드백작성', link: '/pt-fb-manage' },
-      ],
       showCardList: false,
       sendingData: {
         completeCnt: 0,
