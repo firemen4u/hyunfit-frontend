@@ -10,7 +10,7 @@
             class="text-sm text-gray-600 items-center rounded-xl text-center text-white bg-primary mb-1 pt-0.5 pb-0.5 pr-3 pl-3"
             style="display: inline-block; min-width: auto"
           >
-            Day {{ daysDiff }}
+            D{{ daysDiff }}
           </p>
         </div>
         <div class="text-gray-900 font-bold mb-2 flex justify-between">
@@ -36,15 +36,15 @@
         :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
         title="trainer profile img"
       ></div>
-      <div class="">
-        <div>
-          <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
-            {{ props.responseData.trnName }}
-          </p>
-          <p class="train-content text-gray-700">
-            {{ props.responseData.trainContent }}
-          </p>
-        </div>
+      <div>
+        <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
+          {{ props.responseData.trnName }}
+        </p>
+        <p
+          class="train-content h-16 w-80 text-gray-700 overflow-hidden text-sm"
+        >
+          {{ props.responseData.trnShortDescription }}
+        </p>
       </div>
     </div>
   </div>

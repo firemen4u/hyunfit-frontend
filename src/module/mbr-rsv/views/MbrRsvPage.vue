@@ -3,9 +3,9 @@
     <BaseBodyWrapper>
       <div class="mbr-rsv-container w-full h-full" v-if="response !== null">
         <div class="mbr-rsv-banner-container h-1/5 overflow-hidden relative">
-          <div class="banner-img w-full">
+          <div class="banner-img w-full h-96 hover:h-96">
             <img
-              src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FLmK30%2FbtstpDVKWjo%2FK4PSNMpfTmkccfOWoB6Ao1%2Fimg.jpg"
+              :src="filteredReservingTrainings[0].trnProfileUrl"
               alt="Option 1"
               class="option-image w-full"
             />
@@ -32,17 +32,6 @@
               :key="training.id"
               :responseData="training"
             ></MbrRsvTrainCard>
-            <!-- <MbrRsvTrainCard
-              :trainerProfileImageUrl="profileImageUrl2"
-              trainDay="D-2"
-              trainType="필라테스"
-              trainDatetime="09.09 - 14:00"
-              trainTrainerName="고윤정 선생님"
-              trainContent="머리 어깨 무릎 팔 다 풀어봅시다"
-              :avatarImageUrl="avatarImageUrl2"
-              :response="response.value.personalTrainingDTOList"
-              lastClassDate="23.08.22"
-            ></MbrRsvTrainCard> -->
           </div>
         </div>
         <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
@@ -80,29 +69,30 @@ import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import ApiClient from '/src/services/api.js'
 import dateUtil from '/src/utils/date.js'
-
+import router from '/src/router'
 let memberSource = ''
 const response = ref(null)
 
 const filteredReservingTrainings = computed(() => {
-  console.log(
-    'response Data : ',
-    response.value.personalTrainingDTOList.filter(
-      training => training.ptReservationStatus === 1
-    )
+  // 날짜가 빠른 순서로 정렬
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+  const sortedTrainings = response.value.personalTrainingDTOList.sort(
+    (a, b) => {
+      const dateA = new Date(a.ptReservationDate)
+      const dateB = new Date(b.ptReservationDate)
+      return dateA - dateB
+    }
   )
 
-  console.log(
-    'response Data NOT 1: ',
-    response.value.personalTrainingDTOList.filter(
-      training => training.ptReservationStatus !== 1
-    )
-  )
-
-  return response.value.personalTrainingDTOList.filter(
+  const filteredTrainings = sortedTrainings.filter(
     training => training.ptReservationStatus === 1
   )
+
+  console.log('Filtered and sorted trainings: ', filteredTrainings)
+
+  return filteredTrainings
 })
+
 const filteredReservedTrainings = computed(() => {
   console.log(
     'response Data NOT 1: ',
@@ -110,11 +100,11 @@ const filteredReservedTrainings = computed(() => {
       training => training.ptReservationStatus !== 1
     )
   )
-
   return response.value.personalTrainingDTOList.filter(
     training => training.ptReservationStatus !== 1
   )
 })
+
 async function init() {
   try {
     memberSource = await ApiClient.get('/members/me')
@@ -135,12 +125,15 @@ onBeforeMount(() => {
 
 onMounted(() => {
   console.log('마운트 됨')
+  console.log('filteredReservingTrainings', filteredReservingTrainings)
+
+  console.log('filteredReservingTrainings', filteredReservedTrainings)
 })
+
 const profileImageUrl =
   'https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfNiAg/MDAxNjE0MjM5MDE5NDky.PRUBGVPV9zDpuus_gRK8TRkc6OQ1bj2OeR8xpgIOZU4g._h3ecE-etq93eBQJgbKPSA7LNsDcG8AQpCKEHNc58hMg.JPEG.kikisoyun/IMG_1160.JPG?type=w800'
 const avatarImageUrl =
   'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd3DAvL%2FbtstcPRGzk2%2FyEF3KBvZwJgQcfnNQyN0zK%2Fimg.jpg'
-
 const profileImageUrl2 =
   'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb9OSgq%2FbtstfPDvgwy%2F2qJ7Ck73VKjAkzHAd7R5L0%2Fimg.jpg'
 const avatarImageUrl2 =

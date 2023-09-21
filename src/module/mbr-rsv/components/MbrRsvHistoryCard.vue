@@ -9,7 +9,7 @@
       <div class="flex-col">
         <div class="text-xl font-bold">{{ trainerName }}</div>
         <div class="text-base flex text-gray-500">
-          <p>{{ `${day}    |    ${time}` }}</p>
+          <!-- <p>{{ `${day}    |    ${time}` }}</p> -->
         </div>
       </div>
     </div>
