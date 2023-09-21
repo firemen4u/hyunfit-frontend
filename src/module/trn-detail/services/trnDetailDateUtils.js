@@ -72,4 +72,5 @@ export default {
   toDateFromDateAndTimeStr,
   toReservedDaysSearchDTO,
   toTimeslotSearchDTO,
+  toSearchDTO,
 }
