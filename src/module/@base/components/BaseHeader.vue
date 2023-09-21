@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   HyunfitLogoGradientSvg,
@@ -50,6 +50,7 @@ const profileMenus = [
   { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
   { displayName: '비밀번호 변경', destination: '/' },
+  { displayName: '로그인', destination: pathNames.loginPage },
   { displayName: '로그아웃', destination: '/' },
 ]
 function getPages(isAdmin) {
@@ -116,7 +117,6 @@ const lastMenuItemClasses = (idx, pg) => {
     <div class="header-wrapper items-center">
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
-        {{ pathNames.trnDetailPage }}
         <div class="flex items-center">
           <a
             @click="router.push(pathNames.mainPage)"
