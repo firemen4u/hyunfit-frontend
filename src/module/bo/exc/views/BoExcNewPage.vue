@@ -6,8 +6,8 @@
       :subcategories="subcategories"
     />
     <BaseBodyWrapper>
-      <div class="제일큰 pt-10">
-        <div class="루틴목록이랑검색창있는div flex justify-between">
+      <div class="pt-10">
+        <div class="flex justify-between">
           <div class="text-2xl font-bold">운동 등록</div>
         </div>
         <form @submit.prevent="submit">

@@ -1,16 +1,23 @@
 // ParentComponent.vue
 
 <template>
-  <div class="all-content-wrap">
+  <div class="all-content-wrap bg-black">
     <div class="rtn-board-header-wrap">
-        <div class="rtn-board-header flex justify-between">
-            <div>루틴 목록</div>
-          <div>검색창</div>
+      <div class="rtn-board-header flex justify-between">
+        <div>루틴 목록</div>
+        <div>
+          <input
+            type="text"
+            v-model="searchTerm"
+            placeholder="루틴 검색..."
+            class="border p-2 rounded"
+          />
         </div>
+      </div>
     </div>
     <div>
       <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
-      <BaseRtnCardGroup :routines="routines" />
+      <BaseRtnCardGroup :routines="filteredRoutines" />
     </div>
   </div>
 </template>
@@ -26,7 +33,16 @@ export default {
   data() {
     return {
       routines: [], // API 결과를 저장할 배열
+      searchTerm: '', // 추가: 검색어를 저장할 변수
     }
+  },
+  computed: {
+    // 추가: 검색어에 따라 루틴을 필터링
+    filteredRoutines() {
+      return this.routines.filter(routine =>
+        routine.rtnName.toLowerCase().includes(this.searchTerm.toLowerCase())
+      )
+    },
   },
   async mounted() {
     try {
