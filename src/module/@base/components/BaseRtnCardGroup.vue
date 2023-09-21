@@ -79,7 +79,7 @@ const startRoutine = () => {
         <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
         <div
           v-if="selectedRoutine"
-          class="rtn-excCard-wrap flex flex-wrap justify-center pt-10 pb-10"
+          class="rtn-excCard-wrap flex-wrap grid grid-cols-3 justify-items-center pt-10 pb-10 mx-7"
         >
           <BoExcCard
             v-for="exercise in selectedRoutine.exercises"

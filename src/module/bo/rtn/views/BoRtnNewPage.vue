@@ -30,11 +30,12 @@
             <p class="col-1">루틴 설명</p>
             <div class="rtn-content-text">
               <v-textarea
+                counter
                 class="rtn-content-text"
                 v-model="rtn_content"
                 clearable
                 placeholder="50자 내로 작성하세요"
-                maxlength="50"
+                maxlength="100"
                 variant="solo"
                 single-line
               ></v-textarea>
@@ -357,7 +358,7 @@ const sendDataToAPI = async () => {
 
     // 두 번째 API 호출: 파일 업로드
     const secondApiResponse = await axios.post(
-      'http://ryulrudaga.com:48000/api/firemen/file',
+      'https://fs.hyunfit.life/api/hyunfit/file',
       formData,
       config
     )
