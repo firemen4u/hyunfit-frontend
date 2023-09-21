@@ -48,8 +48,11 @@
         <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
           <div class="mbr-rsv-history-item m-3">
             <p class="text-2xl font-bold mt-10 mb-8">지난 예약</p>
-            <div v-for="training in filteredReservedTrainings" 
-            :key="training.id" class="mbr-rsv-history-card">
+            <div
+              v-for="training in filteredReservedTrainings"
+              :key="training.id"
+              class="mbr-rsv-history-card"
+            >
               <MbrRsvHistoryCard
                 profileImageUrl="https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfMjk4/MDAxNjE0MjM5MDIwMTk5.aJVYERC3dCXww1NgFcRjSCGsvFMkl58NJC6ee--69vYg.jLPZXJ3t8x-sj8wJmuIXtAOQxeEOagLtDftS7zZFgtAg.JPEG.kikisoyun/IMG_1146.JPG?type=w800"
                 trainerName="고윤정 트레이너"
@@ -73,7 +76,7 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { ref, onBeforeMount, onMounted, computed } from 'vue'
-import MbrRsvTrainCard from '/src/module/mbr-reservation/components/MbrRsvTrainCard.vue'
+import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import ApiClient from '/src/services/api.js'
 import dateUtil from '/src/utils/date.js'
@@ -101,7 +104,6 @@ const filteredReservingTrainings = computed(() => {
   )
 })
 const filteredReservedTrainings = computed(() => {
-
   console.log(
     'response Data NOT 1: ',
     response.value.personalTrainingDTOList.filter(

@@ -1,16 +1,22 @@
 <script setup>
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
+import router, { pathNames } from '@/router'
 
 const props = defineProps({
   items: Array,
 })
+function gotoTrnDetail(trnId) {
+  console.log('trnId', { trnId })
+  console.log('return value', pathNames.trnDetailPage.params({ trnId }))
+  router.push(pathNames.trnDetailPage.params({ trnId }))
+}
 </script>
 <template>
-  <a
+  <div
     v-for="(data, i) in items"
     :key="i"
-    class="card-container"
-    :href="'trainers/' + data.trnId"
+    class="card-container cursor-pointer"
+    @click="gotoTrnDetail(data.trnId)"
   >
     <div class="trn-contents">
       <div
@@ -42,7 +48,7 @@ const props = defineProps({
         class="trn-profile-image rounded-lg"
       />
     </div>
-  </a>
+  </div>
 </template>
 
 <style scoped>

@@ -19,7 +19,7 @@ import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
 import QnASection from '@/module/trn-detail/components/TrnDetailQnASection.vue'
 import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
-import PtReservationConfirmLoadingModal from '@/module/pt-reservation/components/PtReservationConfirmLoadingModal.vue'
+import PtReservationConfirmLoadingModal from '@/module/mbr-rsv-completion/components/PtReservationConfirmLoadingModal.vue'
 import {
   ptReservationOptions,
   trnCertificatesSrc,
@@ -90,7 +90,7 @@ async function confirmReservation() {
   try {
     let result = await postPersonalTraining(data)
     reservationConfirmLoading.value = false
-    await router.push(pathNames.ptReservationCompleted)
+    await router.push(pathNames.mbrRsvCompletionPage)
   } catch (error) {
     reservationFailureReason.value = error
   }
