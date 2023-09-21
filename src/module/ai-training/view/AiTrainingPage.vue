@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading == true">
+  <div v-if="loading === true">
     <h1 class="loading">로딩중</h1>
   </div>
   <div class="ai-training-container flex">

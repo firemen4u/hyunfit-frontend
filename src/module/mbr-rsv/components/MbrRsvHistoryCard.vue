@@ -50,7 +50,7 @@
 <script setup>
 import { ref } from 'vue'
 import { BaseRating } from '/src/module/@base/components'
-import MbrRsvReviewModal from '/src/module/mbr-reservation/components/MbrRsvReviewModal.vue'
+import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
 // const props = defineProps({
 //   profileImageUrl: String,
 //   trainerName: String,
@@ -62,7 +62,7 @@ import MbrRsvReviewModal from '/src/module/mbr-reservation/components/MbrRsvRevi
 // })
 
 const props = defineProps({
-  responseData : Object,
+  responseData: Object,
 })
 
 const showReviewModal = ref(false)

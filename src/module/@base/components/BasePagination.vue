@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, watch, defineEmits } from 'vue'
+import { ref, watch } from 'vue'
 
 const emits = defineEmits(['update:modelValue']) // 이 부분을 추가
 const { totalPages, modelValue } = defineProps(['totalPages', 'modelValue'])

@@ -8,11 +8,8 @@
     <BaseBodyWrapper>
       <div class="제일큰 pt-10">
         <div>
-          
           <div class="p-2 border-dashed border-4 border-yellow-400">
-
             <div class="">
-
               <BaseRtnCardContainer />
             </div>
           </div>
@@ -42,4 +39,4 @@ const subcategories = [
   { id: 4, title: '루틴 등록', link: '/link4' },
 ]
 </script>
-<style lang=""></style>
+<style></style>

@@ -2,46 +2,62 @@ import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from '/src/module/main/views/MainPage.vue'
 import SurveyPage from '/src/module/survey/views/SurveyPage.vue'
 import TrnSearchPage from '/src/module/trn-search/views/TrnSearchPage.vue'
-import MbrRsvPage from '/src/module/mbr-reservation/views/MbrRsvPage.vue'
-import AITrainingPage from '/src/module/ai-training/view/AITrainingPage.vue'
+import MbrRsvPage from '/src/module/mbr-rsv/views/MbrRsvPage.vue'
+import AiTrainingPage from '/src/module/ai-training/view/AiTrainingPage.vue'
 import TrnDetailPage from '/src/module/trn-detail/views/TrnDetailPage.vue'
 import PtRoomPage from '/src/module/pt-room/views/PtRoomPage.vue'
-import MbrMypage from '/src/module/mbr-mypage/views/MbrMypage.vue'
-import BoTrnRsvBoard from '/src/module/bo/trn/views/BoTrnRsvBoard.vue'
-import BoTrnFbBoard from '/src/module/bo/trn/views/BoTrnFbBoard.vue'
+import MbrMyPage from '/src/module/mbr-my/views/MbrMyPage.vue'
+import BoTrnRsvBoardPage from '/src/module/bo/trn/views/BoTrnRsvBoardPage.vue'
+import BoTrnFbBoardPage from '/src/module/bo/trn/views/BoTrnFbBoardPage.vue'
 import BoExcNewPage from '/src/module/bo/exc/views/BoExcNewPage.vue'
 import BoExcBoardPage from '/src/module/bo/exc/views/BoExcBoardPage.vue'
 import ReportPage from '@/module/report/views/ReportPage.vue'
-import TrnFeedBackPage from '/src/module/mbr-pt-feedback/views/MbrPtFeedBackPage.vue'
+import MbrPtFeedbackPage from '/src/module/mbr-pt-feedback/views/MbrPtFeedbackPage.vue'
 import LoginPage from '/src/module/main/views/LoginPage.vue'
 import BoRtnBoardPage from '/src/module/bo/rtn/views/BoRtnBoardPage.vue'
 import BoRtnNewPage from '/src/module/bo/rtn/views/BoRtnNewPage.vue'
-import PtReservationCompletePage from '@/module/pt-reservation/views/PtReservationCompletionPage.vue'
-
+import MbrRsvCompletionPage from '@/module/mbr-rsv-completion/views/MbrRsvCompletionPage.vue'
+import MbrRtnBoardPage from '@/module/mbr-rtn-board/views/MbrRtnBoardPage.vue'
+function buildPath(page, params, query) {
+  console.log(page, params)
+  return {
+    name: page.name,
+    params: params,
+    query: query,
+  }
+}
+function routeTo(name, param, query) {}
 const pathNames = {
-  main: { name: 'main', parent: () => pathNames.main.name },
-  login: { name: 'login' },
-  survey: { name: 'survey', parent: () => '' },
-  trnSearch: { name: 'trnSearch', parent: () => pathNames.trnSearch.name },
-  mbrReservation: {
-    name: 'mbrReservation',
-    parent: () => pathNames.trnSearch.name,
+  mainPage: { name: 'mainPage', parent: () => pathNames.mainPage.name },
+  loginPage: { name: 'loginPage' },
+  surveyPage: { name: 'surveyPage', parent: () => '' },
+  trnSearchPage: {
+    name: 'trnSearchPage',
+    parent: () => pathNames.trnSearchPage.name,
+    params: params => buildPath(name, params),
   },
-  aiTraining: {
-    name: 'aiTraining',
+  mbrRsvPage: {
+    name: 'mbrRsvPage',
+    parent: () => pathNames.trnSearchPage.name,
   },
-  trnDetail: {
-    name: 'trnDetail',
-    parent: () => pathNames.trnSearch.name,
+  aiTrainingPage: {
+    name: 'aiTrainingPage',
   },
-  ptRoom: { name: 'ptRoom' },
-  boTrnRsvBoard: { name: 'boTrnRsvBoard' },
-  boTrnFbBoard: { name: 'boTrnFbBoard' },
+  trnDetailPage: {
+    name: 'trnDetailPage',
+    parent: () => pathNames.trnSearchPage.name,
+  },
+  ptRoomPage: { name: 'ptRoom' },
+  boTrnRsvBoardPage: { name: 'boTrnRsvBoardPage' },
+  boTrnFbBoardPage: { name: 'boTrnFbBoardPage' },
   mbrMyPage: { name: 'mbrMyPage', parent: () => '' },
-  report: { name: 'report', parent: () => pathNames.mbrRoutineBoard.name },
-  mbrPtFeedback: {
-    name: 'mbrPtFeedback',
-    parent: () => pathNames.trnSearch.name,
+  reportPage: {
+    name: 'reportPage',
+    parent: () => pathNames.mbrRtnBoardPage.name,
+  },
+  mbrPtFeedbackPage: {
+    name: 'mbrPtFeedbackPage',
+    parent: () => pathNames.trnSearchPage.name,
   },
   boExcBoardPage: {
     name: 'boExcBoardPage',
@@ -59,82 +75,83 @@ const pathNames = {
     name: 'boRtnNewPage',
     parent: () => pathNames.boRtnBoardPage.name,
   },
-  ptReservationCompleted: {
-    name: 'ptReservationCompleted',
-    parent: () => pathNames.trnSearch.name,
+  mbrRsvCompletionPage: {
+    name: 'mbrRsvCompletionPage',
+    parent: () => pathNames.trnSearchPage.name,
   },
-  mbrRoutineBoard: {
-    name: 'mbrRoutineBoard',
-    parent: () => pathNames.mbrRoutineBoard.name,
+  mbrRtnBoardPage: {
+    name: 'mbrRtnBoardPage',
+    parent: () => pathNames.mbrRtnBoardPage.name,
   },
 }
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: pathNames.main.name,
+      name: pathNames.mainPage.name,
       component: MainPage,
     },
     {
       path: '/login',
-      name: pathNames.login.name,
+      name: pathNames.loginPage.name,
       component: LoginPage,
     },
     {
       path: '/survey',
-      name: pathNames.survey.name,
+      name: pathNames.surveyPage.name,
       component: SurveyPage,
     },
     {
       path: '/trainers',
-      name: pathNames.trnSearch.name,
+      name: pathNames.trnSearchPage.name,
       component: TrnSearchPage,
     },
     {
-      path: '/mbr-reservation',
-      name: pathNames.mbrReservation.name,
+      path: '/mbr-rsv',
+      name: pathNames.mbrRsvPage.name,
       component: MbrRsvPage,
     },
     {
       path: '/ai-training',
-      name: pathNames.aiTraining.name,
-      component: AITrainingPage,
+      name: pathNames.aiTrainingPage.name,
+      component: AiTrainingPage,
     },
     {
       path: '/trainers/:trnId',
-      name: pathNames.trnDetail.name,
+      name: pathNames.trnDetailPage.name,
       component: TrnDetailPage,
     },
     {
       path: '/ptroom',
-      name: pathNames.ptRoom.name,
+      name: pathNames.ptRoomPage.name,
       component: PtRoomPage,
     },
     {
-      path: '/pt-rsv-manage',
-      name: pathNames.boTrnRsvBoard.name,
-      component: BoTrnRsvBoard,
+      path: '/boTrnRsvBoard',
+      name: pathNames.boTrnRsvBoardPage.name,
+      component: BoTrnRsvBoardPage,
     },
     {
       path: '/pt-fb-manage',
-      name: pathNames.boTrnFbBoard.name,
-      component: BoTrnFbBoard,
+      name: pathNames.boTrnFbBoardPage.name,
+      component: BoTrnFbBoardPage,
     },
     {
       path: '/mbr-myPage',
       name: pathNames.mbrMyPage.name,
-      component: MbrMypage,
+      component: MbrMyPage,
     },
     {
       path: '/report',
-      name: pathNames.report.name,
+      name: pathNames.reportPage.name,
       component: ReportPage,
     },
     {
       path: '/mbr-pt-feedback',
-      name: pathNames.mbrPtFeedback.name,
-      component: TrnFeedBackPage,
+      name: pathNames.mbrPtFeedbackPage.name,
+      component: MbrPtFeedbackPage,
     },
     {
       path: '/bo-excNew',
@@ -158,13 +175,13 @@ const router = createRouter({
     },
     {
       path: '/reservations/complete',
-      name: pathNames.ptReservationCompleted.name,
-      component: PtReservationCompletePage,
+      name: pathNames.mbrRsvCompletionPage.name,
+      component: MbrRsvCompletionPage,
     },
     {
       path: '/routines',
-      name: pathNames.mbrRoutineBoard.name,
-      component: MainPage,
+      name: pathNames.mbrRtnBoardPage.name,
+      component: MbrRtnBoardPage,
     },
   ],
   scrollBehavior(to, from, savedPosition) {

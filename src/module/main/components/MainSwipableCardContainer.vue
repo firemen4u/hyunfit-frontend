@@ -39,7 +39,7 @@ let navigation = {
       <div
         v-if="seeMore"
         class="self-end cursor-pointer"
-        @click="router.push(pathNames.trnSearch)"
+        @click="router.push(pathNames.trnSearchPage)"
       >
         전체보기
       </div>

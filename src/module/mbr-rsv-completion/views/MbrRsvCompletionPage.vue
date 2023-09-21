@@ -1,14 +1,14 @@
 <script setup>
-import PtReservationCompletionEffect from '@/module/pt-reservation/components/PtReservationCompletionEffect.vue'
+import PtReservationCompletionEffect from '@/module/mbr-rsv-completion/components/PtReservationCompletionEffect.vue'
 import { BaseContainer } from '@/module/@base/views'
 import BaseBodyWrapper from '@/module/@base/views/BaseBodyWrapper.vue'
 import router, { pathNames } from '@/router'
 
 async function gotoMbrReservation() {
-  await router.push(pathNames.mbrReservation)
+  await router.push(pathNames.mbrRsvPage)
 }
 async function gotoMain() {
-  await router.push(pathNames.main)
+  await router.push(pathNames.mainPage)
 }
 </script>
 

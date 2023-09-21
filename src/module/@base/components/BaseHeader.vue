@@ -15,22 +15,22 @@ const props = defineProps({
 })
 
 const headerPages = [
-  { displayName: '홈', destination: pathNames.main },
+  { displayName: '홈', destination: pathNames.mainPage },
   {
     displayName: 'AI트레이닝',
-    destination: pathNames.mbrRoutineBoard,
+    destination: pathNames.mbrRtnBoardPage,
     menus: [
-      { menuName: '루틴', destination: pathNames.mbrRoutineBoard },
-      { menuName: '리포트', destination: pathNames.report },
+      { menuName: '루틴', destination: pathNames.mbrRtnBoardPage },
+      { menuName: '리포트', destination: pathNames.reportPage },
     ],
   },
   {
     displayName: '화상트레이닝',
-    destination: pathNames.trnSearch,
+    destination: pathNames.trnSearchPage,
     menus: [
-      { menuName: '트레이너 찾기', destination: pathNames.trnSearch },
-      { menuName: '내 예약', destination: pathNames.mbrReservation },
-      { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedback },
+      { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
+      { menuName: '내 예약', destination: pathNames.mbrRsvPage },
+      { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedbackPage },
     ],
   },
 ]
@@ -47,7 +47,7 @@ const adminPages = [
 ]
 
 const profileMenus = [
-  { displayName: '운동환경 재설정', destination: pathNames.survey },
+  { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
   { displayName: '비밀번호 변경', destination: '/' },
   { displayName: '로그아웃', destination: '/' },
@@ -116,8 +116,12 @@ const lastMenuItemClasses = (idx, pg) => {
     <div class="header-wrapper items-center">
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
+        {{ pathNames.trnDetailPage }}
         <div class="flex items-center">
-          <a @click="router.push(pathNames.main)" class="mr-10 cursor-pointer">
+          <a
+            @click="router.push(pathNames.mainPage)"
+            class="mr-10 cursor-pointer"
+          >
             <HyunfitLogoGradientSvg :size="140" />
           </a>
           <div
