@@ -1,4 +1,4 @@
-<!-- ExcInfoModal.vue -->
+<!-- BoExcCardModal.vue -->
 <template>
   <div v-if="show" class="modal" @click="closeModal">
     <div class="modal-content relative" @click.stop>
@@ -73,9 +73,16 @@
         </div>
       </div>
       <div class="modal-sub-wrap justify-end">
-        <p></p>
-        <button class="mr-4 rounded-lg">수정</button>
-        <button class="mr-0 rounded-lg">삭제</button>
+        <div class="deleteBtn">
+          <v-btn
+            v-if="showDeleteBtn"
+            @click="deleteExercise"
+            color="primary"
+            class="mr-0 rounded-lg"
+          >
+            삭제
+          </v-btn>
+        </div>
       </div>
     </div>
   </div>
@@ -84,7 +91,7 @@
 <script setup>
 import dateUtil from '/src/utils/date.js'
 import ExctgUtils from '@/module/bo/exc/services/excUtils'
-const props = defineProps(['show', 'exercise'])
+const props = defineProps(['show', 'exercise', 'showDeleteBtn'])
 const emit = defineEmits([])
 
 const closeModal = () => {
@@ -123,6 +130,13 @@ const excDifficultyMapping = {
 const mapDifficultyType = type => {
   return excDifficultyMapping[type] || '알 수 없음'
 }
+
+// 운동 삭제
+const deleteExercise = () => {
+  if (window.confirm('삭제하시겠습니까?')) {
+    emit('deleteExercise', props.exercise.excSeq)
+  }
+}
 </script>
 
 <style scoped>
@@ -154,7 +168,6 @@ const mapDifficultyType = type => {
   background-color: rgb(163, 163, 163);
   padding: 4px;
   color: white;
-  display: none;
 }
 .modal-sub-wrap :first-child {
   text-align: start;
@@ -175,5 +188,9 @@ const mapDifficultyType = type => {
   object-fit: contain; /* 비율 유지 */
   object-fit: cover; /* 이미지 비율을 유지하면서 넘치는 부분을 잘라냄 */
   overflow: hidden; /* 넘치는 부분을 숨김 */
+}
+
+.deleteBtn {
+  width: 100px;
 }
 </style>

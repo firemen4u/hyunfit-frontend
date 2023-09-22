@@ -46,7 +46,9 @@
       <BoExcCardModal
         :show="showModal"
         :exercise="selectedExercise"
+        :showDeleteBtn="true"
         @update:show="showModal = $event"
+        @deleteExercise="deleteExercise"
       />
     </BaseBodyWrapper>
   </BaseContainer>
@@ -155,6 +157,16 @@ const selectedExercise = ref(null) // 선택된 운동을 저장할 변수
 const openModal = exercise => {
   selectedExercise.value = exercise
   showModal.value = true
+}
+// 운동 삭제 함수
+const emit = defineEmits([])
+const deleteExercise = async excSeq => {
+  try {
+    await ApiClient.delete(`/exercises/${excSeq}`)
+    fetchExercises()
+  } catch (error) {
+    console.error('운동 삭제 중 에러 발생:', error)
+  }
 }
 </script>
 <style scoped>

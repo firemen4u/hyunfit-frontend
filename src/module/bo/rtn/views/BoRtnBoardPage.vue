@@ -1,12 +1,11 @@
 <template>
   <BaseContainer category="admin">
-
     <BaseBodyWrapper>
       <div class="pt-10">
         <div>
           <div class="p-2">
             <div class="">
-              <BaseRtnCardContainer />
+              <BaseRtnCardContainer :showAdmin="true" />
             </div>
           </div>
           <BasePagination />

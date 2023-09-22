@@ -264,16 +264,16 @@ const rtn_back_disk_considered_radio = [
 //submit 시키기
 const rtn_name = ref('')
 const rtn_content = ref('')
-const rtn_duration = ref('')
-const rtn_goal = ref('')
-const rtn_target = ref('')
-const rtn_experience_level = ref('')
-const rtn_knee_health_considered = ref('')
-const rtn_noise_considered = ref('')
-const rtn_long_sitter = ref('')
-const rtn_neck_shoulder_focused = ref('')
-const rtn_back_disk_considered = ref('')
-const rtn_reward_point = ref('')
+const rtn_duration = ref('1')
+const rtn_goal = ref('1')
+const rtn_target = ref('1')
+const rtn_experience_level = ref('1')
+const rtn_knee_health_considered = ref('1')
+const rtn_noise_considered = ref('1')
+const rtn_long_sitter = ref('1')
+const rtn_neck_shoulder_focused = ref('1')
+const rtn_back_disk_considered = ref('1')
+const rtn_reward_point = ref('0')
 
 const rtn_thumbnail_url = ref('') // 이미지 파일
 const imageUrl = ref(
@@ -323,7 +323,7 @@ const sendDataToAPI = async () => {
       `${BACKEND_API_BASE_URL}/routines`,
       payload
     )
-    const rtnSeq = firstApiResponse.data.rtnSeq
+    const rtnSeq = firstApiResponse.rtnSeq
 
     console.log(`Received rtnSeq: ${rtnSeq}`)
 
@@ -353,7 +353,7 @@ const sendDataToAPI = async () => {
     )
 
     console.log('Data sent to API:', JSON.stringify(payload, null, 2)) // 콘솔에 로깅
-    console.log(`File upload success: ${secondApiResponse.data.value}`)
+    console.log(`File upload success: ${secondApiResponse.value}`)
     alert('등록 성공!')
     window.location.reload() // 페이지 새로고침
   } catch (error) {

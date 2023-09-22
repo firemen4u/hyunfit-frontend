@@ -8,7 +8,7 @@
         <input
           type="text"
           v-model="searchText"
-          placeholder=" 🔎 운동 검색"
+          placeholder=" 운동 검색"
           class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
         />
       </div>

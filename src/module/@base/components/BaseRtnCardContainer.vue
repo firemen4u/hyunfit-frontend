@@ -1,9 +1,11 @@
-// ParentComponent.vue
-
+<!-- ParentComponent.vue -->
 <template>
   <div class="all-content-wrap">
     <div class="rtn-board-header-wrap">
-      <div class="font-bold text-3xl">루틴 목록</div>
+      <div v-if="showAdmin" class="font-bold text-3xl ml-5">루틴 목록</div>
+      <div v-if="showMember" class="font-bold text-2xl ml-10">
+        HYUNFIT과 함께 운동하고 건강한 운동 습관을 완성해보세요!
+      </div>
       <div class="rtn-board-header">
         <!-- admSeq가 있는 경우에만 "등록하기" 버튼을 표시 -->
         <div class="flex justify-end mt-5 mr-6 mb-5">
@@ -23,15 +25,13 @@
       <BaseRtnCardGroup :routines="currentRoutines" />
     </div>
     <div class="flex justify-end mt-5 mr-6">
-      <v-btn
-        v-if="loggedInUser && loggedInUser.admSeq"
-        @click="goToNewRtnPage"
-        color="primary"
-      >
+      <v-btn v-if="showAdmin" @click="goToNewRtnPage" color="primary">
         등록하기
       </v-btn>
     </div>
-    <BasePagination :totalPages="totalPages" v-model="currentPage" />
+    <div class="mb-10">
+      <BasePagination :totalPages="totalPages" v-model="currentPage" />
+    </div>
   </div>
 </template>
 
@@ -47,6 +47,9 @@ const searchTerm = ref('')
 const loggedInUser = ref(null)
 const itemsPerPage = 12
 const currentPage = ref(1)
+
+//showAdmin:true, showMember:true 인곳에 버튼 보이게 하기
+const { showAdmin, showMember } = defineProps(['showAdmin', 'showMember'])
 
 const filteredRoutines = computed(() => {
   return routines.value.filter(routine =>
@@ -85,25 +88,25 @@ onMounted(async () => {
     const fetchedRoutines = await ApiClient.get('/routines')
     routines.value = fetchedRoutines.sort((a, b) => b.rtnSeq - a.rtnSeq) // seq로 정렬
     console.log('Sorted Routines by seq:', routines.value)
-    let fetchedUser = null
+    //   let fetchedUser = null
 
-    try {
-      fetchedUser = await ApiClient.get('/members/me')
-    } catch (error) {
-      console.log('멤버 로그인 안 됨')
-    }
+    //   try {
+    //     fetchedUser = await ApiClient.get('/members/me')
+    //   } catch (error) {
+    //     console.log('멤버 로그인 안 됨')
+    //   }
 
-    if (!fetchedUser) {
-      try {
-        fetchedUser = await ApiClient.get('/admins/me')
-      } catch (error) {
-        console.log('관리자 로그인 안 됨')
-      }
-    }
+    //   if (!fetchedUser) {
+    //     try {
+    //       fetchedUser = await ApiClient.get('/admins/me')
+    //     } catch (error) {
+    //       console.log('관리자 로그인 안 됨')
+    //     }
+    //   }
 
-    if (fetchedUser) {
-      loggedInUser.value = fetchedUser
-    }
+    //   if (fetchedUser) {
+    //     loggedInUser.value = fetchedUser
+    //   }
   } catch (error) {
     console.error('API 호출 중 에러 발생:', error)
   }

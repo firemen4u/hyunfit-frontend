@@ -6,6 +6,8 @@
       :label="option.label"
       :value="option.value"
       class="custom-radio"
+      true-icon="mdi-check-circle"
+      color="primary"
       hide-details
     ></v-radio>
   </v-radio-group>

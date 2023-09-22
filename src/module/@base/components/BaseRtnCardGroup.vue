@@ -5,10 +5,15 @@ import BaseLabel from '@/module/@base/components/BaseLabel.vue'
 import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
 import BoExcCard from '/src/module/@base/components/BaseExcCard.vue'
+import router, { pathNames } from '@/router'
 
 const props = defineProps({
   routines: Array,
 })
+
+const goToAiTraining = () => {
+  router.push(pathNames.aiTrainingPage)
+}
 
 const showModal = ref(false) // 모달 상태
 const selectedRoutine = ref(null) // 선택된 루틴 정보를 담을 변수
@@ -23,8 +28,12 @@ function srcUrlOf(rtnSeq) {
 }
 
 const startRoutine = () => {
-  // 여기서 selectedRoutine.value 를 사용하여 루틴 정보를 전송하는 코드 쓰면 돼
-  console.log('루틴 시작:', selectedRoutine.value)
+  // 여기서 selectedRoutine 를 사용하여 루틴 정보를 전송하는 코드 쓰면 돼
+  // 선택된 루틴 정보가 있고, 그 정보를 기반으로 AI 트레이닝 페이지로 이동하고 싶다면
+  if (selectedRoutine.value) {
+    console.log('루틴 시작:', selectedRoutine.value)
+    goToAiTraining() // 이 함수를 호출하여 AI 트레이닝 페이지로 이동
+  }
 }
 </script>
 <template>
