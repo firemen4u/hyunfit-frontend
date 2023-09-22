@@ -23,6 +23,11 @@ const targetChartOptions = {
       ticks: {
         stepSize: 2,
       },
+      pointLabels: {
+        font: {
+          size: 15,
+        },
+      },
     },
   },
   interaction: {

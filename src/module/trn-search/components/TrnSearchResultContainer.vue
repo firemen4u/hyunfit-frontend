@@ -20,21 +20,21 @@ function gotoTrnDetail(trnId) {
       <div
         class="trn-title-container item flex flex-row items-end align-baseline"
       >
-        <p class="trn-subtitle mr-2 text-lg">{{ data.trnName }}</p>
+        <p class="trn-subtitle mr-2 text-lg font-black">{{ data.trnName }}</p>
         <p class="trn-subtitle text-xs">{{ data.trnTypeName }}</p>
-      </div>
-      <div class="trn-content item text-xs">
-        <p>
-          {{ data.trnShortDescription }}
-        </p>
       </div>
       <BaseCompactRating
         v-if="data.reviewCount"
         :rating="data.averageReviewRating"
         :reviewCount="data.reviewCount"
-        :icon-size="20"
-        font-size="lg"
-      ></BaseCompactRating>
+        :icon-size="16"
+        :count-size="14"
+      />
+      <div class="mt-3 trn-content item text-xs">
+        <p>
+          {{ data.trnShortDescription }}
+        </p>
+      </div>
     </div>
     <div
       class="trn-img-wrapper flex justify-center items-center overflow-hidden"
@@ -43,7 +43,7 @@ function gotoTrnDetail(trnId) {
         :src="data.trnProfileUrl"
         :alt="data.trnName"
         onerror="javascript:this.src='/src/assets/images/default-user-profile.jpg'"
-        class="trn-profile-image rounded-lg"
+        class="trn-profile-image rounded-lg w-[100px] h-[100px] object-cover"
       />
     </div>
   </div>
@@ -63,8 +63,5 @@ function gotoTrnDetail(trnId) {
 }
 .trn-img-wrapper {
   width: 100px;
-}
-.item {
-  margin-bottom: 10px;
 }
 </style>

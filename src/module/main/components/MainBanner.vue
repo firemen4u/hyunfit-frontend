@@ -36,7 +36,6 @@
 </template>
 
 <script setup>
-import BaseContainer from '/src/module/@base/views/BaseContainer.vue'
 import MainPlayButton from './MainPlayButton.vue'
 import MainBannerExcContainer from './MainBannerExcContainer.vue'
 </script>
@@ -54,7 +53,7 @@ import MainBannerExcContainer from './MainBannerExcContainer.vue'
   content: '';
   left: 0;
   width: 100%;
-  height: 100px;
+  height: 80px;
 }
 .overlay::before {
   top: 0;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   HyunfitLogoGradientSvg,
@@ -62,7 +62,6 @@ const profileMenus = [
   { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
   { displayName: '비밀번호 변경', destination: '/' },
-  { displayName: '로그인', destination: pathNames.loginPage },
 ]
 function getPages() {
   if (props.category === 'admin') return adminPages
@@ -78,7 +77,6 @@ function getMenus() {
 let menuOpen = ref(false)
 let profileMenu = ref(null)
 let profileMenuButton = ref(null)
-let userName = '지수'
 function closeMenuOutsideClick(event) {
   if (
     menuOpen.value &&
@@ -125,10 +123,7 @@ const lastMenuItemClasses = (idx, pg) => {
   if (idx < pg.menus.length - 1) return 'mb-3'
   else return ''
 }
-function logout() {
-  ApiClient.removeTokenOnLocalStorage()
-  location.href = '/login'
-}
+
 function moveToMain() {
   let userRole = localStorage.getItem('userRole')
   if (userRole === 'admin') {
@@ -139,6 +134,39 @@ function moveToMain() {
     router.push(pathNames.mainPage)
   }
 }
+
+function logout() {
+  ApiClient.removeTokenOnLocalStorage()
+  router.go(0)
+}
+function login() {
+  location.href = '/login'
+}
+const userData = ref(null)
+const loggedIn = computed(() => userData.value)
+
+const userName = computed(() => {
+  if (!loggedIn.value) return
+  if ('mbrName' in userData.value) return userData.value.mbrName
+  if ('admName' in userData.value) return userData.value.admName
+  if ('trnName' in userData.value) return userData.value.trnName
+  console.log('at `userName` BaseHeader: name not found', userData)
+  return 'unknown'
+})
+
+const userProfile = computed(() => {
+  if (!loggedIn.value) return '/src/assets/images/default-user-profile.png'
+  let p
+  if ('mbrProfileUrl' in userData.value) p = userData.value.mbrProfileUrl
+  if ('admProfileUrl' in userData.value) p = userData.value.admProfileUrl
+  if ('trnProfileUrl' in userData.value) p = userData.value.trnProfileUrl
+  return p ? p : '/src/assets/images/default-user-profile.png'
+})
+onMounted(async () => {
+  userData.value = await ApiClient.me()
+})
+
+// { displayName: '로그인', destination: pathNames.loginPage },
 </script>
 
 <template>
@@ -210,7 +238,7 @@ function moveToMain() {
             >
               <img
                 class="h-8 w-8 rounded-full mr-1 object-cover"
-                src="/src/assets/images/goat-jisu.png"
+                :src="userProfile"
                 alt=""
               />
               <DownArrowSvg :size="22" color="#AAAAAA" />
@@ -234,19 +262,33 @@ function moveToMain() {
               >
                 <div class="py-1 px-2 flex items-center flex-col">
                   <img
-                    class="h-24 w-24 rounded-full mr-1 object-cover"
-                    src="/src/assets/images/goat-jisu.png"
+                    class="h-24 w-24 rounded-full object-cover"
+                    :src="userProfile"
                     alt=""
                   />
+
                   <div
-                    class="profile-edit-button absolute mt-16 ml-16 rounded-full p-1"
+                    v-if="loggedIn"
+                    class="profile-edit-button absolute mt-[68px] ml-[68px] rounded-full p-1"
                   >
                     <EditPencilSvg :size="18" />
                   </div>
-                  <div class="text-xl my-4">안녕하세요, {{ userName }}님.</div>
+                  <div v-if="loggedIn" class="text-xl mt-4">
+                    안녕하세요, {{ userName }}님.
+                  </div>
+                  <button
+                    v-else
+                    @click="login()"
+                    class="block px-4 py-2 text-xl cursor-pointer transition-all text-gray-400 font-medium hover:text-gray-800 hover:font-bold"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    로그인하기
+                  </button>
                 </div>
-                <BaseDivider class="mx-5 my-2" />
-                <div class="py-1 px-2" role="none">
+
+                <div class="py-1 px-2" role="none" v-if="loggedIn">
+                  <BaseDivider class="mx-4 my-2" />
                   <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                   <button
                     v-for="(menu, i) in getMenus()"
