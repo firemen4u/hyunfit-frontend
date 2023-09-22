@@ -10,15 +10,15 @@
             class="text-sm text-gray-600 items-center rounded-xl text-center text-white bg-primary mb-1 pt-0.5 pb-0.5 pr-3 pl-3"
             style="display: inline-block; min-width: auto"
           >
-            Day {{ daysDiff }}
+            D{{ daysDiff }}
           </p>
         </div>
         <div class="text-gray-900 font-bold mb-2 flex justify-between">
           <div class="flex items-center">
-            <p class="train-type text-xl font-bold mr-4 align-middle">
+            <p class="train-type text-xl font-bold mr-2 align-middle">
               {{ props.responseData.trnTypeName }}
             </p>
-            <p class="train-datetime text-base align-middle text-gray-500">
+            <p class="train-datetime text-xs self-end text-gray-500">
               {{
                 dateUtil.timestampToFullDate(
                   props.responseData.ptReservationDate
@@ -38,15 +38,16 @@
         :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
         title="trainer profile img"
       ></div>
-      <div class="">
-        <div>
-          <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
-            {{ props.responseData.trnName }}
-          </p>
-          <p class="train-content text-gray-700">
-            {{ props.responseData.trainContent }}
-          </p>
-        </div>
+      <div class="w-9/12">
+        <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
+          {{ props.responseData.trnName }}
+        </p>
+        <p
+          class="train-content h-10 w-80 text-gray-700 overflow-hidden text-sm"
+        >
+          {{ props.responseData.trnShortDescription }}
+        </p>
+        <button class="float-right">입장하기</button>
       </div>
     </div>
   </div>
@@ -69,13 +70,13 @@ function calcDay() {
   const today = new Date()
   const timeDiff = today - props.responseData.ptReservationDate
   daysDiff.value = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
-  if (daysDiff.value > 0) daysDiff.value = `+ ${daysDiff.value}`
 
-  console.log('날짜 계산', daysDiff.value)
+  if (daysDiff.value > 0) daysDiff.value = `+ ${daysDiff.value}`
+  else if (daysDiff.value == 0) {
+    daysDiff.value = `-Day`
+  }
 }
 onMounted(() => {
-  console.log('mounted')
   calcDay()
-}),
-  console.log('자식 컴포넌트', props.responseData)
+})
 </script>
