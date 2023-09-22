@@ -1,30 +1,28 @@
 import ReportDateUtils from '@/module/report/services/reportDateUtils'
 
-const expChartOptions = {
+const targetChartOptions = {
   responsive: false,
   maintainAspectRatio: false,
   scales: {
     x: {
-      ticks: {
-        font: {
-          size: 10,
-        },
+      display: false,
+      grid: {
+        display: false,
       },
     },
     y: {
-      ticks: {
-        font: {
-          size: 11,
-        },
+      display: false,
+      grid: {
+        display: false,
       },
     },
-  },
-  layout: {
-    padding: {
-      bottom: 5,
-      left: 5,
-      right: 16,
-      top: 16,
+    r: {
+      beginAtZero: true,
+      max: 10, // Set the maximum value on the radar chart
+      min: 0, // Set the minimum value on the radar chart
+      ticks: {
+        stepSize: 2,
+      },
     },
   },
   interaction: {
@@ -40,8 +38,6 @@ const expChartOptions = {
 function formatToPercentString(number) {
   return ` ${Math.round(number * 100)}%`
 }
-// https://stackblitz.com/github/apertureless/vue-chartjs/tree/main/sandboxes/radar?file=src%2FApp.vue
-// https://www.chartjs.org/docs/latest/configuration/tooltip.html#tooltip-callbacks
 const scoreChartOptions = {
   responsive: false,
   maintainAspectRatio: false,
@@ -50,9 +46,7 @@ const scoreChartOptions = {
       position: 'chartArea',
       labels: {
         usePointStyle: true,
-        pointStyle: 'circle',
-        useBorderRadius: true,
-        borderRadius: 500,
+        boxHeight: 6,
       },
     },
 
@@ -76,7 +70,7 @@ const calorieChartOptions = {
       },
       ticks: {
         font: {
-          size: 10,
+          size: 12,
         },
         callback: function (val, idx) {
           return new Date(this.getLabelForValue(val)).getDate()
@@ -85,14 +79,14 @@ const calorieChartOptions = {
       },
     },
     y: {
-      // display: false,
+      display: false,
       // beginAtZero: true,
       grid: {
         display: false,
       },
       ticks: {
         font: {
-          size: 11,
+          size: 5,
         },
       },
     },
@@ -115,6 +109,9 @@ const calorieChartOptions = {
       },
     },
   },
+  interaction: {
+    intersect: false,
+  },
 }
 
-export { expChartOptions, calorieChartOptions, scoreChartOptions }
+export { calorieChartOptions, scoreChartOptions, targetChartOptions }

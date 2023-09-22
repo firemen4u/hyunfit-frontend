@@ -4,12 +4,12 @@ import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 </script>
 
 <template>
-  <div class="report-exc-timeline-container mb-10">
+  <div class="report-exc-timeline-container my-15">
     <div class="report-title">운동 히스토리</div>
     <div
       v-for="d in 2"
       :key="d"
-      class="p-4 mb-4 border border-gray-100 rounded-lg dark:bg-gray-800 dark:border-gray-700"
+      class="p-4 mb-4 border bg-white shadow-lg border-gray-100 rounded-lg dark:bg-gray-800 dark:border-gray-700"
     >
       <time class="text-lg font-semibold text-gray-900 dark:text-white"
         >2023년 8월 1{{ 2 - d }}일</time

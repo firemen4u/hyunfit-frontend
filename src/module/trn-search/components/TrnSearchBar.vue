@@ -7,7 +7,6 @@
     clearable
     flat
     bg-color="#F8F8F8"
-    autofocus
     variant="flat"
     @keyup.enter="search"
     :disabled="loading"
@@ -18,7 +17,6 @@
         <SearchSvg :size="30" color="#AAAAAA" />
       </button>
     </template>
-    <template v-slot:label>나를 위한 서비스 검색하기</template>
   </v-text-field>
 </template>
 
