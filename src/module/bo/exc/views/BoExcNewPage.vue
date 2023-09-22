@@ -216,17 +216,8 @@
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
-import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { ref, onMounted } from 'vue'
-import {
-  FILE_SERVER_TOKEN,
-  FILE_SERVER_HYUNFIT_URL,
-  BACKEND_API_BASE_URL,
-} from '/src/config.js'
+import { ref } from 'vue'
 import ApiClient from '/src/services/api'
-import axios from 'axios'
-import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
-
 
 const target_items = ref([
   '광배근',
