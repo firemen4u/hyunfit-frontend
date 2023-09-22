@@ -18,7 +18,7 @@
                   <BaseChipGroup
                     v-model="ptReviewOptionSelected"
                     :items="ptReviewOptions"
-                    :disabled="reviewConfirmLoading"
+                    :disabled="true"
                     :filter="true"
                     style="width: 85%; margin-left: 50px"
                   />
@@ -72,9 +72,6 @@ const reviewText = ref('')
 const emit = defineEmits(['action:cancel', 'action:save'])
 
 async function confirmReview() {
-  console.log('마운트된 데이터', props.responseData)
-  console.log('마운트된 seq', props.targetSeq)
-
   let data = {
     ptSeq: props.targetSeq,
     ptrStickers: ptReviewOptionSelected.value.join(','),
@@ -82,7 +79,6 @@ async function confirmReview() {
     ptrRating: ptReviewRatings.value,
   }
   try {
-    console.log('post 전에 데이터', data)
     let result = await ApiClient.post(
       `/personal-trainings/${data.ptSeq}/review`,
       data

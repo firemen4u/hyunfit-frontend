@@ -45,17 +45,8 @@
             />
           </div>
         </div>
-        <div>
+        <div v-if="props.responseData.ptrRating == null">
           <button
-            v-if="props.responseData.ptrRating != null"
-            class="insert-review-modal text-primary mb-2"
-            @click="toggleModal"
-            type="button"
-          >
-            리뷰 상세 보기
-          </button>
-          <button
-            v-else-if="props.responseData.ptrRating == null"
             class="insert-review-modal text-primary mb-2"
             @click="toggleModal"
             @close="getReviews"
@@ -64,10 +55,34 @@
             리뷰 작성 하기
           </button>
         </div>
+        <div v-if="props.responseData.ptrRating != null">
+          <div>{{ props.responseData.ptCounts }}번째 수업 완료</div>
+        </div>
       </div>
-      <div class="flex justify-between text-gray-500">
-        <div>{{ props.responseData.trnShortDescription }}</div>
+      <div
+        v-if="props.responseData.ptrRating == null"
+        class="flex justify-between text-gray-500"
+      >
+        <div class="flex items-start">
+          <!-- Flexbox를 사용하여 왼쪽 정렬 -->
+          <div>요청 사항 :&nbsp;</div>
+          <div class="w-9/10">
+            <ReviewStickerGroup :stickers="props.responseData.ptNoteStickers" />
+          </div>
+        </div>
         <div>{{ props.responseData.ptCounts }}번째 수업 완료</div>
+        <!-- 오른쪽 정렬 -->
+      </div>
+      <div
+        v-if="props.responseData.ptrRating != null"
+        class="flex justify-between text-gray-500"
+      >
+        <div class="w-9/10 flex-col mt-2">
+          {{ props.responseData.ptrContent }}
+          <div class="mt-3">
+            <ReviewStickerGroup :stickers="props.responseData.ptrStickers" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -78,6 +93,7 @@ import { ref } from 'vue'
 import { BaseRating } from '/src/module/@base/components'
 import dateUtil from '/src/utils/date.js'
 import ApiClient from '/src/services/api.js'
+import ReviewStickerGroup from '@/module/trn-detail/components/TrnDetailReviewStickerGroup.vue'
 
 const emit = defineEmits(['toggleModal'])
 const props = defineProps({

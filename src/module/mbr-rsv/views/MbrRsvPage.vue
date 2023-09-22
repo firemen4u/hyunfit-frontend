@@ -72,7 +72,7 @@
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import { ref, onBeforeMount, onMounted } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
@@ -85,7 +85,6 @@ const reservedResponse = ref(null)
 const modalActive = ref(false)
 
 function toggleModal(ptSeq) {
-  console.log('전해진 Seq', ptSeq)
   selectedSeq.value = ptSeq
   modalActive.value = !modalActive.value
 }
