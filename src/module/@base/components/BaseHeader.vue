@@ -8,6 +8,7 @@ import {
 } from '@/module/@base/svg'
 import router, { pathNames } from '@/router'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
+import ApiClient from '@/services/api'
 
 const props = defineProps({
   page: String,
@@ -62,7 +63,6 @@ const profileMenus = [
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
   { displayName: '비밀번호 변경', destination: '/' },
   { displayName: '로그인', destination: pathNames.loginPage },
-  { displayName: '로그아웃', destination: '/' },
 ]
 function getPages() {
   if (props.category === 'admin') return adminPages
@@ -125,6 +125,10 @@ const lastMenuItemClasses = (idx, pg) => {
   if (idx < pg.menus.length - 1) return 'mb-3'
   else return ''
 }
+function logout() {
+  ApiClient.removeTokenOnLocalStorage()
+  location.href = '/login'
+}
 </script>
 
 <template>
@@ -133,12 +137,12 @@ const lastMenuItemClasses = (idx, pg) => {
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
         <div class="flex items-center">
-          <a
+          <button
             @click="router.push(pathNames.mainPage)"
             class="mr-10 cursor-pointer"
           >
             <HyunfitLogoGradientSvg :size="140" />
-          </a>
+          </button>
           <div
             v-for="(pg, i) in getPages()"
             :key="i"
@@ -237,7 +241,7 @@ const lastMenuItemClasses = (idx, pg) => {
                 <BaseDivider class="mx-5 my-2" />
                 <div class="py-1 px-2" role="none">
                   <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                  <a
+                  <button
                     v-for="(menu, i) in getMenus()"
                     :key="i"
                     @click="router.push(menu.destination)"
@@ -247,7 +251,15 @@ const lastMenuItemClasses = (idx, pg) => {
                     tabindex="-1"
                   >
                     {{ menu.displayName }}
-                  </a>
+                  </button>
+                  <button
+                    @click="logout()"
+                    class="block px-4 py-2 text-base cursor-pointer transition-all text-gray-400 font-medium hover:text-gray-800 hover:font-bold"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    로그아웃
+                  </button>
                 </div>
               </div>
             </transition>
