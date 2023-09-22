@@ -6,29 +6,36 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import DateFnsAdapter from '@date-io/date-fns'
 import { ko } from 'date-fns/esm/locale'
+
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
-  BarElement,
   CategoryScale,
   LinearScale,
+  TimeScale,
+  RadialLinearScale,
+  BarElement,
+  ArcElement,
   LineElement,
   PointElement,
-  TimeScale,
+  Filler,
 } from 'chart.js'
 
 ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  BarElement,
   CategoryScale,
   LinearScale,
+  TimeScale,
+  RadialLinearScale,
+  BarElement,
+  ArcElement,
   LineElement,
   PointElement,
-  TimeScale
+  Filler
 )
 const Colors = {
   background: '#FFFFFF',

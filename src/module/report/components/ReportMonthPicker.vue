@@ -9,11 +9,14 @@ const props = defineProps({
     default: new Date().toISOString().slice(0, 7),
   },
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['search'])
 
 function onMonthChange(dateStr, increment) {
   let date = ReportDateUtils.adjustMonth(dateStr, increment)
   emit('update:modelValue', ReportDateUtils.formatDateYYYYMM(date))
+}
+function search() {
+  emit('search', new Date(selectedYear.value, selectedMonth.value - 1))
 }
 const selectedYear = ref(new Date().getFullYear())
 const selectedMonth = ref(new Date().getMonth() + 1)
@@ -31,6 +34,7 @@ const loading = ref(false)
         v-model="selectedYear"
         :items="years"
         :item-title="item => item + '년'"
+        :item-value="item => item"
         class="mr-1 w-32"
         variant="outlined"
         :disabled="loading"
@@ -42,11 +46,12 @@ const loading = ref(false)
         v-model="selectedMonth"
         :items="months"
         :item-title="item => item + '월'"
+        :item-value="item => item"
         variant="outlined"
         :disabled="loading"
       />
     </div>
-    <v-btn :loading="loading" @click="loading = true" />
+    <v-btn :loading="loading" @click="search()" />
   </div>
 </template>
 

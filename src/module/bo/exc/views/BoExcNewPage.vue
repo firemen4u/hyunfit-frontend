@@ -219,7 +219,7 @@ import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { FILE_SERVER_TOKEN, FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 
 const target_items = ref([
   '광배근',
@@ -320,7 +320,6 @@ const submit = async () => {
     // header 코드
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
     }
