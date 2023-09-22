@@ -58,6 +58,9 @@
             </template>
           </div>
         </div>
+        <div class="mb-4">
+          <BasePagination v-model="currentPage" :total-pages="totalPages" />
+        </div>
       </div>
       <MbrRsvReviewModal
         @action:cancel="toggleModal()"
@@ -72,10 +75,11 @@
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, computed, watch } from 'vue'
 import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
+import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import ApiClient from '/src/services/api.js'
 
 let memberSource = ''
@@ -84,9 +88,38 @@ const reservingResponse = ref(null)
 const reservedResponse = ref(null)
 const modalActive = ref(false)
 
+const currentPage = ref(1) // 현재 페이지
+const itemsTotalPage = ref(null)
+
 function toggleModal(ptSeq) {
   selectedSeq.value = ptSeq
   modalActive.value = !modalActive.value
+}
+
+const totalPages = computed(() => {
+  console.log(Math.ceil(itemsTotalPage.value.mbrPastPtCount / 5))
+  return Math.ceil(itemsTotalPage.value.mbrPastPtCount / 5)
+})
+
+watch(currentPage, newVal => {
+  getNextPt()
+})
+
+async function getNextPt() {
+  const paramsReserved = {
+    page: currentPage.value,
+    order: 'desc',
+    ptReservationStatus: 0,
+  }
+  try {
+    reservedResponse.value = await ApiClient.get(
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserved }
+    )
+    console.log('다시 받아온 값들', reservedResponse.value)
+  } catch (error) {
+    console.error('다음 페이지 API 요청 실패:', error)
+  }
 }
 
 async function saveAndReload() {
@@ -112,15 +145,15 @@ async function init() {
   try {
     memberSource = await ApiClient.get('/members/me')
 
+    itemsTotalPage.value = await ApiClient.get(
+      `/members/${memberSource.mbrSeq}/personal-trainings/count`
+    )
+
+    console.log('items total page : ', itemsTotalPage.value.mbrPastPtCount)
     const paramsReserving = {
       page: 1,
       order: 'asc',
       ptReservationStatus: 1,
-    }
-    const paramsReserved = {
-      page: 1,
-      order: 'desc',
-      ptReservationStatus: 0,
     }
 
     reservingResponse.value = await ApiClient.get(
@@ -128,6 +161,11 @@ async function init() {
       { params: paramsReserving }
     )
 
+    const paramsReserved = {
+      page: currentPage.value,
+      order: 'desc',
+      ptReservationStatus: 0,
+    }
     reservedResponse.value = await ApiClient.get(
       `/members/${memberSource.mbrSeq}/personal-trainings`,
       { params: paramsReserved }
@@ -135,6 +173,10 @@ async function init() {
 
     console.log('reserving', reservingResponse.value)
     console.log('reserved', reservedResponse.value)
+    console.log(
+      'reserved total items',
+      reservedResponse.value.personalTrainingDTOList.length
+    )
   } catch (error) {
     console.error('API 요청 실패:', error)
   }

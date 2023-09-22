@@ -52,36 +52,63 @@
             @close="getReviews"
             type="button"
           >
-            리뷰 작성 하기
+            리뷰 작성하기
           </button>
         </div>
         <div v-if="props.responseData.ptrRating != null">
-          <div>{{ props.responseData.ptCounts }}번째 수업 완료</div>
+          <button
+            class="insert-review-modal text-primary mb-2"
+            @click="toggleModal"
+            @close="getReviews"
+            type="button"
+          >
+            리뷰 상세보기
+          </button>
         </div>
       </div>
       <div
         v-if="props.responseData.ptrRating == null"
         class="flex justify-between text-gray-500"
       >
-        <div class="flex items-start">
-          <!-- Flexbox를 사용하여 왼쪽 정렬 -->
+        <!-- <div class="flex items-start">
           <div>요청 사항 :&nbsp;</div>
           <div class="w-9/10">
-            <ReviewStickerGroup :stickers="props.responseData.ptNoteStickers" />
+            <ReviewStickerGroup :stickers="props.responseData?.ptNoteStickers" />
           </div>
-        </div>
-        <div>{{ props.responseData.ptCounts }}번째 수업 완료</div>
-        <!-- 오른쪽 정렬 -->
+        </div> -->
       </div>
       <div
-        v-if="props.responseData.ptrRating != null"
+        v-if="
+          props.responseData.ptrRating != null ||
+          props.responseData.ptReservationStatus == 2
+        "
         class="flex justify-between text-gray-500"
       >
-        <div class="w-9/10 flex-col mt-2">
+        <div class="w-5/6 flex-col mt-2">
           {{ props.responseData.ptrContent }}
-          <div class="mt-3">
-            <ReviewStickerGroup :stickers="props.responseData.ptrStickers" />
+          <div class="mt-4 flex justify-between">
+            <ReviewStickerGroup :stickers="props.responseData?.ptrStickers" />
           </div>
+        </div>
+        <div class="flex flex-col justify-between">
+          <div class="text-right">
+            {{ props.responseData.ptCounts }}번째 수업 완료
+          </div>
+          <div class="self-end">
+            {{
+              `${dateUtil.formatDateWithOptions(
+                props.responseData.ptrCreationDate,
+                {
+                  month: 'numeric',
+                  day: 'numeric',
+                  weekday: 'short',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                }
+              )}`
+            }}
+          </div>
+          <!-- 이 부분이 하단에 배치됩니다 -->
         </div>
       </div>
     </div>

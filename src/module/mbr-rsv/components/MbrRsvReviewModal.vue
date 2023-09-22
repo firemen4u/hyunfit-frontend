@@ -18,7 +18,7 @@
                   <BaseChipGroup
                     v-model="ptReviewOptionSelected"
                     :items="ptReviewOptions"
-                    :disabled="true"
+                    :disabled="false"
                     :filter="true"
                     style="width: 85%; margin-left: 50px"
                   />
@@ -67,33 +67,32 @@ const props = defineProps({
 
 let ptReviewOptionSelected = ref([])
 let ptReviewRatings = ref([])
-let reviewConfirmLoading = ref(false)
 const reviewText = ref('')
-const emit = defineEmits(['action:cancel', 'action:save'])
+const emits = defineEmits(['action:cancel', 'action:save'])
+
+const close = () => {
+  ptReviewOptionSelected.value = ''
+  ptReviewRatings.value = ''
+  reviewText.value = ''
+  emits('action:cancel')
+}
 
 async function confirmReview() {
-  let data = {
-    ptSeq: props.targetSeq,
-    ptrStickers: ptReviewOptionSelected.value.join(','),
-    ptrContent: reviewText.value,
-    ptrRating: ptReviewRatings.value,
-  }
   try {
+    const data = {
+      ptSeq: props.targetSeq.value,
+      ptrStickers: ptReviewOptionSelected.value.join(','),
+      ptrContent: reviewText.value,
+      ptrRating: ptReviewRatings.value,
+    }
     let result = await ApiClient.post(
-      `/personal-trainings/${data.ptSeq}/review`,
+      `/personal-trainings/${props.targetSeq}/review`,
       data
     )
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
-
-  emit('action:save')
-  // 데이터 초기화
-  data.ptSeq = ''
-  data.ptrStickers = ''
-  data.ptrContent = ''
-  data.ptrRating = ''
-  console.log('부르고 나서', data)
+  emits('action:save')
 }
 </script>
 
