@@ -94,8 +94,14 @@ export default {
     }
   },
   methods: {
-    moveToMain() {
-      router.push(pathNames.mainPage)
+    moveToMain(userRole) {
+      if (userRole === 'admin') {
+        router.push(pathNames.boExcBoardPage)
+      } else if (userRole === 'trainer') {
+        router.push(pathNames.boTrnRsvBoardPage)
+      } else {
+        router.push(pathNames.mainPage)
+      }
     },
     async loginForm() {
       await axios
@@ -103,7 +109,7 @@ export default {
         .then(response => {
           this.token = response.headers.get('authorization')
           ApiClient.setTokenOnLocalStorage(this.token, this.selectedRole)
-          this.$router.push('/')
+          this.moveToMain(localStorage.getItem('userRole'))
         })
         .catch(error => {
           console.log(error)

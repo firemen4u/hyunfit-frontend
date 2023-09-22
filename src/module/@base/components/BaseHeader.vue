@@ -129,6 +129,16 @@ function logout() {
   ApiClient.removeTokenOnLocalStorage()
   location.href = '/login'
 }
+function moveToMain() {
+  let userRole = localStorage.getItem('userRole')
+  if (userRole === 'admin') {
+    router.push(pathNames.boExcBoardPage)
+  } else if (userRole === 'trainer') {
+    router.push(pathNames.boTrnRsvBoardPage)
+  } else {
+    router.push(pathNames.mainPage)
+  }
+}
 </script>
 
 <template>
@@ -137,10 +147,7 @@ function logout() {
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
         <div class="flex items-center">
-          <button
-            @click="router.push(pathNames.mainPage)"
-            class="mr-10 cursor-pointer"
-          >
+          <button @click="moveToMain()" class="mr-10 cursor-pointer">
             <HyunfitLogoGradientSvg :size="140" />
           </button>
           <div
