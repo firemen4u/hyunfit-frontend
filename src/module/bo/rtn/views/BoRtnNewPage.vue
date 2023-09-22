@@ -199,7 +199,6 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
-import { FILE_SERVER_TOKEN } from '/src/config.js'
 import axios from 'axios'
 
 const sidebarHeader = '관리페이지'
@@ -340,7 +339,6 @@ const sendDataToAPI = async () => {
     // 파일 업로드 설정
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN, // 이 변수를 미리 설정해야 합니다.
         'Content-Type': 'multipart/form-data',
       },
     }
