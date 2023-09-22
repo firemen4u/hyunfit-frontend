@@ -1,10 +1,5 @@
 <template>
   <BaseContainer category="admin">
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
     <BaseBodyWrapper>
       <div class="boRtnNewPage-wrap mt-10 mb-10">
         <div class="flex justify-between">
@@ -195,22 +190,12 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { PictureSvg } from '/src/module/@base/svg'
-import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import { FILE_SERVER_TOKEN } from '/src/config.js'
 import axios from 'axios'
-
-const sidebarHeader = '관리페이지'
-const mainCategory = 'AI 트레이닝'
-const subcategories = [
-  { id: 1, title: '운동 관리', link: '/bo-excBoard' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnboard' },
-  { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/link4' },
-]
 
 // 루틴 타켓부위
 const rtn_target_radio = [

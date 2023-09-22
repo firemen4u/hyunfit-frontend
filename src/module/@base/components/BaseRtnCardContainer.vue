@@ -11,7 +11,7 @@
             <input
               type="text"
               v-model="searchTerm"
-              placeholder="루틴 검색..."
+              placeholder="루틴 검색"
               class="border p-2 rounded"
             />
           </div>
