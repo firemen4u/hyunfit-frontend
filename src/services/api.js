@@ -59,7 +59,6 @@ async function get(url, config = {}, type = null) {
 // Function to handle POST requests
 async function _post(url, data, config, instance) {
   appendAuthorization(config)
-  console.log(instance)
   return await instance
     .post(url, data, config)
     .then(response => response.data)
@@ -99,12 +98,14 @@ function remove(url, config = {}, type) {
     })
 }
 
-function setTokenOnLocalStorage(token) {
+function setTokenOnLocalStorage(token, userRole) {
   localStorage.setItem('Authorization', token)
+  localStorage.setItem('userRole', userRole)
 }
 
 function removeTokenOnLocalStorage() {
   localStorage.removeItem('Authorization')
+  localStorage.removeItem('userRole')
 }
 
 const ApiClient = {
@@ -112,7 +113,8 @@ const ApiClient = {
   post: async (url, data, config, type) => await post(url, data, config, type),
   put: (url, data, config, type) => put(url, data, config, type),
   delete: url => remove(url),
-  setTokenOnLocalStorage: token => setTokenOnLocalStorage(token),
+  setTokenOnLocalStorage: (token, userRole) =>
+    setTokenOnLocalStorage(token, userRole),
   removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),
 }
 

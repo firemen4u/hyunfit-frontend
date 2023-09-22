@@ -4,7 +4,7 @@ import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 import { Bar, Line, Doughnut } from 'vue-chartjs'
 import { Colors } from '/src/common'
-import { ref, onMounted, watch, onBeforeMount, computed } from 'vue'
+import { ref, onMounted, watch, onBeforeMount, computed, reactive } from 'vue'
 import { CircleCheckSvg, CalorieSvg, TimerSvg } from '@/module/@base/svg'
 import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import ReportExcTimelineContainer from '@/module/report/components/ReportExcTimelineContainer.vue'
@@ -20,94 +20,174 @@ import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
 import BaseCircularLoader from '@/module/@base/components/BaseCircularLoader.vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
 
-let today = new Date('December 26, 2010')
-let calorieChart = ref(null)
-let expChart = ref(null)
-let scoreChart = ref(null)
-let reportPageDatePickerWrapper = ref(null)
-let memberData = ref(null)
-let dates = ['2010-12-01', '2010-12-02', '2010-12-05', '2010-12-06']
+const calorieChartRef = ref(null)
+// const expChartRef = ref(null)
+const scoreChartRef = ref(null)
 
-let expChartData = {
-  labels: createDateList(),
-  datasets: [
-    {
-      label: '경험치',
-      data: [
-        100, 250, 400, 600, 850, 1100, 1350, 1650, 2000, 2450, 2900, 2950, 3000,
-        3050, 3200, 5000, 5000, 6000, 6700, 7200, 7700, 8200, 8700, 9200, 9700,
-        10200, 10700, 11200, 11700, 14200, 19200,
-      ],
-      pointBackgroundColor: 'rgb(255,190,210)',
-      borderColor: 'rgba(210,51,97,0.57)',
-      borderWidth: 2,
-      pointRadius: 0,
-      fill: false,
-      cubicInterpolationMode: 'monotone',
-      tension: 0.4,
-    },
-  ],
-}
-
-let calorieChartData = {
-  labels: createDateList(),
-  datasets: [
-    {
-      label: '칼로리 소모량',
-      data: [
-        479, 789, 235, 621, 312, 154, 785, 374, 502, 167, 921, 443, 628, 845,
-        326, 562, 198, 773, 409, 278, 690, 541, 362, 789, 216, 915, 746, 184,
-        539, 672, 122,
-      ],
-      backgroundColor: 'rgba(245,86,132,0.8)', // Bar의 색상
-      borderColor: 'rgba(210,51,97,0.57)',
-      borderRadius: 10, // Bar의 border radius 설정
-    },
-  ],
-}
-
-const responseData = ref(null)
-function createDateList() {
-  const startDate = new Date('2023-08-01')
-  const endDate = new Date('2023-08-31')
-  const dateList = []
-
-  for (
-    let date = startDate;
-    date <= endDate;
-    date.setDate(date.getDate() + 1)
-  ) {
-    const month = date.getMonth() + 1 // Month is 0-based, so add 1
-    const day = date.getDate()
-    dateList.push(`${month}월 ${day}일`)
-  }
-
-  return dateList
-}
-
-async function init() {}
+const reportPageDatePickerWrapper = ref(null)
+const memberData = ref(null)
+const selectedDate = ref(new Date())
 
 const imageLoading = ref(false)
 const reportLoading = ref(false)
 
-const reportImageElem = ref(null)
+const reportImageRef = ref(null)
 const reportImageUrl = ref(null)
-async function onLoadReport(date) {
+
+const responseData = ref(null)
+
+const charts = reactive({
+  score: reactive({
+    ready: ref(false),
+    data: ref(null),
+  }),
+  calorie: reactive({
+    ready: ref(false),
+    data: ref(null),
+  }),
+  // exp: reactive({
+  //   ready: ref(false),
+  //   data: ref(null),
+  // }),
+  date: reactive({
+    ready: ref(false),
+    data: ref(null),
+  }),
+})
+
+// let expChartData = {
+//   labels: [],
+//   datasets: [
+//     {
+//       label: '경험치',
+//       data: [],
+//       pointBackgroundColor: 'rgb(255,190,210)',
+//       borderColor: 'rgba(210,51,97,0.57)',
+//       borderWidth: 2,
+//       pointRadius: 0,
+//       fill: false,
+//       cubicInterpolationMode: 'monotone',
+//       tension: 0.4,
+//     },
+//   ],
+// }
+
+function divide(n, d) {
+  return d === 0 ? 0 : n / d
+}
+function getAllDatesInMonthAsTimestamp(startDate) {
+  const dates = []
+  const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1) // Month is 0-indexed, so subtract 1
+  for (let date = startDate; date < endDate; date.setDate(date.getDate() + 1)) {
+    dates.push(new Date(date).getTime()) // Push a new Date object to avoid reference issues
+  }
+  return dates
+}
+
+function onClickLoadReport(date) {
+  selectedDate.value = date
+  loadReport()
+}
+async function loadReport() {
+  const watchCalorieChart = watch(
+    () => calorieChartRef.value?.chart,
+    newValue => {
+      console.log('watching calorieChartRef', newValue)
+      if (calorieChartRef.value?.chart) {
+        calorieChartRef.value.chart.resize(725, 200)
+        watchCalorieChart()
+      }
+    }
+  )
+  // const watchExpChart = watch(
+  //   () => expChartRef.value.chart,
+  //   newValue => {
+  //     if (newValue !== null) {
+  //       expChartRef.value.chart.resize(350, 200)
+  //       watchExpChart()
+  //     }
+  //   }
+  // )
+  const watchScoreChart = watch(
+    () => scoreChartRef.value?.chart,
+    newValue => {
+      console.log('watching scoreChart', newValue)
+      if (scoreChartRef.value?.chart) {
+        scoreChartRef.value.chart.resize(350, 160)
+        watchScoreChart()
+      }
+    }
+  )
   imageLoading.value = true
   reportLoading.value = true
+
+  charts.date.ready = false
+  charts.calorie.ready = false
+  charts.score.ready = false
 
   if (!memberData.value) {
     memberData.value = await ReportApi.getMember()
   }
 
-  await loadReportData(memberData.value.mbrSeq, date)
-  await loadImage()
+  await getReportData(memberData.value.mbrSeq, selectedDate.value)
+
+  renderCharts()
+  await getReportImage()
 }
-async function loadReportData(mbrSeq, date) {
+function renderCharts() {
+  charts.date.data = responseData.value.exerciseHistory.exercisedDays
+  ReportUiHandler.renderDatePicker(
+    reportPageDatePickerWrapper,
+    charts.date.data
+  )
+  charts.date.ready = true
+
+  let total =
+    reportData.value?.counts.excellent +
+    reportData.value?.counts.good +
+    reportData.value?.counts.bad
+
+  charts.score.data = {
+    labels: ['Excellent', 'Good', 'Bad'],
+    datasets: [
+      {
+        backgroundColor: ['#D23361', '#ff7b0e', '#fce305'],
+        data: [
+          divide(reportData.value?.counts.excellent, total),
+          divide(reportData.value?.counts.good, total),
+          divide(reportData.value?.counts.bad, total),
+        ],
+      },
+    ],
+  }
+  charts.score.ready = true
+
+  const timestampMap = {}
+  reportData.value?.records.forEach(record => {
+    let d = new Date(record.day)
+    let ts = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+    timestampMap[ts] = record.calories
+  })
+  let timestamps = getAllDatesInMonthAsTimestamp(selectedDate.value)
+  charts.calorie.data = {
+    labels: timestamps,
+    datasets: [
+      {
+        label: '칼로리 소모량',
+        data: timestamps.map(ts => (ts in timestampMap ? timestampMap[ts] : 0)),
+        backgroundColor: 'rgba(245,86,132,0.8)', // Bar의 색상
+        borderColor: 'rgba(210,51,97,0.57)',
+        borderRadius: 10, // Bar의 border radius 설정
+      },
+    ],
+  }
+  charts.calorie.ready = true
+}
+async function getReportData(mbrSeq, date) {
   responseData.value = await ReportApi.getReportFor(mbrSeq, date)
   reportLoading.value = false
 }
-async function loadImage() {
+async function getReportImage() {
   if (reportImageUrl.value) URL.revokeObjectURL(reportImageUrl.value)
 
   let body = {}
@@ -120,44 +200,19 @@ async function loadImage() {
   imageLoading.value = false
 }
 
-async function onDatePickerClicked() {
-  ReportUiHandler.renderDatePicker(reportPageDatePickerWrapper, dates)
+function onDatePickerClicked() {
+  ReportUiHandler.renderDatePicker(
+    reportPageDatePickerWrapper,
+    charts.date.data
+  )
 }
+
 onMounted(() => {
-  init()
-  ReportUiHandler.renderDatePicker(reportPageDatePickerWrapper, dates)
-  const watchCalorieChart = watch(
-    () => calorieChart.value.chart,
-    newValue => {
-      if (newValue !== null) {
-        calorieChart.value.chart.resize(350, 200)
-        watchCalorieChart()
-      }
-    }
-  )
-  const watchExpChart = watch(
-    () => expChart.value.chart,
-    newValue => {
-      if (newValue !== null) {
-        expChart.value.chart.resize(350, 200)
-        watchExpChart()
-      }
-    }
-  )
-  const watchScoreChart = watch(
-    () => scoreChart.value.chart,
-    newValue => {
-      if (newValue !== null) {
-        scoreChart.value.chart.resize(350, 140)
-        watchScoreChart()
-      }
-    }
-  )
+  loadReport()
 })
 function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
-
 const reportData = computed(() => {
   if (responseData.value === null) return null
   const data = responseData.value.exerciseHistory
@@ -174,28 +229,7 @@ const reportData = computed(() => {
       good: data.totalGoodCount,
       bad: data.totalBadCount,
     },
-    days: data.exercisedDays,
     records: data.dailyRecords,
-  }
-})
-
-const scoreData = computed(() => {
-  let total =
-    reportData.value?.counts.excellent +
-    reportData.value?.counts.good +
-    reportData.value?.counts.bad
-  return {
-    labels: ['Excellent', 'Good', 'Ok'],
-    datasets: [
-      {
-        backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-        data: [
-          reportData.value?.counts.excellent / total,
-          reportData.value?.counts.good / total,
-          reportData.value?.counts.bad / total,
-        ],
-      },
-    ],
   }
 })
 </script>
@@ -203,11 +237,11 @@ const scoreData = computed(() => {
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
-      {{ reportData }}
-
-      <!--       reportDate: {{ reportData }}-->
       <div class="report-summary-container w-full py-10 mb-2">
-        <ReportMonthPicker @search="date => onLoadReport(date)" />
+        <ReportMonthPicker
+          v-model="selectedDate"
+          @search="d => onClickLoadReport(d)"
+        />
         <div class="report-title">리포트</div>
         <div class="report-summary-wrapper flex justify-between">
           <div
@@ -228,7 +262,7 @@ const scoreData = computed(() => {
                   </div>
                   <div class="flex items-baseline font-semibold">
                     <div class="font-black text-lg">
-                      {{ reportData?.days.length }}
+                      {{ charts.date.data?.length }}
                     </div>
                     <div class="font-semibold text-neutral-700">일 출석</div>
                   </div>
@@ -305,12 +339,13 @@ const scoreData = computed(() => {
             <div class="text-center font-bold"></div>
             <base-circular-loader
               class="h-16"
-              :loading="reportLoading"
+              :loading="!charts.score.ready"
               :size="30"
             >
               <Doughnut
-                ref="scoreChart"
-                :data="scoreData"
+                v-if="charts.score.ready"
+                ref="scoreChartRef"
+                :data="charts.score?.data"
                 :options="scoreChartOptions"
               />
               <!--              <div class="flex items-center justify-space-evenly w-full mt-2">-->
@@ -336,7 +371,7 @@ const scoreData = computed(() => {
             class="h-full"
           >
             <img
-              ref="reportImageElem"
+              ref="reportImageRef"
               :src="reportImageUrl"
               class="h-[350px]"
               alt=""
@@ -354,7 +389,8 @@ const scoreData = computed(() => {
             >
               <v-locale-provider locale="ko">
                 <v-date-picker
-                  v-model="today"
+                  v-model="selectedDate"
+                  :display-date="selectedDate"
                   class="report-page-date-picker"
                   hide-actions
                   max-width="100%"
@@ -365,26 +401,27 @@ const scoreData = computed(() => {
               </v-locale-provider>
             </div>
           </div>
-          <div class="report-chart-item">
+          <div class="report-chart-item-col-2">
             <div class="report-title">칼로리</div>
             <div class="report-chart rounded-lg shadow-lg">
               <Bar
-                ref="calorieChart"
+                v-if="charts.calorie.ready"
+                ref="calorieChartRef"
                 :options="calorieChartOptions"
-                :data="calorieChartData"
+                :data="charts.calorie?.data"
               ></Bar>
             </div>
           </div>
-          <div class="report-chart-item">
-            <div class="report-title">경험치 변화량</div>
-            <div class="report-chart rounded-lg shadow-lg">
-              <Line
-                ref="expChart"
-                :options="expChartOptions"
-                :data="expChartData"
-              ></Line>
-            </div>
-          </div>
+          <!--          <div class="report-chart-item">-->
+          <!--            <div class="report-title">경험치 변화량</div>-->
+          <!--            <div class="report-chart rounded-lg shadow-lg">-->
+          <!--              <Line-->
+          <!--                ref="expChartRef"-->
+          <!--                :options="expChartOptions"-->
+          <!--                :data="expChartData"-->
+          <!--              ></Line>-->
+          <!--            </div>-->
+          <!--          </div>-->
         </div>
       </div>
       <ReportExcTimelineContainer />
@@ -396,6 +433,10 @@ const scoreData = computed(() => {
 .report-chart-item,
 .report-summary-item {
   width: 350px;
+}
+.report-chart-item-col-2,
+.report-summary-item-col-2 {
+  width: 725px;
 }
 .report-title {
   font-weight: 900;
@@ -430,8 +471,9 @@ const scoreData = computed(() => {
 .report-page-date-picker .v-btn__content {
   color: rgba(0, 0, 0, 0);
 }
+.report-chart.v-btn.v-btn--icon.v-btn--variant-outlined,
 .report-chart
-  .v-btn.v-btn--icon.bg-transparent.v-btn--density-default.v-btn--size-default.v-btn--variant-flat {
+  .v-btn.v-btn--icon.bg-transparent.v-btn--density-default.v-btn--size-default {
   background-color: #f1f1f1 !important; /* 활성 색상 설정 */
 }
 /* 활성 상태일 때의 스타일을 정의합니다. */

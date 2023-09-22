@@ -1,19 +1,15 @@
 <script setup>
-import { LeftArrowSvg, RightArrowSvg } from '@/module/@base/svg'
-import ReportDateUtils from '@/module/report/services/reportDateUtils'
 import { ref } from 'vue'
 
 const props = defineProps({
   modelValue: {
-    type: String,
-    default: new Date().toISOString().slice(0, 7),
+    type: Date,
   },
 })
 const emit = defineEmits(['search'])
 
-function onMonthChange(dateStr, increment) {
-  let date = ReportDateUtils.adjustMonth(dateStr, increment)
-  emit('update:modelValue', ReportDateUtils.formatDateYYYYMM(date))
+function onMonthChange() {
+  emit('update:modelValue')
 }
 function search() {
   emit('search', new Date(selectedYear.value, selectedMonth.value - 1))
@@ -38,6 +34,7 @@ const loading = ref(false)
         class="mr-1 w-32"
         variant="outlined"
         :disabled="loading"
+        :size="56"
       />
     </div>
 
@@ -49,9 +46,10 @@ const loading = ref(false)
         :item-value="item => item"
         variant="outlined"
         :disabled="loading"
+        :size="56"
       />
     </div>
-    <v-btn :loading="loading" @click="search()" />
+    <v-btn :size="56" :loading="loading" @click="search()">가즈아</v-btn>
   </div>
 </template>
 
