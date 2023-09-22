@@ -74,9 +74,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref } from 'vue'
 import { BaseRating } from '/src/module/@base/components'
-import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
 import dateUtil from '/src/utils/date.js'
 import ApiClient from '/src/services/api.js'
 
@@ -85,18 +84,7 @@ const props = defineProps({
   responseData: Object,
 })
 
-const showReviewModal = ref(false)
-const modalActive = ref(false)
 let updatedReviews = ref('')
-
-const openReviewModal = () => {
-  showReviewModal.value = true
-}
-
-const closeReviewModal = () => {
-  showReviewModal.value = false
-}
-
 
 const toggleModal = () => {
   emit('toggleModal')

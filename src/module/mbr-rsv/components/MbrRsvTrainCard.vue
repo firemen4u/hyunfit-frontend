@@ -68,12 +68,8 @@ function calcDay() {
   else if (daysDiff.value == 0) {
     daysDiff.value = `-Day`
   }
-
-  console.log('날짜 계산', daysDiff.value)
 }
 onMounted(() => {
-  console.log('mounted')
   calcDay()
-}),
-  console.log('자식 컴포넌트', props.responseData)
+})
 </script>

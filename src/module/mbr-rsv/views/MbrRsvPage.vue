@@ -144,10 +144,6 @@ async function init() {
 onBeforeMount(() => {
   init()
 })
-
-onMounted(() => {
-  console.log('마운트 됨')
-})
 </script>
 <style scoped>
 .MbrRsvTrainCard:hover {
