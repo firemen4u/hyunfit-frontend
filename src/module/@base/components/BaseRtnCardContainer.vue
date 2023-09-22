@@ -48,14 +48,6 @@ const loggedInUser = ref(null)
 const itemsPerPage = 12
 const currentPage = ref(1)
 
-// const filteredRoutines = computed(() => {
-//   const filtered = routines.value.filter(routine =>
-//     routine.rtnName.toLowerCase().includes(searchTerm.value.toLowerCase())
-//   )
-//   console.log('Filtered Routines:', filtered) // 로그 추가
-//   return filtered
-// })
-
 const filteredRoutines = computed(() => {
   return routines.value.filter(routine =>
     routine.rtnName.toLowerCase().includes(searchTerm.value.toLowerCase())
