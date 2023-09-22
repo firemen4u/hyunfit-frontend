@@ -1,11 +1,24 @@
 import axios from 'axios'
-import { BACKEND_API_BASE_URL } from '/src/config'
+import {
+  AI_SERVER_BASE_URL,
+  BACKEND_API_BASE_URL,
+  FILE_SERVER_BASE_URL,
+} from '/src/config'
 
-let axiosInstance = axios.create({
+const backendInstance = axios.create({
   baseURL: BACKEND_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+})
+const aiInstance = axios.create({
+  baseURL: AI_SERVER_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+const fsInstance = axios.create({
+  baseURL: FILE_SERVER_BASE_URL,
 })
 
 function appendAuthorization(config) {
@@ -16,9 +29,19 @@ function appendAuthorization(config) {
   config.headers['Authorization'] = authorization
 }
 
-async function get(url, config = {}) {
+function instanceResolver(type) {
+  if (type === 'fs') {
+    return fsInstance
+  }
+  if (type === 'ai') {
+    return aiInstance
+  }
+  return backendInstance
+}
+
+async function _get(url, config, instance) {
   appendAuthorization(config)
-  return await axiosInstance
+  return await instance
     .get(url, config)
     .then(response => {
       return response.data
@@ -28,35 +51,46 @@ async function get(url, config = {}) {
     })
 }
 
+async function get(url, config = {}, type = null) {
+  const instance = instanceResolver(type)
+  return await _get(url, config, instance)
+}
+
 // Function to handle POST requests
-async function post(url, data, config = {}) {
+async function _post(url, data, config, instance) {
   appendAuthorization(config)
-  return await axiosInstance
+  return await instance
     .post(url, data, config)
     .then(response => response.data)
     .catch(error => {
       throw error
     })
 }
+async function post(url, data, config = {}, type) {
+  const instance = instanceResolver(type)
+  return await _post(url, data, config, instance)
+}
 
-// Function to handle PUT requests
-function put(url, data, config = {}) {
+async function _put(url, data, config, instance) {
   appendAuthorization(config)
-  console.log(config)
-  return axiosInstance
+  return await instance
     .put(url, data, config)
-    .then(response => {
-      response.data
-    })
+    .then(response => response.data)
     .catch(error => {
       throw error
     })
 }
+// Function to handle PUT requests
+async function put(url, data, config = {}, type) {
+  const instance = instanceResolver(type)
+  return await _put(url, data, config, instance)
+}
 
 // Function to handle DELETE requests
-function remove(url, config = {}) {
+function remove(url, config = {}, type) {
   appendAuthorization(config)
-  return axiosInstance
+  const instance = instanceResolver(type)
+  return instance
     .delete(url, config)
     .then(response => response.data)
     .catch(error => {
@@ -64,21 +98,24 @@ function remove(url, config = {}) {
     })
 }
 
-function setTokenOnLocalStorage(token) {
+function setTokenOnLocalStorage(token, userRole) {
   localStorage.setItem('Authorization', token)
+  localStorage.setItem('userRole', userRole)
 }
 
-function removeTokenOnLocalStorage(token) {
-  localStorage.removeItem('Authorization', token)
+function removeTokenOnLocalStorage() {
+  localStorage.removeItem('Authorization')
+  localStorage.removeItem('userRole')
 }
 
 const ApiClient = {
-  get: async (url, config) => await get(url, config),
-  post: async (url, data) => await post(url, data),
-  put: (url, data, config) => put(url, data, config),
+  get: async (url, config, type) => await get(url, config, type),
+  post: async (url, data, config, type) => await post(url, data, config, type),
+  put: (url, data, config, type) => put(url, data, config, type),
   delete: url => remove(url),
-  setTokenOnLocalStorage: token => setTokenOnLocalStorage(token),
-  removeTokenOnLocalStorage: token => removeTokenOnLocalStorage(token),
+  setTokenOnLocalStorage: (token, userRole) =>
+    setTokenOnLocalStorage(token, userRole),
+  removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),
 }
 
 export default ApiClient
