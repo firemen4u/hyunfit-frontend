@@ -11,11 +11,11 @@
       <slot name="search-bar"> </slot>
     </div>
 
-    <div class="trn-search-filter-selection h-2 mt-2">
+    <div class="trn-search-filter-selection h-2 mt-3">
       <slot name="filter-chip-group"></slot>
     </div>
 
-    <div class="trn-search-result-list">
+    <div class="trn-search-result-list mt-5">
       <slot name="search-results"></slot>
       <div class="pagination pt-3">
         <slot name="pagination"></slot>
