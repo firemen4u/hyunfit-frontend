@@ -218,8 +218,15 @@ import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
+import {
+  FILE_SERVER_TOKEN,
+  FILE_SERVER_HYUNFIT_URL,
+  BACKEND_API_BASE_URL,
+} from '/src/config.js'
+import ApiClient from '/src/services/api'
 import axios from 'axios'
 import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
+
 
 const target_items = ref([
   '광배근',
@@ -283,12 +290,12 @@ const radioOptions2 = [
 //submit 시키기
 const exc_name = ref('')
 const exc_content = ref('')
-const exc_type = ref('')
-const exc_difficulty = ref('')
-const exc_calories_per_rep = ref('')
-const exc_time_per_set_in_sec = ref('')
-const exc_set_count = ref('')
-const excRepCountPerSet = ref('')
+const exc_type = ref('1')
+const exc_difficulty = ref('1')
+const exc_calories_per_rep = ref('0')
+const exc_time_per_set_in_sec = ref('0')
+const exc_set_count = ref('0')
+const excRepCountPerSet = ref('0')
 
 const submit = async () => {
   const exerciseTargets = selectedBodyParts.value.map(bodyPart => ({
@@ -309,14 +316,11 @@ const submit = async () => {
   }
   try {
     // exercise 등록하는 api 호출
-    const firstApiResponse = await axios.post(
-      'http://localhost:8080/exercises',
-      values
-    )
-    console.log(firstApiResponse.data)
+    const firstApiResponse = await ApiClient.post('/exercises', values)
+    console.log(firstApiResponse)
 
     // exercise에 등록된 exc_seq 가져오기
-    const excSeq = firstApiResponse.data.excSeq
+    const excSeq = firstApiResponse.excSeq
     // header 코드
     const config = {
       headers: {
@@ -325,16 +329,26 @@ const submit = async () => {
     }
 
     // 파일 업로드 함수를 만듭니다.
-    const uploadFile = async (file, type) => {
+    const uploadFile = async (file, type, customName) => {
       const formData = new FormData()
       // 확장자 분리 및 파일 이름 재조합
       const splitFileName = file.name.split('.')
       const extension = splitFileName.pop()
-      const fileName = `${splitFileName.join('.')}_${excSeq}.${extension}`
+
+      const fileNameMapping = {
+        model: `ai_model_${excSeq}.${extension}`,
+        preview: `preview_video_${excSeq}.${extension}`,
+        view: `exercise_video_${excSeq}.${extension}`,
+        view_row_qual: `low_quality_preview_video_${excSeq}.${extension}`,
+        mp3: `guide_message_${excSeq}.${extension}`,
+      }
+      const fileName = customName
+        ? `${customName}_${excSeq}.${extension}`
+        : `${splitFileName.join('.')}_${excSeq}.${extension}`
 
       formData.append('file', file, fileName)
       // FormData 내용 확인
-      console.log(fileName)
+      console.log('파일명 : ', fileName)
       for (var pair of formData.entries()) {
         console.log(pair[0] + ', ' + pair[1])
         if (pair[1] instanceof File) {
@@ -345,12 +359,13 @@ const submit = async () => {
         }
       }
       try {
-        const secondApiResponse = await axios.post(
-          `${FILE_SERVER_HYUNFIT_URL}/${type}`,
+        const secondApiResponse = await ApiClient.post(
+          `/api/hyunfit/${type}`,
           formData,
-          config
+          config,
+          'fs'
         )
-        console.log(`Uploaded ${type}: ${secondApiResponse.data}`)
+        console.log(`Uploaded ${type}: ${secondApiResponse}`)
         // Promise를 반환, 성공 또는 실패를 상위 함수에게 전달
         return Promise.resolve()
       } catch (error) {
@@ -361,11 +376,15 @@ const submit = async () => {
 
     // 파일 업로드 작업을 모두 기다림
     await Promise.all([
-      uploadFile(files_exc_model.value[0], 'model'),
-      uploadFile(files_exc_preview.value[0], 'file'),
-      uploadFile(files_exc_view.value[0], 'file'),
-      uploadFile(files_exc_view_row_qual.value[0], 'file'),
-      uploadFile(files_exc_mp3.value[0], 'file'),
+      uploadFile(files_exc_model.value[0], 'model', 'ai_model'),
+      uploadFile(files_exc_preview.value[0], 'file', 'preview_video'),
+      uploadFile(files_exc_view.value[0], 'file', 'exercise_video'),
+      uploadFile(
+        files_exc_view_row_qual.value[0],
+        'file',
+        'low_quality_preview_video'
+      ),
+      uploadFile(files_exc_mp3.value[0], 'file', 'guide_message'),
     ])
 
     alert('등록 성공!')

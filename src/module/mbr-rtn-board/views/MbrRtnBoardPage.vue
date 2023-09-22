@@ -7,7 +7,7 @@ import BaseRtnCardContainer from '/src/module/@base/components/BaseRtnCardContai
   <BaseContainer>
     <BaseBodyWrapper>
       <div class="mt-10">
-        <BaseRtnCardContainer></BaseRtnCardContainer>
+        <BaseRtnCardContainer :showMember="true" />
       </div>
     </BaseBodyWrapper>
   </BaseContainer>

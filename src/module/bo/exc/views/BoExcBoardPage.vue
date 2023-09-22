@@ -46,7 +46,9 @@
       <BoExcCardModal
         :show="showModal"
         :exercise="selectedExercise"
+        :showDeleteBtn="true"
         @update:show="showModal = $event"
+        @deleteExercise="deleteExercise"
       />
     </BaseBodyWrapper>
   </BaseContainer>
@@ -61,6 +63,7 @@ import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import router, { pathNames } from '@/router'
+import ApiClient from '/src/services/api'
 
 const goToExcNewPage = () => {
   router.push(pathNames.boExcNewPage)
@@ -116,9 +119,8 @@ const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 // API를 통해 운동 목록을 가져오는 함수
 const fetchExercises = async () => {
   try {
-    const response = await fetch('http://localhost:8080/exercises') // API 엔드포인트를 설정하세요.
-    const data = await response.json()
-    exercises.value = data // 받아온 데이터를 exercises 변수에 저장합니다.
+    const data = await ApiClient.get('/exercises') // ApiClient 사용
+    exercises.value = data
   } catch (error) {
     console.error('운동 목록을 불러오는 중 에러 발생:', error)
   }
@@ -155,6 +157,16 @@ const selectedExercise = ref(null) // 선택된 운동을 저장할 변수
 const openModal = exercise => {
   selectedExercise.value = exercise
   showModal.value = true
+}
+// 운동 삭제 함수
+const emit = defineEmits([])
+const deleteExercise = async excSeq => {
+  try {
+    await ApiClient.delete(`/exercises/${excSeq}`)
+    fetchExercises()
+  } catch (error) {
+    console.error('운동 삭제 중 에러 발생:', error)
+  }
 }
 </script>
 <style scoped>

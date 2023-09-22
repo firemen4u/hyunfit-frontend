@@ -19,9 +19,14 @@
     </div>
   </div>
   <div class="text-center mt-2">
-    <button class="register-btn rounded-md" @click="registerExercise">
+    <v-btn
+      class="register-btn"
+      color="#de819c"
+      size="small"
+      @click="registerExercise"
+    >
       등록하기
-    </button>
+    </v-btn>
   </div>
 </template>
 
