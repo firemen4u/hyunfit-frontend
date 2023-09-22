@@ -102,7 +102,7 @@ export default {
         .post(`${BACKEND_API_BASE_URL}/auth/${this.selectedRole}`, this.user)
         .then(response => {
           this.token = response.headers.get('authorization')
-          ApiClient.setTokenOnLocalStorage(this.token)
+          ApiClient.setTokenOnLocalStorage(this.token, this.selectedRole)
           this.$router.push('/')
         })
         .catch(error => {

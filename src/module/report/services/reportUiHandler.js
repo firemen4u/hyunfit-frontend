@@ -5,6 +5,7 @@ function parseDateString(dateString) {
 }
 
 function renderDatePicker(wrapper, exercisedDays) {
+  if (exercisedDays.length === 0) return
   const dayElements = wrapper.value.querySelectorAll(
     '.v-date-picker-month__days div'
   )
@@ -13,12 +14,16 @@ function renderDatePicker(wrapper, exercisedDays) {
     const calDateStr = element.getAttribute('data-v-date')
     if (calDateStr == null) return
     let calDate = parseDateString(calDateStr)
-    if (exercisedDates.some(eDates => calDate.getDate() === eDates.getDate())) {
-      const btn = element.querySelector('button')
-      if (btn.classList.contains('v-btn--active') === false) {
-        btn.classList.remove('bg-transparent')
-        btn.classList.add('bg-exercised')
-      }
+
+    const btn = element.querySelector('button')
+    if (exercisedDates.some(eDate => calDate.getTime() === eDate.getTime())) {
+      // if (btn.classList.contains('v-btn--active')) return
+      btn.classList.add('bg-exercised')
+      btn.classList.remove('bg-transparent')
+    } else {
+      btn.classList.add('bg-transparent')
+      btn.classList.remove('bg-exercised')
+      btn.classList.remove('v-btn--active')
     }
   })
 }

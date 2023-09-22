@@ -8,7 +8,16 @@ function adjustMonth(dateStr, increment) {
   return date
 }
 
+function timestampToFullDate(timestamp) {
+  return new Date(parseInt(timestamp)).toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
 export default {
   adjustMonth,
   formatDateYYYYMM,
+  timestampToFullDate,
 }

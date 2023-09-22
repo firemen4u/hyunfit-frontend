@@ -1,3 +1,5 @@
+import ReportDateUtils from '@/module/report/services/reportDateUtils'
+
 const expChartOptions = {
   responsive: false,
   maintainAspectRatio: false,
@@ -36,7 +38,7 @@ const expChartOptions = {
 }
 
 function formatToPercentString(number) {
-  return `${Math.round(number * 100)}%`
+  return ` ${Math.round(number * 100)}%`
 }
 // https://stackblitz.com/github/apertureless/vue-chartjs/tree/main/sandboxes/radar?file=src%2FApp.vue
 // https://www.chartjs.org/docs/latest/configuration/tooltip.html#tooltip-callbacks
@@ -46,13 +48,18 @@ const scoreChartOptions = {
   plugins: {
     legend: {
       position: 'chartArea',
+      labels: {
+        usePointStyle: true,
+        pointStyle: 'circle',
+        useBorderRadius: true,
+        borderRadius: 500,
+      },
     },
-    tooltips: {
+
+    tooltip: {
       callbacks: {
-        label: function (tooltipItem, data) {
-          console.log('ssssss')
-          console.log('sss', tooltipItem, data)
-          return tooltipItem
+        label: function (context) {
+          return formatToPercentString(context.raw)
         },
       },
     },
@@ -71,6 +78,10 @@ const calorieChartOptions = {
         font: {
           size: 10,
         },
+        callback: function (val, idx) {
+          return new Date(this.getLabelForValue(val)).getDate()
+        },
+        color: '#565656',
       },
     },
     y: {
@@ -97,6 +108,11 @@ const calorieChartOptions = {
   plugins: {
     legend: {
       display: false, // 범례 숨김
+    },
+    tooltip: {
+      callbacks: {
+        title: item => ReportDateUtils.timestampToFullDate(item[0].label),
+      },
     },
   },
 }
