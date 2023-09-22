@@ -88,7 +88,7 @@ const reservingResponse = ref(null)
 const reservedResponse = ref(null)
 const modalActive = ref(false)
 
-const currentPage = ref(1) // 현재 페이지
+const currentPage = ref(1)
 const itemsTotalPage = ref(null)
 
 function toggleModal(ptSeq) {
@@ -116,7 +116,6 @@ async function getNextPt() {
       `/members/${memberSource.mbrSeq}/personal-trainings`,
       { params: paramsReserved }
     )
-    console.log('다시 받아온 값들', reservedResponse.value)
   } catch (error) {
     console.error('다음 페이지 API 요청 실패:', error)
   }
@@ -134,8 +133,6 @@ async function saveAndReload() {
       `/members/${memberSource.mbrSeq}/personal-trainings`,
       { params: paramsReserved }
     )
-
-    console.log('updated', reservedResponse.value)
   } catch (error) {
     console.log('update reserved api 실패!')
   }
@@ -149,13 +146,11 @@ async function init() {
       `/members/${memberSource.mbrSeq}/personal-trainings/count`
     )
 
-    console.log('items total page : ', itemsTotalPage.value.mbrPastPtCount)
     const paramsReserving = {
       page: 1,
       order: 'asc',
       ptReservationStatus: 1,
     }
-
     reservingResponse.value = await ApiClient.get(
       `/members/${memberSource.mbrSeq}/personal-trainings`,
       { params: paramsReserving }

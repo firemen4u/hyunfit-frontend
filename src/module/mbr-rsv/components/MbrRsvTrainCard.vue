@@ -15,10 +15,10 @@
         </div>
         <div class="text-gray-900 font-bold mb-2 flex justify-between">
           <div class="flex items-center">
-            <p class="train-type text-xl font-bold mr-4 align-middle">
+            <p class="train-type text-xl font-bold mr-2 align-middle">
               {{ props.responseData.trnTypeName }}
             </p>
-            <p class="train-datetime text-base align-middle text-gray-500">
+            <p class="train-datetime text-xs self-end text-gray-500">
               {{
                 dateUtil.timestampToFullDate(
                   props.responseData.ptReservationDate
@@ -38,15 +38,16 @@
         :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
         title="trainer profile img"
       ></div>
-      <div>
+      <div class="w-9/12">
         <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
           {{ props.responseData.trnName }}
         </p>
         <p
-          class="train-content h-16 w-80 text-gray-700 overflow-hidden text-sm"
+          class="train-content h-10 w-80 text-gray-700 overflow-hidden text-sm"
         >
           {{ props.responseData.trnShortDescription }}
         </p>
+        <button class="float-right">입장하기</button>
       </div>
     </div>
   </div>

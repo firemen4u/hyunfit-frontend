@@ -36,7 +36,13 @@
           <div class="text-xl font-extrabold">
             {{ props.responseData.trnTypeName }}
           </div>
-          <div class="ml-3 -z-10">
+          <div
+            v-if="
+              props.responseData.ptrRating != null &&
+              props.responseData.ptReservationStatus == 2
+            "
+            class="ml-3 -z-10"
+          >
             <BaseRating
               icon-size="sm"
               :modelValue="props.responseData.ptrRating"
@@ -69,17 +75,10 @@
       <div
         v-if="props.responseData.ptrRating == null"
         class="flex justify-between text-gray-500"
-      >
-        <!-- <div class="flex items-start">
-          <div>요청 사항 :&nbsp;</div>
-          <div class="w-9/10">
-            <ReviewStickerGroup :stickers="props.responseData?.ptNoteStickers" />
-          </div>
-        </div> -->
-      </div>
+      ></div>
       <div
         v-if="
-          props.responseData.ptrRating != null ||
+          props.responseData.ptrRating != null &&
           props.responseData.ptReservationStatus == 2
         "
         class="flex justify-between text-gray-500"
@@ -108,7 +107,18 @@
               )}`
             }}
           </div>
-          <!-- 이 부분이 하단에 배치됩니다 -->
+        </div>
+      </div>
+      <!-- 예약이 취소 된 경우 -->
+      <div
+        v-if="
+          props.responseData.ptrRating != null &&
+          props.responseData.ptReservationStatus == 3
+        "
+        class="flex justify-between text-gray-500"
+      >
+        <div class="w-5/6 flex-col mt-2">
+          취소 사유 : {{ props.responseData.ptCancellationReason }}
         </div>
       </div>
     </div>
