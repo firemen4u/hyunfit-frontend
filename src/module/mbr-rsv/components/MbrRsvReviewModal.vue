@@ -8,28 +8,29 @@
           @click.stop
         >
           <i @click="close" class="far fa-times-circle"></i>
-          <!-- Modal Content -->
           <div class="modal-content">
             <div class="modal-wrap">
               <div class="items-center align-middle">
                 <p class="text-2xl font-bold mb-6">오늘 수업은 어떠셨나요??</p>
-                <div class="sticker-container">
-                  <BaseCheckChip
-                    class="mr-2 mb-2"
-                    v-for="(option, index) in options"
-                    :key="index"
-                    :label="option"
+                <div
+                  class="sticker-container flex justify-center items-center pl-2"
+                >
+                  <BaseChipGroup
+                    v-model="ptReviewOptionSelected"
+                    :items="ptReviewOptions"
+                    :disabled="reviewConfirmLoading"
+                    :filter="true"
+                    style="width: 85%; margin-left: 50px"
                   />
                 </div>
-                <div class="mt-5 mb-3">
+                <div class="mt-3 mb-3">
                   <div>
                     <div class="d-flex flex-column align-center justify-center">
-                      <v-rating
-                        v-model="rating"
+                      <BaseRating
+                        icon-size="xl"
                         class="ma-2"
-                        density="compact"
-                        hover
-                      ></v-rating>
+                        v-model="ptReviewRatings"
+                      />
                     </div>
                   </div>
                   <div class="flex flex-col items-center mt-3 mb-3">
@@ -44,8 +45,7 @@
               </div>
             </div>
           </div>
-          <slot />
-          <button @click="submit" type="button" class="rounded-lg">
+          <button @click="confirmReview" type="button" class="rounded-lg">
             리뷰 등록하기
           </button>
         </div>
@@ -53,71 +53,51 @@
     </div>
   </transition>
 </template>
-
-<!-- <script>
-export default {
-  props: ['modalActive'],
-  setup(props, { emit }) {
-    const close = () => {
-      emit('close')
-    }
-    const submit = () => {
-      // 처리할 로직을 여기에 추가
-      emit('submit')
-    }
-    return { close, submit }
-  },
-}
-</script> -->
-
 <script setup>
 import { ref } from 'vue'
-import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
-</script>
+import { BaseRating, BaseChipGroup } from '/src/module/@base/components'
+import { ptReviewOptions } from '@/module/mbr-rsv/stores/mbrRsvCommon'
+import ApiClient from '/src/services/api.js'
 
-<script>
-export default {
-  props: ['modalActive', 'cardData'], // cardData 프로퍼티 추가
-  data() {
-    return {
-      options: [
-        '운동이 처음이에요',
-        '살을 빼고 싶어요',
-        '코어를 강화하고 싶어요',
-        '부상 이력이 있어요',
-        '식단 조언도 함께 받고 싶어요',
-      ],
-    }
-  },
-  setup(props, { emit }) {
-    const close = () => {
-      // 모달이 닫힐 때 reviewText 초기화
-      reviewText.value = ''
-      emit('close')
-    }
+const props = defineProps({
+  modalActive: Object,
+  responseData: Object,
+  targetSeq: Number,
+})
 
-    const submit = () => {
-      // 모달을 닫기 전에 카드에 있는 정보를 가져옴
-      const cardInfo = {
-        // trainerName: props.cardData.trainerName,
-        // memberName: props.cardData.memberName,
-        // reviewRating: props.cardData.reviewRating,
-        reviewText: reviewText.value,
-      }
+let ptReviewOptionSelected = ref([])
+let ptReviewRatings = ref([])
+let reviewConfirmLoading = ref(false)
+const reviewText = ref('')
+const emit = defineEmits(['action:cancel', 'action:save'])
 
-      // 카드 정보를 콘솔에 출력
-      console.log('Card Information:', cardInfo)
+async function confirmReview() {
+  console.log('마운트된 데이터', props.responseData)
+  console.log('마운트된 seq', props.targetSeq)
 
-      // 모달을 닫음
-      emit('close')
+  let data = {
+    ptSeq: props.targetSeq,
+    ptrStickers: ptReviewOptionSelected.value.join(','),
+    ptrContent: reviewText.value,
+    ptrRating: ptReviewRatings.value,
+  }
+  try {
+    console.log('post 전에 데이터', data)
+    let result = await ApiClient.post(
+      `/personal-trainings/${data.ptSeq}/review`,
+      data
+    )
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
 
-      // 모달이 닫힐 때 reviewText 초기화
-      reviewText.value = ''
-    }
-    const reviewText = ref('')
-
-    return { close, submit, reviewText }
-  },
+  emit('action:save')
+  // 데이터 초기화
+  data.ptSeq = ''
+  data.ptrStickers = ''
+  data.ptrContent = ''
+  data.ptrRating = ''
+  console.log('부르고 나서', data)
 }
 </script>
 
@@ -178,7 +158,7 @@ export default {
       cursor: pointer;
 
       &:hover {
-        color: crimson;
+        color: rgb(210, 51, 97);
       }
     }
 
@@ -186,7 +166,7 @@ export default {
       padding: 20px 30px;
       border: none;
       font-size: 16px;
-      background-color: crimson;
+      background-color: rgb(210, 51, 97);
       color: #fff;
       cursor: pointer;
     }

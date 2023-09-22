@@ -10,6 +10,11 @@ const timestampToFullDate = dateString => {
   return new Date(dateString).toLocaleDateString('ko-KR', options)
 }
 
+const formatDateWithOptions = (dateString, options) => {
+  return new Date(dateString).toLocaleDateString('ko-KR', options)
+}
+
 export default {
   timestampToFullDate,
+  formatDateWithOptions,
 }

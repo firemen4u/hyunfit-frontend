@@ -63,7 +63,11 @@ function calcDay() {
   const today = new Date()
   const timeDiff = today - props.responseData.ptReservationDate
   daysDiff.value = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
+
   if (daysDiff.value > 0) daysDiff.value = `+ ${daysDiff.value}`
+  else if (daysDiff.value == 0) {
+    daysDiff.value = `-Day`
+  }
 
   console.log('날짜 계산', daysDiff.value)
 }

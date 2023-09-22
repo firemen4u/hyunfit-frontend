@@ -1,11 +1,14 @@
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
-      <div class="mbr-rsv-container w-full h-full" v-if="response !== null">
+      <div
+        class="mbr-rsv-container w-full h-full"
+        v-if="reservingResponse !== null"
+      >
         <div class="mbr-rsv-banner-container h-1/5 overflow-hidden relative">
           <div class="banner-img w-full h-96 hover:h-96">
             <img
-              :src="filteredReservingTrainings[0].trnProfileUrl"
+              :src="reservingResponse.personalTrainingDTOList[0].trnProfileUrl"
               alt="Option 1"
               class="option-image w-full"
             />
@@ -28,7 +31,10 @@
             title="예약한 트레이너의 카드"
           >
             <MbrRsvTrainCard
-              v-for="training in filteredReservingTrainings"
+              v-for="training in reservingResponse.personalTrainingDTOList.slice(
+                0,
+                2
+              )"
               :key="training.id"
               :responseData="training"
             ></MbrRsvTrainCard>
@@ -36,84 +42,100 @@
         </div>
         <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
           <div class="mbr-rsv-history-item m-3">
-            <p class="text-2xl font-bold mt-10 mb-8">지난 예약</p>
+            <p class="text-2xl font-bold mt-10 mb-8 ml-3">지난 예약</p>
             <div
-              v-for="training in filteredReservedTrainings"
+              v-for="training in reservedResponse?.personalTrainingDTOList"
               :key="training.id"
               class="mbr-rsv-history-card"
             >
               <MbrRsvHistoryCard
-                profileImageUrl="https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfMjk4/MDAxNjE0MjM5MDIwMTk5.aJVYERC3dCXww1NgFcRjSCGsvFMkl58NJC6ee--69vYg.jLPZXJ3t8x-sj8wJmuIXtAOQxeEOagLtDftS7zZFgtAg.JPEG.kikisoyun/IMG_1146.JPG?type=w800"
-                trainerName="고윤정 트레이너"
-                day="2023.09.07"
-                time="2H"
-                type="퍼스널트레이닝(PT)"
-                subTitle="소제목"
                 :responseData="training"
+                @toggle-modal="toggleModal(training.ptSeq)"
               />
             </div>
-
             <template class="border-solid border-4 border-orange-400">
               <div></div>
             </template>
           </div>
         </div>
       </div>
+      <MbrRsvReviewModal
+        @action:cancel="toggleModal()"
+        @action:save="saveAndReload()"
+        :modalActive="modalActive"
+        :responseData="reservedResponse"
+        :targetSeq="selectedSeq"
+      >
+      </MbrRsvReviewModal>
     </BaseBodyWrapper>
   </BaseContainer>
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import { ref, onBeforeMount, onMounted, computed } from 'vue'
+import { ref, onBeforeMount, onMounted } from 'vue'
 import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
+import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
 import ApiClient from '/src/services/api.js'
-import dateUtil from '/src/utils/date.js'
-import router from '/src/router'
+
 let memberSource = ''
-const response = ref(null)
+let selectedSeq = ref('')
+const reservingResponse = ref(null)
+const reservedResponse = ref(null)
+const modalActive = ref(false)
 
-const filteredReservingTrainings = computed(() => {
-  // 날짜가 빠른 순서로 정렬
-  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-  const sortedTrainings = response.value.personalTrainingDTOList.sort(
-    (a, b) => {
-      const dateA = new Date(a.ptReservationDate)
-      const dateB = new Date(b.ptReservationDate)
-      return dateA - dateB
-    }
-  )
+function toggleModal(ptSeq) {
+  console.log('전해진 Seq', ptSeq)
+  selectedSeq.value = ptSeq
+  modalActive.value = !modalActive.value
+}
 
-  const filteredTrainings = sortedTrainings.filter(
-    training => training.ptReservationStatus === 1
-  )
-
-  console.log('Filtered and sorted trainings: ', filteredTrainings)
-
-  return filteredTrainings
-})
-
-const filteredReservedTrainings = computed(() => {
-  console.log(
-    'response Data NOT 1: ',
-    response.value.personalTrainingDTOList.filter(
-      training => training.ptReservationStatus !== 1
+async function saveAndReload() {
+  toggleModal()
+  const paramsReserved = {
+    page: 1,
+    order: 'desc',
+    ptReservationStatus: 0,
+  }
+  try {
+    reservedResponse.value = await ApiClient.get(
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserved }
     )
-  )
-  return response.value.personalTrainingDTOList.filter(
-    training => training.ptReservationStatus !== 1
-  )
-})
+
+    console.log('updated', reservedResponse.value)
+  } catch (error) {
+    console.log('update reserved api 실패!')
+  }
+}
 
 async function init() {
   try {
     memberSource = await ApiClient.get('/members/me')
-    response.value = await ApiClient.get(
-      `/members/${memberSource.mbrSeq}/personal-trainings?offset=5&limit=5`
+
+    const paramsReserving = {
+      page: 1,
+      order: 'asc',
+      ptReservationStatus: 1,
+    }
+    const paramsReserved = {
+      page: 1,
+      order: 'desc',
+      ptReservationStatus: 0,
+    }
+
+    reservingResponse.value = await ApiClient.get(
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserving }
     )
 
-    console.log('데이터 도착', response.value)
-    console.log('예약 리스트', response.value.personalTrainingDTOList)
+    reservedResponse.value = await ApiClient.get(
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserved }
+    )
+
+    console.log('reserving', reservingResponse.value)
+    console.log('reserved', reservedResponse.value)
   } catch (error) {
     console.error('API 요청 실패:', error)
   }
@@ -125,21 +147,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
   console.log('마운트 됨')
-  console.log('filteredReservingTrainings', filteredReservingTrainings)
-
-  console.log('filteredReservingTrainings', filteredReservedTrainings)
 })
-
-const profileImageUrl =
-  'https://mblogthumb-phinf.pstatic.net/MjAyMTAyMjVfNiAg/MDAxNjE0MjM5MDE5NDky.PRUBGVPV9zDpuus_gRK8TRkc6OQ1bj2OeR8xpgIOZU4g._h3ecE-etq93eBQJgbKPSA7LNsDcG8AQpCKEHNc58hMg.JPEG.kikisoyun/IMG_1160.JPG?type=w800'
-const avatarImageUrl =
-  'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd3DAvL%2FbtstcPRGzk2%2FyEF3KBvZwJgQcfnNQyN0zK%2Fimg.jpg'
-const profileImageUrl2 =
-  'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb9OSgq%2FbtstfPDvgwy%2F2qJ7Ck73VKjAkzHAd7R5L0%2Fimg.jpg'
-const avatarImageUrl2 =
-  'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd3DAvL%2FbtstcPRGzk2%2FyEF3KBvZwJgQcfnNQyN0zK%2Fimg.jpg'
-
-const selectedRating = ref(0)
 </script>
 <style scoped>
 .MbrRsvTrainCard:hover {
