@@ -1,13 +1,8 @@
 <template>
-  <BaseContainer admin-menu>
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
+  <BaseContainer category="admin">
     <BaseBodyWrapper>
-      <div class="제일큰 pt-10">
-        <div class="루틴목록이랑검색창있는div flex justify-between">
+      <div class="pt-10">
+        <div class="flex justify-between">
           <div class="text-2xl font-bold">운동 등록</div>
         </div>
         <form @submit.prevent="submit">
@@ -218,26 +213,13 @@
   </BaseContainer>
 </template>
 <script setup>
-import {
-  BaseBodyWrapper,
-  BaseContainer,
-  BaseSideBar,
-} from '/src/module/@base/views'
+import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { FILE_SERVER_TOKEN, FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
-
-const sidebarHeader = '관리페이지'
-const mainCategory = 'AI 트레이닝'
-const subcategories = [
-  { id: 1, title: '운동 관리', link: '/bo-excBoard' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnBoard' },
-  { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/bo-rtnNew' },
-]
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 
 const target_items = ref([
   '광배근',
@@ -338,7 +320,6 @@ const submit = async () => {
     // header 코드
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
     }

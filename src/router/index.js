@@ -75,18 +75,21 @@ const pathNames = {
   },
   ptRoomPage: {
     name: 'ptRoom',
+    parent: () => '',
     with: function (params, query) {
       return buildPath(this, params, query)
     },
   },
   boTrnRsvBoardPage: {
     name: 'boTrnRsvBoardPage',
+    parent: () => pathNames.boTrnRsvBoardPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
   },
   boTrnFbBoardPage: {
     name: 'boTrnFbBoardPage',
+    parent: () => pathNames.boTrnFbBoardPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
@@ -205,7 +208,7 @@ const router = createRouter({
       component: BoTrnRsvBoardPage,
     },
     {
-      path: '/pt-fb-manage',
+      path: '/boTrnFbBoard',
       name: pathNames.boTrnFbBoardPage.name,
       component: BoTrnFbBoardPage,
     },

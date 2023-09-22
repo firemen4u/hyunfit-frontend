@@ -1,10 +1,5 @@
 <template>
-  <BaseContainer admin-menu>
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
+  <BaseContainer category="admin">
     <BaseBodyWrapper>
       <div class="boRtnNewPage-wrap mt-10 mb-10">
         <div class="flex justify-between">
@@ -30,11 +25,12 @@
             <p class="col-1">루틴 설명</p>
             <div class="rtn-content-text">
               <v-textarea
+                counter
                 class="rtn-content-text"
                 v-model="rtn_content"
                 clearable
                 placeholder="50자 내로 작성하세요"
-                maxlength="50"
+                maxlength="100"
                 variant="solo"
                 single-line
               ></v-textarea>
@@ -194,22 +190,11 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { PictureSvg } from '/src/module/@base/svg'
-import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
-import { FILE_SERVER_TOKEN } from '/src/config.js'
 import axios from 'axios'
-
-const sidebarHeader = '관리페이지'
-const mainCategory = 'AI 트레이닝'
-const subcategories = [
-  { id: 1, title: '운동 관리', link: '/bo-excBoard' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnboard' },
-  { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/link4' },
-]
 
 // 루틴 타켓부위
 const rtn_target_radio = [
@@ -340,7 +325,6 @@ const sendDataToAPI = async () => {
     // 파일 업로드 설정
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN, // 이 변수를 미리 설정해야 합니다.
         'Content-Type': 'multipart/form-data',
       },
     }
@@ -357,7 +341,7 @@ const sendDataToAPI = async () => {
 
     // 두 번째 API 호출: 파일 업로드
     const secondApiResponse = await axios.post(
-      'http://ryulrudaga.com:48000/api/firemen/file',
+      'https://fs.hyunfit.life/api/hyunfit/file',
       formData,
       config
     )

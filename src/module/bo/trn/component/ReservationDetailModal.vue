@@ -48,7 +48,7 @@
         <div class="flex divider"></div>
         <!--꼬리(입장버튼)-->
         <div class="flex justify-center mt-2">
-          <button class="ptEntryButton" @click="entryPtRoom">
+          <button class="ptEntryButton" @click="enterPtRoom">
             PT Room 입장
           </button>
         </div>
@@ -81,9 +81,11 @@ export default {
   methods: {
     closeModal() {
       this.$emit('close')
+      location.reload()
     },
-    entryPtRoom() {
-      let ptSeq = this.reservationData.ptSeq
+    enterPtRoom() {
+      localStorage.setItem('ptSeq', this.reservationData.ptSeq)
+      localStorage.setItem('userRole', this.reservationData.trnSeq)
       window.open('http://localhost:5173/PtRoom', '_blank')
     },
     formatDate(timestamp) {

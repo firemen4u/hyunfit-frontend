@@ -21,29 +21,79 @@ const openModal = routine => {
 function srcUrlOf(rtnSeq) {
   return `${FILE_SERVER_HYUNFIT_URL}/routine_thumbnail_${rtnSeq}.jpg`
 }
+
+const startRoutine = () => {
+  // 여기서 selectedRoutine.value 를 사용하여 루틴 정보를 전송하는 코드 쓰면 돼
+  console.log('루틴 시작:', selectedRoutine.value)
+}
 </script>
 <template>
   <v-dialog v-model="showModal" width="auto">
-    <div class="card-container">
-      <div class="bg-white">
+    <div class="card-container bg-gray-50 rounded-lg">
+      <div class="close-btn-wrap flex justify-end pr-2">
+        <v-card variant="toner" class="w-16 text-center">
+          <v-card-actions>
+            <v-btn color="primary" @click="showModal = false">닫기</v-btn>
+          </v-card-actions>
+        </v-card>
+      </div>
+
+      <div class="rtn-detail-wrap">
+        <div class="rtn-detail-content flex justify-between">
+          <div class="ml-10">
+            <div class="rtn-detail-name">
+              <p class="text-3xl font-extrabold">
+                {{ selectedRoutine.rtnName }}
+              </p>
+            </div>
+            <div class="rtn-detail-col flex">
+              <p class="rtn-detail-col-1 font-bold">루틴 설명</p>
+              <p class="rtn-detail-col-2 text-md">
+                {{ selectedRoutine.rtnContent }}
+              </p>
+            </div>
+
+            <div class="rtn-detail-col flex">
+              <p class="rtn-detail-col-1 font-bold">소요 시간</p>
+              <p class="rtn-detail-col-2">
+                {{ selectedRoutine.rtnDurationInMin }}분
+              </p>
+            </div>
+
+            <div class="rtn-detail-col flex">
+              <p class="rtn-detail-col-1 font-bold">소모 칼로리</p>
+              <p>{{ selectedRoutine.rtnCaloriesBurnt }} Kcal</p>
+            </div>
+          </div>
+          <div class="mr-15">
+            <img
+              class="rtn-detail-img object-cover bg-gray-200"
+              :src="srcUrlOf(selectedRoutine.rtnSeq)"
+              alt="이미지"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="">
         <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
-        <div v-if="selectedRoutine" class="flex flex-wrap">
+        <div
+          v-if="selectedRoutine"
+          class="rtn-excCard-wrap flex-wrap grid grid-cols-3 justify-items-center pt-10 pb-10 mx-7"
+        >
           <BoExcCard
-            v-for="exercise in selectedRoutine"
+            v-for="exercise in selectedRoutine.exercises"
             :exercise="exercise"
             :key="exercise.excSeq"
           />
         </div>
-        <div><v-btn> 루틴 시작하기 </v-btn></div>
+        <div class="flex justify-center mb-10">
+          <v-btn size="large" color="primary" @click="startRoutine">
+            루틴 시작하기
+          </v-btn>
+        </div>
       </div>
     </div>
-    <v-card>
-      <v-card-actions>
-        <v-btn color="primary" block @click="showModal = false"
-          >Close Dialog</v-btn
-        >
-      </v-card-actions>
-    </v-card>
   </v-dialog>
 
   <div
@@ -52,7 +102,7 @@ function srcUrlOf(rtnSeq) {
     <div
       v-for="data in routines"
       :key="data.rtnSeq"
-      @click="openModal(data.exercises)"
+      @click="openModal(data)"
       class="rtn-card rounded-lg overflow-hidden shadow-md my-3 bg-white"
     >
       <img
@@ -104,9 +154,28 @@ function srcUrlOf(rtnSeq) {
   width: 165px;
   height: 55px;
 }
+.rtn-excCard-wrap {
+  max-height: 660px;
+  overflow: scroll;
+}
 
 .card-container {
   width: 1000px;
-  height: 650px;
+}
+.rtn-detail-img {
+  max-width: 300px;
+  max-height: 200px;
+}
+.rtn-detail-col {
+  margin-top: 10px;
+}
+.rtn-detail-col-1 {
+  width: 100px;
+}
+.rtn-detail-col-2 {
+  width: 450px;
+}
+.rtn-detail-name {
+  width: 560px;
 }
 </style>

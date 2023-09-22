@@ -8,10 +8,11 @@ import {
 } from '@/module/@base/svg'
 import router, { pathNames } from '@/router'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
+import ApiClient from '@/services/api'
 
 const props = defineProps({
   page: String,
-  adminMenu: Boolean,
+  category: String,
 })
 
 const headerPages = [
@@ -46,18 +47,32 @@ const adminPages = [
   },
 ]
 
+const trainerPages = [
+  {
+    displayName: '예약현황',
+    destination: pathNames.boTrnRsvBoardPage,
+  },
+  {
+    displayName: '피드백 현황',
+    destination: pathNames.boTrnFbBoardPage,
+  },
+]
+
 const profileMenus = [
   { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
   { displayName: '비밀번호 변경', destination: '/' },
   { displayName: '로그인', destination: pathNames.loginPage },
-  { displayName: '로그아웃', destination: '/' },
 ]
-function getPages(isAdmin) {
-  return isAdmin ? adminPages : headerPages
+function getPages() {
+  if (props.category === 'admin') return adminPages
+  else if (props.category === 'trainer') return trainerPages
+  return headerPages
 }
-function getMenus(isAdmin) {
-  return isAdmin ? [] : profileMenus
+function getMenus() {
+  if (props.category === 'admin') return []
+  else if (props.category === 'trainer') return []
+  return profileMenus
 }
 
 let menuOpen = ref(false)
@@ -110,6 +125,10 @@ const lastMenuItemClasses = (idx, pg) => {
   if (idx < pg.menus.length - 1) return 'mb-3'
   else return ''
 }
+function logout() {
+  ApiClient.removeTokenOnLocalStorage()
+  location.href = '/login'
+}
 </script>
 
 <template>
@@ -118,14 +137,14 @@ const lastMenuItemClasses = (idx, pg) => {
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
         <div class="flex items-center">
-          <a
+          <button
             @click="router.push(pathNames.mainPage)"
             class="mr-10 cursor-pointer"
           >
             <HyunfitLogoGradientSvg :size="140" />
-          </a>
+          </button>
           <div
-            v-for="(pg, i) in getPages(adminMenu)"
+            v-for="(pg, i) in getPages()"
             :key="i"
             class="my-2 relative"
             @mouseenter="menuActivationHandler(i, pg.menus)"
@@ -222,8 +241,8 @@ const lastMenuItemClasses = (idx, pg) => {
                 <BaseDivider class="mx-5 my-2" />
                 <div class="py-1 px-2" role="none">
                   <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                  <a
-                    v-for="(menu, i) in getMenus(adminMenu)"
+                  <button
+                    v-for="(menu, i) in getMenus()"
                     :key="i"
                     @click="router.push(menu.destination)"
                     class="block px-4 py-2 text-base cursor-pointer transition-all"
@@ -232,7 +251,15 @@ const lastMenuItemClasses = (idx, pg) => {
                     tabindex="-1"
                   >
                     {{ menu.displayName }}
-                  </a>
+                  </button>
+                  <button
+                    @click="logout()"
+                    class="block px-4 py-2 text-base cursor-pointer transition-all text-gray-400 font-medium hover:text-gray-800 hover:font-bold"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    로그아웃
+                  </button>
                 </div>
               </div>
             </transition>

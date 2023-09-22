@@ -1,26 +1,31 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '@/module/@base/views'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
-import { Bar, Line } from 'vue-chartjs'
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
+import { Bar, Line, Doughnut } from 'vue-chartjs'
 import { Colors } from '/src/common'
-import { ref, onMounted, watch, onBeforeMount } from 'vue'
+import { ref, onMounted, watch, onBeforeMount, computed } from 'vue'
 import { CircleCheckSvg, CalorieSvg, TimerSvg } from '@/module/@base/svg'
 import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import ReportExcTimelineContainer from '@/module/report/components/ReportExcTimelineContainer.vue'
 import {
   expChartOptions,
   calorieChartOptions,
+  scoreChartOptions,
 } from '@/module/report/services/optionsProvider'
 import ReportUiHandler from '@/module/report/services/reportUiHandler'
 import ReportApi from '@/module/report/services/reportApi'
 import ReportMonthPicker from '@/module/report/components/ReportMonthPicker.vue'
 import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
+import BaseCircularLoader from '@/module/@base/components/BaseCircularLoader.vue'
+import ExcUtils from '@/module/bo/exc/services/excUtils'
 
 let today = new Date('December 26, 2010')
 let calorieChart = ref(null)
 let expChart = ref(null)
+let scoreChart = ref(null)
 let reportPageDatePickerWrapper = ref(null)
-
+let memberData = ref(null)
 let dates = ['2010-12-01', '2010-12-02', '2010-12-05', '2010-12-06']
 
 let expChartData = {
@@ -61,7 +66,7 @@ let calorieChartData = {
   ],
 }
 
-const reportData = ref(null)
+const responseData = ref(null)
 function createDateList() {
   const startDate = new Date('2023-08-01')
   const endDate = new Date('2023-08-31')
@@ -80,19 +85,47 @@ function createDateList() {
   return dateList
 }
 
-async function init() {
-  const now = new Date()
-  const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
-  let endDate = new Date(now.getFullYear(), now.getMonth(), 1)
-  endDate = new Date(endDate.setMonth(endDate.getMonth() + 1))
-  const params = TrnDetailDateUtils.toSearchDTO(startDate, endDate)
-  reportData.value = await ReportApi.getReport(1, params)
+async function init() {}
+
+const imageLoading = ref(false)
+const reportLoading = ref(false)
+
+const reportImageElem = ref(null)
+const reportImageUrl = ref(null)
+async function onLoadReport(date) {
+  imageLoading.value = true
+  reportLoading.value = true
+
+  if (!memberData.value) {
+    memberData.value = await ReportApi.getMember()
+  }
+
+  await loadReportData(memberData.value.mbrSeq, date)
+  await loadImage()
+}
+async function loadReportData(mbrSeq, date) {
+  responseData.value = await ReportApi.getReportFor(mbrSeq, date)
+  reportLoading.value = false
+}
+async function loadImage() {
+  if (reportImageUrl.value) URL.revokeObjectURL(reportImageUrl.value)
+
+  let body = {}
+  responseData.value.exerciseHistory.exerciseTargets.forEach(tg => {
+    body[ExcUtils.mapExcAreaType(tg.targetArea)] = tg.totalCalories
+  })
+
+  let image = await ReportApi.createExerciseTargetImage(body)
+  reportImageUrl.value = URL.createObjectURL(image)
+  imageLoading.value = false
 }
 
+async function onDatePickerClicked() {
+  ReportUiHandler.renderDatePicker(reportPageDatePickerWrapper, dates)
+}
 onMounted(() => {
   init()
   ReportUiHandler.renderDatePicker(reportPageDatePickerWrapper, dates)
-
   const watchCalorieChart = watch(
     () => calorieChart.value.chart,
     newValue => {
@@ -111,77 +144,204 @@ onMounted(() => {
       }
     }
   )
+  const watchScoreChart = watch(
+    () => scoreChart.value.chart,
+    newValue => {
+      if (newValue !== null) {
+        scoreChart.value.chart.resize(350, 140)
+        watchScoreChart()
+      }
+    }
+  )
 })
-const reportDate = ref('2023-09')
+function formatNumberWithCommas(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+const reportData = computed(() => {
+  if (responseData.value === null) return null
+  const data = responseData.value.exerciseHistory
+  return {
+    totalCalories: formatNumberWithCommas(data.totalCalories),
+    time: {
+      minutes: Math.floor(
+        (parseInt(data.totalExerciseTimeSeconds) % 3600) / 60
+      ),
+      hours: Math.floor(parseInt(data.totalExerciseTimeSeconds) / 3600),
+    },
+    counts: {
+      excellent: data.totalExcellentCount,
+      good: data.totalGoodCount,
+      bad: data.totalBadCount,
+    },
+    days: data.exercisedDays,
+    records: data.dailyRecords,
+  }
+})
+
+const scoreData = computed(() => {
+  let total =
+    reportData.value?.counts.excellent +
+    reportData.value?.counts.good +
+    reportData.value?.counts.bad
+  return {
+    labels: ['Excellent', 'Good', 'Ok'],
+    datasets: [
+      {
+        backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
+        data: [
+          reportData.value?.counts.excellent / total,
+          reportData.value?.counts.good / total,
+          reportData.value?.counts.bad / total,
+        ],
+      },
+    ],
+  }
+})
 </script>
 
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
-      reportDate: {{ reportDate }}
+      {{ reportData }}
+
+      <!--       reportDate: {{ reportData }}-->
       <div class="report-summary-container w-full py-10 mb-2">
-        <ReportMonthPicker v-model="reportDate" />
+        <ReportMonthPicker @search="date => onLoadReport(date)" />
         <div class="report-title">리포트</div>
         <div class="report-summary-wrapper flex justify-between">
           <div
-            class="report-summary-item h-24 rounded-lg shadow-lg flex flex-col items-center justify-center"
+            class="report-summary-item h-44 rounded-lg shadow-lg flex flex-col items-center justify-center"
           >
-            <div class="text-center font-bold">일별 기록</div>
-            <div class="flex items-center justify-evenly w-full mt-2">
-              <div class="flex flex-col items-center">
-                <div>
-                  <CircleCheckSvg :color="Colors.primary" :size="20" />
+            <div class="text-center font-bold text-lg mb-2">이번 달 기록</div>
+            <base-circular-loader
+              class="h-16"
+              :loading="reportLoading"
+              :size="30"
+            >
+              <div
+                class="flex items-center h-16 justify-space-evenly w-full mt-2"
+              >
+                <div class="flex flex-col items-center w-28">
+                  <div>
+                    <CircleCheckSvg :color="Colors.primary" :size="24" />
+                  </div>
+                  <div class="flex items-baseline font-semibold">
+                    <div class="font-black text-lg">
+                      {{ reportData?.days.length }}
+                    </div>
+                    <div class="font-semibold text-neutral-700">일 출석</div>
+                  </div>
                 </div>
-                <div class="font-black text-lg mt-1">1/31</div>
-              </div>
-              <div class="flex flex-col items-center">
-                <div>
-                  <CalorieSvg :color="Colors.primary" :size="20" />
+                <div class="flex flex-col items-center w-28">
+                  <div>
+                    <CalorieSvg :color="Colors.primary" :size="24" />
+                  </div>
+                  <div class="flex items-baseline">
+                    <div class="font-black text-lg">
+                      {{ reportData?.totalCalories }}
+                    </div>
+                    <div class="font-semibold text-sm ml-1 text-neutral-700">
+                      kcal
+                    </div>
+                  </div>
                 </div>
-                <div class="font-black text-lg mt-1">5,125</div>
-              </div>
-              <div class="flex flex-col items-center">
-                <div>
-                  <TimerSvg :color="Colors.primary" :size="20" />
+                <div class="flex flex-col items-center w-28">
+                  <div>
+                    <TimerSvg :color="Colors.primary" :size="24" />
+                  </div>
+                  <div class="flex">
+                    <div
+                      v-if="reportData?.time.hours"
+                      class="flex items-baseline"
+                    >
+                      <div class="font-black text-lg">
+                        {{ reportData?.time.hours }}
+                      </div>
+                      <div class="font-semibold mr-1 text-neutral-700">
+                        시간
+                      </div>
+                    </div>
+                    <div class="flex items-baseline">
+                      <div class="font-black text-lg">
+                        {{ reportData?.time.minutes }}
+                      </div>
+                      <div class="font-semibold text-neutral-700">분</div>
+                    </div>
+                  </div>
                 </div>
-                <div class="font-black text-lg mt-1">1:31</div>
               </div>
-            </div>
+            </base-circular-loader>
           </div>
           <div
-            class="report-summary-item h-24 rounded-lg shadow-lg flex flex-col items-center justify-center"
+            class="report-summary-item h-44 rounded-lg shadow-lg flex flex-col items-center justify-center"
           >
             <div class="text-center flex items-center justify-center">
-              <div class="font-bold mr-2">운동 점수/랭킹</div>
-              <RewardSvg :size="24" />
+              <div class="font-bold text-lg mr-2">휙득한 Hfit-Point</div>
             </div>
-            <div class="flex items-center justify-center w-full mt-2">
+            <base-circular-loader
+              class="h-16"
+              :loading="reportLoading"
+              :size="30"
+            >
               <div
-                class="font-black text-lg mt-1"
-                :style="{ color: Colors.primary }"
+                class="flex items-center h-16 justify-space-evenly w-full mt-2"
               >
-                320점 / 170등
+                <div
+                  class="flex items-baseline justify-center w-full mt-2"
+                  :style="{ color: Colors.primary }"
+                >
+                  <div class="font-black text-2xl">
+                    {{ reportData?.totalCalories }}
+                  </div>
+                  <div class="ml-1 font-semibold">point</div>
+                </div>
               </div>
-            </div>
+            </base-circular-loader>
           </div>
           <div
-            class="report-summary-item h-24 rounded-lg shadow-lg flex flex-col items-center justify-center"
+            class="report-summary-item h-44 rounded-lg shadow-lg flex flex-col items-center justify-center"
           >
-            <div class="text-center font-bold">운동 성향</div>
-            <div class="flex items-center justify-evenly w-full mt-2">
-              하체충
-            </div>
+            <div class="text-center font-bold"></div>
+            <base-circular-loader
+              class="h-16"
+              :loading="reportLoading"
+              :size="30"
+            >
+              <Doughnut
+                ref="scoreChart"
+                :data="scoreData"
+                :options="scoreChartOptions"
+              />
+              <!--              <div class="flex items-center justify-space-evenly w-full mt-2">-->
+              <!--                <div-->
+              <!--                  class="flex justify-center w-full"-->
+              <!--                  :style="{ color: Colors.primary }"-->
+              <!--                >-->
+              <!--                  <div class="font-black text-2xl mt-2">ABCD</div>-->
+              <!--                </div>-->
+              <!--              </div>-->
+            </base-circular-loader>
           </div>
         </div>
       </div>
       <div class="ReportAnatomyContainer w-full py-10 mb-2">
         <div class="report-title">분석</div>
-        <div class="flex items-center justify-center rounded-lg shadow-lg py-6">
-          <img
-            class="h-[400px]"
-            src="/src/assets/images/report-human-model.png"
-            alt=""
-          />
+        <div
+          class="flex items-center justify-center rounded-lg shadow-lg py-6 h-[400px]"
+        >
+          <base-circular-loader
+            :loading="imageLoading"
+            :size="30"
+            class="h-full"
+          >
+            <img
+              ref="reportImageElem"
+              :src="reportImageUrl"
+              class="h-[350px]"
+              alt=""
+            />
+          </base-circular-loader>
         </div>
       </div>
       <div class="ReportChartContainer w-full py-10 mb-2">
@@ -200,7 +360,7 @@ const reportDate = ref('2023-09')
                   max-width="100%"
                   color="#D23361"
                   :elevation="0"
-                  @click="renderDatePicker()"
+                  @click="onDatePickerClicked()"
                 />
               </v-locale-provider>
             </div>

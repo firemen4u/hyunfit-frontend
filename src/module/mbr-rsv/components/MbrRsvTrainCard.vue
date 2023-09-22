@@ -26,7 +26,9 @@
               }}
             </p>
           </div>
-          <p class="text-gray-400 text-xl font-bold">></p>
+          <button class="text-gray-400 text-xl font-bold" @click="enterPtRoom">
+            >>>
+          </button>
         </div>
       </div>
     </div>
@@ -58,7 +60,11 @@ const props = defineProps({
   responseData: Object,
 })
 let daysDiff = ref('')
-
+function enterPtRoom() {
+  localStorage.setItem('ptSeq', props.responseData.ptSeq)
+  localStorage.setItem('userRole', 0)
+  window.open('http://localhost:5173/PtRoom', '_blank')
+}
 function calcDay() {
   const today = new Date()
   const timeDiff = today - props.responseData.ptReservationDate
