@@ -12,27 +12,58 @@
     </template>
   </v-stepper> -->
 
-    <v-stepper :items="['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']">
+    <v-stepper
+      :items="['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']"
+      class="mt-12"
+    >
       <template v-slot:item.1>
-        <v-card title=" " flat class="card-shape"><Step1></Step1></v-card>
+        <v-card title=" " flat class="card-shape"
+          ><Step1
+            :memberInfo="memberInfo"
+            @updateMemberInfo="updateMemberInfo"
+          ></Step1
+        ></v-card>
       </template>
 
       <template v-slot:item.2>
-        <v-card title=" " flat class="card-shape"><Step2></Step2></v-card>
+        <v-card title=" " flat class="card-shape"
+          ><Step2
+            :memberInfo="memberInfo"
+            @updateMemberInfo="updateMemberInfo"
+          ></Step2
+        ></v-card>
       </template>
 
       <template v-slot:item.3>
-        <v-card title=" " flat class="card-shape"><Step3></Step3></v-card>
+        <v-card title=" " flat class="card-shape"
+          ><Step3
+            :memberInfo="memberInfo"
+            @updateMemberInfo="updateMemberInfo"
+          ></Step3
+        ></v-card>
       </template>
 
       <template v-slot:item.4>
-        <v-card title=" " flat class="card-shape"><Step4></Step4></v-card>
+        <v-card title=" " flat class="card-shape"
+          ><Step4
+            :memberInfo="memberInfo"
+            @updateMemberInfo="updateMemberInfo"
+          ></Step4
+        ></v-card>
       </template>
 
       <template v-slot:item.5>
-        <v-card title=" " flat class="card-shape"><Step5></Step5></v-card>
+        <v-card title=" " flat class="card-shape"
+          ><Step5
+            :memberInfo="memberInfo"
+            @updateMemberInfo="updateMemberInfo"
+          ></Step5
+        ></v-card>
       </template>
     </v-stepper>
+    <button class="mbr-update-button mt-8 mb-8" @click="updateRequest()">
+      설정완료
+    </button>
   </BaseContainer>
 </template>
 
@@ -44,7 +75,8 @@ import Step3 from '@/module/survey/components/StepThree.vue'
 import Step4 from '@/module/survey/components/StepFour.vue'
 import Step5 from '@/module/survey/components/StepFive.vue'
 import BaseContainer from '@/module/@base/views/BaseContainer.vue'
-
+import ApiClient from '/src/services/api.js'
+import router, { pathNames } from '@/router'
 export default {
   components: {
     BaseContainer,
@@ -58,18 +90,47 @@ export default {
   data() {
     return {
       items: [Step1, Step2, Step3, Step4, Step5],
+      memberInfo: {
+        mbrGender: null,
+        mbrExerciseGoal: null,
+        mbrBirthdate: null,
+        mbrHeight: null,
+        mbrWeight: null,
+        mbrExerciseExperienceLevel: null,
+        mbrKneeHealthConsidered: null,
+        mbrNoiseConsidered: null,
+        mbrLongSitter: null,
+        mbrNeckShoulderFocused: null,
+        mbrBackDiskConsidered: null,
+        mbrExerciseTarget: null,
+        checkAgree: null,
+      },
     }
+  },
+  methods: {
+    updateMemberInfo(memberInfoFromChild) {
+      this.memberInfo = memberInfoFromChild
+    },
+    async updateRequest() {
+      if (this.memberInfo.checkAgree) {
+        const responseUser = await ApiClient.get('/members/me')
+        ApiClient.put('/members/' + responseUser.mbrId, this.memberInfo)
+        router.push(pathNames.mainPage)
+      } else {
+        alert('개인정보수집에 동의해주세요')
+      }
+    },
   },
 }
 </script>
 
 <style scoped>
-.card-shape {
-  width: 1000px;
-  height: 600px;
-}
-
-#inspire .v-stepper__step#'Step 1':hover .v-stepper__step__step {
-  background-color: green;
+.mbr-update-button {
+  width: 125px;
+  height: 35px;
+  border-radius: 5px;
+  background: #d23360d2;
+  color: white;
+  font-weight: 600;
 }
 </style>

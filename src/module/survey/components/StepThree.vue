@@ -28,6 +28,9 @@
 
 <script>
 export default {
+  props: {
+    memberInfo: Object,
+  },
   data() {
     return {
       surveyQuestions: [
@@ -36,15 +39,17 @@ export default {
         '홈트레이닝 중급자에요!',
         '홈트레이닝 중급-고급자에요!',
         '홈트레이닝 고급자에요!',
-        '홈트레이닝 정도는 쉬워요!',
       ],
       selectedOption: null, // 선택한 옵션 저장
+      currentMember: this.memberInfo,
     }
   },
   methods: {
     logSelectedOption() {
       // 선택한 옵션을 콘솔에 출력
       console.log(this.selectedOption)
+      this.currentMember.mbrExerciseExperienceLevel = this.selectedOption + 1
+      this.$emit('updateMemberInfo', this.currentMember)
     },
   },
 }
