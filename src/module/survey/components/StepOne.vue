@@ -26,7 +26,7 @@
           />
         </div>
         <div class="option-text">
-          <div class="title">근육을 키우고 싶어요</div>
+          <div class="title">체지방을 줄이고 싶어요</div>
           <div class="subtitle">부제목 또는 설명</div>
         </div>
       </button>
@@ -57,9 +57,13 @@
 
 <script>
 export default {
+  props: {
+    memberInfo: Object,
+  },
   data() {
     return {
       selectedOption: null, // 선택된 옵션을 저장할 변수
+      currentInfo: this.memberInfo,
     }
   },
   methods: {
@@ -68,13 +72,17 @@ export default {
       this.selectedOption = option
       // 선택한 버튼의 정보를 콘솔에 출력
       const selectedButton = this.getSelectedButton(option)
-      console.log(selectedButton)
+      if (option === 1) {
+        this.updateMemberInfo(1)
+      } else {
+        this.updateMemberInfo(2)
+      }
     },
     getSelectedButton(option) {
       // 선택한 버튼의 정보를 가져오는 함수
       if (option === 1) {
         return {
-          title: '근육을 키우고 싶어요',
+          title: '체지방을 줄이고 싶어요',
         }
       } else if (option === 2) {
         return {
@@ -83,6 +91,10 @@ export default {
       } else {
         return {} // 선택한 옵션이 없는 경우 빈 객체 반환
       }
+    },
+    updateMemberInfo(input) {
+      this.currentInfo.mbrExerciseGoal = input
+      this.$emit('updateMemberInfo', this.currentInfo)
     },
   },
 }

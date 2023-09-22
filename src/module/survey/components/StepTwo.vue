@@ -13,9 +13,9 @@
         class="mx-atuo mb-2"
         label="생년월일"
         variant="outlined"
-        placeholder="YYYYMMDD"
+        placeholder="YYYY-MM-DD"
         clearable
-        hint="YYYYMMDD 형식으로 써주세요"
+        hint="YYYY-MM-DD 형식으로 써주세요"
         v-model="birthdate"
       ></v-text-field>
       <!-- 성별 입력 (라디오 버튼 - TE) -->
@@ -27,26 +27,25 @@
           name="tabs"
           class="appearance-none"
           v-model="gender"
-          value="남자"
+          value="0"
         />
         <label
           for="option0"
           class="cursor-pointer w-1/3 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md py-2 border border-gray-500"
-          >남자</label
+          >선택 안함</label
         >
-
         <input
           type="radio"
           id="option1"
           name="tabs"
           class="appearance-none"
           v-model="gender"
-          value="여자"
+          value="1"
         />
         <label
           for="option1"
           class="cursor-pointer w-1/3 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md py-2 border border-gray-500"
-          >여자</label
+          >남자</label
         >
 
         <input
@@ -55,16 +54,16 @@
           name="tabs"
           class="appearance-none"
           v-model="gender"
-          value="선택 안함"
+          value="2"
         />
         <label
           for="option2"
           class="cursor-pointer w-1/3 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md py-2 border border-gray-500"
-          >선택 안함</label
+          >여자</label
         >
 
         <div
-          class="w-1/3 flex-[2_2_0%] items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md p-0 h-full bg-red-400 absolute transform transition-transform tabAnim"
+          class="w-1/3 flex-[2_2_0%] items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-md p-0 h-full bg-inherit absolute transform transition-transform tabAnim"
         ></div>
       </div>
 
@@ -75,7 +74,7 @@
         variant="outlined"
         suffix="cm"
         clearable
-        hint="소수점 첫번째 자리까지 입력할수있습니다."
+        hint="소수점 첫번째 자리까지 입력할 수 있습니다."
         v-model="height"
       ></v-text-field>
 
@@ -86,16 +85,16 @@
         variant="outlined"
         suffix="kg"
         clearable
-        hint="소수점 첫번째 자리까지 입력할수있습니다."
+        hint="소수점 첫번째 자리까지 입력할 수 있습니다."
         v-model="weight"
       ></v-text-field>
 
       <!-- 정보 수집 동의 (체크박스) -->
       <div>
         <v-checkbox
-          label="키, 몸무게 입력시 민갑 정보수집에 동의합니다"
+          label="키, 몸무게 입력시 민감 정보수집에 동의합니다"
           v-model="consent"
-          @change="logData"
+          @change="changeData"
         ></v-checkbox>
       </div>
     </div>
@@ -104,19 +103,34 @@
 
 <script setup>
 import { ref } from 'vue'
+</script>
 
+<script>
 const birthdate = ref('') // 생년월일
 const gender = ref('') // 성별
 const height = ref('') // 키
 const weight = ref('') // 몸무게
 const consent = ref('') // 정보 수집 동의 여부
-
-function logData() {
-  console.log('생년월일:', birthdate.value)
-  console.log('성별:', gender.value)
-  console.log('키:', height.value)
-  console.log('몸무게:', weight.value)
-  console.log('정보 수집 동의 여부:', consent.value)
+export default {
+  props: {
+    memberInfo: Object,
+  },
+  data() {
+    return {
+      currentMember: this.memberInfo,
+    }
+  },
+  methods: {
+    changeData() {
+      this.currentMember.mbrGender = parseInt(gender.value, 10)
+      this.currentMember.mbrBirthdate = birthdate.value
+      this.currentMember.mbrHeight = parseInt(height.value, 10)
+      this.currentMember.mbrWeight = parseInt(weight.value, 10)
+      this.currentMember.checkAgree = consent.value
+      console.log('-----', this.currentMember)
+      this.$emit('updateMemberInfo', this.currentMember)
+    },
+  },
 }
 </script>
 
@@ -158,5 +172,8 @@ function logData() {
 
 #option2:checked ~ div {
   --tw-translate-x: 200%;
+}
+.bg-inherit {
+  background: #d23360d2;
 }
 </style>
