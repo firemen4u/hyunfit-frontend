@@ -218,7 +218,6 @@ import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
 import {
   FILE_SERVER_TOKEN,
   FILE_SERVER_HYUNFIT_URL,
