@@ -77,6 +77,7 @@
 <script>
 import axios from 'axios'
 import ApiClient from '/src/services/api.js'
+import { BACKEND_API_BASE_URL } from '@/config'
 import router, { pathNames } from '@/router'
 
 export default {
