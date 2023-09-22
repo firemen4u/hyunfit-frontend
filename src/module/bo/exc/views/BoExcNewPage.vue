@@ -224,6 +224,9 @@ import {
   BACKEND_API_BASE_URL,
 } from '/src/config.js'
 import ApiClient from '/src/services/api'
+import axios from 'axios'
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
+
 
 const target_items = ref([
   '광배근',

@@ -201,6 +201,7 @@ import {
 } from '/src/config.js'
 import ApiClient from '/src/services/api'
 
+
 // 루틴 타켓부위
 const rtn_target_radio = [
   { label: '상체', value: '1' },
@@ -330,7 +331,6 @@ const sendDataToAPI = async () => {
     // 파일 업로드 설정
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
     }
