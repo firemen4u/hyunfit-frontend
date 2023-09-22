@@ -1,10 +1,5 @@
 <template>
   <BaseContainer category="admin">
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
     <BaseBodyWrapper>
       <div class="pt-10">
         <div class="flex justify-between">
@@ -218,26 +213,13 @@
   </BaseContainer>
 </template>
 <script setup>
-import {
-  BaseBodyWrapper,
-  BaseContainer,
-  BaseSideBar,
-} from '/src/module/@base/views'
+import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { FILE_SERVER_TOKEN, FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
-
-const sidebarHeader = '관리페이지'
-const mainCategory = 'AI 트레이닝'
-const subcategories = [
-  { id: 1, title: '운동 관리', link: '/bo-excBoard' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnBoard' },
-  { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/bo-rtnNew' },
-]
 
 const target_items = ref([
   '광배근',
