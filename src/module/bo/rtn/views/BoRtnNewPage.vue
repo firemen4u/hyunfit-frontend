@@ -194,8 +194,12 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
-import { FILE_SERVER_TOKEN } from '/src/config.js'
-import axios from 'axios'
+import {
+  FILE_SERVER_TOKEN,
+  FILE_SERVER_HYUNFIT_URL,
+  BACKEND_API_BASE_URL,
+} from '/src/config.js'
+import ApiClient from '/src/services/api'
 
 // 루틴 타켓부위
 const rtn_target_radio = [
@@ -315,8 +319,8 @@ const sendDataToAPI = async () => {
     }
 
     // 첫 번째 API 호출
-    const firstApiResponse = await axios.post(
-      'http://localhost:8080/routines',
+    const firstApiResponse = await ApiClient.post(
+      `${BACKEND_API_BASE_URL}/routines`,
       payload
     )
     const rtnSeq = firstApiResponse.data.rtnSeq
@@ -326,7 +330,7 @@ const sendDataToAPI = async () => {
     // 파일 업로드 설정
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN, // 이 변수를 미리 설정해야 합니다.
+        token: FILE_SERVER_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
     }
@@ -342,14 +346,14 @@ const sendDataToAPI = async () => {
     console.log(fileName)
 
     // 두 번째 API 호출: 파일 업로드
-    const secondApiResponse = await axios.post(
-      'https://fs.hyunfit.life/api/hyunfit/file',
+    const secondApiResponse = await ApiClient.post(
+      FILE_SERVER_HYUNFIT_URL,
       formData,
       config
     )
 
     console.log('Data sent to API:', JSON.stringify(payload, null, 2)) // 콘솔에 로깅
-    console.log(`File upload success: ${secondApiResponse.data}`)
+    console.log(`File upload success: ${secondApiResponse.data.value}`)
     alert('등록 성공!')
     window.location.reload() // 페이지 새로고침
   } catch (error) {

@@ -219,7 +219,12 @@ import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { FILE_SERVER_TOKEN, FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
+import {
+  FILE_SERVER_TOKEN,
+  FILE_SERVER_HYUNFIT_URL,
+  BACKEND_API_BASE_URL,
+} from '/src/config.js'
+import ApiClient from '/src/services/api'
 
 const target_items = ref([
   '광배근',
@@ -309,8 +314,8 @@ const submit = async () => {
   }
   try {
     // exercise 등록하는 api 호출
-    const firstApiResponse = await axios.post(
-      'http://localhost:8080/exercises',
+    const firstApiResponse = await ApiClient.post(
+      `${BACKEND_API_BASE_URL}/exercises`,
       values
     )
     console.log(firstApiResponse.data)
@@ -346,7 +351,7 @@ const submit = async () => {
         }
       }
       try {
-        const secondApiResponse = await axios.post(
+        const secondApiResponse = await ApiClient.post(
           `${FILE_SERVER_HYUNFIT_URL}/${type}`,
           formData,
           config
