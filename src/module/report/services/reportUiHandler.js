@@ -5,7 +5,6 @@ function parseDateString(dateString) {
 }
 
 function renderDatePicker(wrapper, exercisedDays) {
-  if (exercisedDays.length === 0) return
   const dayElements = wrapper.value.querySelectorAll(
     '.v-date-picker-month__days div'
   )
@@ -24,6 +23,7 @@ function renderDatePicker(wrapper, exercisedDays) {
       btn.classList.add('bg-transparent')
       btn.classList.remove('bg-exercised')
       btn.classList.remove('v-btn--active')
+      btn.classList.remove('v-btn--variant-outlined')
     }
   })
 }

@@ -39,7 +39,11 @@ function instanceResolver(type) {
   return backendInstance
 }
 
-async function _get(url, config, instance) {
+async function get(url, config = {}, type = null) {
+  const instance = instanceResolver(type)
+  return await _get(url, config, instance)
+}
+async function _get(url, config = {}, instance) {
   appendAuthorization(config)
   return await instance
     .get(url, config)
@@ -49,11 +53,6 @@ async function _get(url, config, instance) {
     .catch(error => {
       throw error
     })
-}
-
-async function get(url, config = {}, type = null) {
-  const instance = instanceResolver(type)
-  return await _get(url, config, instance)
 }
 
 // Function to handle POST requests
@@ -100,12 +99,17 @@ function remove(url, config = {}, type) {
 
 function setTokenOnLocalStorage(token, userRole) {
   localStorage.setItem('Authorization', token)
-  localStorage.setItem('userRole', userRole)
+  localStorage.setItem('userRoleName', userRole)
 }
 
 function removeTokenOnLocalStorage() {
   localStorage.removeItem('Authorization')
-  localStorage.removeItem('userRole')
+  localStorage.removeItem('userRoleName')
+}
+
+async function me() {
+  let role = localStorage.getItem('userRoleName')
+  return get(`/${role}s/me`)
 }
 
 const ApiClient = {
@@ -116,6 +120,7 @@ const ApiClient = {
   setTokenOnLocalStorage: (token, userRole) =>
     setTokenOnLocalStorage(token, userRole),
   removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),
+  me: () => me(),
 }
 
 export default ApiClient

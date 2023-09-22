@@ -3,9 +3,8 @@ import { BaseBodyWrapper, BaseContainer } from '@/module/@base/views'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { Bar, Radar, Doughnut } from 'vue-chartjs'
 import { Colors } from '/src/common'
-import { ref, onMounted, watch, onBeforeMount, computed, reactive } from 'vue'
+import { ref, onMounted, watch, computed, reactive } from 'vue'
 import { CircleCheckSvg, CalorieSvg, TimerSvg } from '@/module/@base/svg'
-import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import ReportExcTimelineContainer from '@/module/report/components/ReportExcTimelineContainer.vue'
 import {
   calorieChartOptions,
@@ -15,11 +14,9 @@ import {
 import ReportUiHandler from '@/module/report/services/reportUiHandler'
 import ReportApi from '@/module/report/services/reportApi'
 import ReportMonthPicker from '@/module/report/components/ReportMonthPicker.vue'
-import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
 import BaseCircularLoader from '@/module/@base/components/BaseCircularLoader.vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
 import router, { pathNames } from '@/router'
-import SadMagnifierSvg from '@/module/@base/svg/SadMagnifierSvg.vue'
 
 const calorieChartRef = ref(null)
 const targetChartRef = ref(null)
@@ -27,7 +24,9 @@ const scoreChartRef = ref(null)
 
 const reportPageDatePickerWrapper = ref(null)
 const memberData = ref(null)
-const selectedDate = ref(new Date())
+const selectedDate = ref(
+  new Date(new Date().getFullYear(), new Date().getMonth())
+)
 
 const imageLoading = ref(false)
 const reportLoading = ref(false)
@@ -201,8 +200,8 @@ function renderCharts() {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(255,99,132,1)',
-        data: Object.values(targetSummaryData).map(
-          v => Math.round((v / totalCalories) * 100) / 10
+        data: Object.values(targetSummaryData).map(v =>
+          ((v / totalCalories) * 10).toFixed(1)
         ),
       },
     ],
@@ -267,6 +266,7 @@ const reportData = computed(() => {
       bad: data.totalBadCount,
     },
     records: data.dailyRecords,
+    level: 65.2,
   }
 })
 </script>
@@ -350,8 +350,9 @@ const reportData = computed(() => {
               class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center"
             >
               <div class="text-center flex items-center justify-center mt-5">
-                <div class="font-bold text-lg mr-2">휙득한 Hfit-Point</div>
+                <div class="font-bold text-lg mr-2">HyunFit 스코어</div>
               </div>
+
               <base-circular-loader
                 class="h-16"
                 :loading="reportLoading"
@@ -367,7 +368,7 @@ const reportData = computed(() => {
                     <div class="font-black text-2xl">
                       {{ reportData?.totalCalories }}
                     </div>
-                    <div class="ml-1 font-semibold">point</div>
+                    <div class="ml-1 font-semibold">P</div>
                   </div>
                 </div>
               </base-circular-loader>
@@ -433,7 +434,6 @@ const reportData = computed(() => {
             </div>
           </div>
         </div>
-
         <div class="ReportChartContainer w-full mt-15 mb-2">
           <div class="flex justify-between">
             <div class="report-chart-item">

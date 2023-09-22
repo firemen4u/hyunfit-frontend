@@ -5,13 +5,17 @@ const props = defineProps({
   reviewCount: Number,
   iconSize: Number,
   fontSize: String,
+  countSize: {
+    type: Number,
+    default: 12,
+  },
 })
 
 function fontSizeOf(size) {
   return 'text-' + size
 }
-function roundTo1Decimal(number) {
-  return Math.round(number * 10) / 10
+function getCountSize() {
+  return { 'font-size': `${props.countSize}px` }
 }
 </script>
 
@@ -20,9 +24,15 @@ function roundTo1Decimal(number) {
     <FullStarSvg :size="iconSize" class="mr-0.5" />
     <div class="flex items-baseline mt-0.5">
       <span class="block font-extrabold ml-0.5" :class="fontSizeOf(fontSize)">
-        {{ roundTo1Decimal(rating) }}
+        {{ rating?.toFixed(1) }}
       </span>
-      <div class="text-gray-400 font-thin text-xxs">({{ reviewCount }})</div>
+      <div
+        v-if="reviewCount"
+        class="ml-0.5 text-gray-500"
+        :style="getCountSize()"
+      >
+        ({{ reviewCount }})
+      </div>
     </div>
   </div>
 </template>
