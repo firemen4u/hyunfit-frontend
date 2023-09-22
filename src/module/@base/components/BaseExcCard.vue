@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="exc-card flex flex-col shadow-md rounded-lg hover:translate-y-[-10px] hover:bg-gray-100"
-  >
+  <div class="exc-card flex flex-col shadow-md rounded-lg bg-white">
     <div class="flex justify-center">
       <img
         class="exc-img"

@@ -208,7 +208,7 @@ const router = createRouter({
       component: BoTrnRsvBoardPage,
     },
     {
-      path: '/pt-fb-manage',
+      path: '/boTrnFbBoard',
       name: pathNames.boTrnFbBoardPage.name,
       component: BoTrnFbBoardPage,
     },

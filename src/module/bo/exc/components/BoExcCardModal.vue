@@ -101,6 +101,28 @@ const formatDate = dateString => {
   }
   return new Date(dateString).toLocaleDateString('ko-KR', options)
 }
+const excTypeMapping = {
+  1: '상체',
+  2: '하체',
+  3: '전신',
+  4: '유산소',
+}
+
+const mapExcType = type => {
+  return excTypeMapping[type] || '알 수 없음'
+}
+
+const excDifficultyMapping = {
+  1: '초급',
+  2: '초중급',
+  3: '중급',
+  4: '중상급',
+  5: '상급',
+}
+
+const mapDifficultyType = type => {
+  return excDifficultyMapping[type] || '알 수 없음'
+}
 </script>
 
 <style scoped>
