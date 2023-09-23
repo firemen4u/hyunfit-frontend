@@ -10,25 +10,12 @@
 </template>
 
 <script setup>
-import { ref, defineProps, watch, defineEmits } from 'vue'
+import { ref, watch } from 'vue'
 
 const emits = defineEmits(['update:modelValue']) // 이 부분을 추가
 const { totalPages, modelValue } = defineProps(['totalPages', 'modelValue'])
 const currentPage = ref(modelValue)
 
-// watch(modelValue, newVal => {
-//   console.log('modelValue changed:', newVal) // 로그 추가
-//   currentPage.value = newVal
-// })
-
-// watch(
-//   modelValue,
-//   newVal => {
-//     console.log('modelValue changed:', newVal) // 로그 추가
-//     currentPage.value = newVal
-//   },
-//   { immediate: true }
-// )
 
 watch(currentPage, newVal => {
   console.log('currentPage changed:', newVal) // 로그 추가

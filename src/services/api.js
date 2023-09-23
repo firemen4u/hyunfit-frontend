@@ -1,15 +1,51 @@
 import axios from 'axios'
-import { BACKEND_API_BASE_URL } from '/src/config'
+import {
+  AI_SERVER_BASE_URL,
+  BACKEND_API_BASE_URL,
+  FILE_SERVER_BASE_URL,
+} from '/src/config'
 
-let axiosInstance = axios.create({
+const backendInstance = axios.create({
   baseURL: BACKEND_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 })
+const aiInstance = axios.create({
+  baseURL: AI_SERVER_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+const fsInstance = axios.create({
+  baseURL: FILE_SERVER_BASE_URL,
+})
 
-async function get(url, config = {}) {
-  return await axiosInstance
+function appendAuthorization(config) {
+  let authorization = localStorage.getItem('Authorization')
+  if (config.headers === undefined) {
+    config['headers'] = {}
+  }
+  config.headers['Authorization'] = authorization
+}
+
+function instanceResolver(type) {
+  if (type === 'fs') {
+    return fsInstance
+  }
+  if (type === 'ai') {
+    return aiInstance
+  }
+  return backendInstance
+}
+
+async function get(url, config = {}, type = null) {
+  const instance = instanceResolver(type)
+  return await _get(url, config, instance)
+}
+async function _get(url, config = {}, instance) {
+  appendAuthorization(config)
+  return await instance
     .get(url, config)
     .then(response => {
       return response.data
@@ -20,55 +56,71 @@ async function get(url, config = {}) {
 }
 
 // Function to handle POST requests
-async function post(url, data) {
-  return await axiosInstance
-    .post(url, data)
+async function _post(url, data, config, instance) {
+  appendAuthorization(config)
+  return await instance
+    .post(url, data, config)
     .then(response => response.data)
     .catch(error => {
       throw error
     })
 }
+async function post(url, data, config = {}, type) {
+  const instance = instanceResolver(type)
+  return await _post(url, data, config, instance)
+}
 
-// Function to handle PUT requests
-function put(url, data) {
-  return axiosInstance
-    .put(url, data)
+async function _put(url, data, config, instance) {
+  appendAuthorization(config)
+  return await instance
+    .put(url, data, config)
     .then(response => response.data)
     .catch(error => {
       throw error
     })
+}
+// Function to handle PUT requests
+async function put(url, data, config = {}, type) {
+  const instance = instanceResolver(type)
+  return await _put(url, data, config, instance)
 }
 
 // Function to handle DELETE requests
-function remove(url) {
-  return axiosInstance
-    .delete(url)
+function remove(url, config = {}, type) {
+  appendAuthorization(config)
+  const instance = instanceResolver(type)
+  return instance
+    .delete(url, config)
     .then(response => response.data)
     .catch(error => {
       throw error
     })
 }
 
-function setToken(token) {
-  console.log(token)
-  if (token.startsWith('Bearer ')) {
-    token = token.replace('Bearer ', '')
-  }
-  axiosInstance = axios.create({
-    baseURL: BACKEND_API_BASE_URL,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  })
+function setTokenOnLocalStorage(token, userRole) {
+  localStorage.setItem('Authorization', token)
+  localStorage.setItem('userRoleName', userRole)
+}
+
+function removeTokenOnLocalStorage() {
+  localStorage.removeItem('Authorization')
+  localStorage.removeItem('userRoleName')
+}
+
+async function me() {
+  let role = localStorage.getItem('userRoleName')
+  return get(`/${role}s/me`)
 }
 
 const ApiClient = {
-  get: async (url, config) => await get(url, config),
-  post: async (url, data) => await post(url, data),
-  put: (url, data) => put(url, data),
+  get: async (url, config, type) => await get(url, config, type),
+  post: async (url, data, config, type) => await post(url, data, config, type),
+  put: (url, data, config, type) => put(url, data, config, type),
   delete: url => remove(url),
-  setToken: token => setToken(token),
+  setTokenOnLocalStorage: (token, userRole) =>
+    setTokenOnLocalStorage(token, userRole),
+  removeTokenOnLocalStorage: () => removeTokenOnLocalStorage(),
+  me: () => me(),
 }
 
 export default ApiClient

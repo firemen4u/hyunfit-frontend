@@ -1,4 +1,4 @@
-<!-- ExcInfoModal.vue -->
+<!-- BoExcCardModal.vue -->
 <template>
   <div v-if="show" class="modal" @click="closeModal">
     <div class="modal-content relative" @click.stop>
@@ -53,7 +53,7 @@
         <div class="modal-sub-wrap">
           <p>생성 일자</p>
           <p>:</p>
-          <p>{{ formatDate(exercise.excCreatedDate) }}</p>
+          <p>{{ dateUtil.timestampToFullDate(exercise.excCreatedDate) }}</p>
         </div>
         <div class="modal-sub-wrap">
           <p>타겟 부위</p>
@@ -65,7 +65,7 @@
               class="flex flex-col"
             >
               <p>
-                {{ mapExcAreaType(target.exctgArea) }} 비중 -
+                {{ ExctgUtils.mapExcAreaType(target.exctgArea) }} 비중 -
                 {{ target.exctgWeight * 100 }}
               </p>
             </div>
@@ -73,22 +73,41 @@
         </div>
       </div>
       <div class="modal-sub-wrap justify-end">
-        <p></p>
-        <button class="mr-4 rounded-lg">수정</button>
-        <button class="mr-0 rounded-lg">삭제</button>
+        <div class="deleteBtn">
+          <v-btn
+            v-if="showDeleteBtn"
+            @click="deleteExercise"
+            color="primary"
+            class="mr-0 rounded-lg"
+          >
+            삭제
+          </v-btn>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(['show', 'exercise'])
+import dateUtil from '/src/utils/date.js'
+import ExctgUtils from '@/module/bo/exc/services/excUtils'
+const props = defineProps(['show', 'exercise', 'showDeleteBtn'])
 const emit = defineEmits([])
 
 const closeModal = () => {
   emit('update:show', false)
 }
 
+const formatDate = dateString => {
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }
+  return new Date(dateString).toLocaleDateString('ko-KR', options)
+}
 const excTypeMapping = {
   1: '상체',
   2: '하체',
@@ -112,35 +131,11 @@ const mapDifficultyType = type => {
   return excDifficultyMapping[type] || '알 수 없음'
 }
 
-const excAreaMapping = {
-  1: '광배근',
-  2: '기립근',
-  3: '대퇴사두',
-  4: '대흉근',
-  5: '둔근',
-  6: '삼두',
-  7: '승모근',
-  8: '이두근',
-  9: '전면어깨',
-  10: '측면어깨',
-  11: '코어',
-  12: '햄스트링',
-  13: '후면어깨',
-}
-
-const mapExcAreaType = type => {
-  return excAreaMapping[type] || '알 수 없음'
-}
-
-const formatDate = dateString => {
-  const options = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+// 운동 삭제
+const deleteExercise = () => {
+  if (window.confirm('삭제하시겠습니까?')) {
+    emit('deleteExercise', props.exercise.excSeq)
   }
-  return new Date(dateString).toLocaleDateString('ko-KR', options)
 }
 </script>
 
@@ -173,7 +168,6 @@ const formatDate = dateString => {
   background-color: rgb(163, 163, 163);
   padding: 4px;
   color: white;
-  display: none;
 }
 .modal-sub-wrap :first-child {
   text-align: start;
@@ -194,5 +188,9 @@ const formatDate = dateString => {
   object-fit: contain; /* 비율 유지 */
   object-fit: cover; /* 이미지 비율을 유지하면서 넘치는 부분을 잘라냄 */
   overflow: hidden; /* 넘치는 부분을 숨김 */
+}
+
+.deleteBtn {
+  width: 100px;
 }
 </style>

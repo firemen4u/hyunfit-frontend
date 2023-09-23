@@ -35,26 +35,38 @@
         <div class="flex flex-col gap-2 ml-4 mb-4 mr-4">
           <div class="flex flex-row justify-between">
             <div class="font-semibold">피드백 내용</div>
-            <button class="">gpt 보고서 받아보기</button>
+            <button class="" @click="getGptFeedback(noFeedbackData)">
+              gpt 보고서 받아보기
+            </button>
           </div>
-          <textarea class="text-box"></textarea>
+          <textarea class="text-box" v-model="feedbackContent"></textarea>
         </div>
         <div class="flex divider"></div>
         <!--꼬리(submit버튼)-->
         <div class="flex justify-center mt-2">
-          <button class="fb-write-Button">작성하기</button>
+          <button
+            class="fb-write-Button"
+            @click="submitFeedback(noFeedbackData)"
+          >
+            작성하기
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import moment from 'moment'
+import ApiClient from '/src/services/api.js'
 export default {
   props: {
     noFeedbackData: Object,
     show: Boolean,
+  },
+  data() {
+    return {
+      feedbackContent: '',
+    }
   },
   methods: {
     closeModal() {
@@ -68,6 +80,22 @@ export default {
     },
     formatTarget(timestamp) {
       return moment(timestamp).format('YYYY-MM')
+    },
+    submitFeedback(sendingData) {
+      sendingData.trnfContent = this.feedbackContent
+      ApiClient.post(
+        'http://localhost:8080/trainer-feedbacks/write-feedback',
+        sendingData
+      )
+      this.$emit('close')
+      location.reload()
+    },
+    async getGptFeedback(sendingData) {
+      let response = await ApiClient.post(
+        'http://localhost:8080/trainer-feedbacks/gpt',
+        sendingData
+      )
+      this.feedbackContent = response.content
     },
   },
 }

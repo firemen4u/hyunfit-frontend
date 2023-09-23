@@ -1,13 +1,8 @@
-<template lang="">
-  <BaseContainer>
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
+<template>
+  <BaseContainer category="admin">
     <BaseBodyWrapper>
-      <div class="제일큰 pt-10">
-        <div class="루틴목록이랑검색창있는div flex justify-between">
+      <div class="pt-10">
+        <div class="flex justify-between">
           <div class="text-2xl font-bold">운동 등록</div>
         </div>
         <form @submit.prevent="submit">
@@ -39,7 +34,7 @@
               <div class="flex justify-between">
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 종류</p>
-                  <BoRadioButton
+                  <BoExcRadioButton
                     :options="radioOptions1"
                     v-model="exc_type"
                     hide-details
@@ -48,7 +43,7 @@
 
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 난이도</p>
-                  <BoRadioButton
+                  <BoExcRadioButton
                     :options="radioOptions2"
                     v-model="exc_difficulty"
                     hide-details
@@ -174,38 +169,38 @@
               <hr />
               <p class="mt-8 mb-8 font-bold text-lg">운동 데이터 업로드</p>
               <div class="flex items-center mb-4">
-                <CloudArrowUpSvg size="30" color="gray" />
-                <BoFileInput
+                <CloudArrowUpSvg :size="30" color="gray" />
+                <BoExcFileInput
                   v-model="files_exc_model"
                   label="모델 데이터"
-                ></BoFileInput>
+                ></BoExcFileInput>
               </div>
               <div class="flex items-center mb-4">
-                <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <PictureSvg :size="30" color="gray" />
+                <BoExcFileInput
                   class="mr-4"
                   v-model="files_exc_preview"
                   label="운동 프리뷰 영상"
-                ></BoFileInput>
+                ></BoExcFileInput>
 
-                <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <PictureSvg :size="30" color="gray" />
+                <BoExcFileInput
                   v-model="files_exc_view"
                   label="운동 영상"
-                ></BoFileInput>
+                ></BoExcFileInput>
               </div>
               <div class="flex items-center mb-4">
-                <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                <PictureSvg :size="30" color="gray" />
+                <BoExcFileInput
                   class="mr-4"
                   v-model="files_exc_view_row_qual"
                   label="썸네일 운동 영상"
-                ></BoFileInput>
-                <PictureSvg size="30" color="gray" />
-                <BoFileInput
+                ></BoExcFileInput>
+                <PictureSvg :size="30" color="gray" />
+                <BoExcFileInput
                   v-model="files_exc_mp3"
                   label="음성파일"
-                ></BoFileInput>
+                ></BoExcFileInput>
               </div>
             </div>
           </div>
@@ -218,26 +213,11 @@
   </BaseContainer>
 </template>
 <script setup>
-import {
-  BaseBodyWrapper,
-  BaseContainer,
-  BaseSideBar,
-} from '/src/module/@base/views'
+import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
-import { BoFileInput, BoRadioButton } from '/src/module/bo/exc/components'
-import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import { FILE_SERVER_TOKEN } from '/src/config.js'
-
-const sidebarHeader = '관리페이지'
-const mainCategory = 'AI 트레이닝'
-const subcategories = [
-  { id: 1, title: '운동 관리', link: '/link1' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnboard' },
-  { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/link4' },
-]
+import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
+import { ref } from 'vue'
+import ApiClient from '/src/services/api'
 
 const target_items = ref([
   '광배근',
@@ -301,12 +281,12 @@ const radioOptions2 = [
 //submit 시키기
 const exc_name = ref('')
 const exc_content = ref('')
-const exc_type = ref('')
-const exc_difficulty = ref('')
-const exc_calories_per_rep = ref('')
-const exc_time_per_set_in_sec = ref('')
-const exc_set_count = ref('')
-const excRepCountPerSet = ref('')
+const exc_type = ref('1')
+const exc_difficulty = ref('1')
+const exc_calories_per_rep = ref('0')
+const exc_time_per_set_in_sec = ref('0')
+const exc_set_count = ref('0')
+const excRepCountPerSet = ref('0')
 
 const submit = async () => {
   const exerciseTargets = selectedBodyParts.value.map(bodyPart => ({
@@ -327,30 +307,39 @@ const submit = async () => {
   }
   try {
     // exercise 등록하는 api 호출
-    const response = await axios.post('http://localhost:8080/exercises', values)
-    console.log(response.data)
+    const firstApiResponse = await ApiClient.post('/exercises', values)
+    console.log(firstApiResponse)
 
     // exercise에 등록된 exc_seq 가져오기
-    const excSeq = response.data.excSeq
+    const excSeq = firstApiResponse.excSeq
     // header 코드
     const config = {
       headers: {
-        token: FILE_SERVER_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
     }
 
     // 파일 업로드 함수를 만듭니다.
-    const uploadFile = async (file, type) => {
+    const uploadFile = async (file, type, customName) => {
       const formData = new FormData()
       // 확장자 분리 및 파일 이름 재조합
       const splitFileName = file.name.split('.')
       const extension = splitFileName.pop()
-      const fileName = `${splitFileName.join('.')}_${excSeq}.${extension}`
+
+      const fileNameMapping = {
+        model: `ai_model_${excSeq}.${extension}`,
+        preview: `preview_video_${excSeq}.${extension}`,
+        view: `exercise_video_${excSeq}.${extension}`,
+        view_row_qual: `low_quality_preview_video_${excSeq}.${extension}`,
+        mp3: `guide_message_${excSeq}.${extension}`,
+      }
+      const fileName = customName
+        ? `${customName}_${excSeq}.${extension}`
+        : `${splitFileName.join('.')}_${excSeq}.${extension}`
 
       formData.append('file', file, fileName)
       // FormData 내용 확인
-      console.log(fileName)
+      console.log('파일명 : ', fileName)
       for (var pair of formData.entries()) {
         console.log(pair[0] + ', ' + pair[1])
         if (pair[1] instanceof File) {
@@ -361,36 +350,45 @@ const submit = async () => {
         }
       }
       try {
-        const response = await axios.post(
-          `http://ryulrudaga.com:48000/api/firemen/${type}`,
+        const secondApiResponse = await ApiClient.post(
+          `/api/hyunfit/${type}`,
           formData,
-          config
+          config,
+          'fs'
         )
-        console.log(`Uploaded ${type}: ${response.data}`)
+        console.log(`Uploaded ${type}: ${secondApiResponse}`)
+        // Promise를 반환, 성공 또는 실패를 상위 함수에게 전달
+        return Promise.resolve()
       } catch (error) {
         console.log(`Failed to upload ${type}`, error)
+        return Promise.reject(error)
       }
     }
 
-    // 각 파일을 업로드합니다.
-    await uploadFile(files_exc_model.value[0], 'model')
-    await uploadFile(files_exc_preview.value[0], 'file')
-    await uploadFile(files_exc_view.value[0], 'file')
-    await uploadFile(files_exc_view_row_qual.value[0], 'file')
-    await uploadFile(files_exc_mp3.value[0], 'file')
+    // 파일 업로드 작업을 모두 기다림
+    await Promise.all([
+      uploadFile(files_exc_model.value[0], 'model', 'ai_model'),
+      uploadFile(files_exc_preview.value[0], 'file', 'preview_video'),
+      uploadFile(files_exc_view.value[0], 'file', 'exercise_video'),
+      uploadFile(
+        files_exc_view_row_qual.value[0],
+        'file',
+        'low_quality_preview_video'
+      ),
+      uploadFile(files_exc_mp3.value[0], 'file', 'guide_message'),
+    ])
 
     alert('등록 성공!')
+    window.location.reload() // 페이지 새로고침
   } catch (error) {
     console.error(error)
-    console.error(error.response.data)
+    console.error(error.firstApiResponse.data)
     alert('등록 실패!')
   }
-
-  alert(JSON.stringify(values, null, 2))
 }
 </script>
 
-<style scope>
+<style scoped>
 .col-1 {
   width: 200px;
   margin-left: 10px;

@@ -2,6 +2,10 @@
 defineProps({
   items: Array,
   disabled: Boolean,
+  filter: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
@@ -11,7 +15,7 @@ defineProps({
       class="hyunfit-base-chip"
       v-for="(item, idx) in items"
       :key="idx"
-      filter
+      :filter="filter"
       variant="outlined"
       selected-class="active-chip"
       :ripple="false"

@@ -1,10 +1,5 @@
-<template lang="">
-  <BaseContainer>
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
+<template>
+  <BaseContainer category="admin">
     <BaseBodyWrapper>
       <div class="pt-10">
         <div class="flex justify-between">
@@ -19,11 +14,11 @@
               class="flex"
               @updateExcType="updateExcType"
             />
-            <div>
+            <div class="mr-5">
               <input
                 type="text"
                 v-model="searchText"
-                placeholder=" 🔎 운동 검색"
+                placeholder=" 운동 검색"
                 class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
               />
             </div>
@@ -42,14 +37,18 @@
             </div>
             <div v-else>해당하는 운동이 없습니다.</div>
           </div>
-
+          <div class="flex justify-end mr-5 mb-10">
+            <v-btn @click="goToExcNewPage" color="primary">운동 등록하기</v-btn>
+          </div>
           <BasePagination v-model="currentPage" :total-pages="totalPages" />
         </div>
       </div>
       <BoExcCardModal
         :show="showModal"
         :exercise="selectedExercise"
+        :showDeleteBtn="true"
         @update:show="showModal = $event"
+        @deleteExercise="deleteExercise"
       />
     </BaseBodyWrapper>
   </BaseContainer>
@@ -61,19 +60,14 @@ import {
   BoExcCardModal,
 } from '/src/module/bo/exc/components'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
+import router, { pathNames } from '@/router'
+import ApiClient from '/src/services/api'
 
-const sidebarHeader = '관리페이지'
-const mainCategory = 'AI 트레이닝'
-const subcategories = [
-  { id: 1, title: '운동 관리', link: '/bo-excBoard' },
-  { id: 2, title: '루틴 관리', link: '/bo-rtnboard' },
-  { id: 3, title: '운동 등록', link: '/bo-excNew' },
-  { id: 4, title: '루틴 등록', link: '/link4' },
-]
-
+const goToExcNewPage = () => {
+  router.push(pathNames.boExcNewPage)
+}
 const searchText = ref('') // 검색 텍스트를 저장할 ref 변수
 
 const selectedExcType = ref(null) // 선택한 excType을 저장할 변수
@@ -86,7 +80,7 @@ const updateExcType = value => {
   console.log('After reset:', currentPage.value) // 로그 추가
 }
 
-const itemsPerPage = ref(10) // 한 페이지당 표시될 아이템 수
+const itemsPerPage = ref(15) // 한 페이지당 표시될 아이템 수
 const currentPage = ref(1) // 현재 페이지
 
 const totalPages = computed(() => {
@@ -125,17 +119,22 @@ const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 // API를 통해 운동 목록을 가져오는 함수
 const fetchExercises = async () => {
   try {
-    const response = await fetch('http://localhost:8080/exercises') // API 엔드포인트를 설정하세요.
-    const data = await response.json()
-    exercises.value = data // 받아온 데이터를 exercises 변수에 저장합니다.
+    const data = await ApiClient.get('/exercises') // ApiClient 사용
+    exercises.value = data
   } catch (error) {
     console.error('운동 목록을 불러오는 중 에러 발생:', error)
   }
 }
 
 // 컴포넌트가 마운트된 후 API로부터 데이터를 가져옵니다.
-onMounted(() => {
-  fetchExercises()
+onMounted(async () => {
+  await fetchExercises()
+
+  // excSeq로 정렬
+  exercises.value.sort((a, b) => b.excSeq - a.excSeq)
+
+  // 정렬된 운동 목록을 출력
+  console.log('Sorted Exercises by excSeq:', exercises.value)
 })
 
 watch(searchText, () => {
@@ -159,9 +158,19 @@ const openModal = exercise => {
   selectedExercise.value = exercise
   showModal.value = true
 }
+// 운동 삭제 함수
+const emit = defineEmits([])
+const deleteExercise = async excSeq => {
+  try {
+    await ApiClient.delete(`/exercises/${excSeq}`)
+    fetchExercises()
+  } catch (error) {
+    console.error('운동 삭제 중 에러 발생:', error)
+  }
+}
 </script>
 <style scoped>
 .exc-wrap {
-  height: 500px;
+  height: 650px;
 }
 </style>

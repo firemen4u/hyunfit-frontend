@@ -1,51 +1,38 @@
 <script setup>
 import { FullStarSvg } from '@/module/@base/svg'
-import { ref } from 'vue'
 const props = defineProps({
   rating: Number,
   reviewCount: Number,
-  iconSize: String,
+  iconSize: Number,
   fontSize: String,
+  countSize: {
+    type: Number,
+    default: 12,
+  },
 })
-const ratingValue = ref(props.rating)
-function iconSizeOf(size) {
-  let vSize = ''
-  if (size === 'xs') {
-    vSize = 'x-small'
-  } else if (size === 'sm') {
-    vSize = 'small'
-  } else if (size === 'lg') {
-    vSize = 'large'
-  } else if (size === 'xl') {
-    vSize = 'x-large'
-  }
-  return vSize
-}
+
 function fontSizeOf(size) {
   return 'text-' + size
+}
+function getCountSize() {
+  return { 'font-size': `${props.countSize}px` }
 }
 </script>
 
 <template>
-  <div class="flex">
-    <v-rating
-      v-model="ratingValue"
-      model-value="1"
-      :full-icon="FullStarSvg"
-      length="1"
-      readonly
-      :size="iconSizeOf(iconSize)"
-      density="compact"
-    >
-    </v-rating>
-    <div
-      class="rating-value-wrapper font-extrabold self-center ml-0.5"
-      :class="fontSizeOf(fontSize)"
-    >
-      {{ rating }}
-    </div>
-    <div class="text-gray-400 font-thin text-xxs self-end ml-0.5 mb-1">
-      ({{ reviewCount }})
+  <div class="flex items-center">
+    <FullStarSvg :size="iconSize" class="mr-0.5" />
+    <div class="flex items-baseline mt-0.5">
+      <span class="block font-extrabold ml-0.5" :class="fontSizeOf(fontSize)">
+        {{ rating?.toFixed(1) }}
+      </span>
+      <div
+        v-if="reviewCount"
+        class="ml-0.5 text-gray-500"
+        :style="getCountSize()"
+      >
+        ({{ reviewCount }})
+      </div>
     </div>
   </div>
 </template>

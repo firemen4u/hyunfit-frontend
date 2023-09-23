@@ -19,12 +19,13 @@ import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
 import QnASection from '@/module/trn-detail/components/TrnDetailQnASection.vue'
 import TrnDetailDateUtils from '@/module/trn-detail/services/trnDetailDateUtils'
-import PtReservationConfirmLoadingModal from '@/module/pt-reservation/components/PtReservationConfirmLoadingModal.vue'
+import PtReservationConfirmLoadingModal from '@/module/mbr-rsv-completion/components/PtReservationConfirmLoadingModal.vue'
 import {
   ptReservationOptions,
   trnCertificatesSrc,
 } from '@/module/trn-detail/stores/trnDetailCommon'
-import router from '@/router'
+import router, { pathNames } from '@/router'
+import ReportDateUtils from '@/module/report/services/reportDateUtils'
 
 let trnData = ref([])
 const route = useRoute()
@@ -52,6 +53,17 @@ let reservationResultModalOpen = computed(() => {
     reservationConfirmLoading.value || reservationFailureReason.value !== ''
   )
 })
+let lazyLoadedProfileImageUrl = ref(null)
+const hasProfileImage = ref(true)
+const profileDialogOpen = ref(false)
+function setDefaultBanner(e) {
+  if (e.target.src === null) return
+  hasProfileImage.value = false
+}
+
+function openProfileDialog() {
+  profileDialogOpen.value = true
+}
 
 function okClickedOnReservationResultModal() {
   reservationConfirmLoading.value = false
@@ -76,10 +88,10 @@ async function confirmReservation() {
     ptReservationDate: datetimeSelected.value,
     ptNoteStickers: ptReservationOptionSelected.value.join(','),
   }
-  // reservationFailureReason.value = 'Error Code 405'
   try {
     let result = await postPersonalTraining(data)
-    await router.push({ name: 'pt-reservations' })
+    reservationConfirmLoading.value = false
+    await router.push(pathNames.mbrRsvCompletionPage)
   } catch (error) {
     reservationFailureReason.value = error
   }
@@ -91,9 +103,13 @@ async function reloadDatePicker(date) {
     date
   )
 }
+function lazyLoadProfileImage(url) {
+  lazyLoadedProfileImageUrl.value = url
+}
 async function initPage() {
   trnData.value = await getTrnDetail(route.params.trnId)
   await reloadDatePicker(new Date())
+  lazyLoadProfileImage(trnData.value.trnProfileUrl)
 }
 
 onBeforeMount(() => {
@@ -125,19 +141,45 @@ onMounted(() => {
   <BaseContainer>
     <div class="banner w-full flex items-center">
       <img
-        :src="trnData.trnProfileUrl"
+        v-if="hasProfileImage"
+        :src="lazyLoadedProfileImageUrl"
         alt="Banner Image"
         class="banner-img object-cover w-100"
       />
+      <div v-else class="banner-default-img w-100"></div>
     </div>
 
     <BaseBodyWrapper ref="root">
       <div class="profile-image mt-40">
-        <img
-          class="rounded-lg border-white border-2 w-24 border-solid"
-          :src="trnData.trnProfileUrl"
-          alt=""
-        />
+        <div v-if="hasProfileImage">
+          <button @click="openProfileDialog()">
+            <img
+              class="rounded-lg border-white border-2 w-32 border-solid"
+              :src="lazyLoadedProfileImageUrl"
+              alt=""
+              @error="e => setDefaultBanner(e)"
+            />
+          </button>
+          <v-dialog
+            v-model="profileDialogOpen"
+            class="trn-detail-profile-dialog"
+            width="auto"
+          >
+            <img
+              class="dialog-img rounded-lg"
+              :src="lazyLoadedProfileImageUrl"
+              alt=""
+              @error="e => setDefaultBanner(e)"
+            />
+          </v-dialog>
+        </div>
+        <div v-else>
+          <img
+            class="rounded-lg border-white border-2 w-32 border-solid"
+            src="/src/assets/images/default-user-profile.png"
+            alt=""
+          />
+        </div>
       </div>
       <div class="flex mt-6 justify-between">
         <div class="profile-container mr-10">
@@ -151,18 +193,20 @@ onMounted(() => {
           <div
             class="summary-container bg-neutral-50 py-6 flex justify-around rounded my-10"
           >
-            <div class="flex flex-col items-center">
+            <div class="flex flex-col items-center" v-if="trnData.trnPtCount">
               <div class="text-xs">수업</div>
               <div class="text-xl font-black">{{ trnData.trnPtCount }}회</div>
             </div>
-            <div class="flex flex-col items-center">
+            <div
+              class="flex flex-col items-center"
+              v-if="trnData.reviews?.length"
+            >
               <div class="text-xs">리뷰</div>
               <BaseCompactRating
-                compact
                 :rating="trnData.averageReviewRating"
                 :reviewCount="trnData.reviews?.length"
-                icon-size="sm"
-                font-size="lg"
+                icon-size="22"
+                font-size="xl"
               ></BaseCompactRating>
             </div>
             <div class="flex flex-col items-center">
@@ -242,17 +286,17 @@ onMounted(() => {
             <div class="review-container section mb-20" section-id="2">
               <div class="text-xl font-black mb-2">리뷰</div>
               <div class="review-nav">
-                <div class="flex items-end">
-                  <div class="text-3xl font-black">
+                <div class="flex items-center">
+                  <div class="text-[40px] font-black">
                     {{ trnData.averageReviewRating }}
                   </div>
                   <div class="ml-4">
                     <BaseRating
-                      icon-size="xs"
+                      icon-size=""
                       v-model="trnData.averageReviewRating"
                       readonly
                     />
-                    <div class="text-xxs">
+                    <div class="text-sm">
                       {{ trnData.reviews?.length }}개 리뷰
                     </div>
                   </div>
@@ -265,14 +309,22 @@ onMounted(() => {
               >
                 <div class="review-item">
                   <div class="flex items-center">
-                    <div class="mr-5 font-black">{{ review.mbrName }}</div>
-                    <div class="text-xs text-gray-400">{{ review.date }}</div>
+                    <div class="mr-3 font-black">{{ review.mbrName }}</div>
+                    <BaseCompactRating
+                      readonly
+                      :rating="review.ptrRating"
+                      :icon-size="16"
+                      :count-size="14"
+                    ></BaseCompactRating>
                   </div>
-                  <BaseRating
-                    icon-size="xs"
-                    readonly
-                    v-model="review.ptrRating"
-                  ></BaseRating>
+
+                  <div class="mt-1 text-xs text-gray-400">
+                    {{
+                      ReportDateUtils.timestampToFullDate(
+                        review.ptrCreationDate
+                      )
+                    }}
+                  </div>
                   <div class="my-3">{{ review.ptrContent }}</div>
 
                   <ReviewStickerGroup :stickers="review.ptrStickers" />
@@ -331,6 +383,7 @@ onMounted(() => {
                 v-model="ptReservationOptionSelected"
                 :items="ptReservationOptions"
                 :disabled="reservationConfirmLoading"
+                :filter="true"
               />
             </div>
           </div>
@@ -360,6 +413,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.dialog-img {
+  width: 30vw;
+}
 hr.solid {
   border-top: 1px solid #d5d5d5;
 }
@@ -389,9 +445,19 @@ hr.solid {
   height: 210px;
   object-position: 50% 20%;
 }
+.banner .banner-default-img {
+  height: 210px;
+  object-position: 50% 20%;
+  background-color: #d23361;
+}
 </style>
 
 <style>
+.trn-detail-profile-dialog .v-overlay__scrim {
+  backdrop-filter: blur(8px);
+  background: none;
+  opacity: 1;
+}
 .trn-detail-date-picker .trn-detail-disabled-btn {
   cursor: default;
 }

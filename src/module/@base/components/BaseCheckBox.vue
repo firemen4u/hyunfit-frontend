@@ -1,37 +1,20 @@
 <template>
-  <div>
-    <v-checkbox
-      :color="color"
-      :value="value"
-      :hide-details="hideDetails"
-      :style="`font-size: ${fontSize}`"
-    >
-    <template v-slot:label>
-            <div :class="`text-${size}`">{{ label }}</div></template
-          >
+  <v-checkbox v-model="checked" @input="updateValue">
+    <template v-slot:label>{{ label }}</template>
   </v-checkbox>
-    
-  </div>
 </template>
 
 <script setup>
-  const props = defineProps ({
-    label: String, // 라벨 텍스트
-    color: String, // 색상
-    value: String, // 값
-    hideDetails: Boolean, // 세부 정보 숨김 여부
-    size: String,
-  })
+import { ref } from 'vue'
+const props = defineProps({
+  value: Boolean,
+  label: String,
+})
 
-  let fontSize = '16px'
-  if (props.size === 'sm') {
-    fontSize = '14px'
-  }
-  else if (props.size === 'lg') {
-    fontSize = '18px'
-  }
-  else if (props.size === 'xl') {
-    fontSize = '20px'
-  }
+const emit = defineEmits(['update:value'])
+const checked = ref(props.value)
+const updateValue = () => {
+  checked.value = !checked.value
+  emit('update:value', checked.value)
+}
 </script>
-

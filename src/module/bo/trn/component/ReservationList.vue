@@ -46,8 +46,8 @@
 
 <script setup>
 import ReservaionDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
-import axios from 'axios'
 import moment from 'moment'
+import ApiClient from '/src/services/api.js'
 </script>
 
 <script>
@@ -55,16 +55,26 @@ export default {
   components: {
     ReservaionDetailModal,
   },
-  created() {
-    console.log('create')
-    axios
-      .get(
-        'http://localhost:8080/trainers/' + this.trnSeq + '/personal-training'
-      )
+  data() {
+    return {
+      completeCnt: 0,
+      noShowCnt: 0,
+      upcomingCnt: 0,
+      showDetail: false,
+      selectedReservation: null,
+      reservations: [],
+    }
+  },
+  async created() {
+    let resposeData = await ApiClient.get('http://localhost:8080/trainers/me')
+    await ApiClient.get(
+      'http://localhost:8080/trainers/' +
+        resposeData.trnSeq +
+        '/personal-training'
+    )
       .then(response => {
-        console.log('reseponse')
-        this.reservations = response.data
-        console.log(response.data)
+        this.reservations = response
+        console.log(this.reservations)
         this.plusCnt()
         this.sendCntToParent()
       })
@@ -114,17 +124,6 @@ export default {
 
       return `${hours}:${minutes}`
     },
-  },
-  data() {
-    return {
-      completeCnt: 0,
-      noShowCnt: 0,
-      upcomingCnt: 0,
-      showDetail: false,
-      selectedReservation: null,
-      reservations: [],
-      trnSeq: 1,
-    }
   },
 }
 </script>

@@ -1,72 +1,40 @@
 <template>
   <div class="container">
-    <div class="trn-search-container-filter">
-      <p class="trn-search-container-filter-component text-disable text-xs">
-        추천 순(필터)
-      </p>
+    <div class="mb-5 flex flex-col">
+      <div class="order-selector flex items-end justify-end flex-col">
+        <slot name="search-order-selector"> </slot>
+      </div>
+      <BaseDivider />
     </div>
-    <div class="trn-search-bar-section">
-      <TrnSearchBar></TrnSearchBar>
+
+    <div class="trn-search-bar-section w-full">
+      <slot name="search-bar"> </slot>
     </div>
-    <div class="trn-search-filter-selection">
-      <TrnSearchFilterSelectionContainer></TrnSearchFilterSelectionContainer>
+
+    <div class="trn-search-filter-selection h-2 mt-3">
+      <slot name="filter-chip-group"></slot>
     </div>
-    <div class="trn-search-result-list">
-      <TrnSearchResultItem :result="result"></TrnSearchResultItem>
-      <TrnSearchResultItem :result="result"></TrnSearchResultItem>
-      <TrnSearchResultItem :result="result"></TrnSearchResultItem>
-      <TrnSearchResultItem :result="result"></TrnSearchResultItem>
+
+    <div class="trn-search-result-list mt-5">
+      <slot name="search-results"></slot>
       <div class="pagination pt-3">
-        <BasePagination></BasePagination>
+        <slot name="pagination"></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import TrnSearchBar from './TrnSearchBar.vue'
-import TrnSearchFilterSelectionContainer from './TrnSearchFilterSelectionContainer.vue'
-import TrnSearchResultItem from './TrnSearchResultItem.vue'
-import BasePagination from '../../@base/components/BasePagination.vue'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 
-const result = ref({
-  trainerName: '고윤정',
-  category: '필라테스',
-  contents:
-    '💁🏻‍♀️💌 리뷰가 보장하는 필라테스 개인레슨 ❤️ “체형교정/굽은등/편평등/라운드숄더/척추측만증/ 골반비대칭/다이어트/개인전문”',
-  rating: '4.5',
-  reviewCount: 15,
-  img: '이미지',
+defineProps({
+  filterOptions: Array,
 })
 </script>
 
 <style scoped>
-.container {
-  /* border: 4px dotted red; */
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-.trn-search-container-filter {
-  /* border: 2px dotted rgb(0, 255, 128); */
-  padding: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
-.trn-search-container-filter-component {
-  margin-bottom: 25px;
-}
-.trn-search-bar-section {
-  border-top: 1.5px solid rgb(242, 242, 242);
-  margin: 5px 0px 5px 0px;
-  padding-top: 20px;
-}
-.trn-search-filter-selection {
-  margin: 0px 0px 10px 0px;
-}
-.trn-search-result-list {
-  margin: 3px;
+.order-selector {
+  margin: 10px 0;
+  height: 60px;
 }
 </style>

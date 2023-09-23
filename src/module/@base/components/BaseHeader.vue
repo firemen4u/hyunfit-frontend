@@ -1,56 +1,87 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-
 import {
   HyunfitLogoGradientSvg,
   DownArrowSvg,
   EditPencilSvg,
 } from '@/module/@base/svg'
+import router, { pathNames } from '@/router'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
+import ApiClient from '@/services/api'
 
 const props = defineProps({
   page: String,
+  category: String,
 })
 
 const headerPages = [
-  { displayName: '홈', childUrls: ['main'], url: '/' },
+  { displayName: '홈', destination: pathNames.mainPage },
   {
     displayName: 'AI트레이닝',
-    childUrls: ['report'],
-    url: '/',
+    destination: pathNames.mbrRtnBoardPage,
     menus: [
-      { menuName: '루틴', url: '/' },
-      { menuName: '리포트', url: '/report' },
+      { menuName: '루틴', destination: pathNames.mbrRtnBoardPage },
+      { menuName: '리포트', destination: pathNames.reportPage },
     ],
   },
   {
     displayName: '화상트레이닝',
-    childUrls: ['trn-search', 'trn-detail', 'mbr-reservation'],
-    url: '/trn-search',
+    destination: pathNames.trnSearchPage,
     menus: [
-      { menuName: '트레이너 찾기', url: '/trainers' },
-      { menuName: '내 예약', url: '/mbr-reservation' },
-      { menuName: '트레이너 피드백', url: '/trn-feedback' },
+      { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
+      { menuName: '내 예약', destination: pathNames.mbrRsvPage },
+      { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedbackPage },
     ],
   },
 ]
 
-const profileMenus = [
-  { displayName: '계정설정', url: '/' },
-  { displayName: '마이페이지', url: '/mbr-mypage' },
-  { displayName: '비밀번호 변경', url: '/' },
-  { displayName: '로그아웃', url: '/' },
+const adminPages = [
+  {
+    displayName: '운동관리',
+    destination: pathNames.boExcBoardPage,
+  },
+  {
+    displayName: '루틴관리',
+    destination: pathNames.boRtnBoardPage,
+  },
 ]
+
+const trainerPages = [
+  {
+    displayName: '예약현황',
+    destination: pathNames.boTrnRsvBoardPage,
+  },
+  {
+    displayName: '피드백 현황',
+    destination: pathNames.boTrnFbBoardPage,
+  },
+]
+
+const profileMenus = [
+  { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
+  { displayName: '마이페이지', destination: pathNames.mbrMyPage },
+  { displayName: '비밀번호 변경', destination: '/' },
+]
+function getPages() {
+  if (props.category === 'admin') return adminPages
+  else if (props.category === 'trainer') return trainerPages
+  return headerPages
+}
+function getMenus() {
+  if (props.category === 'admin') return []
+  else if (props.category === 'trainer') return []
+  return profileMenus
+}
 
 let menuOpen = ref(false)
 let profileMenu = ref(null)
 let profileMenuButton = ref(null)
-let userName = '지수'
 function closeMenuOutsideClick(event) {
   if (
     menuOpen.value &&
-    !profileMenu.value.contains(event.target) &&
-    !profileMenuButton.value.contains(event.target)
+    !profileMenu.value?.contains(event.target) &&
+    !profileMenuButton.value?.contains(event.target)
   ) {
     menuOpen.value = false
     window.removeEventListener('click', closeMenuOutsideClick)
@@ -64,9 +95,6 @@ function toggleMenu() {
 }
 
 const route = useRoute()
-const currentRouteName = computed(() => {
-  return route.name
-})
 
 const activeMenuIndex = ref(-1)
 const menuActivationHandler = (index, hasMenu) => {
@@ -79,11 +107,66 @@ const isActivatedMenu = index => {
   return activeMenuIndex.value === index
 }
 
-const isCurrentPage = pg => {
-  return pg.childUrls.some(includedUrl =>
-    currentRouteName.value.startsWith(includedUrl)
-  )
+const pageItemClasses = pg => {
+  if (pathNames[route.name]?.parent() === pg.destination.name) {
+    return 'text-black font-black'
+  }
+  return 'text-gray-400 font-medium hover:text-gray-800 hover:font-bold'
 }
+const menuItemClasses = pg => {
+  if (route.name === pg.destination.name) {
+    return 'text-gray-800 font-bold'
+  }
+  return 'text-gray-400 font-medium hover:text-gray-800 hover:font-bold'
+}
+const lastMenuItemClasses = (idx, pg) => {
+  if (idx < pg.menus.length - 1) return 'mb-3'
+  else return ''
+}
+
+function moveToMain() {
+  let userRole = localStorage.getItem('userRole')
+  if (userRole === 'admin') {
+    router.push(pathNames.boExcBoardPage)
+  } else if (userRole === 'trainer') {
+    router.push(pathNames.boTrnRsvBoardPage)
+  } else {
+    router.push(pathNames.mainPage)
+  }
+}
+
+function logout() {
+  ApiClient.removeTokenOnLocalStorage()
+  router.go(0)
+}
+function login() {
+  location.href = '/login'
+}
+const userData = ref(null)
+const loggedIn = computed(() => userData.value)
+
+const userName = computed(() => {
+  if (!loggedIn.value) return
+  if ('mbrName' in userData.value) return userData.value.mbrName
+  if ('admName' in userData.value) return userData.value.admName
+  if ('trnName' in userData.value) return userData.value.trnName
+  console.log('at `userName` BaseHeader: name not found', userData)
+  return 'unknown'
+})
+
+const userProfile = computed(() => {
+  if (!loggedIn.value) return '/src/assets/images/default-user-profile.png'
+  let p
+  if ('mbrProfileUrl' in userData.value) p = userData.value.mbrProfileUrl
+  if ('admProfileUrl' in userData.value) p = userData.value.admProfileUrl
+  if ('trnProfileUrl' in userData.value) p = userData.value.trnProfileUrl
+  return p ? p : '/src/assets/images/default-user-profile.png'
+})
+onMounted(async () => {
+  userData.value = await ApiClient.me()
+})
+
+// { displayName: '로그인', destination: pathNames.loginPage },
 </script>
 
 <template>
@@ -92,28 +175,24 @@ const isCurrentPage = pg => {
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
         <div class="flex items-center">
-          <a href="/" class="mr-10">
+          <button @click="moveToMain()" class="mr-10 cursor-pointer">
             <HyunfitLogoGradientSvg :size="140" />
-          </a>
-
+          </button>
           <div
-            v-for="(pg, i) in headerPages"
+            v-for="(pg, i) in getPages()"
             :key="i"
             class="my-2 relative"
             @mouseenter="menuActivationHandler(i, pg.menus)"
             @mouseleave="menuDeactivationHandler(pg.menus)"
           >
             <div class="h-full flex items-center justify-start">
-              <a
-                :href="pg.url"
-                class="px-3 mx-1 py-2"
-                :class="
-                  isCurrentPage(pg)
-                    ? 'text-black font-black'
-                    : 'text-neutral-400 font-medium hover:text-gray-700'
-                "
-                >{{ pg.displayName }}</a
+              <button
+                @click="router.push(pg.destination)"
+                class="px-3 mx-1 py-2 transition-all"
+                :class="pageItemClasses(pg)"
               >
+                {{ pg.displayName }}
+              </button>
             </div>
             <transition
               enter-active-class="transition ease-out duration-100"
@@ -128,16 +207,20 @@ const isCurrentPage = pg => {
                 class="header-hover-menu-wrapper absolute px-2 py-8 self-center pt-1"
               >
                 <div
-                  class="header-hover-menu bg-white rounded-md flex flex-col items-center px-2 py-2"
+                  class="header-hover-menu bg-white rounded-md flex flex-col items-center px-2 py-3"
                 >
-                  <a
+                  <button
                     v-for="(menu, m_idx) in pg.menus"
-                    class="text-neutral-600 mx-3"
-                    :class="m_idx < pg.menus.length - 1 ? 'mb-2' : ''"
+                    class="mx-4 transition-all"
+                    :class="[
+                      lastMenuItemClasses(m_idx, pg),
+                      menuItemClasses(menu),
+                    ]"
                     :key="m_idx"
-                    :href="menu.url"
-                    >{{ menu.menuName }}</a
+                    @click="router.push(menu.destination)"
                   >
+                    {{ menu.menuName }}
+                  </button>
                 </div>
               </div>
             </transition>
@@ -155,7 +238,7 @@ const isCurrentPage = pg => {
             >
               <img
                 class="h-8 w-8 rounded-full mr-1 object-cover"
-                src="/src/assets/images/goat-jisu.png"
+                :src="userProfile"
                 alt=""
               />
               <DownArrowSvg :size="22" color="#AAAAAA" />
@@ -179,29 +262,53 @@ const isCurrentPage = pg => {
               >
                 <div class="py-1 px-2 flex items-center flex-col">
                   <img
-                    class="h-20 w-20 rounded-full mr-1 object-cover"
-                    src="/src/assets/images/goat-jisu.png"
+                    class="h-24 w-24 rounded-full object-cover"
+                    :src="userProfile"
                     alt=""
                   />
+
                   <div
-                    class="profile-edit-button absolute mt-13 ml-14 rounded-full p-1"
+                    v-if="loggedIn"
+                    class="profile-edit-button absolute mt-[68px] ml-[68px] rounded-full p-1"
                   >
                     <EditPencilSvg :size="18" />
                   </div>
-                  <div class="text-xl my-2">안녕하세요, {{ userName }}님.</div>
+                  <div v-if="loggedIn" class="text-xl mt-4">
+                    안녕하세요, {{ userName }}님.
+                  </div>
+                  <button
+                    v-else
+                    @click="login()"
+                    class="block px-4 py-2 text-xl cursor-pointer transition-all text-gray-400 font-medium hover:text-gray-800 hover:font-bold"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    로그인하기
+                  </button>
                 </div>
-                <div class="py-1 px-2" role="none">
+
+                <div class="py-1 px-2" role="none" v-if="loggedIn">
+                  <BaseDivider class="mx-4 my-2" />
                   <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                  <a
-                    v-for="(menu, i) in profileMenus"
+                  <button
+                    v-for="(menu, i) in getMenus()"
                     :key="i"
-                    :href="menu.url"
-                    class="text-gray-700 block px-4 py-2 text-sm rounded-md"
+                    @click="router.push(menu.destination)"
+                    class="block px-4 py-2 text-base cursor-pointer transition-all"
+                    :class="menuItemClasses(menu)"
                     role="menuitem"
                     tabindex="-1"
                   >
                     {{ menu.displayName }}
-                  </a>
+                  </button>
+                  <button
+                    @click="logout()"
+                    class="block px-4 py-2 text-base cursor-pointer transition-all text-gray-400 font-medium hover:text-gray-800 hover:font-bold"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    로그아웃
+                  </button>
                 </div>
               </div>
             </transition>
@@ -239,6 +346,7 @@ const isCurrentPage = pg => {
   background-color: #f6e1e7;
 }
 .profile-menu a:hover {
-  background-color: #f6e1e7;
+  //background-color: #f6e1e7;
+  //cursor: pointer;
 }
 </style>

@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-import axios from 'axios'
 import moment from 'moment'
 import CreateFeedbackModal from './CreateFeedbackModal.vue'
+import ApiClient from '/src/services/api.js'
 </script>
 
 <script>
@@ -61,14 +61,13 @@ export default {
       trnSeq: 1,
     }
   },
-  created() {
-    console.log('create')
-    axios
-      .get('http://localhost:8080/trainers/' + this.trnSeq + '/nofeedback')
+  async created() {
+    let response = await ApiClient.get('http://localhost:8080/trainers/me')
+    ApiClient.get(
+      'http://localhost:8080/trainers/' + response.trnSeq + '/nofeedback'
+    )
       .then(response => {
-        console.log('reseponse')
-        this.noFeedbackList = response.data
-        console.log(response.data)
+        this.noFeedbackList = response
       })
       .catch(error => {
         console.error('API 요청 실패:', error)
