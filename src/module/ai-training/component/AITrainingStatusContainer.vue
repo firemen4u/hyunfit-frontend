@@ -1,17 +1,7 @@
 <template>
-  <!-- 타이머 -->
-  <div
-    v-if="props.progressQueue?.timerVisible"
-    class="time-container absolute flex flex-col items-center justify-center top-4 right-4 bg-[#4e4e4f] w-48 h-48 rounded-full"
-  >
-    <p class="reps-title text-2xl font-bold text-white mb-4">Sec</p>
-    <span class="resps-count text-7xl font-bold text-white mb-4">
-      {{ timeLeft }}</span
-    >
-  </div>
   <!-- RepsCount -->
   <div
-    v-if="props.progressQueue?.countContainerVisible"
+    :class="windowSize"
     class="training-status-container flex flex-col absolute items-center justify-center p-2 w-40 h-60 top-4 left-4 rounded-lg"
   >
     <div
@@ -33,125 +23,53 @@
     >
       <span class="reps-title text-lg font-bold">Reps</span>
       <p class="resps-count text-6xl font-bold text-[#00E77B]">
-        {{ props.squatsCount }}
+        {{ props.exerciseCount }}
       </p>
       <div class="reps-remain ml-20 font-extrabold">
-        /{{ props.progressQueue?.responseData?.excRepCountPerSet }}
+        /{{ props.progressQueue?.responseData.excRepCountPerSet }}
       </div>
     </div>
   </div>
-  <!-- Info -->
-  <div v-if="showInfo" class="ai-training-info-container">
-    <div class="ai-training-info">
-      <span class="info">{{ props.progressQueue?.timerLimit }}</span>
-    </div>
-  </div>
+
   <!-- BottomBar Container -->
-  <div class="bottom-bar-container">
-    <div class="empty-container item bg-transparent"></div>
-    <div class="status-navigation-container item">
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-    </div>
-    <button class="skip-button skip-item" @click="skipClick()">
-      <div class="skip-text font-extrabold">Skip 다음</div>
-    </button>
-  </div>
 </template>
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   progressQueue: Object,
-  squatsCount: Number,
+  exerciseCount: Number,
+  windowSize: String,
 })
 
 let totalCalorie = 0
 
 const setStatuses = ref(['past', 'future', 'future']) // 상태 값
 const timeLeft = ref(props.progressQueue?.timerLimit)
-const emit = defineEmits(['skip'])
 let interval = ref(null)
 let showInfo = ref(true)
-
-onMounted(() => {
-  setTimeout(() => {
-    showInfo.value = false // 2초 후에 div를 숨깁니다.
-  }, 2000)
-  if (timeLeft.value < 0) return
-  checkExercies(props.progressQueue?.responseData.excSetCount)
-})
 
 function calcCalorie() {
   totalCalorie *= props.progressQueue.excCaloriesPerRep
 }
 
-function info() {
-  console.log('info 함수 실행')
-  showInfo.value = false
-  console.log('info 함수 종료')
-}
-
-function skipClick() {
-  console.log('skipClick 제한 시간', props.progressQueue?.timerLimit)
-  emit('skip')
-}
-
-function checkExercies(setsCount) {
-  // Warmup과 Guide 때는 운동을 진행하지 않음
-  if (!props.progressQueue?.responseData) {
-    console.log('운동하는 시간이 아니에요-----------')
-    startCountDown()
-    return
-  }
-  
-  let currentCount = 1
-  console.log('운동 진입', setsCount)
-
-  // 운동이 끝날때까지 계속 진행
-  while (currentCount != setsCount) {
-    console.log('쉬는 시간, 세트 수 체크', currentCount)
-    console.log('진입할 때 남은 시간 체크 : ', timeLeft.value)
-    currentCount++
-
-    // 쉬는 시간 - 운동 시간 번갈아가면서 체크하기
-
-    startCountDown()
-    if (timeLeft.value != 10) {
-      console.log('운동 끝나고 나서 진입-===============')
-      console.log('timeLeft : ', timeLeft.value)
-      console.log('timeLeft : ', props.progressQueue?.timerLimit)
-      timeLeft.value = 10
-    } else {
-      console.log('쉬는 시간 진입-===============')
-      console.log('timeLeft : ', timeLeft.value)
-      timeLeft.value = props.progressQueue?.timerLimit
-    }
-  }
-}
-
-function startCountDown() {
-  console.log('startCountDown')
+function startCountdown() {
   interval.value = setInterval(() => {
     timeLeft.value--
-    console.log('timeLeft Value ', timeLeft.value--)
     if (timeLeft.value === 0) {
-      console.log('인터벌 삭제')
       clearInterval(interval)
       skipClick() // 0초일 때 click 함수 실행
     }
   }, 1000)
 }
+
+onMounted(() => {
+  setTimeout(() => {
+    showInfo.value = false // 5초 후에 div를 숨깁니다.
+  }, 2000)
+  if (timeLeft.value < 0) return
+  startCountdown()
+})
 
 onUnmounted(() => {
   if (interval.value) {
@@ -181,35 +99,7 @@ onUnmounted(() => {
 }
 
 /* Info css */
-.info {
-  color: transparent;
-  font-size: 35px;
-  font-weight: 900;
-  text-align: center;
-  background: linear-gradient(111deg, rgb(133, 0, 38) 8%, rgb(249, 76, 16) 93%);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-.ai-training-info-container {
-  position: absolute;
 
-  width: 100%;
-  height: 100%;
-  background-color: rgb(102, 102, 102);
-}
-.ai-training-info {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  height: 15%;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50px;
-}
 /* bottomBar CSS */
 .status-navigation-container {
   display: flex;
