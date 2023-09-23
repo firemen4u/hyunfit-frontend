@@ -194,13 +194,8 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
-import {
-  FILE_SERVER_TOKEN,
-  FILE_SERVER_HYUNFIT_URL,
-  BACKEND_API_BASE_URL,
-} from '/src/config.js'
+import { FILE_SERVER_HYUNFIT_URL, BACKEND_API_BASE_URL } from '/src/config.js'
 import ApiClient from '/src/services/api'
-
 
 // 루틴 타켓부위
 const rtn_target_radio = [

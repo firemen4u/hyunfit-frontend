@@ -33,8 +33,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
-import { FullStarSvg } from '/src/module/@base/svg'
+import { ref } from 'vue'
 const props = defineProps({
   label: String,
 })

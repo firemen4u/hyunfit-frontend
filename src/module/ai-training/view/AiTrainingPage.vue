@@ -30,11 +30,14 @@ import {
   AITrainingTeachingVideo,
 } from '/src/module/ai-training/component'
 
-let loading = ref(true)
 const baseURL = 'https://api.hyunfit.life/routines/'
 const rerenderKey = ref(0)
 const progressQueue = ref([])
+
+let loading = ref(true)
+let squatsCount = ref(0)
 let currentIndex = ref(0)
+
 const currentItem = computed(() => {
   if (progressQueue.value && currentIndex.value < progressQueue.value.length) {
     return progressQueue.value[currentIndex.value]
@@ -42,7 +45,6 @@ const currentItem = computed(() => {
   return null
 })
 
-let squatsCount = ref(0)
 
 function init() {
   try {

@@ -75,7 +75,9 @@ async function loadData(params = {}) {
   trnSearchResults.value = await TrnSearchApi.getTrainers(params)
 }
 onBeforeMount(() => {
-  loadData()
+  loadData({
+    order: selectedSearchOrder.value.option,
+  })
 })
 </script>
 

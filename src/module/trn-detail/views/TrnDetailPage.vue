@@ -25,6 +25,7 @@ import {
   trnCertificatesSrc,
 } from '@/module/trn-detail/stores/trnDetailCommon'
 import router, { pathNames } from '@/router'
+import ReportDateUtils from '@/module/report/services/reportDateUtils'
 
 let trnData = ref([])
 const route = useRoute()
@@ -175,7 +176,7 @@ onMounted(() => {
         <div v-else>
           <img
             class="rounded-lg border-white border-2 w-32 border-solid"
-            src="/src/assets/images/default-user-profile.jpg"
+            src="/src/assets/images/default-user-profile.png"
             alt=""
           />
         </div>
@@ -285,17 +286,17 @@ onMounted(() => {
             <div class="review-container section mb-20" section-id="2">
               <div class="text-xl font-black mb-2">리뷰</div>
               <div class="review-nav">
-                <div class="flex items-end">
-                  <div class="text-3xl font-black">
+                <div class="flex items-center">
+                  <div class="text-[40px] font-black">
                     {{ trnData.averageReviewRating }}
                   </div>
                   <div class="ml-4">
                     <BaseRating
-                      icon-size="xs"
+                      icon-size=""
                       v-model="trnData.averageReviewRating"
                       readonly
                     />
-                    <div class="text-xxs">
+                    <div class="text-sm">
                       {{ trnData.reviews?.length }}개 리뷰
                     </div>
                   </div>
@@ -308,14 +309,22 @@ onMounted(() => {
               >
                 <div class="review-item">
                   <div class="flex items-center">
-                    <div class="mr-5 font-black">{{ review.mbrName }}</div>
-                    <div class="text-xs text-gray-400">{{ review.date }}</div>
+                    <div class="mr-3 font-black">{{ review.mbrName }}</div>
+                    <BaseCompactRating
+                      readonly
+                      :rating="review.ptrRating"
+                      :icon-size="16"
+                      :count-size="14"
+                    ></BaseCompactRating>
                   </div>
-                  <BaseRating
-                    icon-size="xs"
-                    readonly
-                    v-model="review.ptrRating"
-                  ></BaseRating>
+
+                  <div class="mt-1 text-xs text-gray-400">
+                    {{
+                      ReportDateUtils.timestampToFullDate(
+                        review.ptrCreationDate
+                      )
+                    }}
+                  </div>
                   <div class="my-3">{{ review.ptrContent }}</div>
 
                   <ReviewStickerGroup :stickers="review.ptrStickers" />
