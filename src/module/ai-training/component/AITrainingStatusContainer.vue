@@ -143,12 +143,4 @@ onMounted(() => {
   color: white;
 }
 
-.progress-bar-wrapper {
-  position: absolute;
-  width: 0%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 10;
-  border-radius: 10%;
-}
 </style>

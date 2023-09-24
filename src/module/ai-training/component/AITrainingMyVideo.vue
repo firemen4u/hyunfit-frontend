@@ -19,7 +19,6 @@ canvas video {
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
 import {onMounted, ref} from 'vue'
-import BaseCircularLoader from "@/module/@base/components/BaseCircularLoader.vue";
 
 const URL = 'https://fs.hyunfit.life/api/firemen/model/'
 let model, webcam, ctx, labelContainer, maxPredictions
