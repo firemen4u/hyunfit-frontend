@@ -8,7 +8,7 @@
         <img src="/src/assets/images/mainLogo.png" />
       </div>
       <div class="ressoningTime">
-        <RessoningTime></RessoningTime>
+        <LessoningTime v-if="showLessoningTime"></LessoningTime>
       </div>
     </div>
     <div id="ptCamContainer" class="flex flex-col justify-center">
@@ -57,7 +57,7 @@
 <script setup>
 import CurrentTime from '../components/CurrentTimeComponent.vue'
 import CurrentDate from '../components/CurrentDateComponent.vue'
-import RessoningTime from '../components/RessoningTimeComponent.vue'
+import LessoningTime from '../components/LessoningTimeComponent.vue'
 </script>
 <script>
 import { OpenVidu } from 'openvidu-browser'
@@ -76,6 +76,10 @@ export default {
       videoImgPath: '/src/assets/images/Vector.png',
       audioImgPath: '/src/assets/images/microphone.png',
       showButton: true,
+      showLessoningTime: false,
+      personalTrainingDTO: {
+        ptReservationStatus: null,
+      },
     }
   },
   methods: {
@@ -86,7 +90,7 @@ export default {
       this.joinSession(userRole, sessionId)
     },
     async getToken(currUserRole, mySessionId) {
-      if (currUserRole == 0) {
+      if (currUserRole == 'member') {
         return await this.createToken(mySessionId)
       } else {
         const sessionId = await this.createSession(mySessionId)
@@ -94,16 +98,13 @@ export default {
       }
     },
     async createSession(ptSeq) {
-      const response = await ApiClient.post(
-        'http://localhost:8080/openvidu/sessions',
-        { ptSeq }
-      )
+      const response = await ApiClient.post('/openvidu/sessions', { ptSeq })
       return response.sessionId
     },
 
     async createToken(sessionId) {
       return ApiClient.post(
-        'http://localhost:8080/openvidu/sessions/' + sessionId + '/connections',
+        '/openvidu/sessions/' + sessionId + '/connections',
         {}
       )
         .then(response => {
@@ -120,6 +121,12 @@ export default {
       this.session.on('streamCreated', ({ stream }) => {
         let subscriber = this.session.subscribe(stream, 'subscriber')
         this.subscriber.push(subscriber)
+        this.showLessoningTime = true
+        this.personalTrainingDTO.ptReservationStatus = 2
+        ApiClient.put(
+          '/personal-trainings/' + mySessionId,
+          this.personalTrainingDTO
+        )
       })
       this.session.on('exception', ({ exception }) => {
         console.warn(exception)
@@ -174,7 +181,6 @@ export default {
         ? this.publisher.publishAudio(true)
         : this.publisher.publishAudio(false)
     },
-
     leaveSession() {
       if (this.session) this.session.disconnect()
 
@@ -184,6 +190,22 @@ export default {
       this.subscriber = undefined
       this.OV = undefined
 
+      const mySessionId = localStorage.getItem('ptSeq')
+
+      if (this.personalTrainingDTO.ptReservationStatus === 2) {
+        this.personalTrainingDTO.ptReservationStatus = 3
+        ApiClient.put(
+          '/personal-trainings/' + mySessionId,
+          this.personalTrainingDTO
+        )
+      } else {
+        this.personalTrainingDTO.ptReservationStatus = 5
+        ApiClient.put(
+          '/personal-trainings/' + mySessionId,
+          this.personalTrainingDTO
+        )
+      }
+      localStorage.removeItem('ptSeq')
       window.close()
     },
   },

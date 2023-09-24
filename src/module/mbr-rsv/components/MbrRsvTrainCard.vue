@@ -62,7 +62,6 @@ const props = defineProps({
 let daysDiff = ref('')
 function enterPtRoom() {
   localStorage.setItem('ptSeq', props.responseData.ptSeq)
-  localStorage.setItem('userRole', 0)
   window.open('http://localhost:5173/PtRoom', '_blank')
 }
 function calcDay() {

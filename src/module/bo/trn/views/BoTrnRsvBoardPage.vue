@@ -4,7 +4,7 @@
       <div class="rsv-container flex justify-center">
         <div class="rsv-list-outer mb-10" ref="listOuter">
           <div v-if="showCardList" class="rsv-smr-card-container">
-            <div v-for="index in 4" :key="index">
+            <div v-for="index in 5" :key="index">
               <ReservationSummaryCard
                 class="shadow-lg"
                 :sendToChild="sendingData"
@@ -36,6 +36,7 @@ export default {
         completeCnt: 0,
         noShowCnt: 0,
         upcomingCnt: 0,
+        cancelCnt: 0,
       },
     }
   },
@@ -47,6 +48,7 @@ export default {
         completeCnt: cntList.completeCnt,
         noShowCnt: cntList.noShowCnt,
         upcomingCnt: cntList.upcomingCnt,
+        cancelCnt: cntList.cancelCnt,
       }
       this.showCardList = true
     },

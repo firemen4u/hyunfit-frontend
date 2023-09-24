@@ -60,17 +60,16 @@ export default {
       completeCnt: 0,
       noShowCnt: 0,
       upcomingCnt: 0,
+      cancelCnt: 0,
       showDetail: false,
       selectedReservation: null,
       reservations: [],
     }
   },
   async created() {
-    let resposeData = await ApiClient.get('http://localhost:8080/trainers/me')
+    let resposeData = await ApiClient.get('/trainers/me')
     await ApiClient.get(
-      'http://localhost:8080/trainers/' +
-        resposeData.trnSeq +
-        '/personal-training'
+      '/trainers/' + resposeData.trnSeq + '/personal-training'
     )
       .then(response => {
         this.reservations = response
@@ -88,6 +87,7 @@ export default {
         completeCnt: this.completeCnt,
         noShowCnt: this.noShowCnt,
         upcomingCnt: this.upcomingCnt,
+        cancelCnt: this.cancelCnt,
       }
       console.log('자식에게 주는 데이터:', cntList)
       this.$emit('send-cntlist', cntList)
@@ -99,15 +99,18 @@ export default {
     plusCnt() {
       for (let i = 0; i < this.reservations.length; i++) {
         const reservation = this.reservations[i]
-        if (reservation.ptReservationStatus === 3) {
-          reservation.ptReservationStatus = '완료'
-          this.completeCnt = this.completeCnt + 1
-        } else if (reservation.ptReservationStatus === 2) {
-          reservation.ptReservationStatus = '노쇼'
-          this.noShowCnt = this.noShowCnt + 1
-        } else {
+        if (reservation.ptReservationStatus === 1) {
           reservation.ptReservationStatus = '예정'
           this.upcomingCnt = this.upcomingCnt + 1
+        } else if (reservation.ptReservationStatus === 3) {
+          reservation.ptReservationStatus = '완료'
+          this.completeCnt = this.completeCnt + 1
+        } else if (reservation.ptReservationStatus === 4) {
+          reservation.ptReservationStatus = '취소'
+          this.cancelCnt = this.cancelCnt + 1
+        } else if (reservation.ptReservationStatus === 5) {
+          reservation.ptReservationStatus = '노쇼'
+          this.noShowCnt = this.noShowCnt + 1
         }
       }
     },
