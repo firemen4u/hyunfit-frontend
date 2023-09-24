@@ -4,7 +4,7 @@
   >
     <p class="reps-title text-2xl font-bold text-white mb-4">Sec</p>
     <span class="resps-count text-7xl font-bold text-white mb-4">
-      {{ props.timerLimit }}</span
+      {{ Math.floor(props.timerLimit) }}</span
     >
   </div>
 </template>
@@ -12,11 +12,10 @@
 import { ref, onMounted } from 'vue'
 
 const props = defineProps({
-  timerLimit: Object,
+  timerLimit: Number,
 })
 
 const remainingTime = ref(props.timerLimit) // props를 로컬 데이터로 복사
-console.log('remainingTime', props.timerLimit)
 
 const startTimer = () => {
   const timerInterval = setInterval(() => {
