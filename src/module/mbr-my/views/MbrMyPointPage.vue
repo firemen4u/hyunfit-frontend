@@ -45,23 +45,27 @@ onMounted(async () => {
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
-      <div class="">
-        <!-- 컨텐츠 -->
-        <div class="content mt-10">
-          <p class="font-bold text-xl pl-5">{{ memberName }}님의 포인트 조회</p>
-          <p>총 포인트 : {{ memberTotalPoints }}</p>
-          <hr class="border-2 border-gray-400" />
-
-          <table class="min-w-full">
+      <!-- 컨텐츠 -->
+      <div class="content mt-10">
+        <p class="font-bold text-2xl pl-5">포인트 조회</p>
+        <div class="px-10">
+          <div
+            class="flex text-lg bg-primary p-4 pl-10 rounded-t-lg my-5 text-white items-center"
+          >
+            <p class="font-bold">{{ memberName }}님</p>
+            <p>의 포인트 :</p>
+            <p class="text-xl font-bold ml-10">{{ memberTotalPoints }}</p>
+          </div>
+          <table class="min-w-full border-separate border-spacing-y-5">
             <thead>
-              <tr class="border-y-2 border-solid text-2xl pt-10">
-                <th>포인트 양</th>
-                <th>포인트 획득 날짜</th>
+              <tr class="text-xl pt-10">
+                <th>포인트</th>
+                <th>적립 날짜</th>
               </tr>
             </thead>
             <tbody class="text-center">
               <tr v-for="(point, index) in slicedPoints" :key="index">
-                <td>{{ point.mevAmount }}</td>
+                <td>+ {{ point.mevAmount }} P</td>
                 <td>
                   {{ dateUtils.timestampToFullDate(point.mevCreationDate) }}
                 </td>
@@ -72,9 +76,17 @@ onMounted(async () => {
             :totalPages="totalPages"
             v-model="currentPage"
             @update:modelValue="currentPage = $event"
+            class="mt-5 mb-10"
           />
         </div>
       </div>
     </BaseBodyWrapper>
   </BaseContainer>
 </template>
+
+<style scoped>
+.mbr-hr {
+  margin: 10px;
+  margin-bottom: 15px;
+}
+</style>
