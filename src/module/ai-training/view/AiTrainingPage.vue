@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD:src/module/ai-training/view/AITrainingPage.vue
   <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
     <v-btn @click="timer.start(20)">Start</v-btn>
     <v-btn @click="timer.stop()">Stop</v-btn>
@@ -18,10 +17,6 @@
     <div>Break {{ breakTime }} || loading {{ loading }}</div>
     <br />
     video {{ videoList[currentIndex - 1] }}
-=======
-  <div v-if="loading === true">
-    <h1 class="loading">로딩중</h1>
->>>>>>> f27daa916c2c07b42ef03587104a6b3e10a200ad:src/module/ai-training/view/AiTrainingPage.vue
   </div>
 
   <div class="ai-training-container flex">
@@ -123,7 +118,6 @@ import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
 
 const baseURL = 'https://api.hyunfit.life/routines/'
 const rerenderKey = ref(0)
-<<<<<<< HEAD:src/module/ai-training/view/AITrainingPage.vue
 const exerciseQueue = ref(null)
 
 let loading = ref(true)
@@ -187,22 +181,10 @@ const timer = {
 const currentExercise = computed(() => {
   if (exerciseQueue.value && currentIndex.value < exerciseQueue.value.length) {
     return exerciseQueue.value[currentIndex.value]
-=======
-const progressQueue = ref([])
-
-let loading = ref(true)
-let squatsCount = ref(0)
-let currentIndex = ref(0)
-
-const currentItem = computed(() => {
-  if (progressQueue.value && currentIndex.value < progressQueue.value.length) {
-    return progressQueue.value[currentIndex.value]
->>>>>>> f27daa916c2c07b42ef03587104a6b3e10a200ad:src/module/ai-training/view/AiTrainingPage.vue
   }
   return null
 })
 
-<<<<<<< HEAD:src/module/ai-training/view/AITrainingPage.vue
 function toggleTime() {
   if (timeDelta === 0) {
     timer.resume()
@@ -210,70 +192,6 @@ function toggleTime() {
   } else {
     timer.stop()
     pauseTime.value = true
-=======
-
-function init() {
-  try {
-    axios.get('https://api.hyunfit.life/routines/1').then(response => {
-      console.log('"API 통신 성공" \n API 통신 값', response.data)
-      // Intro
-      progressQueue.value.push({
-        myVideoWidth: 'FULL',
-        teachingVideoWidth: 'NONE',
-        infoContainerVisible: false,
-        countContainerVisible: false,
-        timerVisible: false,
-        timerLimit: -1,
-      })
-      // WarmUp
-      progressQueue.value.push({
-        myVideoWidth: 'HALF',
-        teachingVideoWidth: 'HALF',
-        infoContainerVisible: false,
-        countContainerVisible: false,
-        timerVisible: true,
-        timerLimit: 100,
-      })
-      for (const seq of response.data.exercises) {
-        console.log(seq)
-        // Guide
-        progressQueue.value.push({
-          myVideoWidth: 'NONE',
-          teachingVideoWidth: 'FULL',
-          infoContainerVisible: false,
-          countContainerVisible: true,
-          timerVisible: true,
-          timerLimit: 10,
-          previewUrl: `${baseURL}preview_video_${seq.excSeq}`,
-        })
-        // Exercise
-        progressQueue.value.push({
-          myVideoWidth: 'HALF',
-          teachingVideoWidth: 'HALF',
-          infoContainerVisible: false,
-          countContainerVisible: true,
-          timerVisible: true,
-          timerLimit: seq.excTimePerSetInSec,
-          responseData: seq,
-          exerciseUrl: `${baseURL}exercise_video_${seq.excSeq}`,
-        })
-      }
-      // Exit
-      progressQueue.value.push({
-        myVideoWidth: 'NONE',
-        teachingVideoWidth: 'HALF',
-        infoContainerVisible: false,
-        countContainerVisible: true,
-        timerVisible: true,
-        timerLimit: -1,
-      })
-      setTimeout(() => {
-        loading.value = false
-      }, 5000)
-    })
-  } catch (error) {
-    console.error('데이터를 가져오는 중 에러 발생 : ', error)
->>>>>>> f27daa916c2c07b42ef03587104a6b3e10a200ad:src/module/ai-training/view/AiTrainingPage.vue
   }
 }
 
