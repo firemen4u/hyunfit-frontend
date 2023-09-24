@@ -137,6 +137,7 @@ function moveToMain() {
 
 function logout() {
   ApiClient.removeTokenOnLocalStorage()
+  userData.value = null
   router.go(0)
 }
 function login() {
@@ -146,7 +147,7 @@ const userData = ref(null)
 const loggedIn = computed(() => userData.value)
 
 const userName = computed(() => {
-  if (!loggedIn.value) return
+  if (!loggedIn.value) return null
   if ('mbrName' in userData.value) return userData.value.mbrName
   if ('admName' in userData.value) return userData.value.admName
   if ('trnName' in userData.value) return userData.value.trnName
@@ -155,12 +156,9 @@ const userName = computed(() => {
 })
 
 const userProfile = computed(() => {
-  if (!loggedIn.value) return '/src/assets/images/default-user-profile.png'
-  let p
-  if ('mbrProfileUrl' in userData.value) p = userData.value.mbrProfileUrl
-  if ('admProfileUrl' in userData.value) p = userData.value.admProfileUrl
-  if ('trnProfileUrl' in userData.value) p = userData.value.trnProfileUrl
-  return p ? p : '/src/assets/images/default-user-profile.png'
+  if ('mbrProfileUrl' in userData.value) return userData.value.mbrProfileUrl
+  if ('admProfileUrl' in userData.value) return userData.value.admProfileUrl
+  if ('trnProfileUrl' in userData.value) return userData.value.trnProfileUrl
 })
 onMounted(async () => {
   userData.value = await ApiClient.me()
@@ -237,8 +235,15 @@ onMounted(async () => {
               tabindex="-1"
             >
               <img
+                v-if="loggedIn"
                 class="h-8 w-8 rounded-full mr-1 object-cover"
                 :src="userProfile"
+                alt=""
+              />
+              <img
+                v-else
+                class="h-8 w-8 rounded-full mr-1 object-cover"
+                src="/src/assets/images/default-user-profile.png"
                 alt=""
               />
               <DownArrowSvg :size="22" color="#AAAAAA" />
@@ -262,11 +267,17 @@ onMounted(async () => {
               >
                 <div class="py-1 px-2 flex items-center flex-col">
                   <img
+                    v-if="loggedIn"
                     class="h-24 w-24 rounded-full object-cover"
                     :src="userProfile"
                     alt=""
                   />
-
+                  <img
+                    v-else
+                    class="h-24 w-24 rounded-full object-cover"
+                    src="/src/assets/images/default-user-profile.png"
+                    alt=""
+                  />
                   <div
                     v-if="loggedIn"
                     class="profile-edit-button absolute mt-[68px] ml-[68px] rounded-full p-1"
