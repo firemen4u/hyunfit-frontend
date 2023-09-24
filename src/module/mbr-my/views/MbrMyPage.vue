@@ -1,10 +1,5 @@
 <template>
   <BaseContainer>
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
     <BaseBodyWrapper>
       <div class="">
         <!-- 컨텐츠 -->
@@ -125,7 +120,6 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeMount } from 'vue'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import ApiClient from '/src/services/api.js'
 import _ from 'lodash'
 
