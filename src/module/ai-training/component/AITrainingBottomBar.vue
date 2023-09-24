@@ -45,10 +45,8 @@ function skipClick() {
 const timeLeft = ref(0)
 function startCountdown() {
   interval.value = setInterval(() => {
-    console.log('남은시간', timeLeft.value)
     timeLeft.value--
     if (timeLeft.value === 0) {
-      console.log('인터벌 삭제')
       clearInterval(interval)
       skipClick() // 0초일 때 click 함수 실행
     }
@@ -57,7 +55,7 @@ function startCountdown() {
 
 onMounted(() => {
   timeLeft.value = props.timerLimit
-  console.log('status container', )
+  console.log('status container')
   if (timeLeft.value < 0) return
   startCountdown()
 })
