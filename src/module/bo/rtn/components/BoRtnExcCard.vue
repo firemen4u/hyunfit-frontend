@@ -4,10 +4,9 @@
     @click="handleClick"
   >
     <div>
-      <img
-        class="exc-img"
-        src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdAJq71%2FbtsteQJsEa7%2FntSCTKbwomKjVIpQusuLwk%2Fimg.jpg"
-      />
+      <video controls loop muted autoplay class="exc-img rounded-md">
+          <source :src="videoSrc" /> 
+      </video>
     </div>
     <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
     <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
@@ -34,6 +33,14 @@
 const props = defineProps({
   exercise: Object, // 운동 정보를 props로 받습니다.
 })
+
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js' 
+import { computed } from 'vue'
+
+const videoSrc = computed( 
+  () =>
+    `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${props.exercise.excSeq}.mp4`
+)
 
 const emit = defineEmits([])
 

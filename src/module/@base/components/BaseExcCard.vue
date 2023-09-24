@@ -1,10 +1,9 @@
 <template>
   <div class="exc-card flex flex-col shadow-md rounded-lg bg-white">
     <div class="flex justify-center">
-      <img
-        class="exc-img"
-        src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdAJq71%2FbtsteQJsEa7%2FntSCTKbwomKjVIpQusuLwk%2Fimg.jpg"
-      />
+      <video controls loop muted autoplay class="exc-img rounded-md">  
+        <source :src="videoSrc" />  
+      </video>
     </div>
     <div class="exc-name mt-2 font-bold text-lg">{{ exercise.excName }}</div>
     <div class="exc-content flex flex-wrap">{{ exercise.excContent }}</div>
@@ -12,9 +11,17 @@
 </template>
 
 <script setup>
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js' 
+import { computed } from 'vue'
+
 const props = defineProps({
   exercise: Object,
 })
+
+const videoSrc = computed( 
+  () =>
+    `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${props.exercise.excSeq}.mp4`
+)
 </script>
 
 <style scoped>
