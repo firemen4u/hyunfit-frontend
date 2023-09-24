@@ -1,26 +1,25 @@
 <template>
   <div class="my-video bg-orange-200" :class="windowSize">
-    <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
+    <canvas id="canvas" style="width: 100%; height: 100%;"></canvas>
     <div id="label-container"></div>
   </div>
 </template>
 
 <style scoped>
 canvas {
-  //object-fit: cover;
-  //aspect-ratio: auto 1280 / 720;
-  //overflow-clip-margin: content-box;
-  //overflow: clip;
+//object-fit: cover; //aspect-ratio: auto 1280 / 720; //overflow-clip-margin: content-box; //overflow: clip;
 }
+
 canvas video {
-  object-fit: cover;
+  object-fit: fill;
 }
 </style>
 
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { onMounted, ref } from 'vue'
+import {onMounted, ref} from 'vue'
+import BaseCircularLoader from "@/module/@base/components/BaseCircularLoader.vue";
 
 const URL = 'https://fs.hyunfit.life/api/firemen/model/'
 let model, webcam, ctx, labelContainer, maxPredictions
@@ -35,7 +34,9 @@ const modelName = 'squat'
 const lastPredictionTime = ref(0)
 const lastSquatStartTime = ref(0)
 
-const emit = defineEmits([])
+let myVideoLoading = ref(false)
+
+const emit = defineEmits(['event:countUpdated'])
 
 const props = defineProps({
   exerciseData: Object,
@@ -46,6 +47,7 @@ const props = defineProps({
 onMounted(() => {
   init()
 })
+
 async function init() {
   const modelURL = URL + modelName + '/model.json'
   const metadataURL = URL + modelName + '/metadata.json'
@@ -60,9 +62,11 @@ async function init() {
     alert('카메라 로드 실패. 카메라가 사용중이거나 권한이 없습니다')
     return
   }
+  myVideoLoading.value = true
   await webcam.setup() // request access to the webcam
   await webcam.play()
   window.requestAnimationFrame(loop)
+  myVideoLoading.value = false
 
   // append/get elements to the DOM
   const canvas = document.getElementById('canvas')
@@ -86,7 +90,7 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
+  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
 
   // Prediction 2: run input through teachable machine classification model
   const currentTime = new Date().getTime()
@@ -97,7 +101,7 @@ async function predict() {
     // 자세 확률 출력
     for (let i = 0; i < maxPredictions; i++) {
       labelContainer.childNodes[i].innerHTML =
-        prediction[i].className + ': ' + prediction[i].probability.toFixed(2)
+          prediction[i].className + ': ' + prediction[i].probability.toFixed(2)
 
       if (prediction[i].className.startsWith('1')) {
         if (!flag && prediction[i].probability > 0.9) {
@@ -106,10 +110,10 @@ async function predict() {
         }
       } else if (prediction[i].probability > 0.9) {
         if (
-          flag &&
-          currentTime - lastSquatStartTime.value >= minSquatDuration
+            flag &&
+            currentTime - lastSquatStartTime.value >= minSquatDuration
         ) {
-          emit('squatsCountUpdated')
+          emit('event:countUpdated')
         }
         flag = false
       }

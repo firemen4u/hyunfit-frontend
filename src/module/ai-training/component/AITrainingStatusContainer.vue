@@ -1,25 +1,23 @@
 <template>
-  <!-- RepsCount -->
   <div
-    :class="windowSize"
-    class="training-status-container flex flex-col absolute items-center justify-center p-2 w-40 h-60 top-4 left-4 rounded-lg"
+      :class="windowSize"
+      class="training-status-container flex flex-col absolute items-center justify-center p-2 w-40 h-60 top-4 left-4 rounded-lg"
   >
     <div
-      class="set-container flex flex-col items-center justify-center bg-[#4e4e4f] text-white w-full h-2/5 mb-2 p-2 rounded-md"
+        class="set-container flex flex-col items-center justify-center bg-[#4e4e4f] text-white w-full h-2/5 mb-2 p-2 rounded-md"
     >
       <p class="set-title text-lg font-bold">SET</p>
 
       <div class="set-count flex flex-row p-2">
         <div
-          v-for="(setStatus, index) in setStatuses"
-          :key="index"
-          :data-sets-status="setStatus"
-          class="status setStyle"
+            v-for="(setStatus, index) in totalCount"
+            :key="index"
+            class="status setStyle"
         ></div>
       </div>
     </div>
     <div
-      class="reps-count-container flex flex-col items-center justify-center bg-[#4e4e4f] text-white w-full h-3/5 rounded-md"
+        class="reps-count-container flex flex-col items-center justify-center bg-[#4e4e4f] text-white w-full h-3/5 rounded-md"
     >
       <span class="reps-title text-lg font-bold">Reps</span>
       <p class="resps-count text-6xl font-bold text-[#00E77B]">
@@ -30,51 +28,27 @@
       </div>
     </div>
   </div>
-
-  <!-- BottomBar Container -->
 </template>
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import {ref, onMounted, watch} from 'vue'
 
 const props = defineProps({
   progressQueue: Object,
   exerciseCount: Number,
+  setCount: Number,
   windowSize: String,
 })
+const completedSets = ref(0);
+const totalCount = ref(3)
 
-let totalCalorie = 0
-
-const setStatuses = ref(['past', 'future', 'future']) // 상태 값
-const timeLeft = ref(props.progressQueue?.timerLimit)
-let interval = ref(null)
-let showInfo = ref(true)
-
-function calcCalorie() {
-  totalCalorie *= props.progressQueue.excCaloriesPerRep
-}
-
-function startCountdown() {
-  interval.value = setInterval(() => {
-    timeLeft.value--
-    if (timeLeft.value === 0) {
-      clearInterval(interval)
-      skipClick() // 0초일 때 click 함수 실행
-    }
-  }, 1000)
-}
-
-onMounted(() => {
-  setTimeout(() => {
-    showInfo.value = false // 5초 후에 div를 숨깁니다.
-  }, 2000)
-  if (timeLeft.value < 0) return
-  startCountdown()
-})
-
-onUnmounted(() => {
-  if (interval.value) {
-    clearInterval(interval.value)
+watch(props.setCount, (newCount) => {
+  completedSets.value = 0;
+  // completedSets를 초기화하고 setCount에 따라 변경
+  if (newCount < completedSets.value) {
+    completedSets.value = newCount;
   }
+});
+onMounted(() => {
 })
 </script>
 <style scoped>
@@ -83,12 +57,15 @@ onUnmounted(() => {
   background-color: rgb(0, 231, 123);
   border-color: rgb(0, 231, 123);
 }
+
 .setStyle[data-sets-status='future'] {
   background-color: rgb(184, 184, 184);
 }
+
 .setStyle[data-sets-status='future'] {
   background-color: rgb(184, 184, 184);
 }
+
 .setStyle {
   width: 24px;
   height: 24px;
@@ -107,6 +84,7 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
 }
+
 .bottom-bar-container {
   position: absolute;
   display: flex;
@@ -121,11 +99,13 @@ onUnmounted(() => {
   transform: translateX(-50%);
   padding: 20px;
 }
+
 .buttons {
   margin: 10px;
   width: 20px;
   height: 20px;
 }
+
 .item {
   width: 200px;
   height: 50px;
@@ -134,6 +114,7 @@ onUnmounted(() => {
   margin: 10px;
   border-radius: 10px;
 }
+
 .skip-item {
   width: 200px;
   height: 50px;
@@ -157,6 +138,7 @@ onUnmounted(() => {
   line-height: 70px;
   cursor: pointer;
 }
+
 .skip-text {
   color: white;
 }
