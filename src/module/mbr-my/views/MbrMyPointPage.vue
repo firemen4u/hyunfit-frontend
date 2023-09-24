@@ -1,6 +1,6 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import ApiClient from '/src/services/api.js'
 import dateUtils from '/src/utils/date.js'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
@@ -9,6 +9,8 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 let memberSeq, memberTotalPoints, memberName
 const mevType = '2' // 1: 칼로리, 2: 포인트
 const points = ref([])
+const perPage = 10
+const currentPage = ref(1)
 
 async function getMemberSeq() {
   const response = await ApiClient.get('/members/me')
@@ -17,6 +19,13 @@ async function getMemberSeq() {
   memberTotalPoints = response.mbrTotalPoint
   memberName = response.mbrName
 }
+
+const totalPages = computed(() => Math.ceil(points.value.length / perPage))
+const slicedPoints = computed(() => {
+  const start = (currentPage.value - 1) * perPage
+  const end = start + perPage
+  return points.value.slice(start, end)
+})
 
 onMounted(async () => {
   await getMemberSeq()
@@ -51,7 +60,7 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody class="text-center">
-              <tr v-for="(point, index) in points" :key="index">
+              <tr v-for="(point, index) in slicedPoints" :key="index">
                 <td>{{ point.mevAmount }}</td>
                 <td>
                   {{ dateUtils.timestampToFullDate(point.mevCreationDate) }}
@@ -59,6 +68,11 @@ onMounted(async () => {
               </tr>
             </tbody>
           </table>
+          <BasePagination
+            :totalPages="totalPages"
+            v-model="currentPage"
+            @update:modelValue="currentPage = $event"
+          />
         </div>
       </div>
     </BaseBodyWrapper>
