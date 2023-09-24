@@ -1,7 +1,6 @@
 <template>
   <BaseContainer>
     <BaseBodyWrapper>
-      <div class="">
         <!-- 컨텐츠 -->
         <div class="content mt-10">
           <p class="font-bold text-2xl pl-5">회원 정보 수정</p>
@@ -112,7 +111,6 @@
             </div>
           </div>
         </div>
-      </div>
     </BaseBodyWrapper></BaseContainer
   >
 </template>
