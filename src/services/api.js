@@ -109,6 +109,7 @@ function removeTokenOnLocalStorage() {
 
 async function me() {
   let role = localStorage.getItem('userRoleName')
+  if (role === null) return null
   return get(`/${role}s/me`)
 }
 

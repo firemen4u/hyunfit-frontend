@@ -1,5 +1,33 @@
 <template>
   <div class="my-video bg-orange-200" :class="windowSize">
+    <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
+      <div
+        class="md-2"
+        :class="
+          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
+        "
+      >
+        기본자세: {{ predictions[0]?.className }}:
+        {{ Math.round(predictions[0]?.probability * 100) }}%
+      </div>
+      <div
+        class="md-2"
+        :class="
+          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
+        "
+      >
+        운동자세: {{ predictions[1]?.className }}:
+        {{ Math.round(predictions[1]?.probability * 100) }}%
+      </div>
+      <div>flag: {{ flag }}</div>
+      <div>Count: {{ exerciseCounts }}</div>
+      <div>확률: {{ predictedProbability }}</div>
+      <div>인정된 자세: {{ getScoreType() }}</div>
+      <div>
+        쿨다운:
+        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
+      </div>
+    </div>
     <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
     <div id="label-container"></div>
   </div>
@@ -7,35 +35,39 @@
 
 <style scoped>
 canvas {
-  //object-fit: cover;
-  //aspect-ratio: auto 1280 / 720;
-  //overflow-clip-margin: content-box;
-  //overflow: clip;
 }
 canvas video {
-  object-fit: cover;
 }
 </style>
 
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
+import { FILE_SERVER_BASE_URL } from '@/config'
 
-const URL = 'https://fs.hyunfit.life/api/firemen/model/'
+const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
+
+const excSeq = 83
+const modelName = `ai_model_${excSeq}`
 
 let flag = false
 const width = 1000
 const height = 1000
-const minSquatDuration = 0
-const maxPredictionInterval = 300
-const modelName = 'squat'
 
+const maxPredictionInterval = 100
+const predictions = ref([])
 const lastPredictionTime = ref(0)
-const lastSquatStartTime = ref(0)
+const predictedProbability = ref(null)
+const minExerciseDuration = 500
+const emit = defineEmits(['prediction'])
 
-const emit = defineEmits([])
+const exerciseCounts = reactive({
+  excellent: ref(0),
+  good: ref(0),
+  bad: ref(0),
+})
 
 const props = defineProps({
   exerciseData: Object,
@@ -46,10 +78,20 @@ const props = defineProps({
 onMounted(() => {
   init()
 })
-async function init() {
-  const modelURL = URL + modelName + '/model.json'
-  const metadataURL = URL + modelName + '/metadata.json'
+
+function emitCountEvent() {
+  console.log('counted')
+  let type = getScoreType()
+  emit('prediction', type)
+}
+
+async function loadModel() {
+  const modelURL = `${BASEURL}/${modelName}/model.json`
+  const metadataURL = `${BASEURL}/${modelName}/metadata.json`
   model = await tmPose.load(modelURL, metadataURL)
+}
+async function init() {
+  await loadModel()
   maxPredictions = model.getTotalClasses()
 
   const flip = true // whether to flip the webcam
@@ -76,6 +118,16 @@ async function init() {
   }
 }
 
+function getScoreType() {
+  if (predictedProbability.value > 0.95) return 'excellent'
+  if (predictedProbability.value > 0.5) return 'good'
+  if (predictedProbability.value > 0.5) return 'bad'
+}
+
+function updatePredictedProbability(probability) {
+  if (probability === -1) predictedProbability.value = -1
+  predictedProbability.value = Math.max(predictedProbability.value, probability)
+}
 async function loop(timestamp) {
   webcam.update() // update the webcam frame
   await predict()
@@ -90,36 +142,44 @@ async function predict() {
 
   // Prediction 2: run input through teachable machine classification model
   const currentTime = new Date().getTime()
-  if (currentTime - lastPredictionTime.value >= maxPredictionInterval) {
-    // 자세 예측
-    let prediction = await model.predict(posenetOutput)
 
-    // 자세 확률 출력
-    for (let i = 0; i < maxPredictions; i++) {
-      labelContainer.childNodes[i].innerHTML =
-        prediction[i].className + ': ' + prediction[i].probability.toFixed(2)
+  drawPose(pose)
 
-      if (prediction[i].className.startsWith('1')) {
-        if (!flag && prediction[i].probability > 0.9) {
-          flag = true
-          lastSquatStartTime.value = currentTime
-        }
-      } else if (prediction[i].probability > 0.9) {
-        if (
-          flag &&
-          currentTime - lastSquatStartTime.value >= minSquatDuration
-        ) {
-          emit('squatsCountUpdated')
-        }
-        flag = false
-      }
+  if (currentTime - lastPredictionTime.value < maxPredictionInterval) return
+
+  // 자세 예측
+  predictions.value = await model.predict(posenetOutput)
+  if (predictions.value.length !== maxPredictions) return
+
+  let pred
+  for (let i = 0; i < maxPredictions; i++) {
+    if (predictions.value[i].probability > 0.7) {
+      pred = predictions.value[i]
+      break
     }
+  }
+  if (!pred) return
 
-    lastPredictionTime.value = currentTime
+  // 예측한 자세가 올바른 자세라면
+  if (pred.className.startsWith('1')) {
+    if (!flag) {
+      flag = true
+      lastPredictionTime.value = currentTime
+    }
+    updatePredictedProbability(pred.probability)
+    return
   }
 
-  // finally draw the poses
-  drawPose(pose)
+  // 일반 자세라면
+  if (flag && currentTime - lastPredictionTime.value >= minExerciseDuration) {
+    //일반 자세인데, flag가 켜져 있었고 충분한 시간이 지났다면
+    emitCountEvent(predictedProbability.value)
+  } else {
+    flag = false
+    updatePredictedProbability(-1)
+  }
+
+  lastPredictionTime.value = currentTime
 }
 
 function drawPose(pose) {
@@ -128,8 +188,21 @@ function drawPose(pose) {
     // draw the keypoints and skeleton
     if (pose) {
       const minPartConfidence = 0.5
-      tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx)
-      tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx)
+      tmPose.drawKeypoints(
+        pose.keypoints,
+        minPartConfidence,
+        ctx,
+        10,
+        '#FFFFFFBB',
+        '#FFFFFF'
+      )
+      tmPose.drawSkeleton(
+        pose.keypoints,
+        minPartConfidence,
+        ctx,
+        10,
+        '#ffffffBB'
+      )
     }
   }
 }
