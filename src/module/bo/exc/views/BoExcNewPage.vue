@@ -216,7 +216,7 @@
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ApiClient from '/src/services/api'
 
 const target_items = ref([
@@ -287,6 +287,18 @@ const exc_calories_per_rep = ref('0')
 const exc_time_per_set_in_sec = ref('0')
 const exc_set_count = ref('0')
 const excRepCountPerSet = ref('0')
+const admSeq = ref('0')
+
+// 초기 데이터 로딩: 관리자 정보 가져오기
+onMounted(async () => {
+  try {
+    const response = await ApiClient.get('/admins/me')
+    console.log('admin : ', response)
+    admSeq.value = response.admSeq
+  } catch (error) {
+    console.error('Failed to fetch admin data:', error)
+  }
+})
 
 const submit = async () => {
   const exerciseTargets = selectedBodyParts.value.map(bodyPart => ({
@@ -295,7 +307,7 @@ const submit = async () => {
   }))
   const values = {
     excName: exc_name.value,
-    admSeq: '1',
+    admSeq: admSeq.value,
     excContent: exc_content.value,
     excType: exc_type.value,
     excDifficulty: exc_difficulty.value,
