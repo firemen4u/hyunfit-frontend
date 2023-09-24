@@ -27,6 +27,7 @@
         :loading="loading"
         :windowSize="windowSize.my"
         :exercise="currentExercise"
+        @prediction="(score) => updateCount(score)"
     ></AITrainingMyVideo>
 
     <AITrainingBreak v-if="breakTime"/>
@@ -45,7 +46,7 @@
     <AITrainingStatusContainer
         v-if="visibility.counter"
         :exercise="currentExercise"
-        :exerciseCount="exerciseCount"
+        :totalScoreCount="totalScoreCount"
         :setCount="setCount"
         :key="rerenderKey"
     />
@@ -115,6 +116,7 @@ import AiTrainingSkipButton from '@/module/ai-training/component/AiTrainingSkipB
 import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
 import ApiClient from "@/services/api";
 
+const memberData = ref(null)
 const baseURL = 'https://api.hyunfit.life/routines/'
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
@@ -187,11 +189,17 @@ const currentExercise = computed(() => {
   }
   return null
 })
+const scores = reactive({
+  excellent: ref(0),
+  good: ref(0),
+  bad: ref(0),
+})
+const totalScoreCount = computed(() => {
+  return scores.excellent + scores.good + scores.bad
+})
 
-function updateCount() {
-  let count = 1
-  exerciseCount.value += count
-  console.log('count', exerciseCount.value)
+function updateCount(scoreType) {
+  scores[scoreType] += 1
 
 }
 
@@ -223,6 +231,7 @@ onMounted(() => {
 
 async function init() {
   loading.value = true
+  await loadMemberData()
   await loadData()
   setTimer()
   timer.stop()
@@ -232,8 +241,6 @@ async function init() {
 function toNextExercise() {
   if (!currentExercise.value) return
 
-  // 가이드 영상이 끝나고 첫번쨰 운동이 시작될 때 starExerciseTime 갱신하기
-  // setfinished = false, break = false, loading = true -> false, setc
   if (currentExercise.value.type === 'GUIDE') {
     startExerciseTime.value = Date.now()
     console.log('startExerciseTime : ', startExerciseTime.value)
@@ -251,7 +258,7 @@ function toNextExercise() {
     }
     return
   } else {
-    if (setCount.value === 3) {
+    if (setCount.value >= 3) {
       endExerciseTime.value = Date.now()
       console.log('endExerciseTime : ', endExerciseTime.value)
       sendExerciseData()
@@ -276,22 +283,17 @@ function onTeachingVideoReady() {
 
 async function sendExerciseData() {
   const data = {
-    exchSeq: '',
-    excSeq: 3,
-    mbrSeq: 0,
+    excSeq: currentExercise.value.excSeq,
+    mbrSeq: memberData.value.mbrSeq,
     exchStartTime: startExerciseTime.value,
     exchEndTime: endExerciseTime.value,
-    exchExcelentCnt: exerciseCount.value,
-    exchGoodCnt: exerciseCount.value,
-    exchBadCnt: 3,
-    exchTotalCalories: 200
+    exchExcelentCnt: scores.excellent,
+    exchGoodCnt: scores.good,
+    exchBadCnt: scores.bad,
+    exchTotalCalories: totalScoreCount.value * currentExercise.value.excCaloriesPerRep
   }
   try {
-    const member = await ApiClient.get('/members/me')
-    console.log('member', member.mbrSeq)
-    data.mbrSeq = member.mbrSeq
-    console.log('data', data)
-    ApiClient.post(`/exercise-history`, data)
+    await ApiClient.post(`/exercise-history`, data)
   } catch (error) {
     console.log('Exercise History API 통신 에러!', error)
     alert('Exercise History API 통신 에러!')
@@ -360,6 +362,14 @@ function createExerciseQueueItem(exercise, type) {
   }
 
   return item
+}
+
+async function loadMemberData() {
+  memberData.value = await ApiClient.get('/members/me')
+  if (memberData.value === null) {
+    console.log('유저 데이터 로드 실패')
+    alert('유저 데이터 로드 실패')
+  }
 }
 
 async function loadData() {

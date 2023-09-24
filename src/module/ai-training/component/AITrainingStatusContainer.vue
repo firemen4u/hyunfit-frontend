@@ -21,7 +21,7 @@
     >
       <span class="reps-title text-lg font-bold">Reps</span>
       <p class="resps-count text-6xl font-bold text-[#00E77B]">
-        {{ props.exerciseCount }}
+        {{ props.totalScoreCount }}
       </p>
       <div class="reps-remain ml-20 font-extrabold">
         /{{ props.progressQueue?.responseData.excRepCountPerSet }}
@@ -30,11 +30,11 @@
   </div>
 </template>
 <script setup>
-import {ref, onMounted, watch} from 'vue'
+import {ref, onMounted, watch, computed} from 'vue'
 
 const props = defineProps({
   progressQueue: Object,
-  exerciseCount: Number,
+  totalScoreCount: Number,
   setCount: Number,
   windowSize: String,
 })
