@@ -382,7 +382,7 @@ const submit = async () => {
     window.location.reload() // 페이지 새로고침
   } catch (error) {
     console.error(error)
-    console.error(error.firstApiResponse.data)
+    console.error(error.response.data)
     alert('등록 실패!')
   }
 }
