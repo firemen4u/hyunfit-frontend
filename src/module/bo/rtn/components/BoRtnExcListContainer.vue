@@ -79,6 +79,7 @@ import {
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import BoRtnExcCard from '/src/module/bo/rtn/components/BoRtnExcCard.vue'
 import { ref, onMounted, computed, watch } from 'vue'
+import ApiClient from '/src/services/api'
 
 const registeredExercises = ref([]) // 등록된 운동을 저장할 변수
 const emit = defineEmits(['update:exercises']) // emit 정의
@@ -170,7 +171,7 @@ const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 // API를 통해 운동 목록을 가져오는 함수
 const fetchExercises = async () => {
   try {
-    const response = await fetch('http://localhost:8080/exercises') // API 엔드포인트를 설정하세요.
+    const response = await ApiClient.get('/exercises') // API 엔드포인트를 설정하세요.
     const data = await response.json()
     exercises.value = data // 받아온 데이터를 exercises 변수에 저장합니다.
   } catch (error) {

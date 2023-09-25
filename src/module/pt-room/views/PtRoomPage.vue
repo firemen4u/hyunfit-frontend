@@ -1,14 +1,16 @@
 <template>
   <div id="ptRoom">
-    <div class="flex justify-between items-center mt-12 mb-5 ml-16 mr-16">
+    <div
+      class="flex justify-between items-center align-baseline mt-20 mb-3 ml-36 mr-36"
+    >
       <div class="currentDate">
         <CurrentDate></CurrentDate>
       </div>
       <div class="w-76 h-11">
-        <img src="/src/assets/images/mainLogo.png" />
+        <HyunfitLogoGradientSvg :size="350" />
       </div>
-      <div class="ressoningTime">
-        <LessoningTime v-if="showLessoningTime"></LessoningTime>
+      <div class="currentTime">
+        <CurrentTime></CurrentTime>
       </div>
     </div>
     <div id="ptCamContainer" class="flex flex-col justify-center">
@@ -25,11 +27,14 @@
         <div id="subscriber"></div>
       </div>
     </div>
-    <div id="controllerButtonContainer" class="flex justify-start mt-6">
-      <div class="currentTime flex items-center">
-        <CurrentTime></CurrentTime>
+    <div id="controllerButtonContainer" class="flex justify-center">
+      <div class="flex justify-start w-1/3">
+        <LessoningTime
+          class="ml-36 mt-7"
+          v-if="showLessoningTime"
+        ></LessoningTime>
       </div>
-      <div class="flex justify-start align-middle">
+      <div class="flex justify-center align-middle w-1/3">
         <v-col cols="auto">
           <v-btn
             icon="mdi-plus"
@@ -50,6 +55,7 @@
           /></v-btn>
         </v-col>
       </div>
+      <div class="w-1/3"></div>
     </div>
   </div>
 </template>
@@ -58,18 +64,18 @@
 import CurrentTime from '../components/CurrentTimeComponent.vue'
 import CurrentDate from '../components/CurrentDateComponent.vue'
 import LessoningTime from '../components/LessoningTimeComponent.vue'
-</script>
-<script>
+import { HyunfitLogoGradientSvg } from '@/module/@base/svg'
 import { OpenVidu } from 'openvidu-browser'
 import ApiClient from '/src/services/api.js'
+</script>
 
+<script>
 export default {
   data() {
     return {
       OV: null,
       session: null,
       subscriber: [],
-      APPLICATION_SERVER_URL: 'http://localhost:8080/',
       showAfterJoin: true,
       bottonAfterJoin: true,
       isAudioMuted: false,
@@ -81,6 +87,9 @@ export default {
         ptReservationStatus: null,
       },
     }
+  },
+  created() {
+    window.addEventListener('beforeunload', this.handleBeforeUnload)
   },
   methods: {
     async startPt() {
@@ -101,7 +110,6 @@ export default {
       const response = await ApiClient.post('/openvidu/sessions', { ptSeq })
       return response.sessionId
     },
-
     async createToken(sessionId) {
       return ApiClient.post(
         '/openvidu/sessions/' + sessionId + '/connections',
@@ -161,7 +169,6 @@ export default {
           })
       })
     },
-
     async toggleVideo() {
       this.videoImgPath =
         this.videoImgPath === '/src/assets/images/Vector.png'
@@ -208,9 +215,20 @@ export default {
       localStorage.removeItem('ptSeq')
       window.close()
     },
-  },
-  beforeUnmount() {
-    if (this.session) this.session.disconnect()
+    handleBeforeUnload(event) {
+      try {
+        this.personalTrainingDTO.ptReservationStatus = 1
+        let sessionId = localStorage.getItem('ptSeq')
+        ApiClient.put(
+          '/personal-trainings/' + sessionId,
+          this.personalTrainingDTO
+        )
+        localStorage.removeItem('ptSeq')
+      } catch (error) {
+        console.error('Error sending API request:', error)
+      }
+      window.removeEventListener('beforeunload', this.handleBeforeUnload)
+    },
   },
 }
 </script>
@@ -236,10 +254,6 @@ export default {
 #margin {
   width: 5%;
   height: 100%;
-}
-.currentTime {
-  margin-left: 70px;
-  margin-right: 559px;
 }
 video {
   width: 100%;

@@ -4,10 +4,11 @@
     <div class="modal-content relative" @click.stop>
       <button @click="closeModal" class="absolute right-4 top-2 p-2">❌</button>
       <div class="flex items-center justify-center mt-4 rounded-md">
-        <img
-          class="exc-img rounded-md"
-          src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdAJq71%2FbtsteQJsEa7%2FntSCTKbwomKjVIpQusuLwk%2Fimg.jpg"
-        />
+        <video controls loop muted autoplay class="exc-img rounded-md">
+          <!-- class 추가 -->
+          <source :src="videoSrc" />
+          <!-- 비디오 소스 바인딩 -->
+        </video>
       </div>
       <div class="modal-category-wrap p-3">
         <div class="modal-sub-wrap">
@@ -93,10 +94,17 @@ import dateUtil from '/src/utils/date.js'
 import ExctgUtils from '@/module/bo/exc/services/excUtils'
 const props = defineProps(['show', 'exercise', 'showDeleteBtn'])
 const emit = defineEmits([])
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
+import { computed } from 'vue'
 
 const closeModal = () => {
   emit('update:show', false)
 }
+
+const videoSrc = computed(
+  () =>
+    `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${props.exercise.excSeq}.mp4`
+)
 
 const formatDate = dateString => {
   const options = {
@@ -157,7 +165,7 @@ const deleteExercise = () => {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 700px; /* 원하는 너비로 설정 */
+  width: 40vw; /* 원하는 너비로 설정 */
   text-align: center;
 }
 .modal-sub-wrap {
@@ -182,9 +190,11 @@ const deleteExercise = () => {
 }
 
 .exc-img {
-  width: 100%; /* 혹은 원하는 값, 예: max-width: 300px; */
-  height: 200px;
-  /*max-height: 50%;  혹은 원하는 값, 예: max-height: 300px; */
+  width: 80%; /* 혹은 원하는 값, 예: */
+  /* max-width: 100vw; */
+  height: 250px;
+  /*max-height: 50%;  혹은 원하는 값, 예: */
+  max-height: 300px;
   object-fit: contain; /* 비율 유지 */
   object-fit: cover; /* 이미지 비율을 유지하면서 넘치는 부분을 잘라냄 */
   overflow: hidden; /* 넘치는 부분을 숨김 */

@@ -16,7 +16,7 @@
             <div class="rsvdetail-category">예약일자</div>
             <div class="rsvdetail-category">예약시간</div>
             <div class="rsvdetail-category">예약상태</div>
-            <div class="rsvdetail-category">회 원 명</div>
+            <div class="rsvdetail-category">트레이너</div>
           </div>
           <!--정보-->
           <div class="flex flex-col items-center">
@@ -30,27 +30,21 @@
             <div class="info-gray-box">
               {{ reservationData.ptReservationStatus }}
             </div>
-            <div class="info-gray-box">{{ reservationData.mbrName }}</div>
+            <div class="info-gray-box">{{ reservationData.trnName }}</div>
           </div>
         </div>
         <!--고객요청사항-->
         <div class="flex flex-col gap-2 ml-4 mb-4">
-          <div class="font-semibold">고객요청사항</div>
-          <div class="sticker-container">
-            <BaseCheckChip
-              class="mr-2 mb-2"
-              v-for="(option, index) in options"
-              :key="index"
-              :label="option"
-            />
-          </div>
+          <div class="font-semibold">취소사유</div>
+          <textarea
+            class="text-box"
+            v-model="personalTrainingDTO.ptCancellationReason"
+          ></textarea>
         </div>
         <div class="flex divider"></div>
         <!--꼬리(입장버튼)-->
         <div class="flex justify-center mt-2">
-          <button class="ptEntryButton" @click="enterPtRoom">
-            PT Room 입장
-          </button>
+          <button class="ptEntryButton" @click="cancelRsv">PT 취소하기</button>
         </div>
       </div>
     </div>
@@ -60,10 +54,9 @@
 <script setup>
 import moment from 'moment'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
+import ApiClient from '/src/services/api.js'
 </script>
 <script>
-import router, { pathNames } from '@/router'
-
 export default {
   props: {
     reservationData: Object,
@@ -71,13 +64,10 @@ export default {
   },
   data() {
     return {
-      options: [
-        '운동이 처음이에요',
-        '살을 빼고 싶어요',
-        '코어를 강화하고 싶어요',
-        '부상 이력이 있어요',
-        '식단 조언도 함께 받고 싶어요',
-      ],
+      personalTrainingDTO: {
+        ptReservationStatus: null,
+        ptCancellationReason: null,
+      },
     }
   },
   methods: {
@@ -85,9 +75,15 @@ export default {
       this.$emit('close')
       location.reload()
     },
-    enterPtRoom() {
-      localStorage.setItem('ptSeq', this.reservationData.ptSeq)
-      window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
+    cancelRsv() {
+      this.personalTrainingDTO.ptReservationStatus = 4
+      console.log(this.reservationData.ptSeq)
+      console.log(this.personalTrainingDTO.ptCancellationReason)
+      ApiClient.put(
+        '/personal-trainings/' + this.reservationData.ptSeq,
+        this.personalTrainingDTO
+      )
+      this.closeModal()
     },
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD')
@@ -163,6 +159,12 @@ export default {
   );
   color: white;
   font-weight: 600;
+}
+.text-box {
+  background-color: rgb(234, 236, 244);
+  width: 350px;
+  height: 150px;
+  border-radius: 5px;
 }
 .divider {
   height: 1px;

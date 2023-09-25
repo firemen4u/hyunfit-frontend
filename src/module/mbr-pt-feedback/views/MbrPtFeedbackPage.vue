@@ -62,15 +62,12 @@ export default {
   },
   async created() {
     await this.initializedMonth()
-    let responseUser = await ApiClient.get('http://localhost:8080/members/me')
+    let responseUser = await ApiClient.get('/members/me')
     console.log(responseUser)
     this.mbrName = responseUser.mbrName
-    await ApiClient.get(
-      'http://localhost:8080/members/' + responseUser.mbrSeq + '/feedback',
-      {
-        params: { date: this.year + '-' + this.sendingMonth },
-      }
-    )
+    await ApiClient.get('/members/' + responseUser.mbrSeq + '/feedback', {
+      params: { date: this.year + '-' + this.sendingMonth },
+    })
       .then(response => {
         console.log(response)
         if (response !== '') {
@@ -85,13 +82,10 @@ export default {
   },
   methods: {
     async getFeedback() {
-      let responseUser = await ApiClient.get('http://localhost:8080/members/me')
-      await ApiClient.get(
-        'http://localhost:8080/members/' + responseUser.mbrSeq + '/feedback',
-        {
-          params: { date: this.year + '-' + this.sendingMonth },
-        }
-      )
+      let responseUser = await ApiClient.get('/members/me')
+      await ApiClient.get('/members/' + responseUser.mbrSeq + '/feedback', {
+        params: { date: this.year + '-' + this.sendingMonth },
+      })
         .then(response => {
           console.log(response)
           if (response !== '') {

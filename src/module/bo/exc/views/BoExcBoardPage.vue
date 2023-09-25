@@ -5,22 +5,27 @@
         <div class="flex justify-between">
           <div class="text-3xl font-bold">운동 목록</div>
         </div>
+        <div class="flex justify-end">
+          <input
+            type="text"
+            v-model="searchText"
+            placeholder=" 운동 검색"
+            class="w-3/12 border-2 p-2 border-solid border-gray-400 rounded-md"
+          />
+        </div>
 
         <div
           class="content-wrap p-2 mt-5 mb-20 shadow-md border-2 border-gray-100 rounded-lg"
         >
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center w-full">
             <BoExcBoardFilterContainer
               class="flex"
               @updateExcType="updateExcType"
             />
-            <div class="mr-5">
-              <input
-                type="text"
-                v-model="searchText"
-                placeholder=" 운동 검색"
-                class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
-              />
+            <div class="mr-7">
+              <v-btn @click="goToExcNewPage" color="primary"
+                >운동 등록하기</v-btn
+              >
             </div>
           </div>
           <div class="exc-wrap w-full">
@@ -37,9 +42,7 @@
             </div>
             <div v-else>해당하는 운동이 없습니다.</div>
           </div>
-          <div class="flex justify-end mr-5 mb-10">
-            <v-btn @click="goToExcNewPage" color="primary">운동 등록하기</v-btn>
-          </div>
+
           <BasePagination v-model="currentPage" :total-pages="totalPages" />
         </div>
       </div>
@@ -80,7 +83,7 @@ const updateExcType = value => {
   console.log('After reset:', currentPage.value) // 로그 추가
 }
 
-const itemsPerPage = ref(15) // 한 페이지당 표시될 아이템 수
+const itemsPerPage = ref(12) // 한 페이지당 표시될 아이템 수
 const currentPage = ref(1) // 현재 페이지
 
 const totalPages = computed(() => {
@@ -171,6 +174,7 @@ const deleteExercise = async excSeq => {
 </script>
 <style scoped>
 .exc-wrap {
-  height: 650px;
+  width: 100%;
+  height: 100%;
 }
 </style>
