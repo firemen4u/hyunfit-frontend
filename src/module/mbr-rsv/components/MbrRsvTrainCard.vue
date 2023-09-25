@@ -26,9 +26,17 @@
               }}
             </p>
           </div>
-          <button class="text-gray-400 text-xl font-bold" @click="enterPtRoom">
+          <button
+            class="text-gray-400 text-xl font-bold"
+            @click="showDetailModal"
+          >
             >>>
           </button>
+          <ReservaionDetailModal
+            :show="showDetail"
+            :reservationData="selectedReservation"
+            @close="showDetail = false"
+          />
         </div>
       </div>
     </div>
@@ -47,7 +55,7 @@
         >
           {{ props.responseData.trnShortDescription }}
         </p>
-        <button class="float-right">입장하기</button>
+        <button class="float-right" @click="enterPtRoom">입장하기</button>
       </div>
     </div>
   </div>
@@ -56,6 +64,7 @@
 <script setup>
 import dateUtil from '/src/utils/date.js'
 import { onMounted, ref } from 'vue'
+import ReservaionDetailModal from '/src/module/mbr-rsv/components/MbrRsvDetailModal.vue'
 
 const props = defineProps({
   responseData: Object,
@@ -65,6 +74,7 @@ function enterPtRoom() {
   localStorage.setItem('ptSeq', props.responseData.ptSeq)
   window.open('http://localhost:5173/PtRoom', '_blank')
 }
+
 function calcDay() {
   const today = new Date()
   const timeDiff = today - props.responseData.ptReservationDate
@@ -78,4 +88,21 @@ function calcDay() {
 onMounted(() => {
   calcDay()
 })
+</script>
+
+<script>
+export default {
+  data() {
+    return {
+      selectedReservation: null,
+      showDetail: false,
+    }
+  },
+  methods: {
+    showDetailModal() {
+      this.selectedReservation = this.$props.responseData
+      this.showDetail = true
+    },
+  },
+}
 </script>
