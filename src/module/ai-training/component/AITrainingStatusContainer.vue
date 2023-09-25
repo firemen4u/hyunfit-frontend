@@ -30,7 +30,7 @@
   </div>
 </template>
 <script setup>
-import {ref, onMounted, watch} from 'vue'
+import {ref, onMounted} from 'vue'
 
 const props = defineProps({
   exercise: Object,
