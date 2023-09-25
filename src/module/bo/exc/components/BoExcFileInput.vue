@@ -6,7 +6,7 @@
     :label="label"
     prepend-icon="none"
     variant="solo"
-    show-size="1000"
+    :show-size="1000"
     hide-details
   >
     <template v-slot:selection="{ fileNames }">

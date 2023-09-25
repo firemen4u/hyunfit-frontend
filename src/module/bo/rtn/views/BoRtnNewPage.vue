@@ -190,139 +190,193 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { PictureSvg } from '/src/module/@base/svg'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
-import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
+import { BoExcRadioButton } from '/src/module/bo/exc/components'
 import { FILE_SERVER_HYUNFIT_URL, BACKEND_API_BASE_URL } from '/src/config.js'
 import ApiClient from '/src/services/api'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
+import PointCoinSvg from '@/module/@base/svg/PointCoinSvg.vue'
+import ExcUtils from '@/module/bo/exc/services/excUtils'
 
 // 루틴 타켓부위
 const rtn_target_radio = [
-  { label: '상체', value: '1' },
-  { label: '하체', value: '2' },
-  { label: '전신', value: '3' },
-  { label: '유산소', value: '4' },
+  { label: '상체', value: 1 },
+  { label: '하체', value: 2 },
+  { label: '전신', value: 3 },
+  { label: '유산소', value: 4 },
 ]
 
 // 루틴 난이도
 const rtn_experience_level_radio = [
-  { label: '초급', value: '1' },
-  { label: '초중급', value: '2' },
-  { label: '중급', value: '3' },
-  { label: '중상급', value: '4' },
-  { label: '상급', value: '5' },
+  { label: '초급', value: 1 },
+  { label: '초중급', value: 2 },
+  { label: '중급', value: 3 },
+  { label: '중상급', value: 4 },
+  { label: '상급', value: 5 },
 ]
 
 // 루틴 진행시간
 const rtn_duration_radio = [
-  { label: '10-15분', value: '1' },
-  { label: '15-20분', value: '2' },
-  { label: '20-25분', value: '3' },
+  { label: '10-15분', value: 1 },
+  { label: '15-20분', value: 2 },
+  { label: '20-25분', value: 3 },
 ]
 
 // 운동 목표
 const rtn_goal_radio = [
-  { label: '1번 목표', value: '1' },
-  { label: '2번 목표', value: '2' },
+  { label: '체중관리', value: 1 },
+  { label: '건강관리', value: 2 },
 ]
 
 // 무릎 운동 고려
 const rtn_knee_health_considered_radio = [
-  { label: '예', value: '1' },
-  { label: '아니오', value: '2' },
+  { label: '예', value: 1 },
+  { label: '아니오', value: 2 },
 ]
 
 // 층간 소음 고려
 const rtn_noise_considered_radio = [
-  { label: '예', value: '1' },
-  { label: '아니오', value: '2' },
+  { label: '예', value: 1 },
+  { label: '아니오', value: 2 },
 ]
 
 // 오래 앉아 있는 사람
 const rtn_long_sitter_radio = [
-  { label: '예', value: '1' },
-  { label: '아니오', value: '2' },
+  { label: '예', value: 1 },
+  { label: '아니오', value: 2 },
 ]
 
 // 목 어깨 포커스
 const rtn_neck_shoulder_focused_radio = [
-  { label: '예', value: '1' },
-  { label: '아니오', value: '2' },
+  { label: '예', value: 1 },
+  { label: '아니오', value: 2 },
 ]
 
 // 허리 디스크 고려
 const rtn_back_disk_considered_radio = [
-  { label: '예', value: '1' },
-  { label: '아니오', value: '2' },
+  { label: '예', value: 1 },
+  { label: '아니오', value: 2 },
 ]
 
 //submit 시키기
 const rtn_name = ref('')
 const rtn_content = ref('')
-const rtn_duration = ref('1')
-const rtn_goal = ref('1')
-const rtn_target = ref('1')
-const rtn_experience_level = ref('1')
-const rtn_knee_health_considered = ref('1')
-const rtn_noise_considered = ref('1')
-const rtn_long_sitter = ref('1')
-const rtn_neck_shoulder_focused = ref('1')
-const rtn_back_disk_considered = ref('1')
-const rtn_reward_point = ref('0')
-const admSeq = ref('0')
+const rtn_goal = ref(1)
+const rtn_knee_health_considered = ref(1)
+const rtn_noise_considered = ref(1)
+const rtn_long_sitter = ref(1)
+const rtn_neck_shoulder_focused = ref(1)
+const rtn_back_disk_considered = ref(1)
+const rtn_reward_point = ref(0)
+const admSeq = ref(0)
+const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 
+const formValidator = ref(true)
+const loading = ref(false)
 onMounted(async () => {
   try {
     const response = await ApiClient.get('/admins/me')
     console.log('admin : ', response)
     admSeq.value = response.admSeq
+    // API를 통해 운동 목록을 가져오는 함수
+    await fetchExercises()
   } catch (error) {
     console.error('Failed to fetch admin data:', error)
   }
 })
-
-const rtn_thumbnail_url = ref('') // 이미지 파일
-const imageUrl = ref(
-  'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbDbEJs%2FbtsuIBwAaQ1%2FEsjbr4jpfgxrtE2KK88PNk%2Fimg.png'
-) // 이미지 미리보기 URL을 저장할 ref 변수
-
-// 파일 미리보기를 생성하는 함수
-const previewImage = () => {
-  const reader = new FileReader()
-  reader.addEventListener('load', () => {
-    imageUrl.value = reader.result
-  })
-  if (rtn_thumbnail_url.value && rtn_thumbnail_url.value[0]) {
-    reader.readAsDataURL(rtn_thumbnail_url.value[0])
+const fetchExercises = async () => {
+  try {
+    exercises.value = await ApiClient.get('/exercises') // 받아온 데이터를 exercises 변수에 저장합니다.
+  } catch (error) {
+    console.error('운동 목록을 불러오는 중 에러 발생:', error)
   }
 }
+const rtn_thumbnail_url = ref([]) // 이미지 일
 
-const exercisesFromContainer = ref([]) // 모달에서 받은 exercises
+// 총 칼로리 계산
+const totalCalories = computed(() => {
+  return Math.round(
+    selectedExercises.value.reduce((acc, curr) => {
+      return (
+        acc + curr.excRepCountPerSet * curr.excCaloriesPerRep * curr.excSetCount
+      )
+    }, 0)
+  )
+})
 
-const updateExercises = updatedExercises => {
-  exercisesFromContainer.value = updatedExercises
+// 총 시간 계산
+const totalMinutes = computed(() => {
+  return Math.round(
+    selectedExercises.value.reduce((acc, curr) => {
+      return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
+    }, 0)
+  )
+})
+const minutesCategory = computed(() => {
+  if (totalMinutes.value <= 15) return 1
+  if (totalMinutes.value <= 20) return 2
+  else return 3
+})
+const averageDifficulty = computed(() => {
+  return Math.round(
+    selectedExercises.value.reduce((a, b) => a + b.excDifficulty, 0) /
+      selectedExercises.value.length
+  )
+})
+
+const averageTarget = computed(() => {
+  let w = countOccurrences(selectedExercises.value)
+  if (selectedExercises.value.length === 0) return '-'
+
+  let category
+  if (w[1] > w[2] && w[1] > w[3] && w[1] > w[4]) category = 1
+  else if (w[2] > w[1] && w[2] > w[3] && w[2] > w[4]) category = 2
+  else if (w[3] > w[1] && w[3] > w[2] && w[3] > w[4]) category = 3
+  else if (w[4] > w[1] && w[4] > w[2] && w[4] > w[3]) category = 4
+  else category = 3
+  return category
+})
+
+function countOccurrences(arr) {
+  const counter = { 1: 0, 2: 0, 3: 0, 4: 0 }
+  for (const element of arr) {
+    counter[element.excType] += 1
+  }
+  let total = Object.keys(counter).reduce((a, b) => a + counter[b], 0)
+
+  Object.keys(counter).forEach(it => {
+    counter[it] /= total
+  })
+  return counter
 }
+
+const selectedExercises = ref([]) // 모달에서 받은 exercises
 
 // 데이터 전송
 const sendDataToAPI = async () => {
   // API 전송 로직
   try {
+    console.log(averageTarget)
+    console.log(minutesCategory)
+    console.log(averageDifficulty)
     const payload = {
       admSeq: admSeq.value,
       rtnName: rtn_name.value,
       rtnContent: rtn_content.value,
-      rtnDuration: rtn_duration.value,
+      rtnDuration: minutesCategory.value,
+      rtnTarget: averageTarget.value,
+      rtnExperienceLevel: averageDifficulty.value,
       rtnGoal: rtn_goal.value,
-      rtnTarget: rtn_target.value,
-      rtnExperienceLevel: rtn_experience_level.value,
       rtnKneeHealthConsidered: rtn_knee_health_considered.value,
       rtnNoiseConsidered: rtn_noise_considered.value,
       rtnLongSitter: rtn_long_sitter.value,
       rtnNeckShoulderFocused: rtn_neck_shoulder_focused.value,
       rtnBackDiskConsidered: rtn_back_disk_considered.value,
       rtnRewardPoint: rtn_reward_point.value,
-      exercises: exercisesFromContainer.value,
+      exercises: selectedExercises.value,
     }
+    console.log(payload)
 
     // 첫 번째 API 호출
     const firstApiResponse = await ApiClient.post(
@@ -348,7 +402,6 @@ const sendDataToAPI = async () => {
     // 파일 이름 동적으로 설정
     const fileName = `routine_thumbnail_${rtnSeq}.${extension}`
     formData.append('file', file, fileName)
-    console.log(fileName)
 
     // 두 번째 API 호출: 파일 업로드
     const secondApiResponse = await ApiClient.post(
@@ -366,47 +419,210 @@ const sendDataToAPI = async () => {
     alert('등록 실패!')
   }
 }
-function checkData() {
-  const dataToCheck = {
-    rtn_name: rtn_name.value,
-    rtn_content: rtn_content.value,
-    rtn_duration: rtn_duration.value,
-    rtn_goal: rtn_goal.value,
-    rtn_target: rtn_target.value,
-    rtn_experience_level: rtn_experience_level.value,
-    rtn_knee_health_considered: rtn_knee_health_considered.value,
-    rtn_noise_considered: rtn_noise_considered.value,
-    rtn_long_sitter: rtn_long_sitter.value,
-    rtn_neck_shoulder_focused: rtn_neck_shoulder_focused.value,
-    rtn_back_disk_considered: rtn_back_disk_considered.value,
-    rtn_reward_point: rtn_reward_point.value,
-    exercises: exercisesFromContainer.value,
-  }
-  console.log('입력된 데이터:', dataToCheck)
-  console.log(JSON.stringify(dataToCheck, null, 2))
+
+const rules = {
+  nonEmpty: value => {
+    return !!value || '필수항목입니다.'
+  },
+  hasElement: li => {
+    return !!li.length || '최소 한 개의 운동이 선택되어야 합니다.'
+  },
+  thumbnail: li => {
+    return !!li.length || '썸네일 이미지가 선택되어야 합니다.'
+  },
+  gtZero: value => {
+    return (value && value > 0) || '0 이상의 숫자여야 합니다'
+  },
+  form: value => {
+    return formValid.value || '필수항목을 모두 채워주세요'
+  },
+}
+
+const formValid = ref(false)
+async function onSubmit() {
+  if (!formValid.value) return
+  console.log('sending data')
+  loading.value = true
+  await sendDataToAPI()
+  loading.value = false
 }
 </script>
+
+<template>
+  <BaseContainer category="admin">
+    <BaseBodyWrapper>
+      <v-form class="my-10" v-model="formValid" @submit.prevent="onSubmit">
+        <div class="text-3xl font-bold mb-10">새 루틴 만들기</div>
+
+        <div class="mb-5">
+          <p class="col-1 font-bold text-xl mb-3">루틴 이름</p>
+          <div class="">
+            <v-text-field
+              counter
+              v-model="rtn_name"
+              clearable
+              maxlength="20"
+              placeholder="20자 내로 작성하세요"
+              variant="outlined"
+              :rules="[rules.nonEmpty]"
+            ></v-text-field>
+          </div>
+        </div>
+        <div class="mb-5">
+          <p class="col-1 font-bold text-xl mb-3">루틴 설명</p>
+          <div class="rtn-content flex items-start">
+            <v-textarea
+              counter
+              v-model="rtn_content"
+              placeholder="100자 내로 작성하세요"
+              maxlength="100"
+              variant="outlined"
+              :rules="[rules.nonEmpty]"
+            ></v-textarea>
+          </div>
+        </div>
+        <div class="mb-5">
+          <BoRtnExcListContainer
+            v-model="selectedExercises"
+            :exercises="exercises"
+          >
+            <template v-slot:input-validator>
+              <v-input v-model="selectedExercises" :rules="[rules.hasElement]">
+              </v-input>
+            </template>
+            <template v-slot:totalMinutes>{{ totalMinutes }} </template>
+            <template v-slot:averageTarget
+              >{{ ExcUtils.mapExcType(averageTarget) }}
+            </template>
+            <template v-slot:averageDifficulty>
+              {{ ExcUtils.mapDifficultyType(averageDifficulty) }}
+            </template>
+            <template v-slot:totalCalories>{{ totalCalories }} </template>
+          </BoRtnExcListContainer>
+        </div>
+
+        <BaseDivider class="my-10" />
+        <div><p class="col-1 font-bold text-xl">루틴 설정</p></div>
+        <div class="flex items-center mt-4">
+          <p class="col-1">운동 목표</p>
+          <BoExcRadioButton
+            :options="rtn_goal_radio"
+            v-model="rtn_goal"
+            hide-details
+          />
+        </div>
+        <div class="flex justify-between">
+          <div class="flex items-center mt-5">
+            <p class="col-1 mb-5">루틴 썸네일</p>
+            <div class="w-[450px]">
+              <v-file-input
+                :show-size="1000"
+                variant="outlined"
+                label="썸네일 이미지 파일"
+                class="ml-2"
+                v-model="rtn_thumbnail_url"
+                :prepend-icon="PictureSvg"
+                :rules="[rules.thumbnail]"
+                density="comfortable"
+              >
+                <template v-slot:selection="{ fileNames }">
+                  <div
+                    class="overflow-hidden overflow-ellipsis whitespace-nowrap"
+                  >
+                    {{ fileNames[0] }}
+                  </div>
+                </template>
+              </v-file-input>
+            </div>
+          </div>
+          <div class="flex items-center mt-5">
+            <p class="mr-10 mb-5">포인트</p>
+            <div class="w-[300px]">
+              <v-text-field
+                v-model="rtn_reward_point"
+                class="ml-2"
+                label="완료시 포인트 지급량"
+                type="number"
+                variant="outlined"
+                suffix="P"
+                single-line
+                :prepend-icon="PointCoinSvg"
+                :rules="[rules.gtZero]"
+                density="comfortable"
+              ></v-text-field>
+            </div>
+          </div>
+        </div>
+        <BaseDivider class="my-10" />
+        <div><p class="col-1 font-bold text-xl">사용자 맞춤</p></div>
+        <div class="flex items-center mt-4">
+          <p class="col-1">무릎 운동 고려</p>
+          <BoExcRadioButton
+            :options="rtn_knee_health_considered_radio"
+            v-model="rtn_knee_health_considered"
+            hide-details
+          />
+        </div>
+        <div class="flex">
+          <div class="flex">
+            <div class="flex items-center mt-4">
+              <p class="col-1">층간 소음 고려</p>
+              <BoExcRadioButton
+                :options="rtn_noise_considered_radio"
+                v-model="rtn_noise_considered"
+                hide-details
+              />
+            </div>
+          </div>
+          <div class="flex items-center mt-4">
+            <p class="col-1">오래 앉아 있는 사람</p>
+            <BoExcRadioButton
+              :options="rtn_long_sitter_radio"
+              v-model="rtn_long_sitter"
+              hide-details
+            />
+          </div>
+        </div>
+        <div class="flex">
+          <div class="flex items-center mt-4">
+            <p class="col-1">목 어깨 포커스</p>
+            <BoExcRadioButton
+              :options="rtn_neck_shoulder_focused_radio"
+              v-model="rtn_neck_shoulder_focused"
+              hide-details
+            />
+          </div>
+
+          <div class="flex items-center mt-4">
+            <p class="col-1">허리 디스크 고려</p>
+            <BoExcRadioButton
+              :options="rtn_back_disk_considered_radio"
+              v-model="rtn_back_disk_considered"
+              hide-details
+            />
+          </div>
+        </div>
+        {{ formValid }}
+        <div class="flex flex-col items-center justify-center mt-20">
+          <v-btn
+            class="w-[300px]"
+            type="submit"
+            color="primary"
+            size="large"
+            :loading="loading"
+          >
+            루틴 등록하기
+          </v-btn>
+          <div>
+            <v-input v-model="formValidator"> </v-input>
+          </div>
+        </div>
+      </v-form>
+    </BaseBodyWrapper>
+  </BaseContainer>
+</template>
+
 <style scoped>
-.rtn-name-text {
-  width: 730px;
-}
-.rtn-content-text {
-  width: 730px;
-}
-.rtn-point-text {
-  width: 300px;
-}
-.rtn-thumnail-input {
-  width: 700px;
-  height: 100px;
-}
-.rtn-thumnail-output {
-  width: 300px;
-  height: 250px;
-}
-.rtn-thumnail-output img {
-  width: 100%;
-}
 .col-1 {
   width: 200px;
   margin-left: 10px;
