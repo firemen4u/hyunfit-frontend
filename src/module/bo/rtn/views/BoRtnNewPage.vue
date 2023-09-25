@@ -190,8 +190,7 @@
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { PictureSvg } from '/src/module/@base/svg'
-import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import { FILE_SERVER_HYUNFIT_URL, BACKEND_API_BASE_URL } from '/src/config.js'
@@ -270,6 +269,17 @@ const rtn_long_sitter = ref('1')
 const rtn_neck_shoulder_focused = ref('1')
 const rtn_back_disk_considered = ref('1')
 const rtn_reward_point = ref('0')
+const admSeq = ref('0')
+
+onMounted(async () => {
+  try {
+    const response = await ApiClient.get('/admins/me')
+    console.log('admin : ', response)
+    admSeq.value = response.admSeq
+  } catch (error) {
+    console.error('Failed to fetch admin data:', error)
+  }
+})
 
 const rtn_thumbnail_url = ref('') // 이미지 파일
 const imageUrl = ref(
@@ -298,7 +308,7 @@ const sendDataToAPI = async () => {
   // API 전송 로직
   try {
     const payload = {
-      admSeq: '1',
+      admSeq: admSeq.value,
       rtnName: rtn_name.value,
       rtnContent: rtn_content.value,
       rtnDuration: rtn_duration.value,
