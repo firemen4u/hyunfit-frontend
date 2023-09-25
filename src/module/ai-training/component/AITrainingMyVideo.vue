@@ -1,33 +1,33 @@
 <template>
   <div class="my-video bg-orange-200" :class="windowSize">
-    <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
-      <div
-          class="md-2"
-          :class="
-          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
-        "
-      >
-        기본자세: {{ predictions[0]?.className }}:
-        {{ Math.round(predictions[0]?.probability * 100) }}%
-      </div>
-      <div
-          class="md-2"
-          :class="
-          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
-        "
-      >
-        운동자세: {{ predictions[1]?.className }}:
-        {{ Math.round(predictions[1]?.probability * 100) }}%
-      </div>
-      <div>flag: {{ flag }}</div>
-      <div>Count: {{ exerciseCounts }}</div>
-      <div>확률: {{ predictedProbability }}</div>
-      <div>인정된 자세: {{ getScoreType() }}</div>
-      <div>
-        쿨다운:
-        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
-      </div>
-    </div>
+    <!--    <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">-->
+    <!--      <div-->
+    <!--          class="md-2"-->
+    <!--          :class="-->
+    <!--              predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
+    <!--            "-->
+    <!--      >-->
+    <!--        기본자세: {{ predictions[0]?.className }}:-->
+    <!--        {{ Math.round(predictions[0]?.probability * 100) }}%-->
+    <!--      </div>-->
+    <!--      <div-->
+    <!--          class="md-2"-->
+    <!--          :class="-->
+    <!--              predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
+    <!--            "-->
+    <!--      >-->
+    <!--        운동자세: {{ predictions[1]?.className }}:-->
+    <!--        {{ Math.round(predictions[1]?.probability * 100) }}%-->
+    <!--      </div>-->
+    <!--      <div>flag: {{ flag }}</div>-->
+    <!--      <div>Count: {{ exerciseCounts }}</div>-->
+    <!--      <div>확률: {{ predictedProbability }}</div>-->
+    <!--      <div>인정된 자세: {{ getScoreType() }}</div>-->
+    <!--      <div>-->
+    <!--        쿨다운:-->
+    <!--        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}-->
+    <!--      </div>-->
+    <!--    </div>-->
     <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
     <div id="label-container"></div>
   </div>
@@ -36,6 +36,7 @@
 <style scoped>
 canvas {
 }
+
 canvas video {
 }
 </style>
@@ -43,13 +44,13 @@ canvas video {
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { onMounted, reactive, ref } from 'vue'
-import { FILE_SERVER_BASE_URL } from '@/config'
+import {onMounted, reactive, ref} from 'vue'
+import {FILE_SERVER_BASE_URL} from '@/config'
 
 const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
 
-const excSeq = 83
+const excSeq = 82
 const modelName = `ai_model_${excSeq}`
 
 let flag = false
@@ -90,6 +91,7 @@ async function loadModel() {
   const metadataURL = `${BASEURL}/${modelName}/metadata.json`
   model = await tmPose.load(modelURL, metadataURL)
 }
+
 async function init() {
   await loadModel()
   maxPredictions = model.getTotalClasses()
@@ -128,6 +130,7 @@ function updatePredictedProbability(probability) {
   if (probability === -1) predictedProbability.value = -1
   predictedProbability.value = Math.max(predictedProbability.value, probability)
 }
+
 async function loop(timestamp) {
   webcam.update() // update the webcam frame
   await predict()
@@ -138,7 +141,7 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
+  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
 
   // Prediction 2: run input through teachable machine classification model
   const currentTime = new Date().getTime()

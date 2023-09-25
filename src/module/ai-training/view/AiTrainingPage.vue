@@ -16,12 +16,11 @@
 
     <div>TimeDelta: {{ timeDelta }} --- 현재 시간: {{ timeLeft }}</div>
     <div>Break {{ breakTime }} || loading {{ loading }}</div>
+    <div>exercise Count {{ setScoreCount }}</div>
     <br/>
     video {{ videoList[currentIndex - 1] }}
   </div>
-
   <div class="ai-training-container flex">
-    <!--    <AITrainingInfo exercise-name="사이드 레터럴 레이즈" />-->
     <AITrainingMyVideo
         v-show="visibility.my"
         :loading="loading"
@@ -29,9 +28,7 @@
         :exercise="currentExercise"
         @prediction="(score) => updateCount(score)"
     ></AITrainingMyVideo>
-
     <AITrainingBreak v-if="breakTime"/>
-
     <AITrainingTeachingVideo
         v-if="visibility.teaching"
         :loading="loading"
@@ -42,17 +39,14 @@
         @event:ready="onTeachingVideoReady()"
         :video-url="videoList[currentIndex - 1]"
     />
-
     <AITrainingStatusContainer
         v-if="visibility.counter"
         :exercise="currentExercise"
-        :totalScoreCount="totalScoreCount"
+        :setScoreCount="setScoreCount"
         :setCount="setCount"
         :key="rerenderKey"
     />
-
     <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft"/>
-
     <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()"/>
 
     <div
@@ -73,70 +67,67 @@
         {{ currentExercise.videoUrl }}
       </div>
     </div>
-
+    <!-- excellent & good & bad -->
+    <a-i-training-info
+        v-if="notification!==''"
+        :exercise-name="notification"
+    ></a-i-training-info>
+    <!-- 쉬는 시간 -->
     <div
         class="fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-20 text-4xl"
         v-if="breakTime && !loading"
     >
       <div class="fixed top-1/2 left-1/2">쉬는시간</div>
     </div>
-
     <div
         class="fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-20 text-4xl"
-        v-if="pauseTime"
-    >
+        v-if="pauseTime">
       <div class="fixed top-1/2 left-1/2">일시정지</div>
     </div>
-
-    <div class="absolute bottom-0 flex justify-center w-full">
-      <div class="empty-container item bg-transparent"></div>
-      <div class="status-navigation-container item">
-        <button class="buttons">
-          <img src="/src/assets/images/volume-high.png"/>
-        </button>
-        <button class="buttons">
-          <img src="/src/assets/images/volume-high.png"/>
-        </button>
-        <button class="buttons">
-          <img src="/src/assets/images/volume-high.png"/>
-        </button>
-        <button class="buttons">
-          <img src="/src/assets/images/volume-high.png"/>
-        </button>
-      </div>
-    </div>
+    <!--    <div class="absolute bottom-0 flex justify-center w-full">-->
+    <!--      <div class="empty-container item bg-transparent"></div>-->
+    <!--      <div class="status-navigation-container item">-->
+    <!--        <button class="buttons">-->
+    <!--          <img src="/src/assets/images/volume-high.png"/>-->
+    <!--        </button>-->
+    <!--        <button class="buttons">-->
+    <!--          <img src="/src/assets/images/volume-high.png"/>-->
+    <!--        </button>-->
+    <!--        <button class="buttons">-->
+    <!--          <img src="/src/assets/images/volume-high.png"/>-->
+    <!--        </button>-->
+    <!--        <button class="buttons">-->
+    <!--          <img src="/src/assets/images/volume-high.png"/>-->
+    <!--        </button>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
 </template>
 <script setup>
 import {computed, onMounted, reactive, ref} from 'vue'
 import axios from 'axios'
+import ApiClient from "@/services/api";
 import {AITrainingMyVideo, AITrainingStatusContainer, AITrainingTeachingVideo,} from '/src/module/ai-training/component'
 import AITrainingTimer from '@/module/ai-training/component/AITrainingTimer.vue'
 import AiTrainingSkipButton from '@/module/ai-training/component/AiTrainingSkipButton.vue'
 import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
-import ApiClient from "@/services/api";
+import AITrainingInfo from "@/module/ai-training/component/AITrainingInfo.vue";
 
-const memberData = ref(null)
 const baseURL = 'https://api.hyunfit.life/routines/'
+const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
 let loading = ref(true)
 let breakTime = ref(false)
 let pauseTime = ref(false)
-
-let exerciseCount = ref(0)
 let setCount = ref(1)
 let currentIndex = ref(0)
-
 let startExerciseTime = ref(0)
 let endExerciseTime = ref(0)
-
-
 let setFinished = computed(
     () => setCount.value >= currentExercise.value?.setCount
 )
-
 let videoList = [
   'https://alycecloud-website.s3.ap-northeast-2.amazonaws.com/video/warming_up.mp4',
   'https://exercise-resource.s3.ap-northeast-2.amazonaws.com/previewVideo/355__1622594830959__%EC%A0%9C%EA%B8%B0%EC%B0%A8%EA%B8%B0.mp4',
@@ -161,12 +152,10 @@ const visibility = reactive({
 })
 
 let interval
-
 let timeDelta = 0
 let timeout = 200
 
 const timeLeft = ref(999)
-
 const timer = {
   start: t => {
     timeLeft.value = t
@@ -194,15 +183,33 @@ const scores = reactive({
   good: ref(0),
   bad: ref(0),
 })
-const totalScoreCount = computed(() => {
-  return scores.excellent + scores.good + scores.bad
-})
+const setScoreCount = ref(0)
+const notification = ref('')
+const totalScoreCount = ref(0)
 
 function updateCount(scoreType) {
-  scores[scoreType] += 1
-
+  if (setScoreCount.value < currentExercise.value.exerciseCount) {
+    console.log('scoreType', scoreType)
+    if (scoreType === 'excellent') {
+      scores.excellent += 1
+      setScoreCount.value += 1
+      notification.value = 'excellent!';
+    } else if (scoreType === 'good') {
+      scores.good += 1;
+      setScoreCount.value += 1
+      notification.value = 'good';
+    } else if (scoreType === 'bad') {
+      scores.bad += 1;
+      setScoreCount.value += 1
+      notification.value = 'bad';
+    }
+    console.log('notification', notification.value)
+    totalScoreCount.value = scores.excellent + scores.good + scores.bad;
+    setTimeout(() => {
+      notification.value = '';
+    }, 1000);
+  }
 }
-
 
 function toggleTime() {
   if (timeDelta === 0) {
@@ -240,6 +247,7 @@ async function init() {
 
 function toNextExercise() {
   if (!currentExercise.value) return
+  console.log('currentExercise', currentExercise.value)
 
   if (currentExercise.value.type === 'GUIDE') {
     startExerciseTime.value = Date.now()
@@ -249,10 +257,12 @@ function toNextExercise() {
   if (currentExercise.value.type === 'EXERCISE' && !setFinished.value) {
     if (breakTime.value) {
       setCount.value += 1
+      console.log('setCount', setCount.value)
       timer.start(currentExercise.value.timerLimit - 0.01)
       breakTime.value = false
     } else {
       console.log('쉬는 시간 체크', setCount.value)
+      setScoreCount.value = 0
       timer.start(10 - 0.01)
       breakTime.value = true
     }
@@ -265,15 +275,10 @@ function toNextExercise() {
     }
   }
   setCount.value = 1
-
   currentIndex.value++
-
   updateWindowUi()
-
   loading.value = true
   timer.stop()
-  // 운동데이터 전송하기,
-  // 운동 인덱스 다음으로 이동
 }
 
 function onTeachingVideoReady() {
@@ -290,10 +295,24 @@ async function sendExerciseData() {
     exchExcelentCnt: scores.excellent,
     exchGoodCnt: scores.good,
     exchBadCnt: scores.bad,
-    exchTotalCalories: totalScoreCount.value * currentExercise.value.excCaloriesPerRep
+    exchTotalCalories: totalScoreCount.value * currentExercise.value.calorie
+    // exchTotalCalories: 10
   }
   try {
-    await ApiClient.post(`/exercise-history`, data)
+    if (data.exchTotalCalories !== 0) {
+      await ApiClient.post(`/exercise-history`, data)
+      console.log("completed history", data)
+      console.log("exchTotalCalories", currentExercise.value.calorie)
+      totalScoreCount.value = 0
+      setScoreCount.value = 0
+
+      scores.good = 0
+      scores.excellent = 0
+      scores.bad = 0
+      console.log("totalScoreCount 초기화", totalScoreCount.value)
+    } else {
+      console.log('칼로리가 0이라 데이터를 보내지 않아요')
+    }
   } catch (error) {
     console.log('Exercise History API 통신 에러!', error)
     alert('Exercise History API 통신 에러!')
@@ -312,7 +331,6 @@ function updateWindowUi() {
     case 'WARMUP':
       windowSize.my = 'w-1/2'
       windowSize.teaching = 'w-1/2'
-
       visibility.my = true
       visibility.teaching = true
       visibility.counter = false
@@ -348,19 +366,18 @@ function createExerciseQueueItem(exercise, type) {
     name: exercise.excName,
     excSeq: exercise.excSeq,
     calorie: exercise.excCaloriesPerRep,
-    // setCount: exercise.excSetCount,
     setCount: 3,
-    exerciseCount: exercise.excRepCountPerSet,
+    // exerciseCount: exercise.excRepCountPerSet,
+    exerciseCount: 4,
   }
   if (type === 'GUIDE') {
     item['timerLimit'] = 10
     item['videoUrl'] = `${baseURL}preview_video_${exercise.excSeq}`
   } else {
     // item['timerLimit'] = exercise.excTimePerSetInSec
-    item['timerLimit'] = 10
+    item['timerLimit'] = 100
     item['videoUrl'] = `${baseURL}preview_video_${exercise.excSeq}`
   }
-
   return item
 }
 
@@ -403,8 +420,6 @@ async function loadData() {
     alert('운동데이터 로딩 실패 ', error)
   }
 }
-
-// 모델 넣기
 </script>
 <style scoped>
 .loading {

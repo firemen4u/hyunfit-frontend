@@ -10,62 +10,47 @@
 
       <div class="set-count flex flex-row p-2">
         <div
-            v-for="(setStatus, index) in totalCount"
+            v-for="index in 3"
             :key="index"
-            class="status setStyle"
-        ></div>
+            :class="['setStyle', { 'green': index <= props.setCount }]"> <!-- 초록색 동그라미를 설정 -->
+        </div>
       </div>
     </div>
     <div
         class="reps-count-container flex flex-col items-center justify-center bg-[#4e4e4f] text-white w-full h-3/5 rounded-md"
     >
       <span class="reps-title text-lg font-bold">Reps</span>
-      <p class="resps-count text-6xl font-bold text-[#00E77B]">
-        {{ props.totalScoreCount }}
+      <p class="reps-count text-6xl font-bold text-[#00E77B]">
+        {{ props.setScoreCount }}
       </p>
       <div class="reps-remain ml-20 font-extrabold">
-        /{{ props.progressQueue?.responseData.excRepCountPerSet }}
+        /{{ props.exercise.exerciseCount }}
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import {ref, onMounted, watch, computed} from 'vue'
+import {ref, onMounted, watch} from 'vue'
 
 const props = defineProps({
-  progressQueue: Object,
-  totalScoreCount: Number,
+  exercise: Object,
+  setScoreCount: Number,
   setCount: Number,
   windowSize: String,
 })
 const completedSets = ref(0);
-const totalCount = ref(3)
-
-watch(props.setCount, (newCount) => {
-  completedSets.value = 0;
-  // completedSets를 초기화하고 setCount에 따라 변경
-  if (newCount < completedSets.value) {
-    completedSets.value = newCount;
-  }
-});
+// watch(props.setCount, (newCount) => {
+//   console.log('setCount  자식 컴포넌트', props.setCount)
+//   completedSets.value = 0;
+//   if (newCount < completedSets.value) {
+//     completedSets.value = newCount;
+//   }
+// });
 onMounted(() => {
+  console.log('props.exercise', props.exercise)
 })
 </script>
 <style scoped>
-/* Status Container */
-.setStyle[data-sets-status='past'] {
-  background-color: rgb(0, 231, 123);
-  border-color: rgb(0, 231, 123);
-}
-
-.setStyle[data-sets-status='future'] {
-  background-color: rgb(184, 184, 184);
-}
-
-.setStyle[data-sets-status='future'] {
-  background-color: rgb(184, 184, 184);
-}
-
 .setStyle {
   width: 24px;
   height: 24px;
@@ -75,7 +60,10 @@ onMounted(() => {
   background-color: rgb(184, 184, 184);
 }
 
-/* Info css */
+.setStyle.green {
+  background-color: rgb(0, 231, 123);
+  border-color: rgb(0, 231, 123);
+}
 
 /* bottomBar CSS */
 .status-navigation-container {

@@ -21,13 +21,14 @@ const props = defineProps({
   -webkit-background-clip: text;
   background-clip: text;
 }
+
 .ai-training-info-container {
   position: absolute;
 
   width: 100%;
   height: 100%;
-  background-color: rgb(102, 102, 102);
 }
+
 .ai-training-info {
   position: absolute;
   display: flex;
