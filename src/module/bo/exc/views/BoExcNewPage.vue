@@ -169,38 +169,45 @@
               <hr />
               <p class="mt-8 mb-8 font-bold text-lg">운동 데이터 업로드</p>
               <div class="flex items-center mb-4">
-                <CloudArrowUpSvg :size="30" color="gray" />
                 <BoExcFileInput
                   v-model="files_exc_model"
                   label="모델 데이터"
+                  :prepend-icon="CloudArrowUpSvg"
                 ></BoExcFileInput>
               </div>
-              <div class="flex items-center mb-4">
-                <PictureSvg :size="30" color="gray" />
-                <BoExcFileInput
-                  class="mr-4"
-                  v-model="files_exc_preview"
-                  label="운동 프리뷰 영상"
-                ></BoExcFileInput>
-
-                <PictureSvg :size="30" color="gray" />
-                <BoExcFileInput
-                  v-model="files_exc_view"
-                  label="운동 영상"
-                ></BoExcFileInput>
+              <div class="file-input-wrap flex items-center mb-4">
+                <div class="file-input">
+                  <BoExcFileInput
+                    class="mr-4"
+                    v-model="files_exc_preview"
+                    label="운동 가이드 영상"
+                    :prepend-icon="PictureSvg"
+                  ></BoExcFileInput>
+                </div>
+                <div class="file-input">
+                  <BoExcFileInput
+                    v-model="files_exc_view"
+                    label="운동 영상"
+                    :prepend-icon="PictureSvg"
+                  ></BoExcFileInput>
+                </div>
               </div>
-              <div class="flex items-center mb-4">
-                <PictureSvg :size="30" color="gray" />
-                <BoExcFileInput
-                  class="mr-4"
-                  v-model="files_exc_view_row_qual"
-                  label="썸네일 운동 영상"
-                ></BoExcFileInput>
-                <PictureSvg :size="30" color="gray" />
-                <BoExcFileInput
-                  v-model="files_exc_mp3"
-                  label="음성파일"
-                ></BoExcFileInput>
+              <div class="file-input-wrap flex items-center mb-4">
+                <div class="file-input">
+                  <BoExcFileInput
+                    class="mr-4"
+                    v-model="files_exc_view_row_qual"
+                    label="썸네일 운동 영상"
+                    :prepend-icon="PictureSvg"
+                  ></BoExcFileInput>
+                </div>
+                <div class="file-input">
+                  <BoExcFileInput
+                    v-model="files_exc_mp3"
+                    label="운동 가이드 메시지"
+                    :prepend-icon="PictureSvg"
+                  ></BoExcFileInput>
+                </div>
               </div>
             </div>
           </div>
@@ -413,5 +420,12 @@ const submit = async () => {
 }
 .v-radio-group .v-input__control {
   width: 300px;
+}
+.file-input-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+.file-input {
+  width: 550px;
 }
 </style>
