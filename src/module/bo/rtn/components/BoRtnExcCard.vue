@@ -1,8 +1,9 @@
 <template>
   <div
-    class="card flex flex-col pb-3 rounded-lg overflow-hidden shadow-md hover:bg-gray-100"
+    class="card flex flex-col pb-3 rounded-lg overflow-hidden shadow-md cursor-pointer"
+    @click="handleClickCard"
   >
-    <div @click="handleClickCard">
+    <div>
       <div class="preview-video-wrapper">
         <div
           v-if="loading"
@@ -31,18 +32,28 @@
         </video>
       </div>
     </div>
-    <div class="pt-2 px-3">
-      <div class="exc-name font-bold">{{ exercise.excName }}</div>
-      <!--      <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>-->
-
-      <div class="text-center mt-1 flex justify-end">
+    <div class="mt-2 px-2">
+      <div class="flex">
+        <div class="exc-name font-bold">{{ exercise.excName }}</div>
+        <base-label class="ml-2"
+          >{{
+            Math.round(
+              (exercise.excSetCount * exercise.excTimePerSetInSec) / 60
+            )
+          }}분</base-label
+        >
+      </div>
+      <div class="text-center mt-3 flex justify-end">
         <v-btn
           rounded="xl"
-          class="register-btn"
           size="small"
           @click="handleClickAdd"
+          :ripple="false"
         >
-          추가하기
+          <div class="flex items-center">
+            <PlusSvg size="15" />
+            <div>추가</div>
+          </div>
         </v-btn>
       </div>
     </div>
@@ -54,6 +65,8 @@ import BaseCircularLoader from '@/module/@base/components/BaseCircularLoader.vue
 import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 import { computed, onMounted, ref } from 'vue'
 import NoFileSvg from '@/module/@base/svg/NoFileSvg.vue'
+import BaseLabel from '@/module/@base/components/BaseLabel.vue'
+import PlusSvg from '@/module/@base/svg/PlusSvg.vue'
 
 const props = defineProps({
   exercise: Object, // 운동 정보를 props로 받습니다.
@@ -86,10 +99,10 @@ onMounted(() => {
 <style scoped>
 /* 스타일을 원하는 대로 수정하세요. */
 .card {
-  width: 220px;
+  width: 210px;
 }
 .preview-video-wrapper {
-  width: 220px;
+  width: 210px;
   height: 100px;
 }
 .exc-name {

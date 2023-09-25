@@ -2,10 +2,14 @@
 <script setup>
 import dateUtil from '/src/utils/date.js'
 import ExctgUtils from '@/module/bo/exc/services/excUtils'
-const props = defineProps(['show', 'exercise', 'showDeleteBtn'])
+const props = defineProps({
+  exercise: Object,
+})
+
 const emit = defineEmits([])
 import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 import { computed } from 'vue'
+import CrossSvg from '@/module/@base/svg/CrossSvg.vue'
 
 const videoSrc = computed(
   () =>
@@ -56,14 +60,16 @@ const deleteExercise = () => {
 <template>
   <v-dialog width="auto">
     <template v-slot:default="{ isActive }">
-      <div class="modal-content relative" @click.stop>
-        <button
-          @click="isActive.value = false"
-          class="absolute right-4 top-2 p-2"
-        >
-          ❌
-        </button>
-        <div class="flex items-center justify-center mt-4 rounded-md">
+      <div class="bg-white rounded-lg p-4" @click.stop>
+        <div class="flex justify-end">
+          <v-btn
+            @click="isActive.value = false"
+            :icon="CrossSvg"
+            size="small"
+            variant="text"
+          />
+        </div>
+        <div class="flex items-center justify-center rounded-md">
           <video controls loop muted autoplay class="exc-img rounded-md">
             <!-- class 추가 -->
             <source :src="videoSrc" />
@@ -151,12 +157,6 @@ const deleteExercise = () => {
 </template>
 
 <style scoped>
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
 .modal-sub-wrap {
   display: flex;
   margin-bottom: 5px;

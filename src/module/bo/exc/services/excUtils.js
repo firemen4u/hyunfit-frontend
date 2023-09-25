@@ -15,10 +15,34 @@ const excAreaMapping = {
 }
 
 const mapExcAreaType = type => {
-  return excAreaMapping[type] || '알 수 없음'
+  return excAreaMapping[type] || '-'
+}
+const excTypeMapping = {
+  1: '상체',
+  2: '하체',
+  3: '전신',
+  4: '유산소',
+}
+
+const mapExcType = type => {
+  return excTypeMapping[type] || '-'
+}
+
+const excDifficultyMapping = {
+  1: '초급',
+  2: '초중급',
+  3: '중급',
+  4: '중상급',
+  5: '상급',
+}
+
+const mapDifficultyType = type => {
+  return excDifficultyMapping[type] || '-'
 }
 
 export default {
   mapExcAreaType,
   excAreaMapping,
+  mapExcType,
+  mapDifficultyType,
 }

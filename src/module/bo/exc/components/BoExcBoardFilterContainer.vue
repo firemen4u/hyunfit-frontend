@@ -1,19 +1,23 @@
 <!-- BoExcBoardFilterContainer.vue -->
 <template>
   <div class="flex w-[400px]">
-    <button
+    <v-btn
+      variant="text"
       v-for="(item, index) in items"
       :key="index"
       @click="handleButtonClick(item.value)"
-      :class="
-        item.value === props.modelValue
-          ? 'text-gray-800 font-bold'
-          : 'text-gray-400 font-medium hover:text-gray-500'
-      "
-      class="block px-4 py-2 text-base cursor-pointer transition-all"
     >
-      {{ item.label }}
-    </button>
+      <div
+        :class="
+          item.value === props.modelValue
+            ? 'text-gray-800 font-bold'
+            : 'text-gray-400 font-medium hover:text-gray-500'
+        "
+        class="block text-sm cursor-pointer transition-all"
+      >
+        {{ item.label }}
+      </div>
+    </v-btn>
   </div>
 </template>
 

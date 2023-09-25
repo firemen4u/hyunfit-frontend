@@ -6,6 +6,12 @@ import {
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import BoRtnExcCard from '/src/module/bo/rtn/components/BoRtnExcCard.vue'
 import { ref, computed, watch } from 'vue'
+import RefreshSvg from '@/module/@base/svg/RefreshSvg.vue'
+import BoRtnExcListItem from '@/module/bo/rtn/components/BoRtnExcListItem.vue'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
+import CrossSvg from '@/module/@base/svg/CrossSvg.vue'
+import BoRtnExcSelectedLabel from '@/module/bo/rtn/components/BoRtnExcSelectedLabel.vue'
+import ExcUtils from '@/module/bo/exc/services/excUtils'
 
 const props = defineProps({
   modelValue: Array,
@@ -15,20 +21,74 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 // 총 시간 계산
-const totalMinutes = computed(() => {
-  return props.modelValue.reduce((acc, curr) => {
-    return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
-  }, 0)
+const totalCalories = computed(() => {
+  return Math.round(
+    props.modelValue.reduce((acc, curr) => {
+      return (
+        acc + curr.excRepCountPerSet * curr.excCaloriesPerRep * curr.excSetCount
+      )
+    }, 0)
+  )
 })
+
+// 총 칼로리 계산
+const totalMinutes = computed(() => {
+  return Math.round(
+    props.modelValue.reduce((acc, curr) => {
+      return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
+    }, 0)
+  )
+})
+
+const averageDifficulty = computed(() => {
+  let difficulty = Math.round(
+    props.modelValue.reduce((a, b) => a + b.excDifficulty, 0) /
+      props.modelValue.length
+  )
+  return ExcUtils.mapDifficultyType(difficulty)
+})
+
+const averageTarget = computed(() => {
+  let w = countOccurrences(props.modelValue)
+  if (props.modelValue.length === 0) return '-'
+
+  let category
+  if (w[1] > w[2] && w[1] > w[3] && w[1] > w[4]) category = 1
+  else if (w[2] > w[1] && w[2] > w[3] && w[2] > w[4]) category = 2
+  else if (w[3] > w[1] && w[3] > w[2] && w[3] > w[4]) category = 3
+  else if (w[4] > w[1] && w[4] > w[2] && w[4] > w[3]) category = 4
+  else category = 3
+  return ExcUtils.mapExcType(category)
+})
+
+function countOccurrences(arr) {
+  const counter = { 1: 0, 2: 0, 3: 0, 4: 0 }
+  for (const element of arr) {
+    counter[element.excType] += 1
+  }
+  let total = Object.keys(counter).reduce((a, b) => a + counter[b], 0)
+
+  Object.keys(counter).forEach(it => {
+    counter[it] /= total
+  })
+  return counter
+}
+
+function isChecked(exercise) {
+  return props.modelValue?.reduce(
+    (total, exc) => total + (exc.excSeq === exercise.excSeq),
+    0
+  )
+}
 
 const addExercise = exercise => {
   emit('update:modelValue', [...props.modelValue, exercise])
 }
 
-const removeExercise = exerciseToRemove => {
-  const index = props.modelValue.findIndex(
-    exercise => exercise.excSeq === exerciseToRemove.excSeq
-  )
+const removeExercise = index => {
+  // const index = props.modelValue.findIndex(
+  //   exercise => exercise.excSeq === exerciseToRemove.excSeq
+  // )
   emit(
     'update:modelValue',
     props.modelValue.filter((a, i) => i !== index)
@@ -49,7 +109,7 @@ const updateExcType = value => {
   currentPage.value = 1 // 페이지를 1로 초기화
 }
 
-const itemsPerPage = ref(9) // 한 페이지당 표시될 아이템 수
+const itemsPerPage = ref(6) // 한 페이지당 표시될 아이템 수
 const currentPage = ref(1) // 현재 페이지
 
 const totalPages = computed(() => {
@@ -99,90 +159,112 @@ const openModal = exercise => {
 </script>
 
 <template>
-  <div class="flex justify-between w-full">
-    <div
-      class="exc-list-container p-2 mt-5 mb-4 shadow-md border-2 border-gray-100 rounded-lg"
-    >
-      <div class="p-5 flex flex-col justify-center">
-        <div class="flex justify-between items-center h-20">
-          <BoExcBoardFilterContainer
-            :modelValue="selectedExcType"
-            @updateExcType="updateExcType"
-          />
-          <v-text-field
-            type="text"
-            v-model="searchText"
-            variant="outlined"
-            placeholder="운동 검색"
-            density="compact"
-            hide-details
-          />
-        </div>
-        <div
-          v-if="paginatedExercises.length > 0"
-          class="grid grid-cols-3 gap-4"
-        >
-          <BoRtnExcCard
-            v-for="exercise in paginatedExercises"
-            :key="exercise.excSeq"
-            :exercise="exercise"
-            @click:card="openModal"
-            @click:add="addExercise"
-          />
-        </div>
-        <div v-else class="">해당하는 운동이 없습니다.</div>
-      </div>
-      <BasePagination v-model="currentPage" :total-pages="totalPages" />
+  <div>
+    <div class="flex">
+      <p class="font-bold text-xl mt-3 mr-5">운동 선택하기</p>
+      <slot name="input-validator"></slot>
     </div>
-    <div class="exc-selection-list-container">
-      <div class="flex justify-between">
-        <div class="p-2">
-          <p class="text-lg font-bold">선택한 운동 목록</p>
-        </div>
-
-        <div class="p-2">
-          <p class="text-lg font-bold">
-            총 시간 : {{ totalMinutes.toFixed(1) }} 분
-            <!-- 총 시간 추가 -->
-          </p>
-        </div>
-        <div class="">
-          <button @click="clearExercises" class="bg-gray-200 p-2 rounded-md">
-            초기화
-          </button>
-        </div>
-      </div>
-      <div class="flex flex-wrap">
-        <div v-for="exercise in props.modelValue" :key="exercise.excSeq">
+    <div
+      class="rtn-exc-container flex justify-between w-full mt-4 px-4 py-4 shadow-md border-2 border-gray-100 rounded-lg"
+    >
+      <div class="exc-list-container">
+        <div class="flex flex-col justify-center mb-4">
+          <div class="items-center mb-5">
+            <v-text-field
+              class="mb-2"
+              v-model="searchText"
+              variant="outlined"
+              label="운동 검색"
+              density="compact"
+              hide-details
+            />
+            <div class="flex justify-between">
+              <BoExcBoardFilterContainer
+                :modelValue="selectedExcType"
+                @updateExcType="updateExcType"
+              />
+              <v-btn variant="text" @click="clearExercises">
+                <div class="mr-1 text-gray-600">초기화</div>
+                <RefreshSvg size="15" color="#374151" />
+              </v-btn>
+            </div>
+          </div>
           <div
-            class="flex justify-between p-2 bg-primary w-80 mb-2 mr-2 rounded-lg"
+            v-if="paginatedExercises.length > 0"
+            class="justify-items-center"
           >
-            <p>이름: {{ exercise.excName }}</p>
-            <p>
-              소요 시간 :
-              {{
-                (
-                  (exercise.excSetCount * exercise.excTimePerSetInSec) /
-                  60
-                ).toFixed(1)
-              }}
-              분
-            </p>
-            <button @click="removeExercise(exercise)">❌</button>
+            <BoRtnExcListItem
+              v-for="exercise in paginatedExercises"
+              :key="exercise.excSeq"
+              :exercise="exercise"
+              :checked="isChecked(exercise)"
+              @click:card="openModal"
+              @click:add="addExercise"
+            />
+          </div>
+          <div v-else class="self-center">해당하는 운동이 없습니다.</div>
+        </div>
+        <BasePagination v-model="currentPage" :total-pages="totalPages" />
+      </div>
+      <div class="ml-3 exc-selection-list-container h-full w-full">
+        <div class="text-lg font-bold mt-2">선택항목</div>
+        <div class="h-[350px] w-full overflow-y-auto flex flex-col my-2">
+          <div
+            class="w-full"
+            v-for="(exercise, i) in props.modelValue"
+            :key="i"
+          >
+            <BoRtnExcSelectedLabel
+              :rtnIdx="i"
+              :exercise="exercise"
+              @click="removeExercise(i)"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-baseline ml-2 mb-2">
+            <div class="w-28 font-semibold">루틴 시간 :</div>
+            <div class="text-xl font-bold mx-1">
+              {{ totalMinutes }}
+            </div>
+            분
+          </div>
+          <div class="flex items-baseline ml-2 mb-2">
+            <div class="w-28 font-semibold">주요 운동부위 :</div>
+            <div class="text-xl font-bold mx-1">
+              {{ averageTarget }}
+            </div>
+          </div>
+          <div class="flex items-baseline ml-2 mb-2">
+            <div class="w-28 font-semibold">난이도 :</div>
+            <div class="text-xl font-bold mx-1">
+              {{ averageDifficulty }}
+            </div>
+          </div>
+          <div class="flex items-baseline ml-2 mb-2">
+            <div class="w-28 font-semibold">소모 칼로리 :</div>
+            <div class="text-xl font-bold mx-1">
+              {{ totalCalories }}
+            </div>
+            kcal
           </div>
         </div>
       </div>
+      <BoExcCardModal v-model="showModal" :exercise="selectedExercise" />
     </div>
-    <BoExcCardModal v-model="showModal" :exercise="selectedExercise" />
   </div>
 </template>
 
 <style scoped>
+.rtn-exc-container {
+  height: 600px;
+}
 .exc-list-container {
-  width: 70%;
+  width: 60%;
   margin-right: 20px;
+  height: 100%;
 }
 .exc-selection-list-container {
-  width: 30%;
+  width: 35%;
 }
 </style>

@@ -6,6 +6,8 @@ import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListCon
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import { FILE_SERVER_HYUNFIT_URL, BACKEND_API_BASE_URL } from '/src/config.js'
 import ApiClient from '/src/services/api'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
+import PointCoinSvg from '@/module/@base/svg/PointCoinSvg.vue'
 
 // 루틴 타켓부위
 const rtn_target_radio = [
@@ -33,8 +35,8 @@ const rtn_duration_radio = [
 
 // 운동 목표
 const rtn_goal_radio = [
-  { label: '1번 목표', value: '1' },
-  { label: '2번 목표', value: '2' },
+  { label: '체중관리', value: '1' },
+  { label: '건강관리', value: '2' },
 ]
 
 // 무릎 운동 고려
@@ -101,7 +103,7 @@ const fetchExercises = async () => {
     console.error('운동 목록을 불러오는 중 에러 발생:', error)
   }
 }
-const rtn_thumbnail_url = ref([]) // 이미지 파일
+const rtn_thumbnail_url = ref([]) // 이미지 일
 const imageUrl = ref(
   'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbDbEJs%2FbtsuIBwAaQ1%2FEsjbr4jpfgxrtE2KK88PNk%2Fimg.png'
 ) // 이미지 미리보기 URL을 저장할 ref 변수
@@ -200,27 +202,36 @@ function checkData() {
 }
 
 const rules = {
-  text_required: value => {
+  nonEmpty: value => {
     return !!value || '필수항목입니다.'
   },
-  list_required: li => {
+  hasElement: li => {
     return !!li.length || '최소 한 개의 운동이 선택되어야 합니다.'
   },
+  thumbnail: li => {
+    return !!li.length || '썸네일 이미지가 선택되어야 합니다.'
+  },
+  gtZero: value => {
+    return (value && value > 0) || '0 이상의 숫자여야 합니다'
+  },
+  form: value => {
+    return formValid.value || '필수항목을 모두 채워주세요'
+  },
 }
-const form = ref(false)
-function onSubmit() {
-  if (!form.value) return
+const formValid = ref(false)
+async function onSubmit() {
+  if (!formValid.value) return
 
   this.loading = true
-
-  setTimeout(() => (this.loading = false), 2000)
+  await sendDataToAPI()
+  this.loading = false
 }
 </script>
 
 <template>
   <BaseContainer category="admin">
     <BaseBodyWrapper>
-      <v-form class="my-10" v-model="form" @submit.prevent="onSubmit">
+      <v-form class="my-10" v-model="formValid" @submit.prevent="onSubmit">
         <div class="text-3xl font-bold mb-10">새 루틴 만들기</div>
 
         <div class="mb-5">
@@ -233,7 +244,7 @@ function onSubmit() {
               maxlength="20"
               placeholder="20자 내로 작성하세요"
               variant="outlined"
-              :rules="[rules.text_required]"
+              :rules="[rules.nonEmpty]"
             ></v-text-field>
           </div>
         </div>
@@ -246,73 +257,24 @@ function onSubmit() {
               placeholder="100자 내로 작성하세요"
               maxlength="100"
               variant="outlined"
-              :rules="[rules.text_required]"
+              :rules="[rules.nonEmpty]"
             ></v-textarea>
           </div>
         </div>
-        Form: {{ form }}
-        <div class="mt-10">
-          <p class="col-1 font-bold text-xl">운동 선택하기</p>
+        <div class="mb-5">
           <BoRtnExcListContainer
             v-model="selectedExercises"
             :exercises="exercises"
-          />
-          <v-input v-model="selectedExercises" :rules="[rules.list_required]">
-          </v-input>
-        </div>
-
-        <div class="flex rtn-thumnail items-center">
-          <p class="col-1">루틴 썸네일</p>
-          <v-file-input
-            class="ml-2"
-            color="#d23361"
-            :show-size="1000"
-            variant="solo"
-            label="썸네일 이미지"
-            v-model="rtn_thumbnail_url"
-            hide-details
-            :prepend-icon="PictureSvg"
           >
-            <!--                <template v-slot:prepend>-->
-            <!--                  <PictureSvg :size="30" color="gray" />-->
-            <!--                </template>-->
-          </v-file-input>
+            <template v-slot:input-validator>
+              <v-input v-model="selectedExercises" :rules="[rules.hasElement]">
+              </v-input>
+            </template>
+          </BoRtnExcListContainer>
         </div>
 
-        <!--          <div class="flex w-full mt-4">-->
-        <!--            <p class="col-1"></p>-->
-        <!--            <div class="rtn-thumnail-output overflow-scroll">-->
-        <!--              <img :src="imageUrl" alt="Image Preview" />-->
-        <!--            </div>-->
-        <!--          </div>-->
-
-        <div class="flex items-center mt-4">
-          <p class="col-1">루틴 타겟 부위</p>
-          <BoExcRadioButton
-            :options="rtn_target_radio"
-            v-model="rtn_target"
-            hide-details
-          />
-        </div>
-
-        <div class="flex items-center mt-4">
-          <p class="col-1">루틴 난이도</p>
-          <BoExcRadioButton
-            :options="rtn_experience_level_radio"
-            v-model="rtn_experience_level"
-            hide-details
-          />
-        </div>
-
-        <div class="flex items-center mt-4">
-          <p class="col-1">루틴 진행 시간</p>
-          <BoExcRadioButton
-            :options="rtn_duration_radio"
-            v-model="rtn_duration"
-            hide-details
-          />
-        </div>
-
+        <BaseDivider class="my-10" />
+        <div><p class="col-1 font-bold text-xl">루틴 설정</p></div>
         <div class="flex items-center mt-4">
           <p class="col-1">운동 목표</p>
           <BoExcRadioButton
@@ -322,6 +284,77 @@ function onSubmit() {
           />
         </div>
 
+        <!--        <div class="flex items-center mt-4">-->
+        <!--          <p class="col-1">루틴 타겟 부위</p>-->
+        <!--          <BoExcRadioButton-->
+        <!--            :options="rtn_target_radio"-->
+        <!--            v-model="rtn_target"-->
+        <!--            hide-details-->
+        <!--          />-->
+        <!--        </div>-->
+
+        <!--        <div class="flex items-center mt-4">-->
+        <!--          <p class="col-1">루틴 난이도</p>-->
+        <!--          <BoExcRadioButton-->
+        <!--            :options="rtn_experience_level_radio"-->
+        <!--            v-model="rtn_experience_level"-->
+        <!--            hide-details-->
+        <!--          />-->
+        <!--        </div>-->
+
+        <!--        <div class="flex items-center mt-4">-->
+        <!--          <p class="col-1">루틴 진행 시간</p>-->
+        <!--          <BoExcRadioButton-->
+        <!--            :options="rtn_duration_radio"-->
+        <!--            v-model="rtn_duration"-->
+        <!--            hide-details-->
+        <!--          />-->
+        <!--        </div>-->
+        <!--        -->
+        <div class="flex justify-between">
+          <div class="flex items-center mt-5">
+            <p class="col-1 mb-5">루틴 썸네일</p>
+            <div class="w-[450px]">
+              <v-file-input
+                :show-size="1000"
+                variant="outlined"
+                label="썸네일 이미지 파일"
+                class="ml-2"
+                v-model="rtn_thumbnail_url"
+                :prepend-icon="PictureSvg"
+                :rules="[rules.thumbnail]"
+                density="comfortable"
+              >
+                <template v-slot:selection="{ fileNames }">
+                  <div
+                    class="overflow-hidden overflow-ellipsis whitespace-nowrap"
+                  >
+                    {{ fileNames[0] }}
+                  </div>
+                </template>
+              </v-file-input>
+            </div>
+          </div>
+          <div class="flex items-center mt-5">
+            <p class="mr-10 mb-5">포인트</p>
+            <div class="w-[300px]">
+              <v-text-field
+                v-model="rtn_reward_point"
+                class="ml-2"
+                label="완료시 포인트 지급량"
+                type="number"
+                variant="outlined"
+                suffix="P"
+                single-line
+                :prepend-icon="PointCoinSvg"
+                :rules="[rules.gtZero]"
+                density="comfortable"
+              ></v-text-field>
+            </div>
+          </div>
+        </div>
+        <BaseDivider class="my-10" />
+        <div><p class="col-1 font-bold text-xl">사용자 맞춤</p></div>
         <div class="flex items-center mt-4">
           <p class="col-1">무릎 운동 고려</p>
           <BoExcRadioButton
@@ -369,29 +402,13 @@ function onSubmit() {
             />
           </div>
         </div>
-        <div class="flex items-center mt-4">
-          <p class="col-1">포인트</p>
-          <div class="rtn-point-text">
-            <v-text-field
-              v-model="rtn_reward_point"
-              clearable
-              placeholder="루틴 완료시 지급 포인트"
-              hide-details
-              type="number"
-              variant="solo"
-              suffix="P"
-            ></v-text-field>
-          </div>
-        </div>
-        <div class="flex justify-center mt-10">
-          <button
-            @click="sendDataToAPI"
-            class="register-btn bg-primary rounded-lg"
-          >
+        <div class="flex flex-col items-center justify-center mt-20">
+          <v-btn class="w-[300px]" type="submit" color="primary" size="large">
             루틴 등록하기
-          </button>
-
-          <!-- <button @click="checkData">데이터 확인</button> -->
+          </v-btn>
+          <div>
+            <v-input :rules="[rules.form]"> </v-input>
+          </div>
         </div>
       </v-form>
     </BaseBodyWrapper>
@@ -399,11 +416,8 @@ function onSubmit() {
 </template>
 
 <style scoped>
-.rtn-point-text {
-  width: 300px;
-}
 .col-1 {
-  width: 180px;
+  width: 130px;
 }
 .v-input__prepend {
   width: 1px;
