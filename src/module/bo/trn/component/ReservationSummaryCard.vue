@@ -159,6 +159,7 @@ export default {
   align-items: center;
   width: 110px;
   height: 25px;
+  margin-left: 20px;
 }
 .gauge {
   width: 100px;
