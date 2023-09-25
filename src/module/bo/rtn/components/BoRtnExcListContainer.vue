@@ -170,7 +170,7 @@ const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 // API를 통해 운동 목록을 가져오는 함수
 const fetchExercises = async () => {
   try {
-    const response = await fetch('http://localhost:8080/exercises') // API 엔드포인트를 설정하세요.
+    const response = await fetch('/exercises') // API 엔드포인트를 설정하세요.
     const data = await response.json()
     exercises.value = data // 받아온 데이터를 exercises 변수에 저장합니다.
   } catch (error) {

@@ -62,6 +62,8 @@ import moment from 'moment'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
 </script>
 <script>
+import router, { pathNames } from '@/router'
+
 export default {
   props: {
     reservationData: Object,
@@ -85,7 +87,7 @@ export default {
     },
     enterPtRoom() {
       localStorage.setItem('ptSeq', this.reservationData.ptSeq)
-      window.open('http://localhost:5173/PtRoom', '_blank')
+      window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
     },
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD')
