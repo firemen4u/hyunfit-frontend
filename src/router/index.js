@@ -18,6 +18,7 @@ import BoRtnBoardPage from '/src/module/bo/rtn/views/BoRtnBoardPage.vue'
 import BoRtnNewPage from '/src/module/bo/rtn/views/BoRtnNewPage.vue'
 import MbrRsvCompletionPage from '@/module/mbr-rsv-completion/views/MbrRsvCompletionPage.vue'
 import MbrRtnBoardPage from '@/module/mbr-rtn-board/views/MbrRtnBoardPage.vue'
+import MbrMyPointPage from '/src/module/mbr-my/views/MbrMyPointPage.vue'
 function buildPath(page, params, query) {
   return {
     name: page.name,
@@ -96,6 +97,13 @@ const pathNames = {
   },
   mbrMyPage: {
     name: 'mbrMyPage',
+    parent: () => '',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
+  mbrMyPointPage: {
+    name: 'mbrMyPointPage',
     parent: () => '',
     with: function (params, query) {
       return buildPath(this, params, query)
@@ -218,6 +226,11 @@ const router = createRouter({
       component: MbrMyPage,
     },
     {
+      path: '/mbr-myPoint',
+      name: pathNames.mbrMyPointPage.name,
+      component: MbrMyPointPage,
+    },
+    {
       path: '/report',
       name: pathNames.reportPage.name,
       component: ReportPage,
@@ -268,6 +281,5 @@ const router = createRouter({
   },
 })
 export default router
-
 
 export { pathNames }

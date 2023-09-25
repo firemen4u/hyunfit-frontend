@@ -1,12 +1,6 @@
 <template>
   <BaseContainer>
-    <BaseSideBar
-      :sidebarHeader="sidebarHeader"
-      :categoryTitle="mainCategory"
-      :subcategories="subcategories"
-    />
     <BaseBodyWrapper>
-      <div class="">
         <!-- 컨텐츠 -->
         <div class="content mt-10">
           <p class="font-bold text-2xl pl-5">회원 정보 수정</p>
@@ -117,7 +111,6 @@
             </div>
           </div>
         </div>
-      </div>
     </BaseBodyWrapper></BaseContainer
   >
 </template>
@@ -125,7 +118,6 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeMount } from 'vue'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import BaseSideBar from '/src/module/@base/views/BaseSideBar.vue'
 import ApiClient from '/src/services/api.js'
 import _ from 'lodash'
 
