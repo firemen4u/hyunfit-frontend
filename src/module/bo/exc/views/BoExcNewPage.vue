@@ -31,24 +31,22 @@
                   single-line
                 ></v-textarea>
               </div>
-              <div class="flex justify-between">
-                <div class="flex items-center mt-4">
-                  <p class="col-1">운동 종류</p>
-                  <BoExcRadioButton
-                    :options="radioOptions1"
-                    v-model="exc_type"
-                    hide-details
-                  />
-                </div>
+              <div class="flex items-center mt-4">
+                <p class="col-1">운동 종류</p>
+                <BoExcRadioButton
+                  :options="radioOptions1"
+                  v-model="exc_type"
+                  hide-details
+                />
+              </div>
 
-                <div class="flex items-center mt-4">
-                  <p class="col-1">운동 난이도</p>
-                  <BoExcRadioButton
-                    :options="radioOptions2"
-                    v-model="exc_difficulty"
-                    hide-details
-                  />
-                </div>
+              <div class="flex items-center mt-4">
+                <p class="col-1">운동 난이도</p>
+                <BoExcRadioButton
+                  :options="radioOptions2"
+                  v-model="exc_difficulty"
+                  hide-details
+                />
               </div>
               <div class="flex justify-between">
                 <div class="flex items-center mt-4">
@@ -116,50 +114,50 @@
                     hide-details
                     label="부위"
                     multiple
+                    color="primary"
                     bg-color="white"
-                    class=""
                   ></v-select>
                 </div>
               </div>
-              <div class="">
-                <div class="">
-                  <div v-if="selectedBodyParts.length > 0">
-                    <div
-                      v-for="(bodyPart, index) in selectedBodyParts"
-                      :key="index"
-                    >
-                      <div class="flex w-full items-center mt-2 mb-2">
-                        <p class="col-1">{{ bodyPart }} 가중치</p>
-                        <div class="w-96">
-                          <v-slider
+              <div v-if="selectedBodyParts.length > 0">
+                <div
+                  v-for="(bodyPart, index) in selectedBodyParts"
+                  :key="index"
+                >
+                  <div class="flex w-full items-center mt-2 mb-2">
+                    <p class="col-1"></p>
+                    <div class="label-wrap ml-14">
+                      <span class="custom-label">{{ bodyPart }}</span>
+                    </div>
+                    <div class="slider-wrap">
+                      <v-slider
+                        v-model="
+                          bodyPartWeights[target_items_mapping[bodyPart]]
+                        "
+                        class="target-slider"
+                        color="#d2336177"
+                        track-color="#bbbbbb"
+                        thumb-color="#d23361"
+                        :max="100"
+                        :step="10"
+                        hide-details
+                        show-ticks="always"
+                        style="width: 800px"
+                      >
+                        <template v-slot:append>
+                          <v-text-field
                             v-model="
                               bodyPartWeights[target_items_mapping[bodyPart]]
                             "
-                            color="#d23361"
-                            track-color="pink"
-                            thumb-color="red"
-                            :max="100"
-                            :step="10"
+                            placeholder="0"
                             hide-details
-                            show-ticks="always"
-                            :label="bodyPart"
-                            style="width: 800px"
-                            ><template v-slot:append>
-                              <v-text-field
-                                v-model="
-                                  bodyPartWeights[
-                                    target_items_mapping[bodyPart]
-                                  ]
-                                "
-                                hide-details
-                                type="number"
-                                style="width: 80px"
-                                density="compact"
-                                variant="outlined"
-                              ></v-text-field> </template
-                          ></v-slider>
-                        </div>
-                      </div>
+                            type="number"
+                            style="width: 80px"
+                            density="compact"
+                            variant="outlined"
+                          ></v-text-field>
+                        </template>
+                      </v-slider>
                     </div>
                   </div>
                 </div>
@@ -181,14 +179,14 @@
                     class="mr-4"
                     v-model="files_exc_preview"
                     label="운동 가이드 영상"
-                    :prepend-icon="PictureSvg"
+                    :prepend-icon="ThumbnailSvg"
                   ></BoExcFileInput>
                 </div>
                 <div class="file-input">
                   <BoExcFileInput
                     v-model="files_exc_view"
                     label="운동 영상"
-                    :prepend-icon="PictureSvg"
+                    :prepend-icon="VideoSvg"
                   ></BoExcFileInput>
                 </div>
               </div>
@@ -205,7 +203,7 @@
                   <BoExcFileInput
                     v-model="files_exc_mp3"
                     label="운동 가이드 메시지"
-                    :prepend-icon="PictureSvg"
+                    :prepend-icon="Mp3Svg"
                   ></BoExcFileInput>
                 </div>
               </div>
@@ -221,7 +219,13 @@
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import { CloudArrowUpSvg, PictureSvg } from '/src/module/@base/svg'
+import {
+  CloudArrowUpSvg,
+  PictureSvg,
+  Mp3Svg,
+  ThumbnailSvg,
+  VideoSvg,
+} from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import { ref, onMounted } from 'vue'
 import ApiClient from '/src/services/api'
@@ -412,9 +416,6 @@ const submit = async () => {
   width: 200px;
   margin-left: 10px;
 }
-.v-input__prepend {
-  width: 1px;
-}
 .v-text-field {
   width: 300px;
 }
@@ -427,5 +428,8 @@ const submit = async () => {
 }
 .file-input {
   width: 550px;
+}
+.label-wrap {
+  width: 100px;
 }
 </style>
