@@ -1,6 +1,6 @@
 <!-- BoExcBoardFilterContainer.vue -->
 <template>
-  <div class="h-20">
+  <div class="w-full h-20">
     <button
       v-for="(item, index) in items"
       :key="index"
