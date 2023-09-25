@@ -3,13 +3,13 @@
     class="exc-card flex flex-col shadow-md rounded-lg hover:translate-y-[-10px] hover:bg-gray-100"
     @click="handleClick"
   >
-    <div class="exc-img">
-      <video loop muted autoplay>
+    <div>
+      <video controls loop muted autoplay class="exc-img">
         <source :src="videoSrc" />
       </video>
     </div>
-    <div class="exc-name">이름 : {{ exercise.excName }}</div>
-    <div class="exc-content">설명 : {{ exercise.excContent }}</div>
+    <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
+    <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
   </div>
 </template>
 
@@ -35,14 +35,12 @@ const videoSrc = computed(
 
 <style scoped>
 .exc-card {
-  width: 250px;
-  height: 220px;
+  width: 200px;
   padding: 20px;
   margin: 5px;
 }
 .exc-img {
-  width: 100%;
-  /* max-width: 100%; */
+  max-width: 100%;
 }
 .exc-name {
   text-overflow: ellipsis;
@@ -50,9 +48,8 @@ const videoSrc = computed(
   overflow: hidden;
 }
 .exc-content {
-  overflow-wrap: break-word;
-  white-space: nowrap; /* 한 줄로 텍스트를 유지 */
-  overflow: hidden; /* 범위를 넘어가는 텍스트를 숨김 */
-  text-overflow: ellipsis; /* 범위를 넘어가는 텍스트를 "..."으로 표시 */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
