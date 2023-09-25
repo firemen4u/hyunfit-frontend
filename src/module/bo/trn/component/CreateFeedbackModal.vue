@@ -72,9 +72,6 @@ export default {
     closeModal() {
       this.$emit('close')
     },
-    entryPtRoom() {
-      window.open('http://localhost:5173/PtRoom', '_blank')
-    },
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD')
     },
@@ -83,18 +80,12 @@ export default {
     },
     submitFeedback(sendingData) {
       sendingData.trnfContent = this.feedbackContent
-      ApiClient.post(
-        'http://localhost:8080/trainer-feedbacks/write-feedback',
-        sendingData
-      )
+      ApiClient.post('/trainer-feedbacks/write-feedback', sendingData)
       this.$emit('close')
       location.reload()
     },
     async getGptFeedback(sendingData) {
-      let response = await ApiClient.post(
-        'http://localhost:8080/trainer-feedbacks/gpt',
-        sendingData
-      )
+      let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
       this.feedbackContent = response.content
     },
   },

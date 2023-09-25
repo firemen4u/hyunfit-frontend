@@ -62,10 +62,8 @@ export default {
     }
   },
   async created() {
-    let response = await ApiClient.get('http://localhost:8080/trainers/me')
-    ApiClient.get(
-      'http://localhost:8080/trainers/' + response.trnSeq + '/nofeedback'
-    )
+    let response = await ApiClient.get('/trainers/me')
+    ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback')
       .then(response => {
         this.noFeedbackList = response
       })

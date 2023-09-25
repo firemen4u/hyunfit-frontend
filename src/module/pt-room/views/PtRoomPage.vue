@@ -69,7 +69,6 @@ export default {
       OV: null,
       session: null,
       subscriber: [],
-      APPLICATION_SERVER_URL: 'http://localhost:8080/',
       showAfterJoin: true,
       bottonAfterJoin: true,
       isAudioMuted: false,

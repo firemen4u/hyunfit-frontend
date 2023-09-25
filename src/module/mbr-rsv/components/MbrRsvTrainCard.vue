@@ -65,6 +65,7 @@
 import dateUtil from '/src/utils/date.js'
 import { onMounted, ref } from 'vue'
 import ReservaionDetailModal from '/src/module/mbr-rsv/components/MbrRsvDetailModal.vue'
+import router, { pathNames } from '@/router'
 
 const props = defineProps({
   responseData: Object,
@@ -72,7 +73,7 @@ const props = defineProps({
 let daysDiff = ref('')
 function enterPtRoom() {
   localStorage.setItem('ptSeq', props.responseData.ptSeq)
-  window.open('http://localhost:5173/PtRoom', '_blank')
+  window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
 }
 
 function calcDay() {
