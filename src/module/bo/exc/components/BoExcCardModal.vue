@@ -1,94 +1,4 @@
 <!-- BoExcCardModal.vue -->
-<template>
-  <div v-if="show" class="modal" @click="closeModal">
-    <div class="modal-content relative" @click.stop>
-      <button @click="closeModal" class="absolute right-4 top-2 p-2">❌</button>
-      <div class="flex items-center justify-center mt-4 rounded-md">
-        <video controls loop muted autoplay class="exc-img rounded-md">
-          <!-- class 추가 -->
-          <source :src="videoSrc" />
-          <!-- 비디오 소스 바인딩 -->
-        </video>
-      </div>
-      <div class="modal-category-wrap p-3">
-        <div class="modal-sub-wrap">
-          <p>운동 이름</p>
-          <p>:</p>
-          <p>{{ exercise.excName }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>운동 설명</p>
-          <p>:</p>
-          <p>{{ exercise.excContent }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>운동 부위</p>
-          <p>:</p>
-          <p>{{ mapExcType(exercise.excType) }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>운동 난이도</p>
-          <p>:</p>
-          <p>{{ mapDifficultyType(exercise.excDifficulty) }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>1회당 칼로리 소모량</p>
-          <p>:</p>
-          <p>{{ exercise.excCaloriesPerRep }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>총 세트수</p>
-          <p>:</p>
-          <p>{{ exercise.excSetCount }}</p>
-        </div>
-        <div class="modal-sub-wrap flex">
-          <p>세트 당 동작수</p>
-          <p>:</p>
-          <p>{{ exercise.excRepCountPerSet }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>세트 당 시간</p>
-          <p>:</p>
-          <p>{{ exercise.excTimePerSetInSec }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>생성 일자</p>
-          <p>:</p>
-          <p>{{ dateUtil.timestampToFullDate(exercise.excCreatedDate) }}</p>
-        </div>
-        <div class="modal-sub-wrap">
-          <p>타겟 부위</p>
-          <p>:</p>
-          <div>
-            <div
-              v-for="(target, index) in exercise.exerciseTargets"
-              :key="index"
-              class="flex flex-col"
-            >
-              <p>
-                {{ ExctgUtils.mapExcAreaType(target.exctgArea) }} 비중 -
-                {{ target.exctgWeight * 100 }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-sub-wrap justify-end">
-        <div class="deleteBtn">
-          <v-btn
-            v-if="showDeleteBtn"
-            @click="deleteExercise"
-            color="primary"
-            class="mr-0 rounded-lg"
-          >
-            삭제
-          </v-btn>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import dateUtil from '/src/utils/date.js'
 import ExctgUtils from '@/module/bo/exc/services/excUtils'
@@ -96,10 +6,6 @@ const props = defineProps(['show', 'exercise', 'showDeleteBtn'])
 const emit = defineEmits([])
 import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 import { computed } from 'vue'
-
-const closeModal = () => {
-  emit('update:show', false)
-}
 
 const videoSrc = computed(
   () =>
@@ -147,25 +53,108 @@ const deleteExercise = () => {
 }
 </script>
 
-<style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검정색 배경 */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
+<template>
+  <v-dialog width="auto">
+    <template v-slot:default="{ isActive }">
+      <div class="modal-content relative" @click.stop>
+        <button
+          @click="isActive.value = false"
+          class="absolute right-4 top-2 p-2"
+        >
+          ❌
+        </button>
+        <div class="flex items-center justify-center mt-4 rounded-md">
+          <video controls loop muted autoplay class="exc-img rounded-md">
+            <!-- class 추가 -->
+            <source :src="videoSrc" />
+            <!-- 비디오 소스 바인딩 -->
+          </video>
+        </div>
+        <div class="modal-category-wrap p-3">
+          <div class="modal-sub-wrap">
+            <p>운동 이름</p>
+            <p>:</p>
+            <p>{{ exercise.excName }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>운동 설명</p>
+            <p>:</p>
+            <p>{{ exercise.excContent }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>운동 부위</p>
+            <p>:</p>
+            <p>{{ mapExcType(exercise.excType) }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>운동 난이도</p>
+            <p>:</p>
+            <p>{{ mapDifficultyType(exercise.excDifficulty) }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>1회당 칼로리 소모량</p>
+            <p>:</p>
+            <p>{{ exercise.excCaloriesPerRep }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>총 세트수</p>
+            <p>:</p>
+            <p>{{ exercise.excSetCount }}</p>
+          </div>
+          <div class="modal-sub-wrap flex">
+            <p>세트 당 동작수</p>
+            <p>:</p>
+            <p>{{ exercise.excRepCountPerSet }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>세트 당 시간</p>
+            <p>:</p>
+            <p>{{ exercise.excTimePerSetInSec }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>생성 일자</p>
+            <p>:</p>
+            <p>{{ dateUtil.timestampToFullDate(exercise.excCreatedDate) }}</p>
+          </div>
+          <div class="modal-sub-wrap">
+            <p>타겟 부위</p>
+            <p>:</p>
+            <div>
+              <div
+                v-for="(target, index) in exercise.exerciseTargets"
+                :key="index"
+                class="flex flex-col"
+              >
+                <p>
+                  {{ ExctgUtils.mapExcAreaType(target.exctgArea) }} 비중 -
+                  {{ target.exctgWeight * 100 }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-sub-wrap justify-end">
+          <div class="deleteBtn">
+            <v-btn
+              v-if="showDeleteBtn"
+              @click="deleteExercise"
+              color="primary"
+              class="mr-0 rounded-lg"
+            >
+              삭제
+            </v-btn>
+          </div>
+        </div>
+      </div>
+    </template>
+  </v-dialog>
+</template>
 
+<style scoped>
 .modal-content {
-  margin-top: 150px;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 40vw; /* 원하는 너비로 설정 */
   text-align: center;
 }
 .modal-sub-wrap {
@@ -190,8 +179,8 @@ const deleteExercise = () => {
 }
 
 .exc-img {
-  width: 80%; /* 혹은 원하는 값, 예: */
-  /* max-width: 100vw; */
+  width: 70%; /* 혹은 원하는 값, 예: */
+  /* max-width: 300px;  */
   height: 250px;
   /*max-height: 50%;  혹은 원하는 값, 예: */
   max-height: 300px;

@@ -9,12 +9,14 @@
       <div class="rtn-board-header">
         <!-- admSeq가 있는 경우에만 "등록하기" 버튼을 표시 -->
         <div class="flex justify-end mt-5 mr-6 mb-5">
+          <div>
             <input
               type="text"
               v-model="searchTerm"
               placeholder="루틴 검색"
               class="border p-2 rounded"
             />
+          </div>
         </div>
       </div>
     </div>

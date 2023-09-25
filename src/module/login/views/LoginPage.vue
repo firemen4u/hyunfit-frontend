@@ -109,7 +109,7 @@ export default {
         .then(response => {
           this.token = response.headers.get('authorization')
           ApiClient.setTokenOnLocalStorage(this.token, this.selectedRole)
-          this.moveToMain(localStorage.getItem('userRoleName'))
+          this.moveToMain(localStorage.getItem('userRole'))
         })
         .catch(error => {
           console.log(error)

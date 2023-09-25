@@ -125,7 +125,7 @@ const lastMenuItemClasses = (idx, pg) => {
 }
 
 function moveToMain() {
-  let userRole = localStorage.getItem('userRoleName')
+  let userRole = localStorage.getItem('userRole')
   if (userRole === 'admin') {
     router.push(pathNames.boExcBoardPage)
   } else if (userRole === 'trainer') {
@@ -138,7 +138,7 @@ function moveToMain() {
 function logout() {
   ApiClient.removeTokenOnLocalStorage()
   userData.value = null
-  location.href = '/'
+  router.go(0)
 }
 function login() {
   location.href = '/login'

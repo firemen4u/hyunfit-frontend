@@ -21,9 +21,6 @@ import TimerSvg from './TimerSvg.vue'
 import CalorieSvg from './CalorieSvg.vue'
 import PictureSvg from './PictureSvg.vue'
 import DumbbellSvg from './DumbbellSvg.vue'
-import Mp3Svg from './Mp3Svg.vue'
-import VideoSvg from './VideoSvg.vue'
-import ThumbnailSvg from './ThumbnailSvg.vue'
 
 export {
   HeartSvg,
@@ -49,7 +46,4 @@ export {
   TimerSvg,
   PictureSvg,
   DumbbellSvg,
-  Mp3Svg,
-  ThumbnailSvg,
-  VideoSvg,
 }
