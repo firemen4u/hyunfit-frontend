@@ -1,5 +1,6 @@
 <script setup>
 import {
+  BoExcCard,
   BoExcBoardFilterContainer,
   BoExcCardModal,
 } from '/src/module/bo/exc/components'
@@ -29,9 +30,6 @@ const addExercise = exercise => {
 }
 
 const removeExercise = index => {
-  // const index = props.modelValue.findIndex(
-  //   exercise => exercise.excSeq === exerciseToRemove.excSeq
-  // )
   emit(
     'update:modelValue',
     props.modelValue.filter((a, i) => i !== index)
