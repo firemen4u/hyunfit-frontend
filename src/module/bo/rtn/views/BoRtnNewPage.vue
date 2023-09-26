@@ -109,9 +109,7 @@ const rtn_thumbnail_url = ref([]) // 이미지 일
 const totalCalories = computed(() => {
   return Math.round(
     selectedExercises.value.reduce((acc, curr) => {
-      return (
-        acc + curr.excRepCountPerSet * curr.excCaloriesPerRep * curr.excSetCount
-      )
+      return acc + curr.excCaloriesPerRep * curr.excSetCount
     }, 0)
   )
 })
