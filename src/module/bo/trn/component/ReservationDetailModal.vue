@@ -40,12 +40,11 @@
           <div class="font-semibold">고객요청사항</div>
           <div class="sticker-container">
             <BaseCheckChip
-                class="mr-2 mb-2"
-                v-for="(option, index) in options"
-                :key="index"
-                :disabled="true"
-
-                :label="option"
+              class="mr-2 mb-2"
+              v-for="(option, index) in options"
+              :key="index"
+              :disabled="true"
+              :label="option"
             />
           </div>
         </div>
@@ -66,12 +65,12 @@
 </template>
 
 <script setup>
-import moment from 'moment'
+import dayjs from 'dayjs'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
-import {BaseChipGroup} from "@/module/@base/components";
+import { BaseChipGroup } from '@/module/@base/components'
 </script>
 <script>
-import router, {pathNames} from '@/router'
+import router, { pathNames } from '@/router'
 
 export default {
   props: {
@@ -99,7 +98,7 @@ export default {
       window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
     },
     formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).format('YYYY-MM-DD')
     },
     formatTime(timestamp) {
       const date = new Date(timestamp)
@@ -171,10 +170,10 @@ export default {
   height: 35px;
   border-radius: 5px;
   background: linear-gradient(
-      120deg,
-      rgb(144, 12, 63),
-      rgb(199, 0, 57),
-      rgb(249, 76, 16)
+    120deg,
+    rgb(144, 12, 63),
+    rgb(199, 0, 57),
+    rgb(249, 76, 16)
   );
   color: white;
   font-weight: 600;

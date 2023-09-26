@@ -64,7 +64,6 @@
 </template>
 
 <script setup>
-import moment from 'moment'
 import ApiClient from '/src/services/api.js'
 import dayjs from 'dayjs'
 </script>
@@ -88,10 +87,10 @@ export default {
       this.$emit('action:reload')
     },
     formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).format('YYYY-MM-DD')
     },
     formatTarget(timestamp) {
-      return moment(timestamp).format('YYYY-MM')
+      return dayjs(timestamp).format('YYYY-MM')
     },
     async submitFeedback(sendingData) {
       sendingData.trnfContent = this.feedbackContent

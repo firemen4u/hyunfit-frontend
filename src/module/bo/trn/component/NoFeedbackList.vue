@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import moment from 'moment'
+import dayjs from 'dayjs'
 import CreateFeedbackModal from './CreateFeedbackModal.vue'
 import ApiClient from '/src/services/api.js'
 </script>
@@ -78,10 +78,10 @@ export default {
       this.showDetail = true
     },
     formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).format('YYYY-MM-DD')
     },
     formatTarget(timestamp) {
-      return moment(timestamp).format('YYYY-MM')
+      return dayjs(timestamp).format('YYYY-MM')
     },
     nfbCnt() {
       return this.noFeedbackList.length

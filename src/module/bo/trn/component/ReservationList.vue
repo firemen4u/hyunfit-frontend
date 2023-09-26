@@ -47,7 +47,7 @@
 
 <script setup>
 import ReservaionDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import ApiClient from '/src/services/api.js'
 </script>
 
@@ -119,7 +119,7 @@ export default {
       return this.reservations.length
     },
     formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).format('YYYY-MM-DD')
     },
     formatTime(timestamp) {
       const date = new Date(timestamp)
