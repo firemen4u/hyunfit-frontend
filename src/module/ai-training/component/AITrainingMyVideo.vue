@@ -66,7 +66,7 @@ const emit = defineEmits(['prediction'])
 
 const freezePrediction = computed(
   () =>
-    !(props.exerciseType === 'EXERCISE' && !props.breakTime && !props.pauseTime)
+    props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
 )
 
 const exerciseCounts = reactive({
@@ -76,7 +76,7 @@ const exerciseCounts = reactive({
 })
 
 const props = defineProps({
-  exerciseData: Object,
+  exercise: Object,
   loading: Boolean,
   windowSize: String,
   breakTime: Boolean,
@@ -152,7 +152,7 @@ async function predict() {
   drawPose(pose)
 
   // if (freezePrediction.value) return)
-  if (pose.score < 0.2) {
+  if (pose.score < 0.3 || freezePrediction) {
     predictions.value = []
     return
   }
@@ -196,7 +196,7 @@ async function predict() {
 }
 
 function getColorFromPoseScore(score) {
-  if (props.exerciseData.type === 'INTRO') {
+  if (props.exercise.type === 'INTRO') {
     if (score < 0.9) return '#e70000'
     return '#00c700'
   }
@@ -210,7 +210,6 @@ function drawPose(pose) {
     ctx.drawImage(webcam.canvas, 0, 0)
     // draw the keypoints and skeleton
     if (pose) {
-      drawColor
       const minPartConfidence = 0.5
       tmPose.drawKeypoints(
         pose.keypoints,

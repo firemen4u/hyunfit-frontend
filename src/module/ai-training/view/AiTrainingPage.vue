@@ -23,11 +23,13 @@
   <!--  </div>-->
   <div class="ai-training-container flex">
     <AITrainingMyVideo
-        v-show="visibility.my"
-        :loading="loading"
-        :windowSize="windowSize.my"
-        :exercise="currentExercise"
-        @prediction="(score) => updateCount(score)"
+      v-show="visibility.my"
+      :loading="loading"
+      :windowSize="windowSize.my"
+      :exercise="currentExercise"
+      :break-time="breakTime"
+      :pause-time="pauseTime"
+      @prediction="score => updateCount(score)"
     ></AITrainingMyVideo>
     <AITrainingBreak v-if="breakTime"/>
     <AITrainingTeachingVideo
