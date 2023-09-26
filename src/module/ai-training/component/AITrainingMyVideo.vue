@@ -1,33 +1,33 @@
 <template>
   <div class="my-video bg-orange-200" :class="windowSize">
-    <!--    <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">-->
-    <!--      <div-->
-    <!--          class="md-2"-->
-    <!--          :class="-->
-    <!--              predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
-    <!--            "-->
-    <!--      >-->
-    <!--        기본자세: {{ predictions[0]?.className }}:-->
-    <!--        {{ Math.round(predictions[0]?.probability * 100) }}%-->
-    <!--      </div>-->
-    <!--      <div-->
-    <!--          class="md-2"-->
-    <!--          :class="-->
-    <!--              predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
-    <!--            "-->
-    <!--      >-->
-    <!--        운동자세: {{ predictions[1]?.className }}:-->
-    <!--        {{ Math.round(predictions[1]?.probability * 100) }}%-->
-    <!--      </div>-->
-    <!--      <div>flag: {{ flag }}</div>-->
-    <!--      <div>Count: {{ exerciseCounts }}</div>-->
-    <!--      <div>확률: {{ predictedProbability }}</div>-->
-    <!--      <div>인정된 자세: {{ getScoreType() }}</div>-->
-    <!--      <div>-->
-    <!--        쿨다운:-->
-    <!--        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
+      <div
+        class="md-2"
+        :class="
+          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
+        "
+      >
+        기본자세: {{ predictions[0]?.className }}:
+        {{ Math.round(predictions[0]?.probability * 100) }}%
+      </div>
+      <div
+        class="md-2"
+        :class="
+          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
+        "
+      >
+        운동자세: {{ predictions[1]?.className }}:
+        {{ Math.round(predictions[1]?.probability * 100) }}%
+      </div>
+      <div>flag: {{ flag }}</div>
+      <div>Count: {{ exerciseCounts }}</div>
+      <div>확률: {{ predictedProbability }}</div>
+      <div>인정된 자세: {{ getScoreType() }}</div>
+      <div>
+        쿨다운:
+        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
+      </div>
+    </div>
     <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
     <div id="label-container"></div>
   </div>
@@ -44,8 +44,8 @@ canvas video {
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import {onMounted, reactive, ref} from 'vue'
-import {FILE_SERVER_BASE_URL} from '@/config'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { FILE_SERVER_BASE_URL } from '@/config'
 
 const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
@@ -64,6 +64,11 @@ const predictedProbability = ref(null)
 const minExerciseDuration = 500
 const emit = defineEmits(['prediction'])
 
+const freezePrediction = computed(
+  () =>
+    !(props.exerciseType === 'EXERCISE' && !props.breakTime && !props.pauseTime)
+)
+
 const exerciseCounts = reactive({
   excellent: ref(0),
   good: ref(0),
@@ -74,6 +79,9 @@ const props = defineProps({
   exerciseData: Object,
   loading: Boolean,
   windowSize: String,
+  exerciseType: String,
+  breakTime: Boolean,
+  pauseTime: Boolean,
 })
 
 onMounted(() => {
@@ -81,7 +89,6 @@ onMounted(() => {
 })
 
 function emitCountEvent() {
-  console.log('counted')
   let type = getScoreType()
   emit('prediction', type)
 }
@@ -121,9 +128,9 @@ async function init() {
 }
 
 function getScoreType() {
-  if (predictedProbability.value > 0.95) return 'excellent'
-  if (predictedProbability.value > 0.5) return 'good'
-  if (predictedProbability.value > 0.5) return 'bad'
+  if (predictedProbability.value > 0.97) return 'excellent'
+  if (predictedProbability.value > 0.8) return 'good'
+  if (predictedProbability.value > 0.3) return 'bad'
 }
 
 function updatePredictedProbability(probability) {
@@ -141,12 +148,17 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
-
+  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
   // Prediction 2: run input through teachable machine classification model
-  const currentTime = new Date().getTime()
-
   drawPose(pose)
+
+  // if (freezePrediction.value) return)
+  if (pose.score < 0.2) {
+    predictions.value = []
+    return
+  }
+
+  const currentTime = new Date().getTime()
 
   if (currentTime - lastPredictionTime.value < maxPredictionInterval) return
 
@@ -155,16 +167,16 @@ async function predict() {
   if (predictions.value.length !== maxPredictions) return
 
   let pred
+  // 올바른 자세 찾기
   for (let i = 0; i < maxPredictions; i++) {
-    if (predictions.value[i].probability > 0.7) {
+    if (predictions.value[i].className.startsWith('1')) {
       pred = predictions.value[i]
       break
     }
   }
   if (!pred) return
-
-  // 예측한 자세가 올바른 자세라면
-  if (pred.className.startsWith('1')) {
+  // 올바른 자세일 확률이 30% 이상일 경우
+  if (pred.probability > 0.3) {
     if (!flag) {
       flag = true
       lastPredictionTime.value = currentTime
@@ -172,40 +184,44 @@ async function predict() {
     updatePredictedProbability(pred.probability)
     return
   }
-
   // 일반 자세라면
   if (flag && currentTime - lastPredictionTime.value >= minExerciseDuration) {
     //일반 자세인데, flag가 켜져 있었고 충분한 시간이 지났다면
-    emitCountEvent(predictedProbability.value)
+    exerciseCounts[getScoreType()] += 1
+    emitCountEvent()
   } else {
     flag = false
     updatePredictedProbability(-1)
   }
-
   lastPredictionTime.value = currentTime
+}
+
+function getColorFromPoseScore(score) {
+  if (props.exerciseType === 'INTRO') {
+    if (score < 0.9) return '#e70000'
+    return '#00c700'
+  }
+  if (score > 0.9) return '#FFFFFF'
+  else return '#CACACA'
 }
 
 function drawPose(pose) {
   if (webcam.canvas) {
+    let drawColor = getColorFromPoseScore(pose.score)
     ctx.drawImage(webcam.canvas, 0, 0)
     // draw the keypoints and skeleton
     if (pose) {
+      drawColor
       const minPartConfidence = 0.5
       tmPose.drawKeypoints(
-          pose.keypoints,
-          minPartConfidence,
-          ctx,
-          10,
-          '#FFFFFFBB',
-          '#FFFFFF'
+        pose.keypoints,
+        minPartConfidence,
+        ctx,
+        10,
+        drawColor + 'BB',
+        drawColor
       )
-      tmPose.drawSkeleton(
-          pose.keypoints,
-          minPartConfidence,
-          ctx,
-          10,
-          '#ffffffBB'
-      )
+      tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx, 7, drawColor)
     }
   }
 }
