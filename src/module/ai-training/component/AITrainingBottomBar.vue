@@ -57,7 +57,7 @@ import AIExitSvg from "@/module/@base/svg/WarningSvg.vue";
 
 const emit = defineEmits(['event:sound', 'event:pause', 'event:exit'])
 
-const dialog = ref(true)
+const dialog = ref(false)
 </script>
 <style scoped>
 .button {
