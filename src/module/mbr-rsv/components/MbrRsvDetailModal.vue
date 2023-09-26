@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import moment from 'moment'
+import dayjs from 'dayjs'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
 import ApiClient from '/src/services/api.js'
 </script>
@@ -86,7 +86,7 @@ export default {
       this.closeModal()
     },
     formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).format('YYYY-MM-DD')
     },
     formatTime(timestamp) {
       const date = new Date(timestamp)
