@@ -31,69 +31,78 @@
       :pause-time="pauseTime"
       @prediction="score => updateCount(score)"
     ></AITrainingMyVideo>
-    <AITrainingBreak v-if="breakTime"/>
+    <AITrainingBreak v-if="breakTime" />
     <AITrainingTeachingVideo
-        v-if="visibility.teaching"
-        :loading="loading"
-        :windowSize="windowSize.teaching"
-        :exercise="currentExercise"
-        :break-time="breakTime"
-        :pause-time="pauseTime"
-        @event:ready="onTeachingVideoReady()"
+      v-if="visibility.teaching"
+      :loading="loading"
+      :windowSize="windowSize.teaching"
+      :exercise="currentExercise"
+      :break-time="breakTime"
+      :pause-time="pauseTime"
+      @event:ready="onTeachingVideoReady()"
     />
     <AITrainingStatusContainer
-        v-if="visibility.counter"
-        :exercise="currentExercise"
-        :setScoreCount="setScoreCount"
-        :setCount="setCount"
-        :key="rerenderKey"
+      v-if="visibility.counter"
+      :exercise="currentExercise"
+      :setScoreCount="setScoreCount"
+      :setCount="setCount"
+      :key="rerenderKey"
     />
-    <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft"/>
-    <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()"/>
+    <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft" />
+    <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()" />
 
     <div
-        class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
-        v-if="loading && currentExercise?.type !== 'INTRO'"
+      class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
+      v-if="loading && currentExercise?.type !== 'INTRO'"
     >
       <a-i-training-info
-          v-if="currentExercise?.type !== 'EXERCISE'"
-          :exerciseType="currentExercise?.type"
-          :exerciseName="currentExercise?.name"
+        v-if="currentExercise?.type !== 'EXERCISE'"
+        :exerciseType="currentExercise?.type"
+        :exerciseName="currentExercise?.name"
       ></a-i-training-info>
       <a-i-training-info
-          v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
-          :exerciseType="currentExercise?.type"
-          :exerciseName="currentExercise?.name"
-          :breakTime="breakTime"
+        v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
+        :exerciseType="currentExercise?.type"
+        :exerciseName="currentExercise?.name"
+        :breakTime="breakTime"
       ></a-i-training-info>
     </div>
     <a-i-training-info
-        v-if="notification!=='' && currentExercise?.type === 'EXERCISE' && !breakTime "
-        :exercise-name="notification"
+      v-if="
+        notification !== '' &&
+        currentExercise?.type === 'EXERCISE' &&
+        !breakTime
+      "
+      :exercise-name="notification"
     ></a-i-training-info>
     <a-i-training-info
-        v-if="breakTime && !loading"
-        :breakTime="breakTime"
-        :loading="loading"
+      v-if="breakTime && !loading"
+      :breakTime="breakTime"
+      :loading="loading"
     >
     </a-i-training-info>
-    <a-i-training-info v-if="pauseTime"
-                       :pauseTime="pauseTime">
+    <a-i-training-info v-if="pauseTime" :pauseTime="pauseTime">
     </a-i-training-info>
-    <a-i-training-bottom-bar @event:pause=toggleTime()></a-i-training-bottom-bar>
+    <a-i-training-bottom-bar
+      @event:pause="toggleTime()"
+    ></a-i-training-bottom-bar>
   </div>
 </template>
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
-import ApiClient from "@/services/api";
-import {AITrainingMyVideo, AITrainingStatusContainer, AITrainingTeachingVideo,} from '/src/module/ai-training/component'
+import ApiClient from '@/services/api'
+import {
+  AITrainingMyVideo,
+  AITrainingStatusContainer,
+  AITrainingTeachingVideo,
+} from '/src/module/ai-training/component'
 import AITrainingTimer from '@/module/ai-training/component/AITrainingTimer.vue'
 import AiTrainingSkipButton from '@/module/ai-training/component/AiTrainingSkipButton.vue'
 import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
-import AITrainingInfo from "@/module/ai-training/component/AITrainingInfo.vue";
-import AITrainingBottomBar from "@/module/ai-training/component/AITrainingBottomBar.vue";
-import {FILE_SERVER_BASE_URL} from "@/config";
+import AITrainingInfo from '@/module/ai-training/component/AITrainingInfo.vue'
+import AITrainingBottomBar from '@/module/ai-training/component/AITrainingBottomBar.vue'
+import { FILE_SERVER_BASE_URL } from '@/config'
 
 const memberData = ref(null)
 const rerenderKey = ref(0)
@@ -107,7 +116,7 @@ let currentIndex = ref(0)
 let startExerciseTime = ref(0)
 let endExerciseTime = ref(0)
 let setFinished = computed(
-    () => setCount.value >= currentExercise.value?.setCount
+  () => setCount.value >= currentExercise.value?.setCount
 )
 let videoList = [
   'https://alycecloud-website.s3.ap-northeast-2.amazonaws.com/video/warming_up.mp4',
@@ -174,21 +183,21 @@ function updateCount(scoreType) {
     if (scoreType === 'excellent') {
       scores.excellent += 1
       setScoreCount.value += 1
-      notification.value = 'excellent!';
+      notification.value = 'excellent!'
     } else if (scoreType === 'good') {
-      scores.good += 1;
+      scores.good += 1
       setScoreCount.value += 1
-      notification.value = 'good';
+      notification.value = 'good'
     } else if (scoreType === 'bad') {
-      scores.bad += 1;
+      scores.bad += 1
       setScoreCount.value += 1
-      notification.value = 'bad';
+      notification.value = 'bad'
     }
     console.log('notification', notification.value)
-    totalScoreCount.value = scores.excellent + scores.good + scores.bad;
+    totalScoreCount.value = scores.excellent + scores.good + scores.bad
     setTimeout(() => {
-      notification.value = '';
-    }, 1000);
+      notification.value = ''
+    }, 1000)
   }
 }
 
@@ -278,21 +287,21 @@ async function sendExerciseData() {
     exchExcelentCnt: scores.excellent,
     exchGoodCnt: scores.good,
     exchBadCnt: scores.bad,
-    exchTotalCalories: totalScoreCount.value * currentExercise.value.calorie
+    exchTotalCalories: totalScoreCount.value * currentExercise.value.calorie,
     // exchTotalCalories: 10
   }
   try {
     if (data.exchTotalCalories !== 0) {
       await ApiClient.post(`/exercise-history`, data)
-      console.log("completed history", data)
-      console.log("exchTotalCalories", currentExercise.value.calorie)
+      console.log('completed history', data)
+      console.log('exchTotalCalories', currentExercise.value.calorie)
       totalScoreCount.value = 0
       setScoreCount.value = 0
 
       scores.good = 0
       scores.excellent = 0
       scores.bad = 0
-      console.log("totalScoreCount 초기화", totalScoreCount.value)
+      console.log('totalScoreCount 초기화', totalScoreCount.value)
     } else {
       console.log('칼로리가 0이라 데이터를 보내지 않아요')
     }
@@ -355,10 +364,14 @@ function createExerciseQueueItem(exercise, type) {
   }
   if (type === 'GUIDE') {
     item['timerLimit'] = 10
-    item['videoUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
+    item[
+      'videoUrl'
+    ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
   } else {
     item['timerLimit'] = exercise.excTimePerSetInSec
-    item['videoUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
+    item[
+      'videoUrl'
+    ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
   }
   return item
 }
@@ -383,7 +396,7 @@ async function loadData() {
           type: 'WARMUP',
           name: '워밍업',
           timerLimit: 100,
-          videoUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warmingup.mp4`
+          videoUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warmingup.mp4`,
         },
       ]
       for (const exercise of response.data.exercises) {
@@ -405,9 +418,8 @@ async function loadData() {
 }
 </script>
 <style scoped>
-
 .info-container {
-  background-color: rgb(102, 102, 102)
+  background-color: rgb(102, 102, 102);
 }
 
 .loading {

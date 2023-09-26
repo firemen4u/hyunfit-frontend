@@ -19,14 +19,15 @@
         운동자세: {{ predictions[1]?.className }}:
         {{ Math.round(predictions[1]?.probability * 100) }}%
       </div>
-      <div>flag: {{ flag }}</div>
-      <div>Count: {{ exerciseCounts }}</div>
-      <div>확률: {{ predictedProbability }}</div>
-      <div>인정된 자세: {{ getScoreType() }}</div>
+      <!--      <div>flag: {{ flag }}</div>-->
+      <!--      <div>Count: {{ exerciseCounts }}</div>-->
+      <!--      <div>확률: {{ predictedProbability }}</div>-->
+      <!--      <div>인정된 자세: {{ getScoreType() }}</div>-->
       <div>
         쿨다운:
         {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
       </div>
+      <div>freezePrediction: {{ freezePrediction }}</div>
     </div>
     <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
     <div id="label-container"></div>
@@ -57,7 +58,7 @@ let flag = false
 const width = 1000
 const height = 1000
 
-const maxPredictionInterval = 100
+const maxPredictionInterval = 200
 const predictions = ref([])
 const lastPredictionTime = ref(0)
 const predictedProbability = ref(null)
@@ -127,9 +128,9 @@ async function init() {
 }
 
 function getScoreType() {
-  if (predictedProbability.value > 0.97) return 'excellent'
-  if (predictedProbability.value > 0.8) return 'good'
-  if (predictedProbability.value > 0.3) return 'bad'
+  if (predictedProbability.value > 0.98) return 'excellent'
+  if (predictedProbability.value > 0.92) return 'good'
+  if (predictedProbability.value > 0.4) return 'bad'
 }
 
 function updatePredictedProbability(probability) {
@@ -152,7 +153,7 @@ async function predict() {
   drawPose(pose)
 
   // if (freezePrediction.value) return)
-  if (pose.score < 0.3 || freezePrediction) {
+  if (pose.score < 0.4 || freezePrediction.value) {
     predictions.value = []
     return
   }
