@@ -5,7 +5,9 @@
         <!--헤더부분-->
         <div class="flex justify-between ml-1 mr-1 mb-2">
           <div class="mr-10 font-bold"><h2>예약 상세 정보</h2></div>
-          <div class=""><button @click="closeModal">닫기</button></div>
+          <div class="">
+            <button @click="closeModal">닫기</button>
+          </div>
         </div>
         <div class="flex divider"></div>
         <!--바디부분-->
@@ -38,10 +40,12 @@
           <div class="font-semibold">고객요청사항</div>
           <div class="sticker-container">
             <BaseCheckChip
-              class="mr-2 mb-2"
-              v-for="(option, index) in options"
-              :key="index"
-              :label="option"
+                class="mr-2 mb-2"
+                v-for="(option, index) in options"
+                :key="index"
+                :disabled="true"
+
+                :label="option"
             />
           </div>
         </div>
@@ -64,9 +68,10 @@
 <script setup>
 import moment from 'moment'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
+import {BaseChipGroup} from "@/module/@base/components";
 </script>
 <script>
-import router, { pathNames } from '@/router'
+import router, {pathNames} from '@/router'
 
 export default {
   props: {
@@ -120,12 +125,14 @@ export default {
   align-items: center;
   z-index: 9999;
 }
+
 .modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .rsvdetail-category {
   display: flex;
   align-items: center;
@@ -134,6 +141,7 @@ export default {
   font-weight: 600;
   margin-bottom: 12px;
 }
+
 .info-gray-box {
   display: flex;
   align-items: center;
@@ -144,6 +152,7 @@ export default {
   border-radius: 5px;
   margin-bottom: 12px;
 }
+
 .needs-gray-box {
   background-color: rgb(234, 236, 244);
   width: 350px;
@@ -152,22 +161,25 @@ export default {
   display: inline-block;
   border-radius: 5px;
 }
+
 .sticker-container {
   width: 400px;
 }
+
 .ptEntryButton {
   width: 125px;
   height: 35px;
   border-radius: 5px;
   background: linear-gradient(
-    120deg,
-    rgb(144, 12, 63),
-    rgb(199, 0, 57),
-    rgb(249, 76, 16)
+      120deg,
+      rgb(144, 12, 63),
+      rgb(199, 0, 57),
+      rgb(249, 76, 16)
   );
   color: white;
   font-weight: 600;
 }
+
 .divider {
   height: 1px;
   background-color: rgb(222, 222, 222);
