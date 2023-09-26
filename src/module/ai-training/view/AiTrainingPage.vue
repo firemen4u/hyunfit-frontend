@@ -28,6 +28,8 @@
         :windowSize="windowSize.my"
         :exercise="currentExercise"
         @prediction="(score) => updateCount(score)"
+        :break-time="breakTime"
+        :pause-time="pauseTime"
     ></AITrainingMyVideo>
     <AITrainingBreak v-if="breakTime"/>
     <AITrainingTeachingVideo
