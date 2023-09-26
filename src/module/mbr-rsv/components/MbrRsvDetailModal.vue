@@ -53,6 +53,7 @@
 
 <script setup>
 import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
 import ApiClient from '/src/services/api.js'
 </script>
@@ -86,7 +87,7 @@ export default {
       this.closeModal()
     },
     formatDate(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM-DD')
     },
     formatTime(timestamp) {
       const date = new Date(timestamp)
