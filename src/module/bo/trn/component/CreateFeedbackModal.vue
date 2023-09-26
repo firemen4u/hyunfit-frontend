@@ -35,7 +35,7 @@
         <div class="flex flex-col gap-2 ml-4 mr-4">
           <div class="flex flex-row justify-between">
             <div class="font-semibold">피드백 내용</div>
-            <button class="" @click="getGptFeedback(noFeedbackData)">
+            <button class="" @click="getGptFeedback(noFeedbackData.mbrSeq)">
               gpt 보고서 받아보기
             </button>
           </div>
@@ -62,9 +62,14 @@
     </div>
   </div>
 </template>
-<script>
+
+<script setup>
 import moment from 'moment'
 import ApiClient from '/src/services/api.js'
+import dayjs from 'dayjs'
+</script>
+
+<script>
 export default {
   props: {
     noFeedbackData: Object,
@@ -73,6 +78,8 @@ export default {
   data() {
     return {
       feedbackContent: '',
+      startDate: '',
+      endDate: '',
     }
   },
   methods: {
@@ -91,7 +98,19 @@ export default {
       await ApiClient.post('/trainer-feedbacks/write-feedback', sendingData)
       this.closeModal()
     },
-    async getGptFeedback(sendingData) {
+    async getGptFeedback(mbrSeq) {
+      const targetDate = dayjs(
+        this.formatTarget(this.noFeedbackData.trnfSubmissionDue)
+      )
+      this.startDate = targetDate.startOf('month').format('YYYY-MM-01 00:00:00')
+      this.endDate = targetDate.endOf('month').format('YYYY-MM-DD 00:00:00')
+
+      let sendingData = await ApiClient.get('/members/' + mbrSeq + '/report', {
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+        },
+      })
       let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
       this.feedbackContent = response.content
     },
