@@ -48,6 +48,7 @@
 <script setup>
 import ReservaionDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
 import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 import ApiClient from '/src/services/api.js'
 </script>
 
@@ -119,7 +120,7 @@ export default {
       return this.reservations.length
     },
     formatDate(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM-DD')
     },
     formatTime(timestamp) {
       const date = new Date(timestamp)

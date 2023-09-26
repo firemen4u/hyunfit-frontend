@@ -45,6 +45,7 @@
 
 <script setup>
 import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 import CreateFeedbackModal from './CreateFeedbackModal.vue'
 import ApiClient from '/src/services/api.js'
 </script>
@@ -78,10 +79,10 @@ export default {
       this.showDetail = true
     },
     formatDate(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM-DD')
     },
     formatTarget(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM')
     },
     nfbCnt() {
       return this.noFeedbackList.length

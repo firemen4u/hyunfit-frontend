@@ -66,6 +66,7 @@
 
 <script setup>
 import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
 import { BaseChipGroup } from '@/module/@base/components'
 </script>
@@ -98,7 +99,7 @@ export default {
       window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
     },
     formatDate(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM-DD')
     },
     formatTime(timestamp) {
       const date = new Date(timestamp)
