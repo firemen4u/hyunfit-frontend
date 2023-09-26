@@ -36,6 +36,7 @@
           <ReservaionDetailModal
             :show="showDetail"
             :reservationData="selectedReservation"
+            @action:reload="listReload"
             @close="showDetail = false"
           />
         </div>
@@ -73,7 +74,6 @@ export default {
     )
       .then(response => {
         this.reservations = response
-        console.log(this.reservations)
         this.plusCnt()
         this.sendCntToParent()
       })
@@ -89,7 +89,6 @@ export default {
         upcomingCnt: this.upcomingCnt,
         cancelCnt: this.cancelCnt,
       }
-      console.log('자식에게 주는 데이터:', cntList)
       this.$emit('send-cntlist', cntList)
     },
     showDetailModal(reservation) {
@@ -102,6 +101,8 @@ export default {
         if (reservation.ptReservationStatus === 1) {
           reservation.ptReservationStatus = '예정'
           this.upcomingCnt = this.upcomingCnt + 1
+        } else if (reservation.ptReservationStatus === 2) {
+          reservation.ptReservationStatus = '재입장'
         } else if (reservation.ptReservationStatus === 3) {
           reservation.ptReservationStatus = '완료'
           this.completeCnt = this.completeCnt + 1
@@ -126,6 +127,20 @@ export default {
       const minutes = String(date.getMinutes()).padStart(2, '0')
 
       return `${hours}:${minutes}`
+    },
+    async listReload() {
+      let resposeData = await ApiClient.get('/trainers/me')
+      await ApiClient.get(
+        '/trainers/' + resposeData.trnSeq + '/personal-training'
+      )
+        .then(response => {
+          this.reservations = response
+          this.plusCnt()
+          this.sendCntToParent()
+        })
+        .catch(error => {
+          console.error('API 요청 실패:', error)
+        })
     },
   },
 }
