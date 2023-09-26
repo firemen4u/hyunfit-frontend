@@ -66,6 +66,7 @@
 <script setup>
 import ApiClient from '/src/services/api.js'
 import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 </script>
 
 <script>
@@ -87,10 +88,10 @@ export default {
       this.$emit('action:reload')
     },
     formatDate(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM-DD')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM-DD')
     },
     formatTarget(timestamp) {
-      return dayjs(timestamp).format('YYYY-MM')
+      return dayjs(timestamp).locale('ko').format('YYYY-MM')
     },
     async submitFeedback(sendingData) {
       sendingData.trnfContent = this.feedbackContent
