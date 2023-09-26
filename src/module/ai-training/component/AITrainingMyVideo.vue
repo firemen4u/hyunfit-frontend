@@ -79,7 +79,6 @@ const props = defineProps({
   exerciseData: Object,
   loading: Boolean,
   windowSize: String,
-  exerciseType: String,
   breakTime: Boolean,
   pauseTime: Boolean,
 })
@@ -197,7 +196,7 @@ async function predict() {
 }
 
 function getColorFromPoseScore(score) {
-  if (props.exerciseType === 'INTRO') {
+  if (props.exerciseData.type === 'INTRO') {
     if (score < 0.9) return '#e70000'
     return '#00c700'
   }
