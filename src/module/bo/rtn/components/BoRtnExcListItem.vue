@@ -73,11 +73,7 @@ const videoSrc = computed(
 const emit = defineEmits(['click:card', 'click:add'])
 
 function caloriePerExc(exercise) {
-  return Math.round(
-    exercise.excSetCount *
-      exercise.excRepCountPerSet *
-      exercise.excCaloriesPerRep
-  )
+  return Math.round(exercise.excSetCount * exercise.excCaloriesPerRep)
 }
 function timePerExc(exercise) {
   return Math.round((exercise.excSetCount * exercise.excTimePerSetInSec) / 60)
