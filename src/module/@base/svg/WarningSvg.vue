@@ -15,7 +15,4 @@
 </template>
 
 <style scoped>
-.st0 {
-  fill: #c70039;
-}
 </style>

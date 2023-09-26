@@ -65,10 +65,6 @@ const dialog = ref(true)
   border-color: white;
 }
 
-.v-card-item {
-  background-color: #0d47a1;
-}
-
 .item {
   background-color: rgba(41, 41, 41, 0.8);
   border-color: white;
