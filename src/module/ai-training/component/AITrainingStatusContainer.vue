@@ -38,14 +38,6 @@ const props = defineProps({
   setCount: Number,
   windowSize: String,
 })
-const completedSets = ref(0);
-// watch(props.setCount, (newCount) => {
-//   console.log('setCount  자식 컴포넌트', props.setCount)
-//   completedSets.value = 0;
-//   if (newCount < completedSets.value) {
-//     completedSets.value = newCount;
-//   }
-// });
 onMounted(() => {
   console.log('props.exercise', props.exercise)
 })

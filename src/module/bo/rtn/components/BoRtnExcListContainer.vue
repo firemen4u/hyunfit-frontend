@@ -1,15 +1,15 @@
 <template>
   <div
-    class="content-wrap p-2 mt-5 mb-4 shadow-md border-2 border-gray-100 rounded-lg"
+      class="content-wrap p-2 mt-5 mb-4 shadow-md border-2 border-gray-100 rounded-lg"
   >
     <div class="flex justify-between items-center">
-      <BoExcBoardFilterContainer class="flex" @updateExcType="updateExcType" />
+      <BoExcBoardFilterContainer class="flex" @updateExcType="updateExcType"/>
       <div>
         <input
-          type="text"
-          v-model="searchText"
-          placeholder=" 운동 검색"
-          class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
+            type="text"
+            v-model="searchText"
+            placeholder=" 운동 검색"
+            class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
         />
       </div>
     </div>
@@ -17,21 +17,21 @@
       <div v-if="paginatedExercises.length > 0" class="flex flex-wrap ml-4">
         <div v-for="exercise in paginatedExercises" :key="exercise.excSeq">
           <BoRtnExcCard
-            :exercise="exercise"
-            @openModal="openModal"
-            @click:register="addRegisteredExercise"
+              :exercise="exercise"
+              @openModal="openModal"
+              @click:register="addRegisteredExercise"
           />
         </div>
       </div>
       <div v-else>해당하는 운동이 없습니다.</div>
     </div>
 
-    <BasePagination v-model="currentPage" :total-pages="totalPages" />
+    <BasePagination v-model="currentPage" :total-pages="totalPages"/>
   </div>
   <BoExcCardModal
-    :show="showModal"
-    :exercise="selectedExercise"
-    @update:show="showModal = $event"
+      :show="showModal"
+      :exercise="selectedExercise"
+      @update:show="showModal = $event"
   />
   <div class="flex justify-between">
     <div class="p-2">
@@ -52,14 +52,14 @@
   <div class="flex flex-wrap">
     <div v-for="exercise in registeredExercises" :key="exercise.excSeq">
       <div
-        class="flex justify-between p-2 bg-primary w-80 mb-2 mr-2 rounded-lg"
+          class="flex justify-between p-2 bg-primary w-80 mb-2 mr-2 rounded-lg"
       >
         <p>이름: {{ exercise.excName }}</p>
         <p>
           소요 시간 :
           {{
             ((exercise.excSetCount * exercise.excTimePerSetInSec) / 60).toFixed(
-              1
+                1
             )
           }}
           분
@@ -78,7 +78,7 @@ import {
 } from '/src/module/bo/exc/components'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import BoRtnExcCard from '/src/module/bo/rtn/components/BoRtnExcCard.vue'
-import { ref, onMounted, computed, watch } from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
 import ApiClient from '/src/services/api'
 
 const registeredExercises = ref([]) // 등록된 운동을 저장할 변수
@@ -100,7 +100,7 @@ const addRegisteredExercise = exercise => {
 // registeredExercises 배열에 운동 삭제
 const removeExercise = exerciseToRemove => {
   const index = registeredExercises.value.findIndex(
-    exercise => exercise.excSeq === exerciseToRemove.excSeq
+      exercise => exercise.excSeq === exerciseToRemove.excSeq
   )
   if (index !== -1) {
     registeredExercises.value.splice(index, 1)
@@ -115,8 +115,8 @@ const clearExercises = () => {
 const submitExercises = () => {
   emit('update:exercises', registeredExercises.value) // 상위 컴포넌트에 전달
   console.log(
-    'Exercises sent:',
-    JSON.stringify(registeredExercises.value, null, 2) // 콘솔에 로깅
+      'Exercises sent:',
+      JSON.stringify(registeredExercises.value, null, 2) // 콘솔에 로깅
   )
 }
 
@@ -151,7 +151,7 @@ const filteredExercises = computed(() => {
   // excType에 따른 필터링
   if (selectedExcType.value !== null) {
     result = result.filter(
-      exercise => exercise.excType === selectedExcType.value
+        exercise => exercise.excType === selectedExcType.value
     )
   }
 
@@ -159,8 +159,8 @@ const filteredExercises = computed(() => {
   if (searchText.value) {
     result = result.filter(exercise => {
       return exercise.excName
-        .toLowerCase()
-        .includes(searchText.value.toLowerCase())
+          .toLowerCase()
+          .includes(searchText.value.toLowerCase())
     })
   }
 
@@ -187,8 +187,8 @@ onMounted(() => {
 watch(searchText, () => {
   currentPage.value = 1 // 검색어가 바뀔 때 페이지를 1로 초기화
   console.log(
-    '검색어 바뀌어서 1로초기화 currentPage.value :',
-    currentPage.value
+      '검색어 바뀌어서 1로초기화 currentPage.value :',
+      currentPage.value
   )
 })
 

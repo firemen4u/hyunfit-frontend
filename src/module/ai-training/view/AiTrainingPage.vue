@@ -1,25 +1,26 @@
 <template>
-  <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
-    <v-btn @click="timer.start(20)">Start</v-btn>
-    <v-btn @click="timer.stop()">Stop</v-btn>
-    <v-btn @click="timer.reset()">reset</v-btn>
-    <v-btn @click="toggleTime()">Toggle Break</v-btn>
-    <v-btn @click="updateCount()">Update Count</v-btn>
-    <div class="md-2">현재 윈도우 옵션: {{ windowSize }}</div>
-    <div class="md-2">현재 visible 옵션: {{ visibility }}</div>
-    <div class="md-2">
-      현재 Set: {{ setCount }} --- setFinished : {{ setFinished }}
-    </div>
-    <div class="md-2">
-      현재 운동: {{ currentExercise?.type }} --- 현재 index: {{ currentIndex }}
-    </div>
+  <!--  <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">-->
+  <!--    <v-btn @click="timer.start(20)">Start</v-btn>-->
+  <!--    <v-btn @click="timer.stop()">Stop</v-btn>-->
+  <!--    <v-btn @click="timer.reset()">reset</v-btn>-->
+  <!--    <v-btn @click="updateCount()">Update Count</v-btn>-->
+  <!--    <div class="md-2">현재 윈도우 옵션: {{ windowSize }}</div>-->
+  <!--    <div class="md-2">현재 visible 옵션: {{ visibility }}</div>-->
+  <!--    <div class="md-2">-->
+  <!--      현재 Set: {{ setCount }} -&#45;&#45; setFinished : {{ setFinished }}-->
+  <!--    </div>-->
+  <!--    <div class="md-2">-->
+  <!--      현재 운동: {{ currentExercise?.type }} -&#45;&#45; 현재 index: {{ currentIndex }}-->
+  <!--    </div>-->
 
-    <div>TimeDelta: {{ timeDelta }} --- 현재 시간: {{ timeLeft }}</div>
-    <div>Break {{ breakTime }} || loading {{ loading }}</div>
-    <div>exercise Count {{ setScoreCount }}</div>
-    <br/>
-    video {{ videoList[currentIndex - 1] }}
-  </div>
+  <!--    <div>TimeDelta: {{ timeDelta }} -&#45;&#45; 현재 시간: {{ timeLeft }}</div>-->
+  <!--    <div>Break {{ breakTime }} || loading {{ loading }}</div>-->
+  <!--    <div>exercise Count {{ setScoreCount }}</div>-->
+  <!--    <div>pause Time {{ pauseTime }}</div>-->
+
+  <!--    <br/>-->
+  <!--    video {{ videoList[currentIndex - 1] }}-->
+  <!--  </div>-->
   <div class="ai-training-container flex">
     <AITrainingMyVideo
         v-show="visibility.my"
@@ -37,7 +38,6 @@
         :break-time="breakTime"
         :pause-time="pauseTime"
         @event:ready="onTeachingVideoReady()"
-        :video-url="videoList[currentIndex - 1]"
     />
     <AITrainingStatusContainer
         v-if="visibility.counter"
@@ -50,57 +50,35 @@
     <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()"/>
 
     <div
-        class="fixed top-0 left-0 w-full h-full bg-gray-200 text-4xl"
+        class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
         v-if="loading && currentExercise?.type !== 'INTRO'"
     >
-      <div
+      <a-i-training-info
           v-if="currentExercise?.type !== 'EXERCISE'"
-          class="fixed top-1/2 left-1/2"
-      >
-        {{ currentExercise?.name }}
-      </div>
-      <div
+          :exerciseType="currentExercise?.type"
+          :exerciseName="currentExercise?.name"
+      ></a-i-training-info>
+      <a-i-training-info
           v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
-          class="fixed top-1/2 left-1/2"
-      >
-        운동 시작
-        {{ currentExercise.videoUrl }}
-      </div>
+          :exerciseType="currentExercise?.type"
+          :exerciseName="currentExercise?.name"
+          :breakTime="breakTime"
+      ></a-i-training-info>
     </div>
-    <!-- excellent & good & bad -->
     <a-i-training-info
-        v-if="notification!==''"
+        v-if="notification!=='' && currentExercise?.type === 'EXERCISE' && !breakTime "
         :exercise-name="notification"
     ></a-i-training-info>
-    <!-- 쉬는 시간 -->
-    <div
-        class="fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-20 text-4xl"
+    <a-i-training-info
         v-if="breakTime && !loading"
+        :breakTime="breakTime"
+        :loading="loading"
     >
-      <div class="fixed top-1/2 left-1/2">쉬는시간</div>
-    </div>
-    <div
-        class="fixed top-0 left-0 w-full h-full bg-gray-200 bg-opacity-20 text-4xl"
-        v-if="pauseTime">
-      <div class="fixed top-1/2 left-1/2">일시정지</div>
-    </div>
-    <!--    <div class="absolute bottom-0 flex justify-center w-full">-->
-    <!--      <div class="empty-container item bg-transparent"></div>-->
-    <!--      <div class="status-navigation-container item">-->
-    <!--        <button class="buttons">-->
-    <!--          <img src="/src/assets/images/volume-high.png"/>-->
-    <!--        </button>-->
-    <!--        <button class="buttons">-->
-    <!--          <img src="/src/assets/images/volume-high.png"/>-->
-    <!--        </button>-->
-    <!--        <button class="buttons">-->
-    <!--          <img src="/src/assets/images/volume-high.png"/>-->
-    <!--        </button>-->
-    <!--        <button class="buttons">-->
-    <!--          <img src="/src/assets/images/volume-high.png"/>-->
-    <!--        </button>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    </a-i-training-info>
+    <a-i-training-info v-if="pauseTime"
+                       :pauseTime="pauseTime">
+    </a-i-training-info>
+    <a-i-training-bottom-bar @event:pause=toggleTime()></a-i-training-bottom-bar>
   </div>
 </template>
 <script setup>
@@ -112,8 +90,9 @@ import AITrainingTimer from '@/module/ai-training/component/AITrainingTimer.vue'
 import AiTrainingSkipButton from '@/module/ai-training/component/AiTrainingSkipButton.vue'
 import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
 import AITrainingInfo from "@/module/ai-training/component/AITrainingInfo.vue";
+import AITrainingBottomBar from "@/module/ai-training/component/AITrainingBottomBar.vue";
+import {FILE_SERVER_BASE_URL} from "@/config";
 
-const baseURL = 'https://api.hyunfit.life/routines/'
 const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
@@ -213,9 +192,11 @@ function updateCount(scoreType) {
 
 function toggleTime() {
   if (timeDelta === 0) {
+    console.log('쉬는 시간')
     timer.resume()
     pauseTime.value = false
   } else {
+    console.log('쉬는 시간 22')
     timer.stop()
     pauseTime.value = true
   }
@@ -367,16 +348,15 @@ function createExerciseQueueItem(exercise, type) {
     excSeq: exercise.excSeq,
     calorie: exercise.excCaloriesPerRep,
     setCount: 3,
-    // exerciseCount: exercise.excRepCountPerSet,
-    exerciseCount: 4,
+    exerciseCount: exercise.excRepCountPerSet,
+    // exerciseCount: 4,
   }
   if (type === 'GUIDE') {
     item['timerLimit'] = 10
-    item['videoUrl'] = `${baseURL}preview_video_${exercise.excSeq}`
+    item['videoUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
   } else {
-    // item['timerLimit'] = exercise.excTimePerSetInSec
-    item['timerLimit'] = 100
-    item['videoUrl'] = `${baseURL}preview_video_${exercise.excSeq}`
+    item['timerLimit'] = exercise.excTimePerSetInSec
+    item['videoUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
   }
   return item
 }
@@ -391,7 +371,7 @@ async function loadMemberData() {
 
 async function loadData() {
   try {
-    await axios.get('https://api.hyunfit.life/routines/1').then(response => {
+    await axios.get('https://api.hyunfit.life/routines/108').then(response => {
       const temp = [
         {
           type: 'INTRO',
@@ -401,6 +381,7 @@ async function loadData() {
           type: 'WARMUP',
           name: '워밍업',
           timerLimit: 100,
+          videoUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warmingup.mp4`
         },
       ]
       for (const exercise of response.data.exercises) {
@@ -422,6 +403,11 @@ async function loadData() {
 }
 </script>
 <style scoped>
+
+.info-container {
+  background-color: rgb(102, 102, 102)
+}
+
 .loading {
   position: absolute;
   top: 50%;

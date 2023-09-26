@@ -1,138 +1,78 @@
 <template>
-  <div class="bottom-bar-container">
-    <div class="empty-container item bg-transparent"></div>
-    <div class="status-navigation-container item">
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-      <button class="buttons">
-        <img src="/src/assets/images/volume-high.png" />
-      </button>
-    </div>
-    <button class="skip-button skip-item" @click="skipClick()">
-      <Transition :duration="1000">
-        <div
-          class="progress-bar-wrapper"
-          :style="{ width: (timeLeft / props.timerLimit) * 100 + '%' }"
-        >
-          <div class="progress-bar"></div>
+  <v-btn-toggle
+      class="fixed bottom-20 left-50 justify-center w-full"
+      v-model="toggle_one"
+      shaped
+      mandatory
+  >
+    <v-btn class="item">
+      <v-icon class="button">
+        <SoundSvg></SoundSvg>
+      </v-icon>
+    </v-btn>
+    <v-btn class="item" @click="emit('event:pause')">
+      <v-icon class="button">
+        <PauseSvg></PauseSvg>
+      </v-icon>
+    </v-btn>
+    <v-btn class="item" @click="dialog = true">
+      <v-icon class="button">
+        <ExitSvg width="24" height="24"/>
+      </v-icon>
+    </v-btn>
+  </v-btn-toggle>
+
+  <v-dialog
+      v-model="dialog"
+      width="400px"
+  >
+    <v-card class="flex flex-col justify-center items-center p-20 bg-[rgba(0,0,0,0.4)]]">
+      <div>
+        <v-icon style="margin:20px; font-size: 100px;">
+          <AIExitSvg></AIExitSvg>
+        </v-icon>
+
+      </div>
+      <div>
+        <div class="text-h6 font-weight-bold text-center">
+          정말로 종료하시겠습니까?<br>
         </div>
-      </Transition>
-      <div class="skip-text font-extrabold">Skip 다음</div>
-    </button>
-  </div>
+        <div class="text-h8 font-weight-medium m-4">
+          지금까지 진행하신 운동 기록이 삭제될 수 있습니다. 정말로 종료하시겠습니까?
+        </div>
+      </div>
+      <v-card-actions class="flex w-full flex-row justify-end">
+        <v-btn color="primary" @click="dialog = false">취소하기</v-btn>
+        <v-btn color="primary" @click="dialog = false">종료하기</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import ExitSvg from "@/module/@base/svg/ExitSvg.vue";
+import PauseSvg from "@/module/@base/svg/PauseSvg.vue";
+import SoundSvg from "@/module/@base/svg/SoundSvg.vue";
+import {ref} from "vue";
+import AIExitSvg from "@/module/@base/svg/WarningSvg.vue";
 
-const emit = defineEmits(['skip'])
-const props = defineProps({
-  timerLimit: Number,
-})
+const emit = defineEmits(['event:sound', 'event:pause', 'event:exit'])
 
-let interval = ref(null)
-function skipClick() {
-  console.log('skipClick 제한 시간', props.timerLimit)
-  emit('skip')
-}
-
-const timeLeft = ref(0)
-function startCountdown() {
-  interval.value = setInterval(() => {
-    timeLeft.value--
-    if (timeLeft.value === 0) {
-      clearInterval(interval)
-      skipClick() // 0초일 때 click 함수 실행
-    }
-  }, 1000)
-}
-
-onMounted(() => {
-  timeLeft.value = props.timerLimit
-  console.log('status container')
-  if (timeLeft.value < 0) return
-  startCountdown()
-})
-
-onUnmounted(() => {
-  if (interval.value) {
-    clearInterval(interval.value)
-  }
-})
+const dialog = ref(true)
 </script>
 <style scoped>
-.status-navigation-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+.button {
+  font-size: 24px;
+  border-color: white;
 }
-.bottom-bar-container {
-  position: absolute;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  background-color: transparent; /* 투명도 있는 흰색 배경 */
-  width: 90vw;
-  height: 100px;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 20px;
+
+.v-card-item {
+  background-color: #0d47a1;
 }
-.buttons {
-  margin: 10px;
-  width: 20px;
-  height: 20px;
-}
+
 .item {
-  width: 200px;
-  height: 50px;
-  background-color: rgb(33, 33, 33, 0.3);
-  padding: 10px;
-  margin: 10px;
-  border-radius: 10px;
-}
-.skip-item {
-  width: 200px;
-  height: 50px;
-  background-color: rgb(33, 33, 33, 0.3);
-  margin: 10px;
-  border-radius: 10px;
-}
-
-.skip-button {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  width: 200px;
-  border-radius: 10px;
   background-color: rgba(41, 41, 41, 0.8);
-  backdrop-filter: blur(5px);
-  font-size: 20px;
-  color: rgb(169, 169, 169);
-  line-height: 70px;
-  cursor: pointer;
-}
-.skip-text {
-  color: white;
+  border-color: white;
+
 }
 
-.progress-bar-wrapper {
-  position: absolute;
-  width: 0%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 10;
-  border-radius: 10%;
-}
 </style>
