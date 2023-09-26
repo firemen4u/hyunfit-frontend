@@ -34,6 +34,7 @@
           <CreateFeedbackModal
             :show="showDetail"
             :noFeedbackData="selectedNoFeedback"
+            @action:reload="listReload"
             @close="showDetail = false"
           />
         </div>
@@ -84,6 +85,16 @@ export default {
     },
     nfbCnt() {
       return this.noFeedbackList.length
+    },
+    async listReload() {
+      let response = await ApiClient.get('/trainers/me')
+      ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback')
+        .then(response => {
+          this.noFeedbackList = response
+        })
+        .catch(error => {
+          console.error('API 요청 실패:', error)
+        })
     },
   },
 }
