@@ -32,14 +32,21 @@
           </div>
         </div>
         <!--피드백작성-->
-        <div class="flex flex-col gap-2 ml-4 mb-4 mr-4">
+        <div class="flex flex-col gap-2 ml-4 mr-4">
           <div class="flex flex-row justify-between">
             <div class="font-semibold">피드백 내용</div>
             <button class="" @click="getGptFeedback(noFeedbackData)">
               gpt 보고서 받아보기
             </button>
           </div>
-          <textarea class="text-box" v-model="feedbackContent"></textarea>
+          <v-textarea
+            counter
+            class="text-box"
+            v-model="feedbackContent"
+            clearable
+            variant="solo"
+            single-line
+          ></v-textarea>
         </div>
         <div class="flex divider"></div>
         <!--꼬리(submit버튼)-->
@@ -71,6 +78,7 @@ export default {
   methods: {
     closeModal() {
       this.$emit('close')
+      this.$emit('action:reload')
     },
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD')
@@ -78,11 +86,10 @@ export default {
     formatTarget(timestamp) {
       return moment(timestamp).format('YYYY-MM')
     },
-    submitFeedback(sendingData) {
+    async submitFeedback(sendingData) {
       sendingData.trnfContent = this.feedbackContent
-      ApiClient.post('/trainer-feedbacks/write-feedback', sendingData)
-      this.$emit('close')
-      location.reload()
+      await ApiClient.post('/trainer-feedbacks/write-feedback', sendingData)
+      this.closeModal()
     },
     async getGptFeedback(sendingData) {
       let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
@@ -130,9 +137,7 @@ export default {
   margin-bottom: 12px;
 }
 .text-box {
-  background-color: rgb(234, 236, 244);
   width: 650px;
-  height: 500px;
   border-radius: 5px;
 }
 .fb-write-Button {

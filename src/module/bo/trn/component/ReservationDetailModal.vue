@@ -52,7 +52,11 @@
         <div class="flex divider"></div>
         <!--꼬리(입장버튼)-->
         <div class="flex justify-center mt-2">
-          <button class="ptEntryButton" @click="enterPtRoom">
+          <button
+            class="ptEntryButton"
+            v-if="reservationData.ptReservationStatus !== '취소'"
+            @click="enterPtRoom"
+          >
             PT Room 입장
           </button>
         </div>
@@ -88,7 +92,7 @@ export default {
   methods: {
     closeModal() {
       this.$emit('close')
-      location.reload()
+      this.$emit('action:reload')
     },
     enterPtRoom() {
       localStorage.setItem('ptSeq', this.reservationData.ptSeq)

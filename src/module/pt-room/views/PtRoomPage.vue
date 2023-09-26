@@ -1,46 +1,33 @@
 <template>
   <div id="ptRoom">
     <div
-      class="flex justify-between items-center align-baseline mt-20 mb-3 ml-36 mr-36"
-    >
-      <div class="currentDate">
-        <CurrentDate></CurrentDate>
-      </div>
-      <div class="w-76 h-11">
-        <HyunfitLogoGradientSvg :size="350" />
-      </div>
-      <div class="currentTime">
-        <CurrentTime></CurrentTime>
-      </div>
-    </div>
+      class="flex justify-center items-center align-baseline mt-20 mb-3 ml-36 mr-36"
+    ></div>
     <div id="ptCamContainer" class="flex flex-col justify-center">
       <button class="start-button" v-if="showButton" @click="startPt">
         <img src="/src/assets/images/start-button.png" />
       </button>
       <div
         id="after-join"
-        class="flex justify-evenly"
+        class="flex justify-center"
         v-if="showAfterJoin"
         ref="afterJoin"
       >
-        <div id="publisher"></div>
+        <div id="publisher" class="mr-10"></div>
         <div id="subscriber"></div>
       </div>
     </div>
-    <div id="controllerButtonContainer" class="flex justify-center">
+    <div id="controllerButtonContainer" class="flex justify-center mt-14">
       <div class="flex justify-start w-1/3">
+        <HyunfitLogoGradientSvg class="ml-20 mt-7" :size="120" />
         <LessoningTime
-          class="ml-36 mt-7"
+          class="ml-5 mt-6"
           v-if="showLessoningTime"
         ></LessoningTime>
       </div>
       <div class="flex justify-center align-middle w-1/3">
         <v-col cols="auto">
-          <v-btn
-            icon="mdi-plus"
-            size="large"
-            color="red"
-            @click="leaveSession()"
+          <v-btn icon="mdi-plus" size="large" color="red" @click="beforeLeave()"
             ><img src="/src/assets/images/phone-hangup.png" alt=""
           /></v-btn>
         </v-col>
@@ -94,7 +81,7 @@ export default {
   methods: {
     async startPt() {
       this.showButton = false
-      let userRole = localStorage.getItem('userRole')
+      let userRole = localStorage.getItem('userRoleName')
       let sessionId = localStorage.getItem('ptSeq')
       this.joinSession(userRole, sessionId)
     },
@@ -120,7 +107,9 @@ export default {
         })
         .catch(error => {
           this.showButton = true
-          alert('아직 상담사가 상담을 시작하지 않았습니다.')
+          alert(
+            '아직 상담사가 상담을 시작하지 않았습니다.\n잠시만 기다려주세요!'
+          )
         })
     },
     joinSession(currUserRole, mySessionId) {
@@ -188,6 +177,15 @@ export default {
         ? this.publisher.publishAudio(true)
         : this.publisher.publishAudio(false)
     },
+    beforeLeave(to, from, next) {
+      const confirmMessage = '상담을 종료하시겠습니까?'
+      if (!window.confirm(confirmMessage)) {
+        next(false)
+      } else {
+        this.leaveSession()
+        next()
+      }
+    },
     leaveSession() {
       if (this.session) this.session.disconnect()
 
@@ -233,7 +231,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #ptRoom {
   width: 100%;
   height: 100vh;
@@ -249,7 +247,7 @@ export default {
 #publisher,
 #subscriber {
   width: 45%;
-  border-radius: 5%;
+  border-radius: 1%;
 }
 #margin {
   width: 5%;
@@ -257,7 +255,7 @@ export default {
 }
 video {
   width: 100%;
-  border-radius: 5%;
+  border-radius: 1%;
 }
 #controllerButtonContainer {
   height: 15%;

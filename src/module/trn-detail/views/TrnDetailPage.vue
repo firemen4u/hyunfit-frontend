@@ -154,7 +154,7 @@ onMounted(() => {
         <div v-if="hasProfileImage">
           <button @click="openProfileDialog()">
             <img
-              class="rounded-lg border-white border-2 w-32 border-solid"
+              class="rounded-lg border-white border-2 w-32 h-32 object-cover border-solid"
               :src="lazyLoadedProfileImageUrl"
               alt=""
               @error="e => setDefaultBanner(e)"

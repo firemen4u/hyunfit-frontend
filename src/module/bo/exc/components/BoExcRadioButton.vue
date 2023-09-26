@@ -3,13 +3,16 @@
     <v-radio
       v-for="(option, index) in options"
       :key="index"
-      :label="option.label"
       :value="option.value"
       class="custom-radio"
       true-icon="mdi-check-circle"
       color="primary"
       hide-details
-    ></v-radio>
+    >
+      <template v-slot:label>
+        <div class="pr-3">{{ option.label }}</div>
+      </template>
+    </v-radio>
   </v-radio-group>
 </template>
 
