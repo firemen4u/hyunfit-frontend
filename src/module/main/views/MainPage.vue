@@ -16,7 +16,7 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
 <template>
   <BaseContainer nofooter>
     <div class="article body-wrapper mb-[150px]">
-      <div class="mt-6">
+      <div class="mt-3">
         <div class="grid grid-cols-3 gap-3">
           <MainCardContainer class="col-span-3">
             <MainBannerCard />

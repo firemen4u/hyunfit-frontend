@@ -1,11 +1,12 @@
 <script setup>
-defineProps({
+const props = defineProps({
   items: Array,
   disabled: Boolean,
   filter: {
     type: Boolean,
     default: false,
   },
+  fontSize: { type: Number, default: 12 },
 })
 </script>
 
@@ -20,17 +21,18 @@ defineProps({
       selected-class="active-chip"
       :ripple="false"
       :disabled="disabled"
+      size="small"
     >
-      {{ item }}
+      <div :style="{ fontSize: props.fontSize + 'px' }">{{ item }}</div>
     </v-chip>
   </v-chip-group>
 </template>
 
 <style scoped>
-.hyunfit-base-chip.v-chip.v-chip--link.v-chip--filter.v-chip--density-default.v-chip--size-default {
+.v-chip.v-chip--link.v-chip--filter.v-chip--density-default.v-chip--size-small.v-chip--variant-outlined.hyunfit-base-chip {
   //background-color: #ffffff;
-  border: solid 1px #888888;
-  color: #3d3d3d;
+  border: solid 1px #939292;
+  color: #5b5b5b;
 }
 .active-chip {
   background-color: #d23361;
