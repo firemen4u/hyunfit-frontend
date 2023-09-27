@@ -23,80 +23,81 @@
   <!--  </div>-->
   <div class="ai-training-container flex">
     <AITrainingMyVideo
-      v-show="visibility.my"
-      :loading="loading"
-      :windowSize="windowSize.my"
-      :exercise="currentExercise"
-      :break-time="breakTime"
-      :pause-time="pauseTime"
-      @prediction="score => updateCount(score)"
+        v-show="visibility.my"
+        :loading="loading"
+        :windowSize="windowSize.my"
+        :exercise="currentExercise"
+        :break-time="breakTime"
+        :pause-time="pauseTime"
+        @prediction="score => updateCount(score)"
     ></AITrainingMyVideo>
-    <AITrainingBreak v-if="breakTime" />
+    <AITrainingBreak v-if="breakTime"/>
     <AITrainingTeachingVideo
-      v-if="visibility.teaching"
-      :loading="loading"
-      :windowSize="windowSize.teaching"
-      :exercise="currentExercise"
-      :break-time="breakTime"
-      :pause-time="pauseTime"
-      @event:ready="onTeachingVideoReady()"
+        v-if="visibility.teaching"
+        :loading="loading"
+        :windowSize="windowSize.teaching"
+        :exercise="currentExercise"
+        :break-time="breakTime"
+        :pause-time="pauseTime"
+        @event:ready="onTeachingVideoReady()"
     />
     <AITrainingStatusContainer
-      v-if="visibility.counter"
-      :exercise="currentExercise"
-      :setScoreCount="setScoreCount"
-      :setCount="setCount"
-      :key="rerenderKey"
+        v-if="visibility.counter"
+        :exercise="currentExercise"
+        :setScoreCount="setScoreCount"
+        :setCount="setCount"
+        :key="rerenderKey"
     />
-    <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft" />
-    <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()" />
+    <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft"/>
+    <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()"/>
 
     <div
-      class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
-      v-if="loading && currentExercise?.type !== 'INTRO'"
+        class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
+        v-if="loading && currentExercise?.type !== 'INTRO'"
     >
       <a-i-training-info
-        v-if="currentExercise?.type !== 'EXERCISE'"
-        :exerciseType="currentExercise?.type"
-        :exerciseName="currentExercise?.name"
+          v-if="currentExercise?.type !== 'EXERCISE'"
+          :exerciseType="currentExercise?.type"
+          :exerciseName="currentExercise?.name"
       ></a-i-training-info>
       <a-i-training-info
-        v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
-        :exerciseType="currentExercise?.type"
-        :exerciseName="currentExercise?.name"
-        :breakTime="breakTime"
+          v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
+          :exerciseType="currentExercise?.type"
+          :exerciseName="currentExercise?.name"
+          :breakTime="breakTime"
       ></a-i-training-info>
     </div>
     <a-i-training-info
-      v-if="
+        v-if="
         notification !== '' &&
         currentExercise?.type === 'EXERCISE' &&
         !breakTime
       "
-      :exercise-name="notification"
+        :exercise-name="notification"
     ></a-i-training-info>
     <a-i-training-info
-      v-if="breakTime && !loading"
-      :breakTime="breakTime"
-      :loading="loading"
+        v-if="breakTime && !loading"
+        :breakTime="breakTime"
+        :loading="loading"
     >
     </a-i-training-info>
     <a-i-training-info v-if="pauseTime" :pauseTime="pauseTime">
     </a-i-training-info>
     <a-i-training-bottom-bar
-      @event:pause="toggleTime()"
+        @event:pause="toggleTime()"
+
     ></a-i-training-bottom-bar>
     <div>
       <audio
-        ref="audioSrc"
-        src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
-        loop
+          ref="audioSrc"
+          src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
+          loop
       />
     </div>
   </div>
 </template>
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import axios from 'axios'
 import ApiClient from '@/services/api'
 import {
@@ -109,7 +110,7 @@ import AiTrainingSkipButton from '@/module/ai-training/component/AiTrainingSkipB
 import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
 import AITrainingInfo from '@/module/ai-training/component/AITrainingInfo.vue'
 import AITrainingBottomBar from '@/module/ai-training/component/AITrainingBottomBar.vue'
-import { FILE_SERVER_BASE_URL } from '@/config'
+import {FILE_SERVER_BASE_URL} from '@/config'
 
 const memberData = ref(null)
 const rerenderKey = ref(0)
@@ -125,7 +126,7 @@ let currentIndex = ref(0)
 let startExerciseTime = ref(0)
 let endExerciseTime = ref(0)
 let setFinished = computed(
-  () => setCount.value >= currentExercise.value?.setCount
+    () => setCount.value >= currentExercise.value?.setCount
 )
 
 const windowSize = reactive({
@@ -201,6 +202,10 @@ function updateCount(scoreType) {
       notification.value = ''
     }, 1000)
   }
+}
+
+function updateEvent() {
+
 }
 
 function toggleTime() {
@@ -367,13 +372,13 @@ function createExerciseQueueItem(exercise, type) {
   if (type === 'GUIDE') {
     item['timerLimit'] = 10
     item[
-      'videoUrl'
-    ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
+        'videoUrl'
+        ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
   } else {
     item['timerLimit'] = exercise.excTimePerSetInSec
     item[
-      'videoUrl'
-    ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
+        'videoUrl'
+        ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
   }
   return item
 }
@@ -418,18 +423,12 @@ async function loadData() {
     alert('운동데이터 로딩 실패 ', error)
   }
 }
+
+
 </script>
 <style scoped>
 .info-container {
   background-color: rgb(102, 102, 102);
-}
-
-.loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 10;
-  transform: translate(-50%, -50%);
 }
 
 .ai-training-container {
