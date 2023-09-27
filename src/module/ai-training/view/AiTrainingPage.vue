@@ -4,6 +4,7 @@
   <!--    <v-btn @click="timer.stop()">Stop</v-btn>-->
   <!--    <v-btn @click="timer.reset()">reset</v-btn>-->
   <!--    <v-btn @click="updateCount()">Update Count</v-btn>-->
+  <!--    <v-btn @click="exitButton()">Exit</v-btn>-->
   <!--    <div class="md-2">현재 윈도우 옵션: {{ windowSize }}</div>-->
   <!--    <div class="md-2">현재 visible 옵션: {{ visibility }}</div>-->
   <!--    <div class="md-2">-->
@@ -12,14 +13,14 @@
   <!--    <div class="md-2">-->
   <!--      현재 운동: {{ currentExercise?.type }} -&#45;&#45; 현재 index: {{ currentIndex }}-->
   <!--    </div>-->
+  <!--    <div class="md-2">-->
+  <!--      현재 STATUS: {{ visibility }}-->
+  <!--    </div>-->
 
   <!--    <div>TimeDelta: {{ timeDelta }} -&#45;&#45; 현재 시간: {{ timeLeft }}</div>-->
   <!--    <div>Break {{ breakTime }} || loading {{ loading }}</div>-->
   <!--    <div>exercise Count {{ setScoreCount }}</div>-->
   <!--    <div>pause Time {{ pauseTime }}</div>-->
-
-  <!--    <br/>-->
-  <!--    video {{ videoList[currentIndex - 1] }}-->
   <!--  </div>-->
   <div class="ai-training-container flex">
     <AITrainingMyVideo
@@ -85,8 +86,11 @@
     </a-i-training-info>
     <a-i-training-bottom-bar
         @event:pause="toggleTime()"
-
     ></a-i-training-bottom-bar>
+    <AITrainingExit v-if="currentExercise?.type === 'EXIT'"
+                    :exitStatus="currentExercise"
+    >
+    </AITrainingExit>
     <div>
       <audio
           ref="audioSrc"
@@ -111,11 +115,13 @@ import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
 import AITrainingInfo from '@/module/ai-training/component/AITrainingInfo.vue'
 import AITrainingBottomBar from '@/module/ai-training/component/AITrainingBottomBar.vue'
 import {FILE_SERVER_BASE_URL} from '@/config'
+import AITrainingExit from "@/module/ai-training/component/AITrainingExit.vue";
 
 const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
+let exitTime = ref(false)
 const audioSrc = ref(null)
 
 let loading = ref(true)
@@ -128,6 +134,16 @@ let endExerciseTime = ref(0)
 let setFinished = computed(
     () => setCount.value >= currentExercise.value?.setCount
 )
+
+function exitButton() {
+  if (exitTime.value) {
+    console.log('exitTime', exitTime.value)
+    exitTime.value = false;
+  } else {
+    console.log('exitTime End', exitTime.value)
+    exitTime.value = true;
+  }
+}
 
 const windowSize = reactive({
   my: ref('w-full'),
@@ -276,6 +292,11 @@ function toNextExercise() {
   }
   setCount.value = 1
   currentIndex.value++
+
+  if (currentExercise.value.type === 'EXIT') {
+    windowSize.my = false
+    windowSize.teaching = false
+  }
   updateWindowUi()
   loading.value = true
   timer.stop()
@@ -356,6 +377,7 @@ function updateWindowUi() {
       visibility.counter = false
       visibility.timer = false
       visibility.exit = true
+      visibility.skip = false
   }
 }
 
@@ -393,7 +415,7 @@ async function loadMemberData() {
 
 async function loadData() {
   try {
-    await axios.get('https://api.hyunfit.life/routines/108').then(response => {
+    await axios.get('https://api.hyunfit.life/routines/121').then(response => {
       const temp = [
         {
           type: 'INTRO',
