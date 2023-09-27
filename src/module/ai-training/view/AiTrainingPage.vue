@@ -74,6 +74,7 @@
         !breakTime
       "
         :exercise-name="notification"
+        :breakTime="breakTime"
     ></a-i-training-info>
     <a-i-training-info
         v-if="breakTime && !loading"
@@ -351,6 +352,14 @@ async function sendExerciseData() {
   }
 }
 
+
+function getRandomNumber(min, max) {
+  // min(포함)과 max(포함) 사이의 랜덤한 정수 생성
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const randomNumber = getRandomNumber(1, 5);
+
 function updateWindowUi() {
   switch (currentExercise.value?.type) {
     case 'INTRO':
@@ -407,14 +416,17 @@ function createExerciseQueueItem(exercise, type) {
     item[
         'videoUrl'
         ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
-    item['soundUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/hyunfit_bgm_${exercise.excSeq}.mp4`
+    item['audioUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/guide_message_${exercise.excSeq}.mp3`
+    item['bgmUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${randomNumber}.mp3`
   } else {
     item['timerLimit'] = exercise.excTimePerSetInSec
     item[
         'videoUrl'
         ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
-    item['soundUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/hyunfit_bgm_${exercise.excSeq}.mp4`
+    item['audioUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/guide_message_${exercise.excSeq}.mp3`
+    item['bgmUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${randomNumber}.mp3`
   }
+  console.log('audio 찾기 - in main Page', item)
   return item
 }
 
@@ -443,6 +455,8 @@ async function loadData() {
           name: '워밍업',
           timerLimit: 100,
           videoUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warmingup.mp4`,
+          audioUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warming_up_audio.mp3`,
+          bgmUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${randomNumber}.mp3`
         },
       ]
       for (const exercise of response.data.exercises) {
