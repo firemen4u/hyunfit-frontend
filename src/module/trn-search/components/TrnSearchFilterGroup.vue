@@ -20,8 +20,8 @@ const localModelValue = computed({
 
 <template>
   <div class="filter-section">
-    <BaseDivider />
-    <p class="filter-title text-ls font-bold mt-5">{{ title }}</p>
+    <BaseDivider class="my-5" />
+    <p class="filter-title text-lg font-bold mb-2">{{ title }}</p>
     <div class="checkbox-group" v-if="multiple">
       <v-checkbox
         v-for="(option, i) in props.options"
@@ -31,9 +31,10 @@ const localModelValue = computed({
         v-model="localModelValue"
         @input="emit('update:modelValue', filterSelection)"
         hide-details
+        density="compact"
       >
         <template v-slot:label>
-          <div>{{ option.label }}</div>
+          <div class="ml-2">{{ option.label }}</div>
         </template>
       </v-checkbox>
     </div>
@@ -45,9 +46,11 @@ const localModelValue = computed({
         :value="option.value"
         color="primary"
         @input="emit('update:modelValue', filterSelection)"
+        density="compact"
+        class="mb-2"
       >
         <template v-slot:label>
-          <div>{{ option.label }}</div>
+          <div class="ml-2">{{ option.label }}</div>
         </template>
       </v-radio>
     </v-radio-group>

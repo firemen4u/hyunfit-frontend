@@ -12,7 +12,7 @@ function resetFilter(e) {
 </script>
 <template>
   <div class="container">
-    <div class="title-container mb-5 flex justify-between items-end">
+    <div class="title-container mb-3 flex justify-between items-end">
       <p class="font-bold text-lg">필터</p>
       <button
         class="reset-btn text-sm flex items-center px-2"
