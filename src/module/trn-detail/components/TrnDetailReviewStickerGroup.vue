@@ -1,28 +1,31 @@
 <script setup>
+import MoneySvg from "@/module/@base/svg/MoneySvg.vue";
+
 const props = defineProps({
   stickers: String,
 })
 
-import { BaseLabel } from '@/module/@base/components'
+import {BaseLabel} from '@/module/@base/components'
 import {
   DumbbellSvg,
   FullStarSvg,
   HalfStarSvg,
   HeartSvg,
 } from '@/module/@base/svg'
+import PointSvg from "@/module/@base/svg/PointSvg.vue";
 
 function getIconType(sticker) {
   switch (sticker) {
     case 1:
       return FullStarSvg
     case 2:
-      return HalfStarSvg
+      return MoneySvg
     case 3:
       return DumbbellSvg
     case 4:
-      return HeartSvg
+      return MoneySvg
     case 5:
-      return HeartSvg
+      return PointSvg
     case 6:
       return HeartSvg
     case 7:
@@ -39,6 +42,7 @@ function getIconType(sticker) {
       return HeartSvg
   }
 }
+
 function getStickerContent(sticker) {
   // 친절하게 상담해주세요
   // 비용이 합리적이에요
@@ -79,6 +83,7 @@ function getStickerContent(sticker) {
       return '열정적으로 가르쳐주세요'
   }
 }
+
 function parseStickers(stickers) {
   return stickers.split(',').map(str => parseInt(str.trim(), 10))
 }
@@ -87,15 +92,15 @@ function parseStickers(stickers) {
 <template>
   <div class="review-label-container flex">
     <BaseLabel
-      v-for="(sticker, i) in parseStickers(stickers)"
-      :key="i"
-      class="mr-1"
+        v-for="(sticker, i) in parseStickers(stickers)"
+        :key="i"
+        class="mr-1"
     >
       <div class="flex items-center px-1 py-0.5">
         <component
-          :is="getIconType(sticker)"
-          :size="14"
-          class="mr-1"
+            :is="getIconType(sticker)"
+            :size="14"
+            class="mr-1"
         ></component>
         <div>{{ getStickerContent(sticker) }}</div>
       </div>
