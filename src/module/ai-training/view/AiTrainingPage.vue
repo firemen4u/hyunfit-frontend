@@ -117,7 +117,6 @@ import AITrainingInfo from '@/module/ai-training/component/AITrainingInfo.vue'
 import AITrainingBottomBar from '@/module/ai-training/component/AITrainingBottomBar.vue'
 import {FILE_SERVER_BASE_URL} from '@/config'
 import AITrainingExit from "@/module/ai-training/component/AITrainingExit.vue";
-import router, {pathNames} from "@/router";
 
 const memberData = ref(null)
 const rerenderKey = ref(0)
