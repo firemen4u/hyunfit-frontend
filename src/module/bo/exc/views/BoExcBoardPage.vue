@@ -4,11 +4,11 @@
       <BaseBodyWrapper>
         <div class="pt-10">
           <div class="flex justify-between">
-            <div class="text-3xl font-bold">운동 목록</div>
+            <div class="text-3xl font-bold">트레이닝 리스트</div>
           </div>
 
           <div
-            class="content-wrap p-2 mt-5 mb-20 shadow-md border-2 border-gray-100 rounded-lg bg-white"
+            class="content-wrap p-2 mt-5 mb-20 border-gray-100 rounded-lg bg-white"
           >
             <div class="flex justify-between items-center">
               <BoExcBoardFilterContainer

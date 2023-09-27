@@ -35,10 +35,9 @@
             </button>
           </div>
           <CreateFeedbackModal
-            :show="showDetail"
+            v-model="showDetail"
             :noFeedbackData="selectedNoFeedback"
             @action:reload="listReload"
-            @close="showDetail = false"
           />
         </div>
       </div>

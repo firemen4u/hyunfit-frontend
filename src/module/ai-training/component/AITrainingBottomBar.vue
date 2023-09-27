@@ -31,7 +31,6 @@
         <v-icon style="margin:20px; font-size: 100px;">
           <AIExitSvg></AIExitSvg>
         </v-icon>
-
       </div>
       <div>
         <div class="text-h6 font-weight-bold text-center">

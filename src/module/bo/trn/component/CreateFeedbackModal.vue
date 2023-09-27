@@ -1,65 +1,73 @@
 <template>
   <div>
-    <div class="modal" v-if="show">
-      <div class="modal-content">
+    <v-dialog v-model="show" max-width="700px">
+      <v-card>
         <!--헤더부분-->
-        <div class="flex justify-between ml-1 mr-1 mb-2">
-          <div class="mr-10 font-bold"><h2>피드백 작성하기</h2></div>
-          <div class=""><button @click="closeModal">닫기</button></div>
-        </div>
-        <div class="flex divider"></div>
-        <!--바디부분-->
-        <div class="flex justify-between flex-row mt-4 ml-4 mr-4">
-          <div class="flex flex-col items-center">
-            <div class="fb-detail-category">PT번호</div>
-            <div class="fb-detail-category">회 원 명</div>
+        <v-card-title>
+          <div class="flex">
+            <span class="headline">피드백 작성하기</span>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="closeModal" size="x-small">
+              <v-icon size="default">mdi-close</v-icon>
+            </v-btn>
           </div>
-          <div class="flex flex-col items-center">
-            <div class="info-gray-box">{{ noFeedbackData.trnfSeq }}</div>
-            <div class="info-gray-box">{{ noFeedbackData.mbrName }}</div>
-          </div>
-          <div class="flex flex-col items-center">
-            <div class="fb-detail-category">최근PT일자</div>
-            <div class="fb-detail-category">피드백대상월</div>
-          </div>
-          <div class="flex flex-col items-center">
-            <div class="info-gray-box">
-              {{ formatDate(noFeedbackData.trnfCreationDate) }}
+        </v-card-title>
+
+        <v-card-text>
+          <!--바디부분-->
+          <div class="flex justify-between flex-row mt-4 ml-4 mr-4">
+            <div class="flex flex-col items-center">
+              <div class="fb-detail-category">PT번호</div>
+              <div class="fb-detail-category">회 원 명</div>
             </div>
-            <div class="info-gray-box">
-              {{ formatTarget(noFeedbackData.trnfSubmissionDue) }}
+            <div class="flex flex-col items-center">
+              <div class="info-gray-box">{{ noFeedbackData.trnfSeq }}</div>
+              <div class="info-gray-box">{{ noFeedbackData.mbrName }}</div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="fb-detail-category">최근PT일자</div>
+              <div class="fb-detail-category">피드백대상월</div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="info-gray-box">
+                {{ formatDate(noFeedbackData.trnfCreationDate) }}
+              </div>
+              <div class="info-gray-box">
+                {{ formatTarget(noFeedbackData.trnfSubmissionDue) }}
+              </div>
             </div>
           </div>
-        </div>
-        <!--피드백작성-->
-        <div class="flex flex-col gap-2 ml-4 mr-4">
-          <div class="flex flex-row justify-between">
-            <div class="font-semibold">피드백 내용</div>
-            <button class="" @click="getGptFeedback(noFeedbackData.mbrSeq)">
-              gpt 보고서 받아보기
-            </button>
+          <!--피드백작성-->
+          <div class="flex flex-col gap-2 ml-4 mr-4">
+            <div class="flex flex-row justify-between">
+              <div class="font-semibold">피드백 내용</div>
+              <v-btn
+                color="primary"
+                class=""
+                @click="getGptFeedback(noFeedbackData.mbrSeq)"
+              >
+                gpt 보고서 받아보기
+              </v-btn>
+            </div>
+            <v-textarea
+              counter
+              class="text-box"
+              v-model="feedbackContent"
+              clearable
+              variant="solo"
+              single-line
+            ></v-textarea>
           </div>
-          <v-textarea
-            counter
-            class="text-box"
-            v-model="feedbackContent"
-            clearable
-            variant="solo"
-            single-line
-          ></v-textarea>
-        </div>
-        <div class="flex divider"></div>
+        </v-card-text>
         <!--꼬리(submit버튼)-->
-        <div class="flex justify-center mt-2">
-          <button
-            class="fb-write-Button"
-            @click="submitFeedback(noFeedbackData)"
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="submitFeedback(noFeedbackData)" color="primary"
+            >작성하기</v-btn
           >
-            작성하기
-          </button>
-        </div>
-      </div>
-    </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -73,8 +81,9 @@ import 'dayjs/locale/ko'
 export default {
   props: {
     noFeedbackData: Object,
-    show: Boolean,
+    modelValue: Boolean, // v-model을 통해 받을 값
   },
+  emits: ['update:modelValue', 'action:reload'], // v-model 업데이트를 위한 이벤트
   data() {
     return {
       feedbackContent: '',
@@ -82,9 +91,19 @@ export default {
       endDate: '',
     }
   },
+  computed: {
+    show: {
+      get() {
+        return this.modelValue // 부모로부터 받은 값을 그대로 사용
+      },
+      set(value) {
+        this.$emit('update:modelValue', value) // 상태 변경을 부모에게 알림
+      },
+    },
+  },
   methods: {
     closeModal() {
-      this.$emit('close')
+      this.$emit('update:modelValue', false) // 상태 변경을 부모에게 알림
       this.$emit('action:reload')
     },
     formatDate(timestamp) {

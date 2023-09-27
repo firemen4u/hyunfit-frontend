@@ -1,14 +1,11 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import {
-  HyunfitLogoGradientSvg,
-  DownArrowSvg,
-  EditPencilSvg,
-} from '@/module/@base/svg'
+import { DownArrowSvg, EditPencilSvg } from '@/module/@base/svg'
 import router, { pathNames } from '@/router'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import ApiClient from '@/services/api'
+import HyunfitLogoMonoSvg from '@/module/@base/svg/HyunfitLogoMonoSvg.vue'
 
 const props = defineProps({
   page: String,
@@ -109,9 +106,9 @@ const isActivatedMenu = index => {
 
 const pageItemClasses = pg => {
   if (pathNames[route.name]?.parent() === pg.destination.name) {
-    return 'text-black font-black'
+    return 'text-white font-black'
   }
-  return 'text-gray-400 font-medium hover:text-gray-800 hover:font-bold'
+  return 'text-gray-400 font-medium hover:text-gray-200 hover:font-bold'
 }
 const menuItemClasses = pg => {
   if (route.name === pg.destination.name) {
@@ -174,7 +171,7 @@ onMounted(async () => {
         <!-- 타이틀-->
         <div class="flex items-center">
           <button @click="moveToMain()" class="mr-10 cursor-pointer">
-            <HyunfitLogoGradientSvg :size="140" />
+            <HyunfitLogoMonoSvg color="white" :size="140" />
           </button>
           <div
             v-for="(pg, i) in getPages()"
@@ -336,7 +333,7 @@ onMounted(async () => {
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: white;
+  background-color: #021f3d;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 100;
 }
