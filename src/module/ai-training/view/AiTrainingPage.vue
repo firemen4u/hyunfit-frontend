@@ -86,6 +86,13 @@
     <a-i-training-bottom-bar
       @event:pause="toggleTime()"
     ></a-i-training-bottom-bar>
+    <div>
+      <audio
+        ref="audioSrc"
+        src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
+        loop
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -108,6 +115,8 @@ const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
+const audioSrc = ref(null)
+
 let loading = ref(true)
 let breakTime = ref(false)
 let pauseTime = ref(false)
@@ -118,13 +127,6 @@ let endExerciseTime = ref(0)
 let setFinished = computed(
   () => setCount.value >= currentExercise.value?.setCount
 )
-let videoList = [
-  'https://alycecloud-website.s3.ap-northeast-2.amazonaws.com/video/warming_up.mp4',
-  'https://exercise-resource.s3.ap-northeast-2.amazonaws.com/previewVideo/355__1622594830959__%EC%A0%9C%EA%B8%B0%EC%B0%A8%EA%B8%B0.mp4',
-  'https://exercise-resource.s3.ap-northeast-2.amazonaws.com/exerciseVideo/182__1621835352844__%ED%86%A0%ED%84%B0%EC%B9%98.mp4',
-  'https://exercise-resource.s3.ap-northeast-2.amazonaws.com/previewVideo/298__1621838332275__%EC%82%AC%EC%9D%B4%EB%93%9C%EB%B0%B4%EB%93%9C.mp4',
-  'https://exercise-resource.s3.ap-northeast-2.amazonaws.com/exerciseVideo/283__1621837823221__%ED%95%B4%EB%A8%B8%EC%BB%AC.mp4',
-]
 
 const windowSize = reactive({
   my: ref('w-full'),
@@ -235,6 +237,7 @@ async function init() {
   setTimer()
   timer.stop()
   updateWindowUi()
+  audioSrc.value.play()
 }
 
 function toNextExercise() {
@@ -301,7 +304,6 @@ async function sendExerciseData() {
       scores.good = 0
       scores.excellent = 0
       scores.bad = 0
-      console.log('totalScoreCount 초기화', totalScoreCount.value)
     } else {
       console.log('칼로리가 0이라 데이터를 보내지 않아요')
     }

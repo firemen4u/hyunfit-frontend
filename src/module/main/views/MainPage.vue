@@ -1,171 +1,115 @@
 <script setup>
-import { BaseBodyWrapper, BaseContainer } from '@/module/@base/views'
-import MainBanner from '@/module/main/components/MainBanner.vue'
-import MainRtnCard from '@/module/main/components/MainRtnCard.vue'
-
-import MainSwipableCardContainer from '/src/module/main/components/MainSwipableCardContainer.vue'
-import MainTrnCard from '/src/module/main/components/MainTrnCard.vue'
-import MainFoodCard from '/src/module/main/components/MainFoodCard.vue'
-import { SwiperSlide } from 'swiper/vue'
-
-let cards = [
-  {
-    title: 'Pre-fab homes',
-    src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Favorite road trips',
-    src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Best airlines',
-    src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Best airlines',
-    src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Pre-fab homes',
-    src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Favorite road trips',
-    src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Best airlines',
-    src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Best airlines',
-    src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Pre-fab homes',
-    src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Favorite road trips',
-    src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Best airlines',
-    src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-    flex: 4,
-  },
-  {
-    title: 'Best airlines',
-    src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-    flex: 4,
-  },
-]
-
-let foods = [
-  {
-    title: '',
-    imgSrc:
-      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
-    price: '',
-    priceDiscounted: '',
-  },
-  {
-    title: '',
-    imgSrc:
-      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
-    price: '',
-    priceDiscounted: '',
-  },
-  {
-    title: '',
-    imgSrc:
-      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
-    price: '',
-    priceDiscounted: '',
-  },
-  {
-    title: '',
-    imgSrc:
-      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
-    price: '',
-    priceDiscounted: '',
-  },
-  {
-    title: '',
-    imgSrc:
-      'https://tohomeimage.thehyundai.com/PD/PDImages/O/3/7/0/O02110055073_01.png?RS=720x864',
-    price: '',
-    priceDiscounted: '',
-  },
-]
+import { BaseContainer } from '@/module/@base/views'
+import MainCardContainer from '@/module/main/components/MainCardContainer.vue'
+import {
+  RoutineRcmCard,
+  RoutineCard,
+  TrainerCard,
+  ReportCard,
+} from '@/module/main/components'
+import SurveyCard from '@/module/main/components/cards/SurveyCard.vue'
+import MainBannerCard from '@/module/main/components/cards/MainBannerCard.vue'
+import MainFooter from '@/module/main/components/MainFooter.vue'
 </script>
 
 <template>
-  <BaseContainer>
-    <MainBanner></MainBanner>
-    <BaseBodyWrapper>
-      <section class="mt-20">
-        <MainSwipableCardContainer
-          title="최승열님! 이런 루틴은 어떠세요?"
-          count="4"
-        >
-          <swiper-slide v-for="(card, i) in cards" :key="i">
-            <MainRtnCard
-              :title="card.title"
-              :src="card.src"
-              card-size="lg"
-            ></MainRtnCard>
-          </swiper-slide>
-        </MainSwipableCardContainer>
-      </section>
-      <section class="mt-20">
-        <MainSwipableCardContainer title="지금 인기있는 트레이너" see-more>
-          <swiper-slide v-for="(card, i) in cards" :key="i">
-            <MainTrnCard
-              color="bg-gray-50"
-              :title="card.title"
-              :src="card.src"
-            ></MainTrnCard>
-          </swiper-slide>
-        </MainSwipableCardContainer>
-      </section>
-      <section class="mt-20">
-        <MainSwipableCardContainer title="양석진님만을 위한 마약" count="4">
-          <swiper-slide v-for="(food, i) in foods" :key="i">
-            <MainFoodCard
-              title="곤드레 단백질 쉐이크"
-              :src="food.imgSrc"
-              card-size="lg"
-            ></MainFoodCard>
-          </swiper-slide>
-        </MainSwipableCardContainer>
-      </section>
-      <section class="mt-20"></section>
-    </BaseBodyWrapper>
+  <BaseContainer nofooter>
+    <div class="article body-wrapper mb-[150px]">
+      <div class="mt-6">
+        <div class="grid grid-cols-3 gap-3">
+          <MainCardContainer class="col-span-3">
+            <MainBannerCard />
+          </MainCardContainer>
+          <MainCardContainer color="#0d1851" class="col-span-2">
+            <RoutineRcmCard />
+          </MainCardContainer>
+          <MainCardContainer :color="'#e7edf4'" class="col-span-1">
+            <ReportCard />
+          </MainCardContainer>
+          <MainCardContainer :color="'#bc2391'" class="col-span-1">
+            <RoutineCard />
+          </MainCardContainer>
+          <MainCardContainer color="#1c1b8e" class="col-span-1">
+            <TrainerCard />
+          </MainCardContainer>
+          <MainCardContainer color="#331e51" class="col-span-1">
+            <SurveyCard />
+          </MainCardContainer>
+        </div>
+      </div>
+    </div>
+
+    <MainFooter />
   </BaseContainer>
 </template>
 
-<style>
-.text-container {
-  max-height: 300px;
-  background-image: url('/src/assets/images/exercise-thumbnail.png');
-  background-repeat: repeat;
+<style scoped>
+.article {
+  position: relative;
 }
 
-.test {
-  /* background-color: rgba(49, 49, 49, 0.3); */
-  backdrop-filter: blur(5px);
-  width: 500px;
-  height: 100px;
+.article::after,
+.article::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 1115px;
+  height: 575px;
+  -webkit-filter: blur(160px);
+  filter: blur(160px);
+}
+
+.article::before {
+  opacity: 0.4;
+  top: 500px;
+  left: -600px;
+  -webkit-transform: rotate(144deg);
+  transform: rotate(144deg);
+  background: -webkit-gradient(
+    linear,
+    right top,
+    left top,
+    color-stop(38%, #9643ff),
+    color-stop(50%, #43b0ff),
+    color-stop(74%, rgba(72, 184, 236, 0.9)),
+    color-stop(120%, rgba(116, 255, 67, 0))
+  );
+  background: linear-gradient(
+    270deg,
+    #9643ff 38%,
+    #43b0ff 50%,
+    rgba(72, 184, 236, 0.9) 74%,
+    rgba(116, 255, 67, 0) 120%
+  );
+}
+
+.article::after {
+  top: -500px;
+  left: 100%;
+  background: -webkit-gradient(
+    linear,
+    right top,
+    left top,
+    color-stop(66%, #43b0ff),
+    color-stop(120%, rgba(116, 255, 67, 0))
+  );
+  background: linear-gradient(270deg, #43b0ff 66%, rgba(116, 255, 67, 0) 120%);
+}
+
+.body-wrapper {
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .body-wrapper {
+    width: 80%;
+  }
+}
+
+/* 큰 화면(데스크톱)에 대한 스타일 */
+@media screen and (min-width: 1200px) {
+  .body-wrapper {
+    width: 1100px;
+  }
 }
 </style>
