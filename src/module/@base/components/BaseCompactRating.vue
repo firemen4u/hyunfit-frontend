@@ -9,6 +9,7 @@ const props = defineProps({
     type: Number,
     default: 12,
   },
+  fontWeight: { type: Number, default: 700 },
 })
 
 function fontSizeOf(size) {
@@ -23,9 +24,13 @@ function getCountSize() {
   <div class="flex items-center">
     <FullStarSvg :size="iconSize" class="mr-0.5" />
     <div class="flex items-baseline mt-0.5">
-      <span class="block font-extrabold ml-0.5" :class="fontSizeOf(fontSize)">
+      <div
+        class="block ml-0.5"
+        :class="fontSizeOf(fontSize)"
+        :style="{ fontWeight: props.fontWeight }"
+      >
         {{ rating?.toFixed(1) }}
-      </span>
+      </div>
       <div
         v-if="reviewCount"
         class="ml-0.5 text-gray-500"

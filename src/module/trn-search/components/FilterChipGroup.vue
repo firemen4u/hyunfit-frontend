@@ -10,7 +10,7 @@ defineProps({
     v-for="(item, idx) in items"
     :key="idx"
     color="primary"
-    variant="outlined"
+    variant="flat"
     class="mr-1"
     :ripple="false"
   >

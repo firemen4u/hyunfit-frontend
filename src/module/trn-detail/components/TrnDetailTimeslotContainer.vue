@@ -27,22 +27,22 @@ const emit = defineEmits(['update:modelValue'])
 
 <template>
   <div
-    class="trn-detail-timeslot-container grid grid-cols-3 gap-y-2 justify-between justify-items-center"
+    class="trn-detail-timeslot-container grid grid-cols-3 gap-y-2 justify-between justify-items-center shadow-lg py-3 rounded-lg"
   >
     <v-btn
       v-for="(t, idx) in times"
       :key="idx"
       :ripple="false"
       variant="flat"
-      height="32"
-      class="w-20"
+      height="26"
+      class="w-[72px]"
       :value="t.value"
       @click="$emit('update:modelValue', t.value)"
       :color="modelValue === t.value ? 'primary' : ''"
       :disabled="props.disabled || props.reservedTimeslots?.includes(t.value)"
     >
       <div
-        class="btn-content text-xs text-neutral-600 tracking-wide"
+        class="btn-content text-[11px] px-2 text-neutral-600 tracking-wide"
         :class="modelValue === t.value ? 'text-white font-black' : ''"
       >
         {{ t.displayText }}

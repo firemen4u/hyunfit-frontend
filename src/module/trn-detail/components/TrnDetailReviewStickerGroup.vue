@@ -85,7 +85,7 @@ function parseStickers(stickers) {
 </script>
 
 <template>
-  <div class="review-label-container flex">
+  <div class="review-label-container flex flex-wrap gap-y-2">
     <BaseLabel
       v-for="(sticker, i) in parseStickers(stickers)"
       :key="i"

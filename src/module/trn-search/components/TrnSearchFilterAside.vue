@@ -11,9 +11,9 @@ function resetFilter(e) {
 }
 </script>
 <template>
-  <div class="container">
-    <div class="title-container mb-3 flex justify-between items-end">
-      <p class="font-bold text-lg">필터</p>
+  <div class="container bg-white shoadow-lg rounded-lg">
+    <div class="title-container h-[40px] flex justify-between items-start">
+      <p class="font-bold text-xl">필터</p>
       <button
         class="reset-btn text-sm flex items-center px-2"
         @click="resetFilter"
@@ -26,9 +26,6 @@ function resetFilter(e) {
   </div>
 </template>
 <style scoped>
-.title-container {
-  height: 60px;
-}
 .reset-btn {
   opacity: 50%;
   transition: opacity 0.2s ease-in-out;

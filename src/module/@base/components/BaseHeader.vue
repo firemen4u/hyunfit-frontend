@@ -6,10 +6,12 @@ import router, { pathNames } from '@/router'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import ApiClient from '@/services/api'
 import HyunfitLogoMonoSvg from '@/module/@base/svg/HyunfitLogoMonoSvg.vue'
+import HyunfitLogoMonoVer2Svg from '@/module/@base/svg/HyunfitLogoMonoVer2Svg.vue'
 
 const props = defineProps({
   page: String,
   category: String,
+  loading: Boolean,
 })
 
 const headerPages = [
@@ -23,7 +25,7 @@ const headerPages = [
     ],
   },
   {
-    displayName: '화상트레이닝',
+    displayName: '트레이닝 클래스',
     destination: pathNames.trnSearchPage,
     menus: [
       { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
@@ -156,6 +158,7 @@ const userProfile = computed(() => {
   if ('mbrProfileUrl' in userData.value) return userData.value.mbrProfileUrl
   if ('admProfileUrl' in userData.value) return userData.value.admProfileUrl
   if ('trnProfileUrl' in userData.value) return userData.value.trnProfileUrl
+  return ''
 })
 onMounted(async () => {
   userData.value = await ApiClient.me()
@@ -171,8 +174,9 @@ onMounted(async () => {
         <!-- 타이틀-->
         <div class="flex items-center">
           <button @click="moveToMain()" class="mr-10 cursor-pointer">
-            <HyunfitLogoMonoSvg color="white" :size="140" />
+            <HyunfitLogoMonoVer2Svg color="#ffffff" :size="160" class="ml-1" />
           </button>
+
           <div
             v-for="(pg, i) in getPages()"
             :key="i"

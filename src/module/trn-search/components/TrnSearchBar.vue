@@ -1,7 +1,6 @@
 <template>
   <v-text-field
-    :loading="loading"
-    label="나를 위한 서비스 검색하기"
+    label="찾으시는 클래스가 있나요?"
     single-line
     hide-details
     clearable

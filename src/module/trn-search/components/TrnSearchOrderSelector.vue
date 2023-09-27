@@ -13,7 +13,7 @@ function updateOption() {
 }
 </script>
 <template>
-  <div class="h-11">
+  <div class="h-10">
     <v-select
       v-model="innerModelValue"
       class="selector w-40"
