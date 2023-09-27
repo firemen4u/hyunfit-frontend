@@ -87,6 +87,7 @@
     <a-i-training-bottom-bar
         @event:pause="toggleTime()"
     ></a-i-training-bottom-bar>
+
     <AITrainingExit v-if="currentExercise?.type === 'EXIT'"
                     :exitStatus="currentExercise"
     >
@@ -122,6 +123,7 @@ const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
 let exitTime = ref(false)
+
 const audioSrc = ref(null)
 
 let loading = ref(true)

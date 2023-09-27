@@ -12,8 +12,8 @@ const props = defineProps({
 </script>
 
 <template>
-  <div
-    class="h-[356px] rounded-xl flex justify-center items-center overflow-hidden"
+  <div class="h-[356px] rounded-xl flex justify-center items-center overflow-hidden"
+
     :style="{ backgroundColor: props.color }"
   >
     <slot></slot>
