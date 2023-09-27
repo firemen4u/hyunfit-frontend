@@ -247,7 +247,6 @@ async function init() {
   setTimer()
   timer.stop()
   updateWindowUi()
-  audioSrc.value.play()
 }
 
 function toNextExercise() {
