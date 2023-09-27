@@ -12,9 +12,11 @@
           <div
             class="text-2xl flex justify-center items-center font-extrabold w-full h-[70px] bg-[#2c286d] text-white"
           >
-            <p>{{ year }}년 {{ formattedMonth }}월</p>
+            <LeftArrowSvg color="white" size="20" @click="prevMonth" />
+            <p class="mx-5">{{ year }}년 {{ formattedMonth }}월</p>
+            <RightArrowSvg color="white" size="20" @click="nextMonth" />
           </div>
-          <div class="flex justify-center mt-[30px]">
+          <div class="flex justify-center my-[30px]">
             <div
               class="trfb-content-wrap py-4 pb-10 border-[2px] border-gray-200 rounded-lg shadow-xl w-[800px]"
               v-if="responseFeedbackData"
@@ -33,22 +35,20 @@
                 <P>작성일자 : {{ responsetrnfWrittenDate }}</P>
               </div>
             </div>
-            <div v-else class="flex justify-center">
-              <p class="text-center text-xl mt-10">
+            <div v-else class="flex flex-col justify-center h-[500px]">
+              <p class="text-center text-xl">
                 이달의 피드백이 존재하지 않아요!
               </p>
-              <img
-                src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FP6TTP%2FbtsvYZ4rrQt%2FUVtc3Nb11MuWR5qhKuqZ9K%2Fimg.png"
-              />
             </div>
           </div>
         </div>
-        <div
+        <!-- <div
           class="select-cal flex justify-around items-center flex-row h-[100px]"
         >
           <v-btn
             class="cal-left-arrow flex flex-row items-center"
             @click="prevMonth"
+            size="large"
           >
             <img
               class="move-month-triangle"
@@ -60,6 +60,7 @@
           <v-btn
             class="cal-right-arrow flex flex-row items-center"
             @click="nextMonth"
+            size="large"
           >
             <p>{{ formattedMonth - 1 + 2 }}월</p>
             <img
@@ -67,7 +68,7 @@
               src="/src/assets/images/triangle-right.png"
             />
           </v-btn>
-        </div>
+        </div> -->
       </div>
     </BaseBodyWrapper>
   </BaseContainer>
@@ -75,6 +76,7 @@
 
 <script setup>
 import { BaseContainer, BaseBodyWrapper } from '/src/module/@base/views'
+import { LeftArrowSvg, RightArrowSvg } from '/src/module/@base/svg'
 import TrnFeedBackComponent from '../components/MbrPtFeedbackComponent.vue'
 import ApiClient from '/src/services/api.js'
 </script>
