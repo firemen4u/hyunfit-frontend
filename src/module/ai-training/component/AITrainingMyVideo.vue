@@ -1,24 +1,24 @@
 <template>
   <div class="my-video bg-orange-200" :class="windowSize">
     <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
-      <div
-        class="md-2"
-        :class="
-          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
-        "
-      >
-        기본자세: {{ predictions[0]?.className }}:
-        {{ Math.round(predictions[0]?.probability * 100) }}%
-      </div>
-      <div
-        class="md-2"
-        :class="
-          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
-        "
-      >
-        운동자세: {{ predictions[1]?.className }}:
-        {{ Math.round(predictions[1]?.probability * 100) }}%
-      </div>
+      <!--      <div-->
+      <!--        class="md-2"-->
+      <!--        :class="-->
+      <!--          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
+      <!--        "-->
+      <!--      >-->
+      <!--        기본자세: {{ predictions[0]?.className }}:-->
+      <!--        {{ Math.round(predictions[0]?.probability * 100) }}%-->
+      <!--      </div>-->
+      <!--      <div-->
+      <!--        class="md-2"-->
+      <!--        :class="-->
+      <!--          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
+      <!--        "-->
+      <!--      >-->
+      <!--        운동자세: {{ predictions[1]?.className }}:-->
+      <!--        {{ Math.round(predictions[1]?.probability * 100) }}%-->
+      <!--      </div>-->
       <!--      <div>flag: {{ flag }}</div>-->
       <!--      <div>Count: {{ exerciseCounts }}</div>-->
       <!--      <div>확률: {{ predictedProbability }}</div>-->
@@ -45,8 +45,8 @@ canvas video {
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { computed, onMounted, reactive, ref } from 'vue'
-import { FILE_SERVER_BASE_URL } from '@/config'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {FILE_SERVER_BASE_URL} from '@/config'
 
 const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
@@ -66,8 +66,8 @@ const minExerciseDuration = 500
 const emit = defineEmits(['prediction'])
 
 const freezePrediction = computed(
-  () =>
-    props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
+    () =>
+        props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
 )
 
 const exerciseCounts = reactive({
@@ -148,7 +148,7 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
+  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
   // Prediction 2: run input through teachable machine classification model
   drawPose(pose)
 
@@ -213,12 +213,12 @@ function drawPose(pose) {
     if (pose) {
       const minPartConfidence = 0.5
       tmPose.drawKeypoints(
-        pose.keypoints,
-        minPartConfidence,
-        ctx,
-        10,
-        drawColor + 'BB',
-        drawColor
+          pose.keypoints,
+          minPartConfidence,
+          ctx,
+          10,
+          drawColor + 'BB',
+          drawColor
       )
       tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx, 7, drawColor)
     }
