@@ -1,27 +1,27 @@
 <template>
-  <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
-    <v-btn @click="timer.start(20)">Start</v-btn>
-    <v-btn @click="timer.stop()">Stop</v-btn>
-    <v-btn @click="timer.reset()">reset</v-btn>
-    <v-btn @click="updateCount()">Update Count</v-btn>
-    <v-btn @click="exitButton()">Exit</v-btn>
-    <div class="md-2">현재 윈도우 옵션: {{ windowSize }}</div>
-    <div class="md-2">현재 visible 옵션: {{ visibility }}</div>
-    <div class="md-2">
-      현재 Set: {{ setCount }} --- setFinished : {{ setFinished }}
-    </div>
-    <div class="md-2">
-      현재 운동: {{ currentExercise?.type }} --- 현재 index: {{ currentIndex }}
-    </div>
+  <!--  <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">-->
+  <!--    <v-btn @click="timer.start(20)">Start</v-btn>-->
+  <!--    <v-btn @click="timer.stop()">Stop</v-btn>-->
+  <!--    <v-btn @click="timer.reset()">reset</v-btn>-->
+  <!--    <v-btn @click="updateCount()">Update Count</v-btn>-->
+  <!--    <v-btn @click="exitButton()">Exit</v-btn>-->
+  <!--    <div class="md-2">현재 윈도우 옵션: {{ windowSize }}</div>-->
+  <!--    <div class="md-2">현재 visible 옵션: {{ visibility }}</div>-->
+  <!--    <div class="md-2">-->
+  <!--      현재 Set: {{ setCount }} -&#45;&#45; setFinished : {{ setFinished }}-->
+  <!--    </div>-->
+  <!--    <div class="md-2">-->
+  <!--      현재 운동: {{ currentExercise?.type }} -&#45;&#45; 현재 index: {{ currentIndex }}-->
+  <!--    </div>-->
+  <!--    <div class="md-2">-->
+  <!--      현재 STATUS: {{ visibility }}-->
+  <!--    </div>-->
 
-    <div>TimeDelta: {{ timeDelta }} --- 현재 시간: {{ timeLeft }}</div>
-    <div>Break {{ breakTime }} || loading {{ loading }}</div>
-    <div>exercise Count {{ setScoreCount }}</div>
-    <div>pause Time {{ pauseTime }}</div>
-
-    <!--    <br/>-->
-    <!--    video {{ videoList[currentIndex - 1] }}-->
-  </div>
+  <!--    <div>TimeDelta: {{ timeDelta }} -&#45;&#45; 현재 시간: {{ timeLeft }}</div>-->
+  <!--    <div>Break {{ breakTime }} || loading {{ loading }}</div>-->
+  <!--    <div>exercise Count {{ setScoreCount }}</div>-->
+  <!--    <div>pause Time {{ pauseTime }}</div>-->
+  <!--  </div>-->
   <div class="ai-training-container flex">
     <AITrainingMyVideo
         v-show="visibility.my"
@@ -87,15 +87,15 @@
     <a-i-training-bottom-bar
         @event:pause="toggleTime()"
     ></a-i-training-bottom-bar>
-    <AITrainingExit v-if="exitTime"
-                    class="fixed top-0 left-0"
+    <AITrainingExit v-if="currentExercise?.type === 'EXIT'"
+                    :exitStatus="currentExercise"
     >
     </AITrainingExit>
     <div>
       <audio
-        ref="audioSrc"
-        src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
-        loop
+          ref="audioSrc"
+          src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
+          loop
       />
     </div>
   </div>
@@ -288,6 +288,11 @@ function toNextExercise() {
   }
   setCount.value = 1
   currentIndex.value++
+
+  if (currentExercise.value.type === 'EXIT') {
+    windowSize.my = false
+    windowSize.teaching = false
+  }
   updateWindowUi()
   loading.value = true
   timer.stop()
@@ -368,6 +373,7 @@ function updateWindowUi() {
       visibility.counter = false
       visibility.timer = false
       visibility.exit = true
+      visibility.skip = false
   }
 }
 
@@ -405,7 +411,7 @@ async function loadMemberData() {
 
 async function loadData() {
   try {
-    await axios.get('https://api.hyunfit.life/routines/108').then(response => {
+    await axios.get('https://api.hyunfit.life/routines/121').then(response => {
       const temp = [
         {
           type: 'INTRO',

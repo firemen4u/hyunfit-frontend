@@ -1,32 +1,90 @@
 <script setup>
 
+import router, {pathNames} from "@/router";
+
+const goToMainPage = () => {
+  router.push(pathNames.mainPage)
+}
+
+const goToReportPage = () => {
+  router.push(pathNames.reportPage)
+}
+
+
 </script>
 
 <template>
-  <div class="container bg-blue-600 w-full h-full flex flex-col justify-center items-center"
-       style="background-image: url('https://images.unsplash.com/flagged/photo-1556746834-1cb5b8fabd54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80'); background-size: cover; background-position: center;">
-    <div class="icon">
-    </div>
-    <div class="exit-title text-4xl text-blue-50 mb-5">
-      오늘의 운동이 모두 끝났어요!
-    </div>
-    <div class="exit-content  text-blue-50 mb-10">
-      시작은 어렵지만, 시간은 빠르게 지나갔죠?<br>
-      15분만에 맺힌 이마위의 땀과 뿌듯함의 순삭!<br>
-      우리, 내일도 놓치지 말아요
-    </div>
-    <div class="buttons-container flex flex-row ">
-      <v-btn class="mr-3">
-        홈으로 가기
-      </v-btn>
-      <v-btn>
-        결과 자세히 보기
-      </v-btn>
+  <div class="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center"
+       style="background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg'); background-size: cover; background-position: center;">
+    <div class="w-500 h-500 flex flex-col justify-center items-center">
+      <div class="icon">
+        <img
+            class="w-[150px] h-[150px] object-fit"
+            src="https://fs.hyunfit.life/api/hyunfit/file/medal-unscreen.gif"
+            alt=""
+        /></div>
+      <div class="exit-title text-4xl font-black text-[#0d1851] mt-5 mb-5">
+        오늘의 운동이 모두 끝났어요!
+      </div>
+      <div class="exit-content text-l font-bold mb-10">
+        시작은 어렵지만, 시간은 빠르게 지나갔죠?<br>
+        15분만에 맺힌 이마위의 땀과 뿌듯함의 순삭!<br>
+        우리, 내일도 놓치지 말아요
+      </div>
+      <div class="buttons-container flex flex-row justify-between" style="gap: 10px;">
+        <v-btn rounded @click="goToMainPage()">
+          홈으로 가기
+        </v-btn>
+        <v-btn rounded @click="goToReportPage()">
+          결과 자세히 보기
+        </v-btn>
+      </div>
+      <div class="workout-finish-banner-outer" style="position: absolute; bottom: 0; width: 100%;">
+        <div class="workout-finish-banner-loop">
+          <div class="workout-finish-banner-content">
+            우리는 여러번 넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까! 우리는 여러번 넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까! 우리는 여러번
+            넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까! 우리는 여러번 넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까!
+          </div>
+          <div class="workout-finish-banner-content">
+            우리는 여러번 넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까! 우리는 여러번 넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까! 우리는 여러번
+            넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까! 우리는 여러번 넘어지고, 종종 실패하고, 자주 심각하지만, 오늘보다 내일 더 강할거니까!
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
-
 <style scoped>
+.workout-finish-banner-loop {
+  display: inline-block;
+  color: rgb(255, 255, 255);
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0px;
+  line-height: 80px;
+  animation-name: exit;
+  animation-duration: 20s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  white-space: nowrap;
+}
+
+.workout-finish-banner-outer {
+  position: sticky;
+  bottom: 0px;
+  height: 80px;
+  width: 100%;
+  background: linear-gradient(126.12deg, rgb(0, 198, 255) 0%, rgb(153, 51, 255) 100%);
+  overflow: hidden
+}
+
+@keyframes exit {
+  0% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 
 </style>

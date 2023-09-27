@@ -4,7 +4,7 @@ import SkipSvg from "@/module/@base/svg/SkipSvg.vue";
 const emit = defineEmits(['click'])
 </script>
 <template>
-  <div class="fixed z-[999] bottom-20 right-20">
+  <div class="fixed z-[10] bottom-20 right-20">
     <v-btn size="x-large" style="background-color: rgba(41, 41, 41, 0.8); width: 200px;" @click="emit('click')">
       <v-icon class="icon-custom">
         <SkipSvg></SkipSvg>
