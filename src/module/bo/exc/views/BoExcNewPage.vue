@@ -3,7 +3,7 @@
     <BaseBodyWrapper>
       <div class="pt-10">
         <div class="flex justify-between">
-          <div class="text-2xl font-bold">운동 등록</div>
+          <div class="text-3xl font-bold mb-5">트레이닝 동작 등록</div>
         </div>
         <form @submit.prevent="submit">
           <div>

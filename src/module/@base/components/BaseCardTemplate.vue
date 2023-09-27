@@ -2,7 +2,10 @@
   <!-- <div class="base-card-container my-4 p-4 shadow-lg rounded-lg" :class="color">
     <slot></slot>
   </div> -->
-  <div class="rounded-lg overflow-hidden shadow-md my-3" :class="color">
+  <div
+    class="rounded-lg overflow-hidden shadow-md my-3 bg-white p-3"
+    :class="color"
+  >
     <img
       v-if="coverSrc"
       class="w-full object-cover"
@@ -31,4 +34,8 @@ if (props.cardSize === 'lg') {
   height = 'h-24'
 }
 </script>
-<style scoped></style>
+<style scoped>
+.card-bg-color {
+  background-color: rgba(0, 35, 42, 0.6);
+}
+</style>

@@ -91,6 +91,13 @@
                     class="fixed top-0 left-0"
     >
     </AITrainingExit>
+    <div>
+      <audio
+        ref="audioSrc"
+        src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
+        loop
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -115,6 +122,8 @@ const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
 let exitTime = ref(false)
+const audioSrc = ref(null)
+
 let loading = ref(true)
 let breakTime = ref(false)
 let pauseTime = ref(false)
@@ -245,6 +254,7 @@ async function init() {
   setTimer()
   timer.stop()
   updateWindowUi()
+  audioSrc.value.play()
 }
 
 function toNextExercise() {
@@ -311,7 +321,6 @@ async function sendExerciseData() {
       scores.good = 0
       scores.excellent = 0
       scores.bad = 0
-      console.log('totalScoreCount 초기화', totalScoreCount.value)
     } else {
       console.log('칼로리가 0이라 데이터를 보내지 않아요')
     }
