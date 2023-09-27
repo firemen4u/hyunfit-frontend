@@ -1,5 +1,5 @@
 <script setup>
-import { BaseContainer } from '@/module/@base/views'
+import { BaseBodyWrapper, BaseContainer } from '@/module/@base/views'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import { Bar, Radar, Doughnut } from 'vue-chartjs'
 import { Colors } from '/src/common'
@@ -274,7 +274,7 @@ const reportData = computed(() => {
 <template>
   <div class="bg-gray-50 w-full">
     <BaseContainer>
-      <div class="w-[1100px]">
+      <BaseBodyWrapper>
         <div class="report-summary-container w-full mt-15 mb-2">
           <ReportMonthPicker
             :model-value="selectedDate"
@@ -282,9 +282,9 @@ const reportData = computed(() => {
           />
           <div class="report-summary-wrapper flex justify-between my-5">
             <div
-              class="report-summary-item card-bg1 h-40 rounded-lg shadow-lg flex flex-col items-center"
+              class="report-summary-item bg-white h-40 rounded-lg shadow-lg flex flex-col items-center"
             >
-              <div class="text-center font-bold text-white text-lg mb-2 mt-5">
+              <div class="text-center font-bold text-lg mb-2 mt-5">
                 이번 달 기록
               </div>
               <base-circular-loader
@@ -398,7 +398,7 @@ const reportData = computed(() => {
           <div class="ReportAnatomyImage">
             <div class="report-title">분석</div>
             <div
-              class="flex items-center card-bg justify-center rounded-lg shadow-lg py-6 h-[400px]"
+              class="flex items-center bg-white justify-center rounded-lg shadow-lg py-6 h-[400px]"
             >
               <base-circular-loader
                 :loading="imageLoading"
@@ -417,7 +417,7 @@ const reportData = computed(() => {
           <div class="ReportTargetChart">
             <div class="report-title">부위별 차트</div>
             <div
-              class="flex items-center bg-gray-100 justify-center rounded-lg shadow-lg py-6 h-[400px]"
+              class="flex items-center bg-white justify-center rounded-lg shadow-lg py-6 h-[400px]"
             >
               <base-circular-loader
                 :loading="imageLoading"
@@ -470,19 +470,12 @@ const reportData = computed(() => {
           </div>
         </div>
         <ReportExcTimelineContainer />
-      </div>
+      </BaseBodyWrapper>
     </BaseContainer>
   </div>
 </template>
 
 <style>
-.card-bg1 {
-  background-color: rgb(249 250 251);
-}
-
-.card-bg {
-  background-color: #00232acc;
-}
 .report-chart-item,
 .report-summary-item {
   width: 350px;
