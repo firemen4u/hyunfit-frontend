@@ -5,7 +5,6 @@ import { DownArrowSvg, EditPencilSvg } from '@/module/@base/svg'
 import router, { pathNames } from '@/router'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import ApiClient from '@/services/api'
-import HyunfitLogoMonoSvg from '@/module/@base/svg/HyunfitLogoMonoSvg.vue'
 import HyunfitLogoMonoVer2Svg from '@/module/@base/svg/HyunfitLogoMonoVer2Svg.vue'
 
 const props = defineProps({
