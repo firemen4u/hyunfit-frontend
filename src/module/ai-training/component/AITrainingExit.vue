@@ -1,44 +1,32 @@
+<script setup>
+
+</script>
+
 <template>
-  <!-- Info -->
-  <div class="ai-training-info-container">
-    <div class="ai-training-info">
-      <span class="info">{{ exerciseName }}</span>
+  <div class="container bg-blue-600 w-full h-full flex flex-col justify-center items-center"
+       style="background-image: url('https://images.unsplash.com/flagged/photo-1556746834-1cb5b8fabd54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80'); background-size: cover; background-position: center;">
+    <div class="icon">
+    </div>
+    <div class="exit-title text-4xl text-blue-50 mb-5">
+      오늘의 운동이 모두 끝났어요!
+    </div>
+    <div class="exit-content  text-blue-50 mb-10">
+      시작은 어렵지만, 시간은 빠르게 지나갔죠?<br>
+      15분만에 맺힌 이마위의 땀과 뿌듯함의 순삭!<br>
+      우리, 내일도 놓치지 말아요
+    </div>
+    <div class="buttons-container flex flex-row ">
+      <v-btn class="mr-3">
+        홈으로 가기
+      </v-btn>
+      <v-btn>
+        결과 자세히 보기
+      </v-btn>
     </div>
   </div>
 </template>
-<script setup>
-const props = defineProps({
-  exerciseName: String,
-})
-</script>
-<style scoped>
-.info {
-  color: transparent;
-  font-size: 35px;
-  font-weight: 900;
-  text-align: center;
-  background: linear-gradient(111deg, rgb(133, 0, 38) 8%, rgb(249, 76, 16) 93%);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-.ai-training-info-container {
-  position: absolute;
 
-  width: 100%;
-  height: 100%;
-  background-color: rgb(102, 102, 102);
-}
-.ai-training-info {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  height: 15%;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50px;
-}
+
+<style scoped>
+
 </style>
