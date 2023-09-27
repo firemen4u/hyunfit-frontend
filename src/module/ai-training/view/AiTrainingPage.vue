@@ -220,6 +220,10 @@ function updateCount(scoreType) {
   }
 }
 
+function updateEvent() {
+
+}
+
 function toggleTime() {
   if (timeDelta === 0) {
     console.log('쉬는 시간')
@@ -441,6 +445,8 @@ async function loadData() {
     alert('운동데이터 로딩 실패 ', error)
   }
 }
+
+
 </script>
 <style scoped>
 .info-container {
