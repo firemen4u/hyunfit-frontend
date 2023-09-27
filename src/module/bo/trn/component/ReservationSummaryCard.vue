@@ -8,7 +8,7 @@
           <div class="gauge-fill" :style="{ width: gaugeWidth }"></div>
         </div>
       </div>
-      <div v-if="this.index === 1" class="card-content ml-28">
+      <div v-if="this.index === 1" class="card-content ml-36">
         {{ settingData.output }}
       </div>
       <div v-if="this.index !== 1" class="card-content ml-36">
@@ -96,12 +96,6 @@ export default {
 </script>
 
 <style scoped>
-.smr-card {
-  display: flex;
-  flex-direction: row;
-  width: 140px;
-  height: 85px;
-}
 .mini-color-bar-1 {
   width: 6px;
   height: 85px;
@@ -137,12 +131,18 @@ export default {
   border-bottom-left-radius: 8px;
   background-color: rgb(255, 150, 29);
 }
+.smr-card {
+  display: flex;
+  flex-direction: row;
+  width: 160px;
+  height: 85px;
+}
 .card-main {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 110px;
+  width: 150px;
   height: 85px;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -150,19 +150,19 @@ export default {
 }
 
 .card-header {
-  width: 110px;
+  width: 150px;
   height: 25px;
 }
 .card-rate {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 110px;
+  width: 150px;
   height: 25px;
-  margin-left: 20px;
+  margin-left: 5px;
 }
 .gauge {
-  width: 100px;
+  width: 120px;
   height: 5px;
   background-color: #efefef;
   border-radius: 5px;
