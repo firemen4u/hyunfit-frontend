@@ -15,7 +15,7 @@
         <PauseSvg></PauseSvg>
       </v-icon>
     </v-btn>
-    <v-btn class="item" @click="dialog = true">
+    <v-btn class="item" @click="dialog=true">
       <v-icon class="button">
         <ExitSvg width="24" height="24"/>
       </v-icon>
@@ -42,7 +42,7 @@
       </div>
       <v-card-actions class="flex w-full flex-row justify-end">
         <v-btn color="primary" @click="dialog = false">취소하기</v-btn>
-        <v-btn color="primary" @click="dialog = false">종료하기</v-btn>
+        <v-btn color="primary" @click="clickExit()">종료하기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -56,6 +56,19 @@ import AIExitSvg from "@/module/@base/svg/WarningSvg.vue";
 
 const emit = defineEmits(['event:sound', 'event:pause', 'event:exit'])
 
+import router, {pathNames} from "@/router";
+
+const goToMainPage = () => {
+  router.push(pathNames.mainPage)
+}
+
+function clickExit() {
+  console.log('click')
+  emit('event:exit')
+  goToMainPage()
+}
+
+
 const dialog = ref(false)
 </script>
 <style scoped>
@@ -67,7 +80,6 @@ const dialog = ref(false)
 .item {
   background-color: rgba(41, 41, 41, 0.8);
   border-color: white;
-
 }
 
 </style>

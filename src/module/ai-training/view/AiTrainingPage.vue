@@ -51,7 +51,6 @@
     />
     <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft"/>
     <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()"/>
-
     <div
         class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
         v-if="loading && currentExercise?.type !== 'INTRO'"
@@ -86,6 +85,7 @@
     </a-i-training-info>
     <a-i-training-bottom-bar
         @event:pause="toggleTime()"
+        @event:exit="exit()"
     ></a-i-training-bottom-bar>
     <AITrainingExit v-if="currentExercise?.type === 'EXIT'"
                     :exitStatus="currentExercise"
@@ -116,14 +116,15 @@ import AITrainingInfo from '@/module/ai-training/component/AITrainingInfo.vue'
 import AITrainingBottomBar from '@/module/ai-training/component/AITrainingBottomBar.vue'
 import {FILE_SERVER_BASE_URL} from '@/config'
 import AITrainingExit from "@/module/ai-training/component/AITrainingExit.vue";
+import router, {pathNames} from "@/router";
 
 const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
-let exitTime = ref(false)
 const audioSrc = ref(null)
 
+let exitStatus = ref(false)
 let loading = ref(true)
 let breakTime = ref(false)
 let pauseTime = ref(false)
@@ -134,16 +135,6 @@ let endExerciseTime = ref(0)
 let setFinished = computed(
     () => setCount.value >= currentExercise.value?.setCount
 )
-
-function exitButton() {
-  if (exitTime.value) {
-    console.log('exitTime', exitTime.value)
-    exitTime.value = false;
-  } else {
-    console.log('exitTime End', exitTime.value)
-    exitTime.value = true;
-  }
-}
 
 const windowSize = reactive({
   my: ref('w-full'),
@@ -196,6 +187,10 @@ const setScoreCount = ref(0)
 const notification = ref('')
 const totalScoreCount = ref(0)
 
+function exit() {
+  sendExerciseData()
+}
+
 function updateCount(scoreType) {
   if (setScoreCount.value < currentExercise.value.exerciseCount) {
     console.log('scoreType', scoreType)
@@ -222,11 +217,9 @@ function updateCount(scoreType) {
 
 function toggleTime() {
   if (timeDelta === 0) {
-    console.log('쉬는 시간')
     timer.resume()
     pauseTime.value = false
   } else {
-    console.log('쉬는 시간 22')
     timer.stop()
     pauseTime.value = true
   }
@@ -261,19 +254,20 @@ function toNextExercise() {
   if (!currentExercise.value) return
   console.log('currentExercise', currentExercise.value)
 
-  if (currentExercise.value.type === 'GUIDE') {
-    startExerciseTime.value = Date.now()
-    console.log('startExerciseTime : ', startExerciseTime.value)
-  }
-
   if (currentExercise.value.type === 'EXERCISE' && !setFinished.value) {
     if (breakTime.value) {
+      startExerciseTime.value = Date.now()
+      console.log('startExerciseTime : ', startExerciseTime.value)
       setCount.value += 1
       console.log('setCount', setCount.value)
       timer.start(currentExercise.value.timerLimit - 0.01)
       breakTime.value = false
     } else {
       console.log('쉬는 시간 체크', setCount.value)
+      endExerciseTime.value = Date.now()
+      console.log('endExerciseTime : ', endExerciseTime.value)
+      sendExerciseData()
+      console.log('세트 끝나고 데이터 보내기')
       setScoreCount.value = 0
       timer.start(10 - 0.01)
       breakTime.value = true
@@ -290,12 +284,26 @@ function toNextExercise() {
   currentIndex.value++
 
   if (currentExercise.value.type === 'EXIT') {
-    windowSize.my = false
-    windowSize.teaching = false
+    sendPointData()
   }
   updateWindowUi()
   loading.value = true
   timer.stop()
+}
+
+async function sendPointData() {
+  const memberPoint = {
+    mbrSeq: memberData.value.mbrSeq,
+    mevType: 2,
+    mevAmount: rtnRewardPoint,
+  }
+  try {
+    console.log('루틴 포인트 보내기', memberPoint)
+    await ApiClient.post(`/member-event`, memberPoint)
+  } catch (error) {
+    console.log('루틴 포인트 데이터 전송 실패')
+    alert('루틴 포인트 데이터 전송 실패')
+  }
 }
 
 function onTeachingVideoReady() {
@@ -312,14 +320,22 @@ async function sendExerciseData() {
     exchExcelentCnt: scores.excellent,
     exchGoodCnt: scores.good,
     exchBadCnt: scores.bad,
-    exchTotalCalories: totalScoreCount.value * currentExercise.value.calorie,
-    // exchTotalCalories: 10
+    exchTotalCalories: currentExercise.value.calorie,
+  }
+  const exp = (data.exchExcelentCnt * 1.2 + data.exchGoodCnt + data.exchBadCnt * 0.6) / currentExercise.value.calorie * (data.exchExcelentCnt + data.exchGoodCnt + data.exchBadCnt)
+  const memberExp = {
+    mbrSeq: memberData.value.mbrSeq,
+    mevType: 1,
+    mevAmount: exp
   }
   try {
-    if (data.exchTotalCalories !== 0) {
+    if (totalScoreCount.value !== 0) {
       await ApiClient.post(`/exercise-history`, data)
       console.log('completed history', data)
       console.log('exchTotalCalories', currentExercise.value.calorie)
+      console.log('memberExp', memberExp)
+      await ApiClient.post(`/member-event`, memberExp)
+
       totalScoreCount.value = 0
       setScoreCount.value = 0
 
@@ -385,21 +401,24 @@ function createExerciseQueueItem(exercise, type) {
     calorie: exercise.excCaloriesPerRep,
     setCount: 3,
     exerciseCount: exercise.excRepCountPerSet,
-    // exerciseCount: 4,
   }
   if (type === 'GUIDE') {
     item['timerLimit'] = 10
     item[
         'videoUrl'
         ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
+    item['soundUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/hyunfit_bgm_${exercise.excSeq}.mp4`
   } else {
     item['timerLimit'] = exercise.excTimePerSetInSec
     item[
         'videoUrl'
         ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
+    item['soundUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/hyunfit_bgm_${exercise.excSeq}.mp4`
   }
   return item
 }
+
+let rtnRewardPoint = 0
 
 async function loadMemberData() {
   memberData.value = await ApiClient.get('/members/me')
@@ -412,6 +431,8 @@ async function loadMemberData() {
 async function loadData() {
   try {
     await axios.get('https://api.hyunfit.life/routines/121').then(response => {
+      rtnRewardPoint = response.data.rtnRewardPoint
+
       const temp = [
         {
           type: 'INTRO',

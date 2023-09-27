@@ -10,12 +10,21 @@
     >
       <source :src="props.exercise.videoUrl"/>
     </video>
+    <audio
+        :key="props.exercise.audioUrl"
+        ref="audioElement"
+        preload="auto"
+        loop
+        autoplay
+        @error="alert('Sound 로드 실패 ' + props.exercise.audioUrl)"
+    />
   </div>
 </template>
 <script setup>
 import {ref, watch} from 'vue'
 
 const videoElement = ref(null)
+const audioElement = ref(null)
 const props = defineProps({
   loading: Boolean,
   windowSize: String,
@@ -23,6 +32,7 @@ const props = defineProps({
   breakTime: Boolean,
   videoUrl: String,
   pauseTime: Boolean,
+  audioUrl: String,
 })
 const emit = defineEmits(['event:ready', 'event:start'])
 
@@ -51,6 +61,7 @@ watch(
 
 function onTeachingVideoReady() {
   setTimeout(() => {
+    audioElement.value.play()
     videoElement.value.play()
     emit('event:ready')
   }, 1000)
