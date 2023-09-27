@@ -447,14 +447,6 @@ async function loadData() {
   background-color: rgb(102, 102, 102);
 }
 
-.loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 10;
-  transform: translate(-50%, -50%);
-}
-
 .ai-training-container {
   position: relative;
   height: 100vh;
