@@ -8,6 +8,7 @@ import {
   ReportCard,
 } from '@/module/main/components'
 import SurveyCard from '@/module/main/components/cards/SurveyCard.vue'
+
 import MainBannerCard from '@/module/main/components/cards/MainBannerCard.vue'
 import MainFooter from '@/module/main/components/MainFooter.vue'
 </script>
@@ -15,7 +16,7 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
 <template>
   <BaseContainer nofooter>
     <div class="article body-wrapper mb-[150px]">
-      <div class="mt-6">
+      <div class="mt-3">
         <div class="grid grid-cols-3 gap-3">
           <MainCardContainer class="col-span-3">
             <MainBannerCard />
@@ -33,13 +34,16 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
             <TrainerCard />
           </MainCardContainer>
           <MainCardContainer color="#331e51" class="col-span-1">
+
             <SurveyCard />
           </MainCardContainer>
         </div>
       </div>
+
     </div>
 
     <MainFooter />
+
   </BaseContainer>
 </template>
 
@@ -81,6 +85,7 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
     rgba(72, 184, 236, 0.9) 74%,
     rgba(116, 255, 67, 0) 120%
   );
+
 }
 
 .article::after {
@@ -111,5 +116,6 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
   .body-wrapper {
     width: 1100px;
   }
+
 }
 </style>

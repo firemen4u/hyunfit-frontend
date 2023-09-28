@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <div class="mb-5 flex flex-col">
+    <div class="flex flex-col">
       <div class="order-selector flex items-end justify-end flex-col">
         <slot name="search-order-selector"> </slot>
       </div>
-      <BaseDivider />
+      <BaseDivider class="my-5" />
     </div>
 
     <div class="trn-search-bar-section w-full">
@@ -34,7 +34,6 @@ defineProps({
 
 <style scoped>
 .order-selector {
-  margin: 10px 0;
-  height: 60px;
+  height: 40px;
 }
 </style>

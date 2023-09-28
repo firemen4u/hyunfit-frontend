@@ -38,7 +38,7 @@ let selectedFilterOptions = computed(() => {
   let genderOption = selectedGender.value ? [selectedGender.value] : []
   return selectedLessonTypes.value.concat(genderOption)
 })
-
+const loading = ref(false)
 let selectedSearchOrder = ref(searchOrderOptions[0])
 
 let trnSearchResults = ref([])
@@ -48,6 +48,7 @@ watch([selectedLessonTypes, selectedGender], () => {
   search()
 })
 function resetFilter() {
+  searchKeyword.value = ''
   selectedLessonTypes.value = []
   selectedGender.value = null
   search()
@@ -64,8 +65,11 @@ async function search() {
       selectedGender.value
     )
   if (searchKeyword.value.trim()) params['keyword'] = searchKeyword.value.trim()
-
+  loading.value = true
   await loadData(params)
+  setTimeout(() => {
+    loading.value = false
+  }, 500)
 }
 function updateSearchOrder(selectedOrder) {
   selectedSearchOrder.value = selectedOrder
@@ -82,73 +86,78 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <BaseContainer>
-    <BaseBodyWrapper>
-      <div class="container">
-        <div class="trn-search-section1">
-          <p class="trn-search-title text-2xl font-extrabold">
-            트레이너 만나보기
-          </p>
-        </div>
-        <div class="trn-search-section2">
-          <div class="trn-search-filter-aside">
-            <TrnSearchFilterAside @reset="resetFilter">
-              <TrnSearchFilterGroup
-                title="레슨종류"
-                :options="lessonTypeOptions"
-                v-model="selectedLessonTypes"
-                multiple
-              />
-              <TrnSearchFilterGroup
-                title="트레이너 성별"
-                :options="genderOptions"
-                v-model="selectedGender"
-              />
-            </TrnSearchFilterAside>
+  <BaseContainer :loading="loading">
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
+        <div
+          class="flex flex-col items-center bg-white shadow-lg mt-3 rounded-xl overflow-hidden"
+        >
+          <div class="training-class-banner py-12 px-10 mb-5">
+            <p class="text-4xl font-black mt-5 text-[#021f3d]">
+              트레이닝 클래스 찾기
+            </p>
+            <p class="text-2xl font-bold mt-5 text-[#021f3d]">
+              집에서도 전문 트레이너를 만나볼 수 있어요.
+            </p>
           </div>
-          <div class="trn-search-container">
-            <TrnSearchContainer>
-              <template v-slot:search-bar>
-                <TrnSearchBar
-                  v-model="searchKeyword"
-                  @click:search="search()"
+          <div class="flex justify-between px-10 mt-3 w-full">
+            <div class="trn-search-filter-aside">
+              <TrnSearchFilterAside @reset="resetFilter">
+                <TrnSearchFilterGroup
+                  title="클래스 종류"
+                  :options="lessonTypeOptions"
+                  v-model="selectedLessonTypes"
+                  multiple
                 />
-              </template>
-              <template v-slot:search-order-selector
-                ><TrnSearchOrderSelector
-                  :model-value="selectedSearchOrder"
-                  :options="searchOrderOptions"
-                  @update:modelValue="order => updateSearchOrder(order)"
+                <TrnSearchFilterGroup
+                  title="트레이너 성별"
+                  :options="genderOptions"
+                  v-model="selectedGender"
                 />
-              </template>
-              <template v-slot:filter-chip-group>
-                <FilterChipGroup :items="selectedFilterOptions" />
-              </template>
-              <template v-slot:search-results>
-                <TrnSearchResultContainer :items="trnSearchResults" />
-              </template>
-              <template v-slot:pagination>
-                <BasePagination />
-              </template>
-            </TrnSearchContainer>
+              </TrnSearchFilterAside>
+            </div>
+            <div class="trn-search-container bg-white">
+              <TrnSearchContainer>
+                <template v-slot:search-bar>
+                  <TrnSearchBar
+                    v-model="searchKeyword"
+                    @click:search="search()"
+                  />
+                </template>
+                <template v-slot:search-order-selector
+                  ><TrnSearchOrderSelector
+                    :model-value="selectedSearchOrder"
+                    :options="searchOrderOptions"
+                    @update:modelValue="order => updateSearchOrder(order)"
+                  />
+                </template>
+                <template v-slot:filter-chip-group>
+                  <FilterChipGroup :items="selectedFilterOptions" />
+                </template>
+                <template v-slot:search-results>
+                  <TrnSearchResultContainer :items="trnSearchResults" />
+                </template>
+                <template v-slot:pagination>
+                  <BasePagination />
+                </template>
+              </TrnSearchContainer>
+            </div>
           </div>
         </div>
-      </div>
-    </BaseBodyWrapper>
+      </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
+.training-class-banner {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
   width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
 }
 
-.trn-search-section1 {
-  display: flex;
-  margin-top: 50px;
-}
 .trn-search-title {
   flex-grow: 1;
   /* border: 4px dotted red; */
@@ -165,11 +174,10 @@ onBeforeMount(() => {
 }
 
 .trn-search-filter-aside {
-  width: 30%;
-  margin-right: 100px;
+  width: 240px;
+  margin-right: 30px;
 }
 .trn-search-container {
   width: 70%;
-  margin-right: 30px;
 }
 </style>

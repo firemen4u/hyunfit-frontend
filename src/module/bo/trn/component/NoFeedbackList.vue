@@ -5,8 +5,8 @@
       <div class="ml-4">피드백 현황({{ nfbCnt() }}건)</div>
     </div>
     <div class="nfb-list-inner">
-      <div class="flex flex-col bg-white mt-6 mb-6">
-        <!--카테고리명(컬럼명)-->
+      <div class="flex flex-col bg-white mt-7 mb-7">
+        <!--카테고리(컬럼명)-->
         <div class="nfb-list-category">
           <div class="nfb-list-seq">#</div>
           <div class="nfb-list-ptSeq">PT번호</div>
@@ -17,6 +17,9 @@
         </div>
         <!--리스트(행)-->
         <div class="nfb-list-content">
+          <div v-if="noFeedbackList.length === 0" class="rsv-noData">
+            이달의 피드백이 없습니다.
+          </div>
           <div v-for="(nofeedback, index) in noFeedbackList" :key="index">
             <button class="nfb-list mb-1" @click="showDetailModal(nofeedback)">
               <div class="nfb-list-seq">{{ index + 1 }}</div>
@@ -54,6 +57,9 @@ export default {
   components: {
     CreateFeedbackModal,
   },
+  props: {
+    targetDate: String,
+  },
   data() {
     return {
       showDetail: false,
@@ -63,8 +69,16 @@ export default {
     }
   },
   async created() {
+    this.startDate = dayjs(this.targetDate)
+      .startOf('month')
+      .format('YYYY-MM-01 00:00:00')
+    this.endDate = dayjs(this.targetDate)
+      .endOf('month')
+      .format('YYYY-MM-DD 00:00:00')
     let response = await ApiClient.get('/trainers/me')
-    ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback')
+    ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback', {
+      params: { startDate: this.startDate, endDate: this.endDate },
+    })
       .then(response => {
         this.noFeedbackList = response
       })
@@ -102,34 +116,28 @@ export default {
 
 <style scoped>
 .nfb-list-header {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  /* border-top-left-radius: 10px;
+  border-top-right-radius: 10px; */
 }
 .nfb-list-container {
   display: flex;
   flex-direction: column;
-  width: 800px;
-  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  justify-content: center;
+  margin-bottom: 30px;
+  width: 1000px;
+  /* box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px; */
 }
 .nfb-list-inner {
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 800px;
+  width: 1000px;
+  min-height: 610px;
   background-color: white;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  /* border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; */
 }
 .nfb-list-seq {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  height: 35px;
-  margin-right: 10px;
-}
-.nfb-list-ptSeq {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,11 +145,19 @@ export default {
   height: 35px;
   margin-right: 10px;
 }
+.nfb-list-ptSeq {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 35px;
+  margin-right: 10px;
+}
 .nfb-list-ptDate {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 170px;
+  width: 200px;
   height: 35px;
   margin-right: 10px;
 }
@@ -149,7 +165,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
+  width: 150px;
   height: 35px;
   margin-right: 10px;
 }
@@ -157,7 +173,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 110px;
+  width: 150px;
   height: 35px;
   margin-right: 10px;
 }
@@ -165,7 +181,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
+  width: 200px;
   height: 35px;
 }
 .nfb-list-category {
@@ -188,5 +204,14 @@ export default {
   font-weight: 900;
   color: rgb(199, 0, 57);
   cursor: pointer;
+}
+.rsv-noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  width: 1000px;
+  height: 380px;
 }
 </style>

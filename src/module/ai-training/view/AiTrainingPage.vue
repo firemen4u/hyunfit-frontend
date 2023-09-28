@@ -88,6 +88,7 @@
         @event:pause="toggleTime()"
         @event:exit="exit()"
     ></a-i-training-bottom-bar>
+
     <AITrainingExit v-if="currentExercise?.type === 'EXIT'"
                     :exitStatus="currentExercise"
     >
@@ -122,6 +123,7 @@ const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
+let exitTime = ref(false)
 const audioSrc = ref(null)
 
 let exitStatus = ref(false)
@@ -213,6 +215,10 @@ function updateCount(scoreType) {
       notification.value = ''
     }, 1000)
   }
+}
+
+function updateEvent() {
+
 }
 
 function toggleTime() {
@@ -474,6 +480,8 @@ async function loadData() {
     alert('운동데이터 로딩 실패 ', error)
   }
 }
+
+
 </script>
 <style scoped>
 .info-container {

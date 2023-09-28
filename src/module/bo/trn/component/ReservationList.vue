@@ -2,11 +2,20 @@
   <!--최상위 div-->
   <div class="rsv-list-container">
     <div class="rsv-list-header flex items-center bg-gray-100 text-black h-9">
-      <div class="ml-4">오늘 예약 현황 ({{ rsvCnt() }}건)</div>
+      <div class="ml-4">이달의 예약 현황 ({{ rsvCnt() }}건)</div>
     </div>
     <div class="rsv-list-inner">
-      <div class="flex flex-col bg-white mt-6 mb-6">
-        <!--카테고리명(컬럼명)-->
+      <div v-if="showCardList" class="rsv-smr-card-container">
+        <div v-for="index in 5" :key="index">
+          <ReservationSummaryCard
+            class="shadow-lg"
+            :sendToChild="sendingData"
+            :index="index"
+          ></ReservationSummaryCard>
+        </div>
+      </div>
+      <div class="flex flex-col bg-white mt-1 mb-1">
+        <!--카테고리(컬럼명)-->
         <div class="rsv-list-category">
           <div class="rsv-list-seq">#</div>
           <div class="rsv-list-ptSeq">예약번호</div>
@@ -17,6 +26,9 @@
         </div>
         <!--리스트(행)-->
         <div class="rsv-list-content">
+          <div v-if="reservations.length === 0" class="rsv-noData">
+            이달의 예약이 없습니다.
+          </div>
           <div v-for="(reservation, index) in reservations" :key="index">
             <button class="rsv-list mb-1" @click="showDetailModal(reservation)">
               <div class="rsv-list-seq">{{ index + 1 }}</div>
@@ -41,57 +53,73 @@
           />
         </div>
       </div>
+      <BasePagination v-model="currentPage" :total-pages="totalPages" />
     </div>
   </div>
 </template>
 
 <script setup>
 import ReservaionDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
+import ReservationSummaryCard from '/src/module/bo/trn/component/ReservationSummaryCard.vue'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import ApiClient from '/src/services/api.js'
+import BasePagination from '/src/module/@base/components/BasePagination.vue'
 </script>
 
 <script>
 export default {
   components: {
     ReservaionDetailModal,
+    ReservationSummaryCard,
+  },
+  props: {
+    targetDate: String,
   },
   data() {
     return {
-      completeCnt: 0,
-      noShowCnt: 0,
-      upcomingCnt: 0,
-      cancelCnt: 0,
+      showCardList: false,
+      sendingData: {
+        completeCnt: 0,
+        noShowCnt: 0,
+        upcomingCnt: 0,
+        cancelCnt: 0,
+      },
       showDetail: false,
       selectedReservation: null,
       reservations: [],
+      startDate: '',
+      endDate: '',
+      currentPage: 1,
+      totalPages: 0,
+      itemCnt: 0,
     }
   },
   async created() {
+    this.startDate = dayjs(this.targetDate)
+      .startOf('month')
+      .format('YYYY-MM-01 00:00:00')
+    this.endDate = dayjs(this.targetDate)
+      .endOf('month')
+      .format('YYYY-MM-DD 00:00:00')
     let resposeData = await ApiClient.get('/trainers/me')
     await ApiClient.get(
-      '/trainers/' + resposeData.trnSeq + '/personal-training'
+      '/trainers/' + resposeData.trnSeq + '/personal-training',
+      { params: { startDate: this.startDate, endDate: this.endDate } }
     )
       .then(response => {
-        this.reservations = response
-        this.plusCnt()
-        this.sendCntToParent()
+        if (response !== null) {
+          this.reservations = response
+          this.totalPages = Math.ceil(response.length / 5)
+          this.plusCnt()
+          this.showCardList = true
+        }
       })
       .catch(error => {
         console.error('API 요청 실패:', error)
       })
   },
   methods: {
-    sendCntToParent() {
-      const cntList = {
-        completeCnt: this.completeCnt,
-        noShowCnt: this.noShowCnt,
-        upcomingCnt: this.upcomingCnt,
-        cancelCnt: this.cancelCnt,
-      }
-      this.$emit('send-cntlist', cntList)
-    },
     showDetailModal(reservation) {
       this.selectedReservation = reservation
       this.showDetail = true
@@ -101,18 +129,18 @@ export default {
         const reservation = this.reservations[i]
         if (reservation.ptReservationStatus === 1) {
           reservation.ptReservationStatus = '예정'
-          this.upcomingCnt = this.upcomingCnt + 1
+          this.sendingData.upcomingCnt = this.sendingData.upcomingCnt + 1
         } else if (reservation.ptReservationStatus === 2) {
           reservation.ptReservationStatus = '재입장'
         } else if (reservation.ptReservationStatus === 3) {
           reservation.ptReservationStatus = '완료'
-          this.completeCnt = this.completeCnt + 1
+          this.sendingData.completeCnt = this.sendingData.completeCnt + 1
         } else if (reservation.ptReservationStatus === 4) {
           reservation.ptReservationStatus = '취소'
-          this.cancelCnt = this.cancelCnt + 1
+          this.sendingData.cancelCnt = this.sendingData.cancelCnt + 1
         } else if (reservation.ptReservationStatus === 5) {
           reservation.ptReservationStatus = '노쇼'
-          this.noShowCnt = this.noShowCnt + 1
+          this.sendingData.noShowCnt = this.sendingData.noShowCnt + 1
         }
       }
     },
@@ -137,7 +165,6 @@ export default {
         .then(response => {
           this.reservations = response
           this.plusCnt()
-          this.sendCntToParent()
         })
         .catch(error => {
           console.error('API 요청 실패:', error)
@@ -149,34 +176,37 @@ export default {
 
 <style scoped>
 .rsv-list-header {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  /* border-top-left-radius: 10px;
+  border-top-right-radius: 10px; */
 }
 .rsv-list-container {
   display: flex;
   flex-direction: column;
-  width: 800px;
-  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  width: 1000px;
+  /* box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px; */
 }
 .rsv-list-inner {
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 800px;
+  flex-direction: column;
+  width: 1000px;
   background-color: white;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  min-height: 610px;
+  /* border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; */
 }
-.rsv-list-seq {
+.rsv-smr-card-container {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  width: 60px;
-  height: 35px;
+  width: 980px;
+  height: 140px;
+  margin-left: 10px;
   margin-right: 10px;
 }
-.rsv-list-ptSeq {
+.rsv-list-seq {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -184,11 +214,19 @@ export default {
   height: 35px;
   margin-right: 10px;
 }
+.rsv-list-ptSeq {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 35px;
+  margin-right: 10px;
+}
 .rsv-list-ptDate {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 170px;
+  width: 200px;
   height: 35px;
   margin-right: 10px;
 }
@@ -196,7 +234,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
+  width: 150px;
   height: 35px;
   margin-right: 10px;
 }
@@ -204,7 +242,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 110px;
+  width: 150px;
   height: 35px;
   margin-right: 10px;
 }
@@ -212,7 +250,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 120px;
+  width: 200px;
   height: 35px;
 }
 .rsv-list-category {
@@ -230,6 +268,15 @@ export default {
   display: flex;
   justify-items: center;
   border-bottom: 1px solid rgb(205, 205, 205);
+}
+.rsv-noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  width: 1000px;
+  height: 380px;
 }
 .rsv-list:hover {
   font-weight: 900;
