@@ -94,9 +94,6 @@ export default {
       },
     },
   },
-  created() {
-    console.log(this.noFeedbackData)
-  },
   data() {
     return {
       feedbackContent: '',
@@ -126,7 +123,6 @@ export default {
       )
       this.startDate = targetDate.startOf('month').format('YYYY-MM-01 00:00:00')
       this.endDate = targetDate.endOf('month').format('YYYY-MM-DD 00:00:00')
-      console.log(this.startDate, this.endDate)
       let sendingData = await ApiClient.get('/members/' + mbrSeq + '/report', {
         params: {
           startDate: this.startDate,

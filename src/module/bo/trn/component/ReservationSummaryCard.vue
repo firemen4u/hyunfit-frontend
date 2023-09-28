@@ -46,9 +46,7 @@ export default {
           0
         ) {
           this.settingData = { status: '진행률', output: '0%' }
-          console.log('여기??')
         } else {
-          console.log('여기', this.sendToChild)
           this.settingData = {
             status: '진행률',
             output:
