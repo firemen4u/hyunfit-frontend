@@ -1,76 +1,62 @@
 <template>
-  <BaseContainer footer="false">
-    <BaseBodyWrapper>
-      <div class="tfb-content-container flex-col bg-white">
+  <BaseContainer>
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
         <div
-          class="tfb-content-header flex w-full h-[200px] items-center justify-center"
+          class="tfb-content-container flex-col mt-3 my-[100px] shadow-xl rounded-xl bg-white"
         >
-          <p class="text-4xl font-extrabold text-white">월간 트레이닝 피드백</p>
-        </div>
-
-        <div class="tfb-content flex flex-col">
           <div
-            class="text-2xl flex justify-center items-center font-extrabold w-full h-[70px] bg-[#2c286d] text-white"
+            class="tfb-content-header flex w-full h-[200px] items-center justify-items-end rounded-t-xl"
           >
-            <LeftArrowSvg color="white" size="20" @click="prevMonth" />
-            <p class="mx-5">{{ year }}년 {{ formattedMonth }}월</p>
-            <RightArrowSvg color="white" size="20" @click="nextMonth" />
-          </div>
-          <div class="flex justify-center my-[30px]">
-            <div
-              class="trfb-content-wrap py-4 pb-10 border-[2px] border-gray-200 rounded-lg shadow-xl w-[800px]"
-              v-if="responseFeedbackData"
-            >
-              <div class="flex justify-center items-center h-[70px]">
-                <p class="text-xl font-bold">
-                  {{ mbrName }}
-                </p>
-                <p class="text-lg">님의 피드백 보고서</p>
-              </div>
-              <div class="feedback-content-wrap px-[100px]">
-                <TrnFeedBackComponent :feedbackContent="responseFeedbackData" />
-              </div>
-              <div class="float-right mr-[100px] mt-[10px]">
-                <p>트레이너 : {{ responsetrnName }}</p>
-                <P>작성일자 : {{ responsetrnfWrittenDate }}</P>
-              </div>
-            </div>
-            <div v-else class="flex flex-col justify-center h-[500px]">
-              <p class="text-center text-xl">
-                이달의 피드백이 존재하지 않아요!
+            <div class="py-12 px-10 mb-5 flex-col">
+              <p class="text-4xl mt-5 font-black text-white">
+                월간 트레이닝 피드백
+              </p>
+              <p class="text-xl mt-5 font-bold text-white">
+                트레이너가 작성한 내 월간 운동 보고서를 받아 볼 수 있어요
               </p>
             </div>
           </div>
+
+          <div class="tfb-content flex flex-col">
+            <div
+              class="text-2xl flex justify-center items-center font-extrabold w-full h-[70px] bg-[#2c286d] text-white"
+            >
+              <LeftArrowSvg color="white" size="20" @click="prevMonth" />
+              <p class="mx-5">{{ year }}년 {{ formattedMonth }}월</p>
+              <RightArrowSvg color="white" size="20" @click="nextMonth" />
+            </div>
+            <div class="flex justify-center my-[30px]">
+              <div
+                class="trfb-content-wrap py-4 pb-10 rounded-b-xl w-full"
+                v-if="responseFeedbackData"
+              >
+                <div class="flex justify-center items-center h-[70px]">
+                  <p class="text-3xl font-bold">
+                    {{ mbrName }}
+                  </p>
+                  <p class="text-3xl">님의 피드백 보고서</p>
+                </div>
+                <div class="feedback-content-wrap px-[100px]">
+                  <TrnFeedBackComponent
+                    :feedbackContent="responseFeedbackData"
+                  />
+                </div>
+                <div class="float-right mr-[100px] mt-[30px] text-lg font-bold">
+                  <p>트레이너 : {{ responsetrnName }}</p>
+                  <P>작성일자 : {{ responsetrnfWrittenDate }}</P>
+                </div>
+              </div>
+              <div v-else class="flex flex-col justify-center h-[500px]">
+                <p class="text-center text-xl">
+                  이달의 피드백이 존재하지 않아요!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- <div
-          class="select-cal flex justify-around items-center flex-row h-[100px]"
-        >
-          <v-btn
-            class="cal-left-arrow flex flex-row items-center"
-            @click="prevMonth"
-            size="large"
-          >
-            <img
-              class="move-month-triangle"
-              src="/src/assets/images/triangle-left.png"
-            />
-            <p>{{ formattedMonth - 1 }}월</p>
-          </v-btn>
-          <div class="calendar text-2xl font-semibold"></div>
-          <v-btn
-            class="cal-right-arrow flex flex-row items-center"
-            @click="nextMonth"
-            size="large"
-          >
-            <p>{{ formattedMonth - 1 + 2 }}월</p>
-            <img
-              class="move-month-triangle"
-              src="/src/assets/images/triangle-right.png"
-            />
-          </v-btn>
-        </div> -->
-      </div>
-    </BaseBodyWrapper>
+      </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 
@@ -164,8 +150,7 @@ export default {
 
 <style scoped>
 .tfb-content-header {
-  background-image: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcfcK7W%2Fbtsv8xSSnsG%2FqaMynSxJM9pmmkQsgYf4w1%2Fimg.jpg');
-  background-position-x: 40%;
+  background-image: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FGghYC%2Fbtsv7cQd8dB%2Fi7ZIVAMkyknlQac30BdvMk%2Fimg.png');
   background-position-y: 20%;
   background-size: cover;
 }
