@@ -2,16 +2,16 @@
   <div class="smr-card rounded-lg">
     <div :class="'mini-color-bar-' + this.index"></div>
     <div class="card-main">
-      <div class="card-header ml-7">{{ settingData.status }}</div>
+      <div class="card-header ml-7">이달의 {{ settingData.status }}</div>
       <div class="card-rate">
         <div class="gauge">
           <div class="gauge-fill" :style="{ width: gaugeWidth }"></div>
         </div>
       </div>
-      <div v-if="this.index === 1" class="card-content ml-36">
+      <div v-if="this.index === 1" class="card-content ml-28">
         {{ settingData.output }}
       </div>
-      <div v-if="this.index !== 1" class="card-content ml-36">
+      <div v-if="this.index !== 1" class="card-content ml-32">
         {{ settingData.output }}개
       </div>
     </div>
@@ -38,15 +38,28 @@ export default {
   methods: {
     setData() {
       if (this.index == 1) {
-        this.settingData = {
-          status: '진행률',
-          output:
-            this.sendToChild.completeCnt +
+        if (
+          this.sendToChild.completeCnt +
             this.sendToChild.noShowCnt +
-            '/' +
-            (this.sendToChild.completeCnt +
-              this.sendToChild.noShowCnt +
-              this.sendToChild.upcomingCnt),
+            this.sendToChild.upcomingCnt +
+            this.sendToChild.cancelCnt ===
+          0
+        ) {
+          this.settingData = { status: '진행률', output: '0%' }
+          console.log('여기??')
+        } else {
+          console.log('여기', this.sendToChild)
+          this.settingData = {
+            status: '진행률',
+            output:
+              Math.round(
+                ((this.sendToChild.completeCnt + this.sendToChild.noShowCnt) /
+                  (this.sendToChild.completeCnt +
+                    this.sendToChild.noShowCnt +
+                    this.sendToChild.upcomingCnt)) *
+                  100
+              ) + '%',
+          }
         }
       } else if (this.index == 2) {
         this.settingData = {
