@@ -1,6 +1,6 @@
 <template>
   <BaseContainer category="trainer" footer="false">
-    <BaseBodyWrapper>
+    <div class="rsv-container-top primary-background">
       <div class="rsv-container">
         <div class="flex flex-row text-3xl font-bold mt-8 ml-10 mb-5">
           예약리스트
@@ -20,7 +20,7 @@
           </div>
         </div>
       </div>
-    </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 
@@ -48,13 +48,6 @@ export default {
     },
   },
   methods: {
-    // receiveCntList(cntList) {
-    //   this.itemCnt =
-    //     cntList.completeCnt +
-    //     cntList.noShowCnt +
-    //     cntList.upcomingCnt +
-    //     cntList.cancelCnt
-    // },
     prevMonth() {
       if (this.month === 1) {
         this.year = this.year - 1
@@ -89,6 +82,12 @@ export default {
 </script>
 
 <style scoped>
+.rsv-container-top {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
 .rsv-container {
   display: flex;
   flex-direction: column;

@@ -2,18 +2,18 @@
   <!--최상위 div-->
   <div class="rsv-list-container">
     <div class="rsv-list-header flex items-center bg-gray-100 text-black h-9">
-      <div class="ml-4">이달의 예약 현황 ({{ rsvCnt() }}건)</div>
+      <div class="ml-4">예약 현황 ({{ rsvCnt() }}건)</div>
+    </div>
+    <div v-if="showCardList" class="rsv-smr-card-container">
+      <div v-for="index in 5" :key="index">
+        <ReservationSummaryCard
+          class="shadow-lg"
+          :sendToChild="sendingData"
+          :index="index"
+        ></ReservationSummaryCard>
+      </div>
     </div>
     <div class="rsv-list-inner">
-      <div v-if="showCardList" class="rsv-smr-card-container">
-        <div v-for="index in 5" :key="index">
-          <ReservationSummaryCard
-            class="shadow-lg"
-            :sendToChild="sendingData"
-            :index="index"
-          ></ReservationSummaryCard>
-        </div>
-      </div>
       <div class="flex flex-col bg-white mt-1 mb-1">
         <!--카테고리(컬럼명)-->
         <div class="rsv-list-category">
@@ -25,11 +25,15 @@
           <div class="rsv-list-mbrName">회 원 명</div>
         </div>
         <!--리스트(행)-->
-        <div class="rsv-list-content">
+        <div>
           <div v-if="reservations.length === 0" class="rsv-noData">
             이달의 예약이 없습니다.
           </div>
-          <div v-for="(reservation, index) in reservations" :key="index">
+          <div
+            class="rsv-list-content"
+            v-for="(reservation, index) in paginatedReservations"
+            :key="index"
+          >
             <button class="rsv-list mb-1" @click="showDetailModal(reservation)">
               <div class="rsv-list-seq">{{ index + 1 }}</div>
               <div class="rsv-list-ptSeq">{{ reservation.ptSeq }}</div>
@@ -45,11 +49,10 @@
               <div class="rsv-list-mbrName">{{ reservation.mbrName }}</div>
             </button>
           </div>
-          <ReservaionDetailModal
-            :show="showDetail"
+          <ReservationDetailModal
+            v-model="showDetail"
             :reservationData="selectedReservation"
             @action:reload="listReload"
-            @close="showDetail = false"
           />
         </div>
       </div>
@@ -59,7 +62,7 @@
 </template>
 
 <script setup>
-import ReservaionDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
+import ReservationDetailModal from '/src/module/bo/trn/component/ReservationDetailModal.vue'
 import ReservationSummaryCard from '/src/module/bo/trn/component/ReservationSummaryCard.vue'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
@@ -70,7 +73,7 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 <script>
 export default {
   components: {
-    ReservaionDetailModal,
+    ReservationDetailModal,
     ReservationSummaryCard,
   },
   props: {
@@ -92,8 +95,18 @@ export default {
       endDate: '',
       currentPage: 1,
       totalPages: 0,
-      itemCnt: 0,
     }
+  },
+  computed: {
+    paginatedReservations() {
+      const itemsPerPage = 10
+      const startIndex = (this.currentPage - 1) * itemsPerPage
+      const endIndex = Math.min(
+        startIndex + itemsPerPage,
+        this.reservations.length
+      )
+      return this.reservations.slice(startIndex, endIndex)
+    },
   },
   async created() {
     this.startDate = dayjs(this.targetDate)
@@ -110,7 +123,7 @@ export default {
       .then(response => {
         if (response !== null) {
           this.reservations = response
-          this.totalPages = Math.ceil(response.length / 5)
+          this.totalPages = Math.ceil(response.length / 10)
           this.plusCnt()
           this.showCardList = true
         }
@@ -188,11 +201,11 @@ export default {
 }
 .rsv-list-inner {
   display: flex;
-  justify-content: center;
   flex-direction: column;
   width: 1000px;
   background-color: white;
-  min-height: 610px;
+  min-height: 530px;
+  justify-content: space-between;
   /* border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px; */
 }

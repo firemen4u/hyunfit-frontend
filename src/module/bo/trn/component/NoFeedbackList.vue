@@ -4,8 +4,8 @@
     <div class="nfb-list-header flex items-center bg-gray-100 text-black h-9">
       <div class="ml-4">피드백 현황({{ nfbCnt() }}건)</div>
     </div>
-    <div class="nfb-list-inner">
-      <div class="flex flex-col bg-white mt-7 mb-7">
+    <div class="nfb-list-inner content-between">
+      <div class="flex flex-col bg-white mt-9 mb-7">
         <!--카테고리(컬럼명)-->
         <div class="nfb-list-category">
           <div class="nfb-list-seq">#</div>
@@ -16,11 +16,15 @@
           <div class="nfb-list-mbrName">회 원 명</div>
         </div>
         <!--리스트(행)-->
-        <div class="nfb-list-content">
-          <div v-if="noFeedbackList.length === 0" class="rsv-noData">
+        <div>
+          <div v-if="noFeedbackList.length === 0" class="nfb-noData">
             이달의 피드백이 없습니다.
           </div>
-          <div v-for="(nofeedback, index) in noFeedbackList" :key="index">
+          <div
+            class="nfb-list-content"
+            v-for="(nofeedback, index) in paginatedNofeedbacks"
+            :key="index"
+          >
             <button class="nfb-list mb-1" @click="showDetailModal(nofeedback)">
               <div class="nfb-list-seq">{{ index + 1 }}</div>
               <div class="nfb-list-ptSeq">{{ nofeedback.trnfSeq }}</div>
@@ -30,7 +34,9 @@
               <div class="nfb-list-fbtarget">
                 {{ formatTarget(nofeedback.trnfSubmissionDue) }}
               </div>
-              <div class="nfb-list-fbStatus">미작성</div>
+              <div class="nfb-list-fbStatus">
+                {{ nofeedback.trnfContent !== null ? '작성' : '미작성' }}
+              </div>
               <div class="nfb-list-mbrName">{{ nofeedback.mbrName }}</div>
             </button>
           </div>
@@ -41,6 +47,7 @@
           />
         </div>
       </div>
+      <BasePagination v-model="currentPage" :total-pages="totalPages" />
     </div>
   </div>
 </template>
@@ -50,6 +57,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import CreateFeedbackModal from './CreateFeedbackModal.vue'
 import ApiClient from '/src/services/api.js'
+import BasePagination from '/src/module/@base/components/BasePagination.vue'
 </script>
 
 <script>
@@ -66,7 +74,20 @@ export default {
       selectedNoFeedback: null,
       noFeedbackList: [],
       trnSeq: 1,
+      currentPage: 1,
+      totalPages: 0,
     }
+  },
+  computed: {
+    paginatedNofeedbacks() {
+      const itemsPerPage = 10
+      const startIndex = (this.currentPage - 1) * itemsPerPage
+      const endIndex = Math.min(
+        startIndex + itemsPerPage,
+        this.noFeedbackList.length
+      )
+      return this.noFeedbackList.slice(startIndex, endIndex)
+    },
   },
   async created() {
     this.startDate = dayjs(this.targetDate)
@@ -76,15 +97,17 @@ export default {
       .endOf('month')
       .format('YYYY-MM-DD 00:00:00')
     let response = await ApiClient.get('/trainers/me')
-    ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback', {
+    await ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback', {
       params: { startDate: this.startDate, endDate: this.endDate },
     })
       .then(response => {
         this.noFeedbackList = response
+        this.totalPages = Math.ceil(response.length / 10)
       })
       .catch(error => {
         console.error('API 요청 실패:', error)
       })
+    console.log(this.noFeedbackList)
   },
   methods: {
     showDetailModal(nofeedback) {
@@ -117,7 +140,7 @@ export default {
 <style scoped>
 .nfb-list-header {
   /* border-top-left-radius: 10px;
-  border-top-right-radius: 10px; */
+    border-top-right-radius: 10px; */
 }
 .nfb-list-container {
   display: flex;
@@ -126,16 +149,17 @@ export default {
   margin-bottom: 30px;
   width: 1000px;
   /* box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
-  border-radius: 10px; */
+    border-radius: 10px; */
 }
 .nfb-list-inner {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   width: 1000px;
-  min-height: 610px;
+  min-height: 660px;
+  justify-content: space-between;
   background-color: white;
   /* border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px; */
+    border-bottom-right-radius: 10px; */
 }
 .nfb-list-seq {
   display: flex;
@@ -205,7 +229,7 @@ export default {
   color: rgb(199, 0, 57);
   cursor: pointer;
 }
-.rsv-noData {
+.nfb-noData {
   display: flex;
   justify-content: center;
   align-items: center;

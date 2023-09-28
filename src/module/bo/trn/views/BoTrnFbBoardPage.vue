@@ -1,6 +1,6 @@
 <template>
   <BaseContainer category="trainer" footer="false">
-    <BaseBodyWrapper>
+    <div class="nfb-container-top primary-background">
       <div class="nfb-container flex justify-center">
         <div class="nfb-list-outer" ref="listOuter">
           <div class="flex flex-row text-3xl font-bold mt-8 ml-10 mb-5">
@@ -21,17 +21,15 @@
               :targetDate="targetDate"
             ></NoFeedbackList>
           </div>
-          <BasePagination v-model="currentPage" :total-pages="totalPages" />
         </div>
       </div>
-    </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 
 <script setup>
 import { BaseContainer, BaseBodyWrapper } from '/src/module/@base/views'
 import NoFeedbackList from '/src/module/bo/trn/component/NoFeedbackList.vue'
-import BasePagination from '/src/module/@base/components/BasePagination.vue'
 </script>
 
 <script>
@@ -42,9 +40,6 @@ export default {
       month: new Date().getMonth() + 1,
       targetDate: null,
       reLoadKey: 0,
-      currentPage: 0,
-      itemsTotalPage: 0,
-      itemsPerPage: 10,
     }
   },
   async created() {
@@ -64,7 +59,6 @@ export default {
         this.month = this.month - 1
       }
       this.initializedMonth()
-
       this.reLoadKey += 1
     },
     nextMonth() {
@@ -89,6 +83,12 @@ export default {
 }
 </script>
 <style scoped>
+.nfb-container-top {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
 .nfb-container {
   display: flex;
   flex-direction: row;

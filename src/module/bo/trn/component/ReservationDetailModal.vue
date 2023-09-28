@@ -1,66 +1,63 @@
 <template>
   <div>
-    <div class="modal" v-if="show">
-      <div class="modal-content">
+    <v-dialog v-model="show" max-width="450px">
+      <v-card>
         <!--헤더부분-->
-        <div class="flex justify-between ml-1 mr-1 mb-2">
-          <div class="mr-10 font-bold"><h2>예약 상세 정보</h2></div>
-          <div class="">
-            <button @click="closeModal">닫기</button>
+        <v-card-title class="mt-3">
+          <div class="flex justify-between ml-1 mr-1">
+            <span class="headline">예약 상세 정보</span>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="closeModal" size="x-small">
+              <v-icon size="default">mdi-close</v-icon>
+            </v-btn>
           </div>
-        </div>
-        <div class="flex divider"></div>
-        <!--바디부분-->
-        <div class="flex flex-row ml-4 mt-4">
-          <!--카테고리-->
-          <div class="flex flex-col mr-4 items-center">
-            <div class="rsvdetail-category">예약번호</div>
-            <div class="rsvdetail-category">예약일자</div>
-            <div class="rsvdetail-category">예약시간</div>
-            <div class="rsvdetail-category">예약상태</div>
-            <div class="rsvdetail-category">회 원 명</div>
-          </div>
-          <!--정보-->
-          <div class="flex flex-col items-center">
-            <div class="info-gray-box">{{ reservationData.ptSeq }}</div>
-            <div class="info-gray-box">
-              {{ formatDate(reservationData.ptReservationDate) }}
+        </v-card-title>
+        <v-card-text>
+          <!--바디부분-->
+          <div class="flex flex-row ml-4">
+            <!--카테고리-->
+            <div class="flex flex-col mr-4 items-center">
+              <div class="rsvdetail-category">예약번호</div>
+              <div class="rsvdetail-category">예약일자</div>
+              <div class="rsvdetail-category">예약시간</div>
+              <div class="rsvdetail-category">예약상태</div>
+              <div class="rsvdetail-category">회 원 명</div>
             </div>
-            <div class="info-gray-box">
-              {{ formatTime(reservationData.ptReservationDate) }}
+            <!--정보-->
+            <div class="flex flex-col items-center">
+              <div class="info-gray-box">{{ reservationData.ptSeq }}</div>
+              <div class="info-gray-box">
+                {{ formatDate(reservationData.ptReservationDate) }}
+              </div>
+              <div class="info-gray-box">
+                {{ formatTime(reservationData.ptReservationDate) }}
+              </div>
+              <div class="info-gray-box">
+                {{ reservationData.ptReservationStatus }}
+              </div>
+              <div class="info-gray-box">{{ reservationData.mbrName }}</div>
             </div>
-            <div class="info-gray-box">
-              {{ reservationData.ptReservationStatus }}
+          </div>
+          <!--고객요청사항-->
+          <div class="flex flex-col ml-4">
+            <div class="font-semibold mt-1">고객요청사항</div>
+            <div class="sticker-container mt-3">
+              <BaseCheckChip
+                class="mr-2 mb-2"
+                v-for="(option, index) in options"
+                :key="index"
+                :disabled="true"
+                :label="option"
+              />
             </div>
-            <div class="info-gray-box">{{ reservationData.mbrName }}</div>
           </div>
-        </div>
-        <!--고객요청사항-->
-        <div class="flex flex-col gap-2 ml-4 mb-4">
-          <div class="font-semibold">고객요청사항</div>
-          <div class="sticker-container">
-            <BaseCheckChip
-              class="mr-2 mb-2"
-              v-for="(option, index) in options"
-              :key="index"
-              :disabled="true"
-              :label="option"
-            />
-          </div>
-        </div>
-        <div class="flex divider"></div>
+        </v-card-text>
         <!--꼬리(입장버튼)-->
-        <div class="flex justify-center mt-2">
-          <button
-            class="ptEntryButton"
-            v-if="reservationData.ptReservationStatus !== '취소'"
-            @click="enterPtRoom"
-          >
-            PT Room 입장
-          </button>
+        <div class="flex justify-center mb-5">
+          <v-btn color="primary" @click="enterPtRoom"> PT Room 입장 </v-btn>
         </div>
-      </div>
-    </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -76,22 +73,33 @@ import router, { pathNames } from '@/router'
 export default {
   props: {
     reservationData: Object,
-    show: Boolean,
+    modelValue: Boolean,
   },
   data() {
     return {
       options: [
         '운동이 처음이에요',
         '살을 빼고 싶어요',
-        '코어를 강화하고 싶어요',
         '부상 이력이 있어요',
+        '코어를 강화하고 싶어요',
         '식단 조언도 함께 받고 싶어요',
       ],
     }
   },
+  emits: ['update:modelValue', 'action:reload'],
+  computed: {
+    show: {
+      get() {
+        return this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
+      },
+    },
+  },
   methods: {
     closeModal() {
-      this.$emit('close')
+      this.$emit('update:modelValue', false)
       this.$emit('action:reload')
     },
     enterPtRoom() {

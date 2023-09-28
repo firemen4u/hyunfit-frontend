@@ -3,7 +3,7 @@
     <v-dialog v-model="show" max-width="700px">
       <v-card>
         <!--헤더부분-->
-        <v-card-title>
+        <v-card-title class="mt-3">
           <div class="flex">
             <span class="headline">피드백 작성하기</span>
             <v-spacer></v-spacer>
@@ -38,21 +38,22 @@
             </div>
           </div>
           <!--피드백작성-->
-          <div class="flex flex-col gap-2 ml-4 mr-4">
+          <div class="flex flex-col ml-4 mr-4">
             <div class="flex flex-row justify-between">
               <div class="font-semibold">피드백 내용</div>
-              <v-btn
-                color="primary"
-                class=""
-                @click="getGptFeedback(noFeedbackData.mbrSeq)"
-              >
-                gpt 보고서 받아보기
-              </v-btn>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary">gpt 보고서 받아보기</v-btn>
+              </v-card-actions>
             </div>
             <v-textarea
               counter
-              class="text-box"
-              v-model="feedbackContent"
+              class="text-box h-[500px]"
+              :value="
+                noFeedbackData.trnfContent !== null
+                  ? noFeedbackData.trnfContent
+                  : trnfContent
+              "
               clearable
               variant="solo"
               single-line
@@ -60,12 +61,11 @@
           </div>
         </v-card-text>
         <!--꼬리(submit버튼)-->
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="submitFeedback(noFeedbackData)" color="primary"
-            >작성하기</v-btn
-          >
-        </v-card-actions>
+        <div class="flex justify-center mb-5">
+          <v-btn color="primary" @click="submitFeedback(noFeedbackData)">
+            {{ noFeedbackData.trnfContent !== null ? '수정하기' : '작성하기' }}
+          </v-btn>
+        </div>
       </v-card>
     </v-dialog>
   </div>
@@ -81,9 +81,22 @@ import 'dayjs/locale/ko'
 export default {
   props: {
     noFeedbackData: Object,
-    modelValue: Boolean, // v-model을 통해 받을 값
+    modelValue: Boolean,
   },
-  emits: ['update:modelValue', 'action:reload'], // v-model 업데이트를 위한 이벤트
+  emits: ['update:modelValue', 'action:reload'],
+  computed: {
+    show: {
+      get() {
+        return this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
+      },
+    },
+  },
+  created() {
+    console.log(this.noFeedbackData)
+  },
   data() {
     return {
       feedbackContent: '',
@@ -91,19 +104,9 @@ export default {
       endDate: '',
     }
   },
-  computed: {
-    show: {
-      get() {
-        return this.modelValue // 부모로부터 받은 값을 그대로 사용
-      },
-      set(value) {
-        this.$emit('update:modelValue', value) // 상태 변경을 부모에게 알림
-      },
-    },
-  },
   methods: {
     closeModal() {
-      this.$emit('update:modelValue', false) // 상태 변경을 부모에게 알림
+      this.$emit('update:modelValue', false)
       this.$emit('action:reload')
     },
     formatDate(timestamp) {
@@ -138,24 +141,6 @@ export default {
 </script>
 
 <style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
 .fb-detail-category {
   display: flex;
   align-items: center;
@@ -175,25 +160,7 @@ export default {
   margin-bottom: 12px;
 }
 .text-box {
-  width: 650px;
+  width: 620px;
   border-radius: 5px;
-}
-.fb-write-Button {
-  width: 125px;
-  height: 35px;
-  border-radius: 5px;
-  background: linear-gradient(
-    120deg,
-    rgb(144, 12, 63),
-    rgb(199, 0, 57),
-    rgb(249, 76, 16)
-  );
-  color: white;
-  font-weight: 600;
-}
-.divider {
-  height: 1px;
-  background-color: rgb(222, 222, 222);
-  margin: 10 10px;
 }
 </style>
