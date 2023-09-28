@@ -112,7 +112,6 @@ export default {
           this.moveToMain(localStorage.getItem('userRoleName'))
         })
         .catch(error => {
-          console.log(error)
           alert(`로그인 실패 ${error}`)
           alert('loginfail')
         })

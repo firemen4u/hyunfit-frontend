@@ -223,7 +223,7 @@ export default {
         )
         localStorage.removeItem('ptSeq')
       } catch (error) {
-        console.error('Error sending API request:', error)
+        console.error('API 요청 실패:', error)
       }
       window.removeEventListener('beforeunload', this.handleBeforeUnload)
     },

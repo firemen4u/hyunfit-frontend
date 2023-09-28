@@ -9,7 +9,7 @@
         <!--카테고리(컬럼명)-->
         <div class="nfb-list-category">
           <div class="nfb-list-seq">#</div>
-          <div class="nfb-list-ptSeq">PT번호</div>
+          <div class="nfb-list-fbSeq">피드백번호</div>
           <div class="nfb-list-ptDate">최근PT일자</div>
           <div class="nfb-list-fbtarget">피드백대상월</div>
           <div class="nfb-list-fbStatus">작성상태</div>
@@ -27,7 +27,7 @@
           >
             <button class="nfb-list mb-1" @click="showDetailModal(nofeedback)">
               <div class="nfb-list-seq">{{ index + 1 }}</div>
-              <div class="nfb-list-ptSeq">{{ nofeedback.trnfSeq }}</div>
+              <div class="nfb-list-fbSeq">{{ nofeedback.trnfSeq }}</div>
               <div class="nfb-list-ptDate">
                 {{ formatDate(nofeedback.trnfCreationDate) }}
               </div>
@@ -107,7 +107,6 @@ export default {
       .catch(error => {
         console.error('API 요청 실패:', error)
       })
-    console.log(this.noFeedbackList)
   },
   methods: {
     showDetailModal(nofeedback) {
@@ -169,7 +168,7 @@ export default {
   height: 35px;
   margin-right: 10px;
 }
-.nfb-list-ptSeq {
+.nfb-list-fbSeq {
   display: flex;
   justify-content: center;
   align-items: center;
