@@ -1,17 +1,25 @@
 <template>
   <div
-      class="mbr-rsv-upcomming-rsv-item-card flex flex-col border-0 border-gray-400 rounded-lg shadow-xl m-2 p-4"
-      style="width: 500px"
+    class="mbr-rsv-upcomming-rsv-item-card flex flex-col border-0 border-gray-400 rounded-lg m-2 py-2 px-4 bg-gray-100 shadow-lg"
+    style="width: 500px"
   >
     <div class="">
       <div class="flex flex-col">
-        <div class="flex flex-row justify-between mb-1">
+        <div
+          class="flex flex-row justify-between mb-1 items-center border-soild border-b-[2px] pb-2"
+        >
           <p
-              class="text-sm rounded-xl text-center text-white w-[40px] bg-[#021f3d] pt-1 pb-1"
+            class="text-xs rounded-lg text-center text-white w-[50px] bg-[#021f3d] py-[4px]"
           >
-            D{{ daysDiff }}
+            D {{ daysDiff }}
           </p>
-          <button class="float-right bg-primary rounded-xl pt-0.5 pb-0.5 pr-3 pl-3" @click="enterPtRoom">입장하기</button>
+          <v-btn
+            class="float-right bg-primary rounded-lg pt-0.5 pb-0.5 pr-3 pl-3"
+            @click="enterPtRoom"
+            size="small"
+          >
+            입장하기
+          </v-btn>
         </div>
         <div class="text-gray-900 font-bold mb-2 flex justify-between">
           <div class="flex items-center">
@@ -21,7 +29,7 @@
             <p class="train-datetime text-xs self-end text-gray-500">
               {{
                 dateUtil.timestampToFullDate(
-                    props.responseData.ptReservationDate
+                  props.responseData.ptReservationDate
                 )
               }}
             </p>
@@ -32,25 +40,27 @@
           <!--          >-->
           <!--          </button>-->
           <ReservaionDetailModal
-              :show="showDetail"
-              :reservationData="selectedReservation"
-              @close="showDetail = false"
+            :show="showDetail"
+            :reservationData="selectedReservation"
+            @close="showDetail = false"
           />
         </div>
       </div>
     </div>
-    <div class="rsv-train-info w-84 bg-white flex leading-normal rounded-r-lg">
+    <div class="rsv-train-info w-84 flex leading-normal rounded-r-lg">
       <div
-          class="trainer-profile-img h-24 w-24 bg-cover overflow-hidden rounded-lg mr-4"
-          :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
-          title="trainer profile img"
+        class="trainer-profile-img h-24 w-24 bg-cover overflow-hidden rounded-lg mr-4"
+        :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
+        title="trainer profile img"
       ></div>
       <div class="w-9/12">
-        <p class="train-trainer-name text-gray-900 text-base font-bold mb-2">
+        <p
+          class="train-trainer-name text-gray-900 text-base font-bold mb-[0.5px]"
+        >
           {{ props.responseData.trnName }}
         </p>
         <p
-            class="train-content h-10 w-80 text-gray-700 overflow-hidden text-sm"
+          class="train-content h-10 w-80 text-gray-700 overflow-hidden text-sm"
         >
           {{ props.responseData.trnShortDescription }}
         </p>
@@ -61,9 +71,9 @@
 
 <script setup>
 import dateUtil from '/src/utils/date.js'
-import {onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import ReservaionDetailModal from '/src/module/mbr-rsv/components/MbrRsvDetailModal.vue'
-import router, {pathNames} from '@/router'
+import router, { pathNames } from '@/router'
 
 const props = defineProps({
   responseData: Object,
@@ -71,8 +81,12 @@ const props = defineProps({
 let daysDiff = ref('')
 
 function enterPtRoom() {
-  localStorage.setItem('ptSeq', props.responseData.ptSeq)
-  window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
+  const isConfirmed = window.confirm('입장하시겠습니까?')
+
+  if (isConfirmed) {
+    localStorage.setItem('ptSeq', props.responseData.ptSeq)
+    window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
+  }
 }
 
 function calcDay() {

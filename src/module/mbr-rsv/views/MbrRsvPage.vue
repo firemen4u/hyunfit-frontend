@@ -1,76 +1,82 @@
 <template>
   <BaseContainer>
-    <BaseBodyWrapper>
-      <div
-        class="mbr-rsv-container w-full h-full"
-        v-if="reservingResponse !== null"
-      >
-        <div class="mbr-rsv-banner-container h-1/5 overflow-hidden relative">
-          <div class="banner-img w-full h-96 hover:h-96">
-            <img
-              :src="reservingResponse.personalTrainingDTOList[0].trnProfileUrl"
-              alt="Option 1"
-              class="option-image w-full"
-            />
-          </div>
-          <div
-            class="banner-img-cover w-full h-full bg-black absolute top-0 opacity-50 flex justify-center items-center"
-          >
-            <div class="banner-img-cover-text text-left mr-96">
-              <p class="text-4xl">나의 트레이닝 스케쥴</p>
-              <p class="text-base">더 강해지는 나만의 길, 함께 달려요!</p>
-            </div>
-          </div>
-        </div>
-
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
         <div
-          class="mbr-rsv-upcomming-rsv-container w-full p-3 border-b-0 border-gray-200 mt-10"
+          class="mbr-rsv-container w-full mt-3 bg-white rounded-xl shadow-lg pb-10"
+          v-if="reservingResponse !== null"
         >
           <div
-            class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-between"
-            title="예약한 트레이너의 카드"
+            class="mbr-rsv-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
           >
-            <MbrRsvTrainCard
-              v-for="training in reservingResponse.personalTrainingDTOList.slice(
-                0,
-                2
-              )"
-              :key="training.id"
-              :responseData="training"
-            ></MbrRsvTrainCard>
-          </div>
-        </div>
-        <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
-          <div class="mbr-rsv-history-item m-3">
-            <p class="text-2xl font-bold mt-10 mb-8 ml-3">지난 예약</p>
             <div
-              v-for="training in reservedResponse?.personalTrainingDTOList"
-              :key="training.id"
-              class="mbr-rsv-history-card"
+              class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
             >
-              <MbrRsvHistoryCard
-                :responseData="training"
-                @toggle-modal="toggleModal(training.ptSeq)"
-              />
+              <div class="banner-img-cover-text py-12 px-10 mb-5">
+                <p class="text-4xl font-black mt-5 text-[#021f3d]">
+                  나의 트레이닝 스케쥴
+                </p>
+                <p class="text-2xl font-bold mt-5 text-[#021f3d]">
+                  더 강해지는 나만의 길, 함께 달려요!
+                </p>
+              </div>
             </div>
-            <template class="border-solid border-4 border-orange-400">
-              <div></div>
-            </template>
+          </div>
+
+          <div
+            class="mbr-rsv-upcomming-rsv-container w-full p-3 border-b-0 border-gray-200 mt-2"
+          >
+            <div>
+              <p class="text-3xl font-bold mt-2 mb-6 ml-3">
+                예약 중 트레이닝 클래스
+              </p>
+            </div>
+            <div
+              class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-start ml-2"
+              title="예약한 트레이너의 카드"
+            >
+              <MbrRsvTrainCard
+                v-for="training in reservingResponse.personalTrainingDTOList.slice(
+                  0,
+                  2
+                )"
+                :key="training.id"
+                :responseData="training"
+              ></MbrRsvTrainCard>
+            </div>
+          </div>
+          <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
+            <div class="mbr-rsv-history-item mt-[40px] ml-3 mb-1">
+              <p class="text-3xl font-bold mb-6 ml-3">지난 트레이닝 클래스</p>
+              <div
+                v-for="training in reservedResponse?.personalTrainingDTOList"
+                :key="training.id"
+                class="mbr-rsv-history-card"
+              >
+                <MbrRsvHistoryCard
+                  :responseData="training"
+                  @toggle-modal="toggleModal(training.ptSeq)"
+                />
+              </div>
+              <template class="border-solid border-4 border-orange-400">
+                <div></div>
+              </template>
+            </div>
+          </div>
+          <div class="mt-5 mb-5">
+            <BasePagination v-model="currentPage" :total-pages="totalPages" />
           </div>
         </div>
-        <div class="mb-4">
-          <BasePagination v-model="currentPage" :total-pages="totalPages" />
-        </div>
-      </div>
-      <MbrRsvReviewModal
-        @action:cancel="toggleModal()"
-        @action:save="saveAndReload()"
-        :modalActive="modalActive"
-        :responseData="reservedResponse"
-        :targetSeq="selectedSeq"
-      >
-      </MbrRsvReviewModal>
-    </BaseBodyWrapper>
+        <MbrRsvReviewModal
+          @action:cancel="toggleModal()"
+          @action:save="saveAndReload()"
+          :modalActive="modalActive"
+          :responseData="reservedResponse"
+          :targetSeq="selectedSeq"
+        >
+        </MbrRsvReviewModal>
+      </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 <script setup>
@@ -182,6 +188,12 @@ onBeforeMount(() => {
 })
 </script>
 <style scoped>
+.mbr-rsv-banner-container {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+}
 .MbrRsvTrainCard:hover {
   transform: translateY(-2px);
 }
