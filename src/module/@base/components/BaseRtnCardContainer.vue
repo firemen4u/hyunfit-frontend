@@ -12,7 +12,7 @@
     </div>
     <div class="mt-6 px-[50px]">
       <v-text-field
-        label="루틴 이름으로 검색하세요."
+        label="프로그램 이름으로 검색하세요."
         single-line
         hide-details
         clearable

@@ -98,7 +98,7 @@ const startRoutine = () => {
         </div>
         <div class="flex justify-center mb-10">
           <v-btn size="large" color="primary" @click="startRoutine">
-            루틴 시작하기
+            프로그램 시작하기
           </v-btn>
         </div>
       </div>

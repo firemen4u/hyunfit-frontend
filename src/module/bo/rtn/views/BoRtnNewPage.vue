@@ -10,7 +10,7 @@ import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import PointCoinSvg from '@/module/@base/svg/PointCoinSvg.vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
 
-// 루틴 타켓부위
+// 프로그램 타켓부위
 const rtn_target_radio = [
   { label: '상체', value: 1 },
   { label: '하체', value: 2 },
@@ -18,7 +18,7 @@ const rtn_target_radio = [
   { label: '유산소', value: 4 },
 ]
 
-// 루틴 난이도
+// 프로그램 난이도
 const rtn_experience_level_radio = [
   { label: '초급', value: 1 },
   { label: '초중급', value: 2 },
@@ -27,7 +27,7 @@ const rtn_experience_level_radio = [
   { label: '상급', value: 5 },
 ]
 
-// 루틴 진행시간
+// 프로그램 진행시간
 const rtn_duration_radio = [
   { label: '10-15분', value: 1 },
   { label: '15-20분', value: 2 },
@@ -269,12 +269,12 @@ async function onSubmit() {
         >
           <div class="bo-rtnNew-banner flex items-center px-10">
             <div class="text-4xl font-black text-[#021f3d]">
-              새로운 루틴 만들기
+              새로운 트레이닝 프로그램 만들기
             </div>
           </div>
           <div class="rtnNew-contents-wrap px-[50px]">
             <div class="my-4">
-              <p class="col-1 font-bold text-xl mb-3">루틴 이름</p>
+              <p class="col-1 font-bold text-xl mb-3">프로그램 이름</p>
               <div class="">
                 <v-text-field
                   counter
@@ -288,7 +288,7 @@ async function onSubmit() {
               </div>
             </div>
             <div class="mb-5">
-              <p class="col-1 font-bold text-xl mb-3">루틴 설명</p>
+              <p class="col-1 font-bold text-xl mb-3">프로그램 설명</p>
               <div class="rtn-content flex items-start">
                 <v-textarea
                   counter
@@ -324,7 +324,7 @@ async function onSubmit() {
             </div>
 
             <BaseDivider class="my-10" />
-            <div><p class="col-1 font-bold text-xl">루틴 설정</p></div>
+            <div><p class="col-1 font-bold text-xl">프로그램 설정</p></div>
             <div class="flex items-center mt-4">
               <p class="col-1">운동 목표</p>
               <BoExcRadioButton
@@ -335,7 +335,7 @@ async function onSubmit() {
             </div>
             <div class="flex justify-between">
               <div class="flex items-center mt-5">
-                <p class="col-1 mb-5">루틴 썸네일</p>
+                <p class="col-1 mb-5">프로그램 썸네일</p>
                 <div class="w-[400px]">
                   <v-file-input
                     :show-size="1000"
