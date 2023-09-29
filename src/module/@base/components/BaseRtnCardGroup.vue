@@ -1,8 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import HeartSvg from '@/module/@base/svg/HeartSvg.vue'
+import { HeartSvg, LevelSvg, RewardSvg } from '@/module/@base/svg'
 import BaseLabel from '@/module/@base/components/BaseLabel.vue'
-import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
 import BoExcCard from '/src/module/@base/components/BaseExcCard.vue'
 import router, { pathNames } from '@/router'
@@ -11,7 +10,6 @@ const props = defineProps({
   routines: Array,
   showMember: Boolean,
 })
-
 
 const goToAiTraining = () => {
   router.push(pathNames.aiTrainingPage)
@@ -36,6 +34,45 @@ const startRoutine = () => {
     console.log('루틴 시작:', selectedRoutine.value)
     goToAiTraining() // 이 함수를 호출하여 AI 트레이닝 페이지로 이동
   }
+}
+
+const rtnExperienceLevelMapping = {
+  1: '초급',
+  2: '초중급',
+  3: '중급',
+  4: '중상급',
+  5: '상급',
+}
+
+const mapExperienceLevel = level => {
+  return rtnExperienceLevelMapping[level] || '알 수 없음'
+}
+
+const rtnConsiderMapping = {
+  0: '0',
+  1: '목건강을 고려 1'
+}
+
+const mapConsider = level => {
+  return rtnConsiderMapping[level] || '알 수 없음'
+}
+
+const rtnConsiderMapping2 = {
+  0: '0',
+  1: '허리건강을 고려 2'
+}
+
+const mapConsider2 = level => {
+  return rtnConsiderMapping2[level] || '알 수 없음'
+}
+
+const rtnConsiderMapping3 = {
+  0: '0',
+  1: '등 건강을 고려 3'
+}
+
+const mapConsider3 = level => {
+  return rtnConsiderMapping3[level] || '알 수 없음'
 }
 </script>
 <template>
@@ -69,6 +106,14 @@ const startRoutine = () => {
                 <div class="rtn-detail-col flex">
                   <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
                   <p>{{ selectedRoutine.exercises.length }}개</p>
+                </div>
+                <div>
+                  <p>{{ selectedRoutine.rtnGoal }}</p>
+                  <p>{{ selectedRoutine.rtnKneeHealthConsidered }}</p>
+                  <p>{{ selectedRoutine.rtnNoiseConsidered }}</p>
+                  <p>{{ selectedRoutine.rtnLongSitter }}</p>
+                  <p>{{ selectedRoutine.rtnNeckShoulderFocused }}</p>
+                  <p>{{ selectedRoutine.rtnBackDiskConsidered }}</p>
                 </div>
               </div>
               <div v-if="showMember" class="flex justify-center">
@@ -142,6 +187,14 @@ const startRoutine = () => {
               <RewardSvg :size="16"></RewardSvg>
 
               <div class="text-xs ml-0.5">포인트 {{ data.rtnRewardPoint }}</div>
+            </div>
+            <div
+              class="flex items-center border-1.5 border-gray-200 rounded-full text-sm font-semibold text-gray-700 px-2 py-1 mr-1"
+            >
+              <LevelSvg :size="16"></LevelSvg>
+              <div class="text-xs ml-0.5">
+                <p>{{ mapExperienceLevel(data.rtnExperienceLevel) }}</p>
+              </div>
             </div>
           </div>
         </div>
