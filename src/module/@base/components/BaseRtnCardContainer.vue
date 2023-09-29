@@ -86,48 +86,22 @@ const totalPages = computed(() =>
 const currentRoutines = computed(() => {
   const startIndex = (currentPage.value - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  console.log('Start Index:', startIndex) // 로그 추가
-  console.log('End Index:', endIndex) // 로그 추가
   const slicedRoutines = filteredRoutines.value.slice(startIndex, endIndex)
-  console.log('Current Page Routines:', slicedRoutines) // 로그 추가
   return slicedRoutines
 })
 
 const handlePageChange = page => {
-  console.log('Changing to page:', page)
   currentPage.value = page
-  console.log('Current Routines After Change:', currentRoutines.value)
 }
 
 onMounted(async () => {
   try {
-    // routines.value = await ApiClient.get('/routines')
     const fetchedRoutines = await ApiClient.get('/routines')
     routines.value = fetchedRoutines.sort((a, b) => b.rtnSeq - a.rtnSeq) // seq로 정렬
-    console.log('Sorted Routines by seq:', routines.value)
-    //   let fetchedUser = null
-
-    //   try {
-    //     fetchedUser = await ApiClient.get('/members/me')
-    //   } catch (error) {
-    //     console.log('멤버 로그인 안 됨')
-    //   }
-
-    //   if (!fetchedUser) {
-    //     try {
-    //       fetchedUser = await ApiClient.get('/admins/me')
-    //     } catch (error) {
-    //       console.log('관리자 로그인 안 됨')
-    //     }
-    //   }
-
-    //   if (fetchedUser) {
-    //     loggedInUser.value = fetchedUser
-    //   }
+    
   } catch (error) {
     console.error('API 호출 중 에러 발생:', error)
   }
-  console.log('Routines Fetched:', routines.value)
 })
 
 const goToNewRtnPage = () => {
