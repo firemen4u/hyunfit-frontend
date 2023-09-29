@@ -34,6 +34,7 @@
             <div
               class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-start ml-2"
               title="예약한 트레이너의 카드"
+              v-if="reservingResponse.personalTrainingDTOList.length"
             >
               <MbrRsvTrainCard
                 v-for="training in reservingResponse.personalTrainingDTOList.slice(
@@ -44,22 +45,32 @@
                 :responseData="training"
               ></MbrRsvTrainCard>
             </div>
+            <div v-else class="h-[200px] flex justify-center items-center">
+              <p class="text-2xl text-gray-500">예약중인 클래스가 없습니다.</p>
+            </div>
           </div>
           <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
             <div class="mbr-rsv-history-item mt-[40px] ml-3 mb-1">
               <p class="text-3xl font-bold mb-6 ml-3">지난 트레이닝 클래스</p>
-              <div
-                v-for="training in reservedResponse?.personalTrainingDTOList"
-                :key="training.id"
-                class="mbr-rsv-history-card"
-              >
-                <MbrRsvHistoryCard
-                  :responseData="training"
-                  @toggle-modal="toggleModal(training.ptSeq)"
-                />
+
+              <div v-if="reservedResponse?.personalTrainingDTOList.length">
+                <div
+                  v-for="training in reservedResponse?.personalTrainingDTOList"
+                  :key="training.id"
+                  class="mbr-rsv-history-card"
+                >
+                  <MbrRsvHistoryCard
+                    :responseData="training"
+                    @toggle-modal="toggleModal(training.ptSeq)"
+                  />
+                </div>
+              </div>
+              <div v-else class="h-[300px] flex justify-center items-center">
+                <p class="text-2xl text-gray-500">
+                  지난 트레이닝 클래스 기록이 없습니다.
+                </p>
               </div>
               <template class="border-solid border-4 border-orange-400">
-                <div></div>
               </template>
             </div>
           </div>
