@@ -18,8 +18,9 @@ const headerPages = [
   {
     displayName: 'AI트레이닝',
     destination: pathNames.mbrRtnBoardPage,
+    
     menus: [
-      { menuName: '루틴', destination: pathNames.mbrRtnBoardPage },
+      { menuName: '프로그램', destination: pathNames.mbrRtnBoardPage },
       { menuName: '리포트', destination: pathNames.reportPage },
     ],
   },
@@ -40,7 +41,7 @@ const adminPages = [
     destination: pathNames.boExcBoardPage,
   },
   {
-    displayName: '루틴관리',
+    displayName: '프로그램관리',
     destination: pathNames.boRtnBoardPage,
   },
 ]

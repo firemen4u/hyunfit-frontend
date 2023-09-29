@@ -8,7 +8,7 @@
         <div>
           <div class="text-3xl font-bold text-white">현핏이 사원님을 위해</div>
           <div class="text-3xl font-bold text-white mt-2">
-            딱 맞는 루틴을 가져와봤어요
+            딱 맞는 트레이닝 프로그램을 가져와봤어요
           </div>
           <div class="flex my-10">
             <div class="text-gray-200 text-sm">
@@ -45,7 +45,7 @@ import MainPlayButton from './MainPlayButton.vue'
 
 <style scoped>
 .banner {
-  //background-color: #014350;
+  /* background-color: #014350; */
   background-color: #01303a;
 }
 </style>

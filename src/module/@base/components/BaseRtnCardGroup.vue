@@ -98,7 +98,7 @@ const startRoutine = () => {
         </div>
         <div class="flex justify-center mb-10">
           <v-btn size="large" color="primary" @click="startRoutine">
-            루틴 시작하기
+            프로그램 시작하기
           </v-btn>
         </div>
       </div>
@@ -106,7 +106,7 @@ const startRoutine = () => {
   </v-dialog>
 
   <div
-    class="rtn-card-group-container px-5 grid grid-cols-4 gap-0 justify-items-center"
+    class="rtn-card-group-container grid grid-cols-3 gap-0 justify-items-center"
   >
     <div
       v-for="data in routines"
@@ -153,14 +153,14 @@ const startRoutine = () => {
 
 <style scoped>
 .rtn-card {
-  width: 250px;
-  height: 240px;
+  width: 310px;
+  height: 280px;
 }
 .cover-image {
-  height: 130px;
+  height: 165px;
 }
 .rtn-card-title {
-  width: 165px;
+  width: 250px;
   height: 55px;
 }
 .rtn-excCard-wrap {

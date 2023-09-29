@@ -1,18 +1,13 @@
 <template>
-  <div class="bg-gray-50 w-full">
-    <BaseContainer category="admin">
+  <BaseContainer category="admin">
+    <div class="w-100 flex justify-center primary-background">
       <BaseBodyWrapper>
-        <div class="pt-10">
-          <div class="p-2">
-            <div class="">
-              <BaseRtnCardContainer :showAdmin="true" />
-            </div>
-          </div>
-          <BasePagination />
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden mt-3">
+          <BaseRtnCardContainer :showAdmin="true" />
         </div>
       </BaseBodyWrapper>
-    </BaseContainer>
-  </div>
+    </div>
+  </BaseContainer>
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'

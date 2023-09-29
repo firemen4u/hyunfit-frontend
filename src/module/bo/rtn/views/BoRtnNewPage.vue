@@ -10,7 +10,7 @@ import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import PointCoinSvg from '@/module/@base/svg/PointCoinSvg.vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
 
-// 루틴 타켓부위
+// 프로그램 타켓부위
 const rtn_target_radio = [
   { label: '상체', value: 1 },
   { label: '하체', value: 2 },
@@ -18,7 +18,7 @@ const rtn_target_radio = [
   { label: '유산소', value: 4 },
 ]
 
-// 루틴 난이도
+// 프로그램 난이도
 const rtn_experience_level_radio = [
   { label: '초급', value: 1 },
   { label: '초중급', value: 2 },
@@ -27,7 +27,7 @@ const rtn_experience_level_radio = [
   { label: '상급', value: 5 },
 ]
 
-// 루틴 진행시간
+// 프로그램 진행시간
 const rtn_duration_radio = [
   { label: '10-15분', value: 1 },
   { label: '15-20분', value: 2 },
@@ -259,186 +259,203 @@ async function onSubmit() {
 
 <template>
   <BaseContainer category="admin">
-    <BaseBodyWrapper>
-      <v-form
-        :disabled="loading"
-        class="my-10"
-        v-model="formValid"
-        @submit.prevent="onSubmit"
-      >
-        <div class="text-3xl font-bold mb-10">새 루틴 만들기</div>
-
-        <div class="mb-5">
-          <p class="col-1 font-bold text-xl mb-3">루틴 이름</p>
-          <div class="">
-            <v-text-field
-              counter
-              v-model="rtn_name"
-              clearable
-              maxlength="20"
-              placeholder="20자 내로 작성하세요"
-              variant="outlined"
-              :rules="[rules.nonEmpty]"
-            ></v-text-field>
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
+        <v-form
+          :disabled="loading"
+          class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden"
+          v-model="formValid"
+          @submit.prevent="onSubmit"
+        >
+          <div class="bo-rtnNew-banner flex items-center px-10">
+            <div class="text-4xl font-black text-[#021f3d]">
+              새로운 트레이닝 프로그램 만들기
+            </div>
           </div>
-        </div>
-        <div class="mb-5">
-          <p class="col-1 font-bold text-xl mb-3">루틴 설명</p>
-          <div class="rtn-content flex items-start">
-            <v-textarea
-              counter
-              v-model="rtn_content"
-              placeholder="100자 내로 작성하세요"
-              maxlength="100"
-              variant="outlined"
-              :rules="[rules.nonEmpty]"
-            ></v-textarea>
-          </div>
-        </div>
-        <div class="mb-5">
-          <BoRtnExcListContainer
-            v-model="selectedExercises"
-            :exercises="exercises"
-          >
-            <template v-slot:input-validator>
-              <v-input v-model="selectedExercises" :rules="[rules.hasElement]">
-              </v-input>
-            </template>
-            <template v-slot:totalMinutes>{{ totalMinutes }} </template>
-            <template v-slot:averageTarget
-              >{{ ExcUtils.mapExcType(averageTarget) }}
-            </template>
-            <template v-slot:averageDifficulty>
-              {{ ExcUtils.mapDifficultyType(averageDifficulty) }}
-            </template>
-            <template v-slot:totalCalories>{{ totalCalories }} </template>
-          </BoRtnExcListContainer>
-        </div>
-
-        <BaseDivider class="my-10" />
-        <div><p class="col-1 font-bold text-xl">루틴 설정</p></div>
-        <div class="flex items-center mt-4">
-          <p class="col-1">운동 목표</p>
-          <BoExcRadioButton
-            :options="rtn_goal_radio"
-            v-model="rtn_goal"
-            hide-details
-          />
-        </div>
-        <div class="flex justify-between">
-          <div class="flex items-center mt-5">
-            <p class="col-1 mb-5">루틴 썸네일</p>
-            <div class="w-[450px]">
-              <v-file-input
-                :show-size="1000"
-                variant="outlined"
-                label="썸네일 이미지 파일"
-                class="ml-2"
-                v-model="rtn_thumbnail_url"
-                :prepend-icon="PictureSvg"
-                :rules="[rules.thumbnail]"
-                density="comfortable"
+          <div class="rtnNew-contents-wrap px-[50px]">
+            <div class="my-4">
+              <p class="col-1 font-bold text-xl mb-3">프로그램 이름</p>
+              <div class="">
+                <v-text-field
+                  counter
+                  v-model="rtn_name"
+                  clearable
+                  maxlength="20"
+                  placeholder="20자 내로 작성하세요"
+                  variant="solo"
+                  :rules="[rules.nonEmpty]"
+                ></v-text-field>
+              </div>
+            </div>
+            <div class="mb-5">
+              <p class="col-1 font-bold text-xl mb-3">프로그램 설명</p>
+              <div class="rtn-content flex items-start">
+                <v-textarea
+                  counter
+                  v-model="rtn_content"
+                  placeholder="100자 내로 작성하세요"
+                  maxlength="100"
+                  variant="solo"
+                  :rules="[rules.nonEmpty]"
+                ></v-textarea>
+              </div>
+            </div>
+            <div class="mb-5">
+              <BoRtnExcListContainer
+                v-model="selectedExercises"
+                :exercises="exercises"
               >
-                <template v-slot:selection="{ fileNames }">
-                  <div
-                    class="overflow-hidden overflow-ellipsis whitespace-nowrap"
+                <template v-slot:input-validator>
+                  <v-input
+                    v-model="selectedExercises"
+                    :rules="[rules.hasElement]"
                   >
-                    {{ fileNames[0] }}
-                  </div>
+                  </v-input>
                 </template>
-              </v-file-input>
+                <template v-slot:totalMinutes>{{ totalMinutes }} </template>
+                <template v-slot:averageTarget
+                  >{{ ExcUtils.mapExcType(averageTarget) }}
+                </template>
+                <template v-slot:averageDifficulty>
+                  {{ ExcUtils.mapDifficultyType(averageDifficulty) }}
+                </template>
+                <template v-slot:totalCalories>{{ totalCalories }} </template>
+              </BoRtnExcListContainer>
             </div>
-          </div>
-          <div class="flex items-center mt-5">
-            <p class="mr-10 mb-5">포인트</p>
-            <div class="w-[300px]">
-              <v-text-field
-                v-model="rtn_reward_point"
-                class="ml-2"
-                label="완료시 포인트 지급량"
-                type="number"
-                variant="outlined"
-                suffix="P"
-                single-line
-                :prepend-icon="PointCoinSvg"
-                :rules="[rules.gtZero]"
-                density="comfortable"
-              ></v-text-field>
-            </div>
-          </div>
-        </div>
-        <BaseDivider class="my-10" />
-        <div><p class="col-1 font-bold text-xl">사용자 맞춤</p></div>
-        <div class="flex items-center mt-4">
-          <p class="col-1">무릎 운동 고려</p>
-          <BoExcRadioButton
-            :options="rtn_knee_health_considered_radio"
-            v-model="rtn_knee_health_considered"
-            hide-details
-          />
-        </div>
-        <div class="flex">
-          <div class="flex">
+
+            <BaseDivider class="my-10" />
+            <div><p class="col-1 font-bold text-xl">프로그램 설정</p></div>
             <div class="flex items-center mt-4">
-              <p class="col-1">층간 소음 고려</p>
+              <p class="col-1">운동 목표</p>
               <BoExcRadioButton
-                :options="rtn_noise_considered_radio"
-                v-model="rtn_noise_considered"
+                :options="rtn_goal_radio"
+                v-model="rtn_goal"
                 hide-details
               />
             </div>
-          </div>
-          <div class="flex items-center mt-4">
-            <p class="col-1">오래 앉아 있는 사람</p>
-            <BoExcRadioButton
-              :options="rtn_long_sitter_radio"
-              v-model="rtn_long_sitter"
-              hide-details
-            />
-          </div>
-        </div>
-        <div class="flex">
-          <div class="flex items-center mt-4">
-            <p class="col-1">목 어깨 포커스</p>
-            <BoExcRadioButton
-              :options="rtn_neck_shoulder_focused_radio"
-              v-model="rtn_neck_shoulder_focused"
-              hide-details
-            />
-          </div>
+            <div class="flex justify-between">
+              <div class="flex items-center mt-5">
+                <p class="col-1 mb-5">프로그램 썸네일</p>
+                <div class="w-[400px]">
+                  <v-file-input
+                    :show-size="1000"
+                    variant="solo"
+                    label="썸네일 이미지 파일"
+                    class="ml-2"
+                    v-model="rtn_thumbnail_url"
+                    :prepend-icon="PictureSvg"
+                    :rules="[rules.thumbnail]"
+                    density="comfortable"
+                  >
+                    <template v-slot:selection="{ fileNames }">
+                      <div
+                        class="overflow-hidden overflow-ellipsis whitespace-nowrap"
+                      >
+                        {{ fileNames[0] }}
+                      </div>
+                    </template>
+                  </v-file-input>
+                </div>
+              </div>
+              <div class="flex items-center mt-5">
+                <p class="mr-10 mb-5">포인트</p>
+                <div class="w-[300px]">
+                  <v-text-field
+                    v-model="rtn_reward_point"
+                    class="ml-2"
+                    label="완료시 포인트 지급량"
+                    type="number"
+                    variant="solo"
+                    suffix="P"
+                    single-line
+                    :prepend-icon="PointCoinSvg"
+                    :rules="[rules.gtZero]"
+                    density="comfortable"
+                  ></v-text-field>
+                </div>
+              </div>
+            </div>
+            <BaseDivider class="my-10" />
+            <div><p class="col-1 font-bold text-xl">사용자 맞춤</p></div>
+            <div class="flex items-center mt-4">
+              <p class="col-1">무릎 운동 고려</p>
+              <BoExcRadioButton
+                :options="rtn_knee_health_considered_radio"
+                v-model="rtn_knee_health_considered"
+                hide-details
+              />
+            </div>
+            <div class="flex">
+              <div class="flex">
+                <div class="flex items-center mt-4">
+                  <p class="col-1">층간 소음 고려</p>
+                  <BoExcRadioButton
+                    :options="rtn_noise_considered_radio"
+                    v-model="rtn_noise_considered"
+                    hide-details
+                  />
+                </div>
+              </div>
+              <div class="flex items-center mt-4">
+                <p class="col-1">오래 앉아 있는 사람</p>
+                <BoExcRadioButton
+                  :options="rtn_long_sitter_radio"
+                  v-model="rtn_long_sitter"
+                  hide-details
+                />
+              </div>
+            </div>
+            <div class="flex">
+              <div class="flex items-center mt-4">
+                <p class="col-1">목 어깨 포커스</p>
+                <BoExcRadioButton
+                  :options="rtn_neck_shoulder_focused_radio"
+                  v-model="rtn_neck_shoulder_focused"
+                  hide-details
+                />
+              </div>
 
-          <div class="flex items-center mt-4">
-            <p class="col-1">허리 디스크 고려</p>
-            <BoExcRadioButton
-              :options="rtn_back_disk_considered_radio"
-              v-model="rtn_back_disk_considered"
-              hide-details
-            />
-          </div>
-        </div>
+              <div class="flex items-center mt-4">
+                <p class="col-1">허리 디스크 고려</p>
+                <BoExcRadioButton
+                  :options="rtn_back_disk_considered_radio"
+                  v-model="rtn_back_disk_considered"
+                  hide-details
+                />
+              </div>
+            </div>
 
-        <div class="flex flex-col items-center justify-center mt-20">
-          <v-btn
-            class="w-[300px]"
-            type="submit"
-            color="primary"
-            size="large"
-            :loading="loading"
-          >
-            루틴 등록하기
-          </v-btn>
-          <div>
-            <v-input v-model="formValidator"> </v-input>
+            <div class="flex flex-col items-center justify-center mt-20">
+              <v-btn
+                class="w-[300px]"
+                type="submit"
+                color="#021f3d"
+                size="x-large"
+                :loading="loading"
+              >
+                등록하기
+              </v-btn>
+              <div>
+                <v-input v-model="formValidator"> </v-input>
+              </div>
+            </div>
           </div>
-        </div>
-      </v-form>
-    </BaseBodyWrapper>
+        </v-form>
+      </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 
 <style scoped>
+.bo-rtnNew-banner {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
+}
 .col-1 {
-  width: 200px;
+  width: 150px;
   margin-left: 10px;
 }
 .v-input__prepend {

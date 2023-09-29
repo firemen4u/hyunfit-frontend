@@ -40,7 +40,7 @@
               color="#021f3d"
               size="x-large"
               class="rounded-lg"
-              >운동 등록하기</v-btn
+              >트레이닝 등록하기</v-btn
             >
           </div>
 

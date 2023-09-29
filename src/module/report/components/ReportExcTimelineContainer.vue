@@ -26,7 +26,7 @@ import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
           <h3
             class="flex items-center text-md font-semibold text-gray-900 dark:text-white"
           >
-            <div class="mr-2">루틴1</div>
+            <div class="mr-2">프로그램1</div>
 
             <span
               class="flex items-center border-1.5 border-gray-200 rounded-full text-sm font-semibold text-gray-700 px-2 py-1 mr-1"
