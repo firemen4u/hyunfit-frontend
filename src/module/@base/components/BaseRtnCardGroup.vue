@@ -9,7 +9,9 @@ import router, { pathNames } from '@/router'
 
 const props = defineProps({
   routines: Array,
+  showMember: Boolean,
 })
+
 
 const goToAiTraining = () => {
   router.push(pathNames.aiTrainingPage)
@@ -39,16 +41,8 @@ const startRoutine = () => {
 <template>
   <v-dialog v-model="showModal" width="auto">
     <div class="card-container bg-gray-50 rounded-lg">
-      <div class="close-btn-wrap flex justify-end pr-2">
-        <v-card variant="toner" class="w-16 text-center">
-          <v-card-actions>
-            <v-btn color="primary" @click="showModal = false">닫기</v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-
-      <div class="rtn-detail-wrap">
-        <div class="rtn-detail-content flex justify-between">
+      <div class="rtn-detail-wrap my-5 mb-10">
+        <div class="rtn-detail-content flex justify-between items-end">
           <div class="ml-10">
             <div class="rtn-detail-name">
               <p class="text-3xl font-extrabold">
@@ -61,20 +55,30 @@ const startRoutine = () => {
                 {{ selectedRoutine.rtnContent }}
               </p>
             </div>
+            <div class="flex justify-between items-end">
+              <div>
+                <div class="rtn-detail-col flex">
+                  <p class="rtn-detail-col-1 font-bold">소요 시간</p>
+                  <p class="">{{ selectedRoutine.rtnDurationInMin }}분</p>
+                </div>
 
-            <div class="rtn-detail-col flex">
-              <p class="rtn-detail-col-1 font-bold">소요 시간</p>
-              <p class="rtn-detail-col-2">
-                {{ selectedRoutine.rtnDurationInMin }}분
-              </p>
-            </div>
-
-            <div class="rtn-detail-col flex">
-              <p class="rtn-detail-col-1 font-bold">소모 칼로리</p>
-              <p>{{ selectedRoutine.rtnCaloriesBurnt }} Kcal</p>
+                <div class="rtn-detail-col flex">
+                  <p class="rtn-detail-col-1 font-bold">소모 칼로리</p>
+                  <p>{{ selectedRoutine.rtnCaloriesBurnt }} Kcal</p>
+                </div>
+                <div class="rtn-detail-col flex">
+                  <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
+                  <p>{{ selectedRoutine.exercises.length }}개</p>
+                </div>
+              </div>
+              <div v-if="showMember" class="flex justify-center">
+                <v-btn size="x-large" color="primary" @click="startRoutine">
+                  프로그램 시작하기
+                </v-btn>
+              </div>
             </div>
           </div>
-          <div class="mr-15">
+          <div class="mr-8">
             <img
               class="rtn-detail-img object-cover bg-gray-200"
               :src="srcUrlOf(selectedRoutine.rtnSeq)"
@@ -88,18 +92,13 @@ const startRoutine = () => {
         <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
         <div
           v-if="selectedRoutine"
-          class="rtn-excCard-wrap flex-wrap grid grid-cols-3 justify-items-center pt-10 pb-10 mx-7"
+          class="rtn-excCard-wrap flex-wrap grid grid-cols-3 justify-items-center py-2 px-2 mx-7 mb-8 bg-gray-200 rounded-lg"
         >
           <BoExcCard
             v-for="exercise in selectedRoutine.exercises"
             :exercise="exercise"
             :key="exercise.excSeq"
           />
-        </div>
-        <div class="flex justify-center mb-10">
-          <v-btn size="large" color="primary" @click="startRoutine">
-            프로그램 시작하기
-          </v-btn>
         </div>
       </div>
     </div>
@@ -164,7 +163,7 @@ const startRoutine = () => {
   height: 55px;
 }
 .rtn-excCard-wrap {
-  max-height: 660px;
+  max-height: 615px;
   overflow: scroll;
 }
 
@@ -173,7 +172,7 @@ const startRoutine = () => {
 }
 .rtn-detail-img {
   max-width: 300px;
-  max-height: 200px;
+  max-height: 175px;
 }
 .rtn-detail-col {
   margin-top: 10px;

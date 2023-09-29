@@ -42,7 +42,7 @@
     </div>
     <div class="mt-3 mx-[35px]">
       <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
-      <BaseRtnCardGroup :routines="currentRoutines" />
+      <BaseRtnCardGroup :routines="currentRoutines" :showMember="showMember" />
     </div>
 
     <div class="mb-10">
