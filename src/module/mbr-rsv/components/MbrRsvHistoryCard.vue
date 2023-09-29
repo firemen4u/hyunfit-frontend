@@ -1,13 +1,13 @@
 <template>
-  <div class="mbr-rsv-history-card m-2 mb-5 p-2">
+  <div class="mbr-rsv-history-card mb-5">
     <div class="flex items-center">
       <div
-        class="h-10 w-10 rounded-full bg-cover mr-4"
+        class="h-10 w-10 rounded-full bg-cover ml-1 mr-4"
         :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
         title="trainer profile img"
       ></div>
       <div class="flex-col">
-        <div class="text-xl font-bold">
+        <div class="text-lg font-black">
           {{ props.responseData.trnName }}
         </div>
         <div class="text-base flex text-gray-500">
@@ -33,7 +33,7 @@
     >
       <div class="flex justify-between mb-1">
         <div class="flex">
-          <div class="text-lg font-extrabold">
+          <div class="text-lg font-bold">
             {{ props.responseData.trnTypeName }}
           </div>
           <div
@@ -73,9 +73,9 @@
             props.responseData.ptReservationStatus != 4
           "
         >
-          <button class="insert-review-modal text-primary mb-2" type="button">
+          <p class="insert-review-modal text-primary mb-2 cursor-not-allowed">
             리뷰 작성 완료
-          </button>
+          </p>
         </div>
         <div v-else style="display: none"></div>
       </div>

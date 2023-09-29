@@ -7,7 +7,7 @@
           v-if="reservingResponse !== null"
         >
           <div
-            class="mbr-rsv-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
+            class="mbr-rsv-banner-container h-[200px] overflow-hidden relative rounded-t-xl mb-5"
           >
             <div
               class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
@@ -23,59 +23,61 @@
             </div>
           </div>
 
-          <div
-            class="mbr-rsv-upcomming-rsv-container w-full p-3 border-b-0 border-gray-200 mt-2"
-          >
-            <div>
-              <p class="text-3xl font-bold mt-2 mb-6 ml-3">
-                예약 중 트레이닝 클래스
-              </p>
-            </div>
+          <div class="px-10">
             <div
-              class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-start ml-2"
-              title="예약한 트레이너의 카드"
-              v-if="reservingResponse.personalTrainingDTOList.length"
+              class="mbr-rsv-upcomming-rsv-container w-full border-b-0 border-gray-200 mt-3"
             >
-              <MbrRsvTrainCard
-                v-for="training in reservingResponse.personalTrainingDTOList.slice(
-                  0,
-                  2
-                )"
-                :key="training.id"
-                :responseData="training"
-              ></MbrRsvTrainCard>
-            </div>
-            <div v-else class="h-[200px] flex justify-center items-center">
-              <p class="text-2xl text-gray-500">예약중인 클래스가 없습니다.</p>
-            </div>
-          </div>
-          <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
-            <div class="mbr-rsv-history-item mt-[40px] ml-3 mb-1">
-              <p class="text-3xl font-bold mb-6 ml-3">지난 트레이닝 클래스</p>
-
-              <div v-if="reservedResponse?.personalTrainingDTOList.length">
-                <div
-                  v-for="training in reservedResponse?.personalTrainingDTOList"
-                  :key="training.id"
-                  class="mbr-rsv-history-card"
-                >
-                  <MbrRsvHistoryCard
-                    :responseData="training"
-                    @toggle-modal="toggleModal(training.ptSeq)"
-                  />
-                </div>
+              <div>
+                <p class="text-2xl font-black my-3">다가오는 트레이닝 클래스</p>
               </div>
-              <div v-else class="h-[300px] flex justify-center items-center">
+              <div
+                class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-between"
+                title="예약한 트레이너의 카드"
+                v-if="reservingResponse.personalTrainingDTOList.length"
+              >
+                <MbrRsvTrainCard
+                  v-for="training in reservingResponse.personalTrainingDTOList.slice(
+                    0,
+                    2
+                  )"
+                  :key="training.id"
+                  :responseData="training"
+                ></MbrRsvTrainCard>
+              </div>
+              <div v-else class="h-[200px] flex justify-center items-center">
                 <p class="text-2xl text-gray-500">
-                  지난 트레이닝 클래스 기록이 없습니다.
+                  예약중인 클래스가 없습니다.
                 </p>
               </div>
-              <template class="border-solid border-4 border-orange-400">
-              </template>
             </div>
-          </div>
-          <div class="mt-5 mb-5">
-            <BasePagination v-model="currentPage" :total-pages="totalPages" />
+            <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
+              <div class="mbr-rsv-history-item mt-[40px] mb-1">
+                <p class="text-2xl font-black mb-6">지난 트레이닝 클래스</p>
+
+                <div v-if="reservedResponse?.personalTrainingDTOList.length">
+                  <div
+                    v-for="training in reservedResponse?.personalTrainingDTOList"
+                    :key="training.id"
+                    class="mbr-rsv-history-card"
+                  >
+                    <MbrRsvHistoryCard
+                      :responseData="training"
+                      @toggle-modal="toggleModal(training.ptSeq)"
+                    />
+                  </div>
+                </div>
+                <div v-else class="h-[300px] flex justify-center items-center">
+                  <p class="text-2xl text-gray-500">
+                    지난 트레이닝 클래스 기록이 없습니다.
+                  </p>
+                </div>
+                <template class="border-solid border-4 border-orange-400">
+                </template>
+              </div>
+            </div>
+            <div class="mt-5 mb-5">
+              <BasePagination v-model="currentPage" :total-pages="totalPages" />
+            </div>
           </div>
         </div>
         <MbrRsvReviewModal

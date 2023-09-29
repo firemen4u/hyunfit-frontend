@@ -1,69 +1,67 @@
 <template>
-  <div
-    class="mbr-rsv-upcomming-rsv-item-card flex flex-col border-0 border-gray-400 rounded-lg m-2 py-2 px-4 bg-gray-100 shadow-lg"
-    style="width: 500px"
-  >
-    <div class="">
-      <div class="flex flex-col">
-        <div
-          class="flex flex-row justify-between mb-1 items-center border-soild border-b-[2px] pb-2"
-        >
-          <p
-            class="text-xs rounded-lg text-center text-white w-[50px] bg-[#021f3d] py-[4px]"
-          >
-            D {{ daysDiff }}
-          </p>
-          <v-btn
-            class="float-right bg-primary rounded-lg pt-0.5 pb-0.5 pr-3 pl-3"
-            @click="enterPtRoom"
-            size="small"
-          >
-            입장하기
-          </v-btn>
-        </div>
-        <div class="text-gray-900 font-bold mb-2 flex justify-between">
-          <div class="flex items-center">
-            <p class="train-type text-xl font-bold mr-2 align-middle">
-              {{ props.responseData.trnTypeName }}
-            </p>
-            <p class="train-datetime text-xs self-end text-gray-500">
-              {{
-                dateUtil.timestampToFullDate(
-                  props.responseData.ptReservationDate
-                )
-              }}
-            </p>
+  <div class="flex flex-col">
+    <div class="mb-2">
+      <p
+        class="text-xs rounded-lg text-center text-white w-[50px] bg-[#d23361] py-[4px]"
+      >
+        {{ daysDiff }}
+      </p>
+    </div>
+    <div
+      class="mbr-rsv-upcomming-rsv-item-card flex flex-col border-0 border-gray-400 rounded-lg py-2 px-2 bg-gray-100 shadow-lg hover:bg-gray-300"
+      style="width: 490px"
+      @click="enterPtRoom"
+    >
+      <div class="card-header w-[480px] my-1 mb-2">
+        <div class="flex flex-col">
+          <div class="text-gray-900 font-bold flex justify-between">
+            <div class="flex items-center">
+              <p class="train-type text-lg font-black mr-2 align-middle">
+                {{ props.responseData.trnTypeName }}
+              </p>
+              <p class="train-datetime text-xs self-end text-gray-500">
+                {{
+                  dateUtil.timestampToFullDate(
+                    props.responseData.ptReservationDate
+                  )
+                }}
+              </p>
+            </div>
+            <div class="ml-15">
+              <v-btn
+                class="float-right bg-primary rounded-lg w-[70px]"
+                @click="enterPtRoom"
+                size="small"
+              >
+                입장하기
+              </v-btn>
+            </div>
+            <ReservaionDetailModal
+              :show="showDetail"
+              :reservationData="selectedReservation"
+              @close="showDetail = false"
+            />
           </div>
-          <!--          <button-->
-          <!--              class="text-gray-400 text-xl font-bold"-->
-          <!--              @click="showDetailModal"-->
-          <!--          >-->
-          <!--          </button>-->
-          <ReservaionDetailModal
-            :show="showDetail"
-            :reservationData="selectedReservation"
-            @close="showDetail = false"
-          />
         </div>
       </div>
-    </div>
-    <div class="rsv-train-info w-84 flex leading-normal rounded-r-lg">
-      <div
-        class="trainer-profile-img h-24 w-24 bg-cover overflow-hidden rounded-lg mr-4"
-        :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
-        title="trainer profile img"
-      ></div>
-      <div class="w-9/12">
-        <p
-          class="train-trainer-name text-gray-900 text-base font-bold mb-[0.5px]"
-        >
-          {{ props.responseData.trnName }}
-        </p>
-        <p
-          class="train-content h-10 w-80 text-gray-700 overflow-hidden text-sm"
-        >
-          {{ props.responseData.trnShortDescription }}
-        </p>
+      <div class="rsv-train-info w-84 flex leading-normal rounded-r-lg">
+        <div
+          class="trainer-profile-img h-24 w-24 bg-cover overflow-hidden rounded-lg mr-4 mb-1"
+          :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
+          title="trainer profile img"
+        ></div>
+        <div class="w-9/12">
+          <p
+            class="train-trainer-name text-gray-900 text-base font-bold mb-[0.5px]"
+          >
+            {{ props.responseData.trnName }}
+          </p>
+          <p
+            class="train-content h-10 w-[360px] text-gray-700 overflow-hidden text-sm"
+          >
+            {{ props.responseData.trnShortDescription }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -81,6 +79,18 @@ const props = defineProps({
 let daysDiff = ref('')
 
 function enterPtRoom() {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
+
+  const reservationDate = new Date(props.responseData.ptReservationDate)
+  reservationDate.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
+
+  // 오늘 날짜가 아니면 alert 창을 표시하고 함수를 종료
+  if (today.getTime() !== reservationDate.getTime()) {
+    alert('오늘의 예약중인 클래스만 입장할 수 있습니다.')
+    return
+  }
+
   const isConfirmed = window.confirm('입장하시겠습니까?')
 
   if (isConfirmed) {
@@ -91,12 +101,22 @@ function enterPtRoom() {
 
 function calcDay() {
   const today = new Date()
-  const timeDiff = today - props.responseData.ptReservationDate
+  today.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
+
+  const reservationDate = new Date(props.responseData.ptReservationDate)
+  reservationDate.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
+
+  const timeDiff = reservationDate - today
   daysDiff.value = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
 
-  if (daysDiff.value > 0) daysDiff.value = `+ ${daysDiff.value}`
-  else if (daysDiff.value == 0) {
-    daysDiff.value = `-Day`
+  if (daysDiff.value > 1) {
+    daysDiff.value = `D-${daysDiff.value}` // 예약날짜가 미래
+  } else if (daysDiff.value === 0) {
+    daysDiff.value = '오늘' // 예약날짜가 오늘
+  } else if (daysDiff.value === 1) {
+    daysDiff.value = '내일' // 예약날짜가 내일
+  } else {
+    daysDiff.value = `+ ${-daysDiff.value}` // 예약날짜가 과거
   }
 }
 
