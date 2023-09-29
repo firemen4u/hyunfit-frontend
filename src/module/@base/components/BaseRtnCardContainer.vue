@@ -1,33 +1,50 @@
 <!-- ParentComponent.vue -->
 <template>
   <div class="all-content-wrap">
-    <div class="rtn-board-header-wrap">
-      <div v-if="showAdmin" class="font-bold text-3xl ml-5">루틴 목록</div>
-      <div v-if="showMember" class="font-bold text-2xl ml-10">
-        HYUNFIT과 함께 운동하고 건강한 운동 습관을 완성해보세요!
+    <div class="rtn-board-header-wrap flex items-center px-10">
+      <div v-if="showAdmin" class="text-4xl font-black text-[#021f3d]">
+        루틴 목록
       </div>
-      <div class="rtn-board-header">
-        <!-- admSeq가 있는 경우에만 "등록하기" 버튼을 표시 -->
-        <div class="flex justify-end mt-5 mr-6 mb-5">
-          <SearchSvg :size="15" />
-          <input
-            type="text"
-            v-model="searchTerm"
-            placeholder="루틴 검색"
-            class="border p-2 rounded"
-          />
-        </div>
+      <div v-if="showMember" class="text-4xl font-black text-[#021f3d]">
+        <div>HYUNFIT과 함께 운동하고</div>
+        <div class="mt-2">건강한 운동 습관을 완성해보세요!</div>
       </div>
     </div>
-    <div>
+    <div class="mt-6 px-[50px]">
+      <v-text-field
+        label="루틴 이름으로 검색하세요."
+        single-line
+        hide-details
+        clearable
+        flat
+        bg-color="#F8F8F8"
+        variant="solo"
+        v-model="searchTerm"
+        type="text"
+      >
+        <template v-slot:prepend-inner>
+          <div class="px-5">
+            <SearchSvg :size="20" color="#AAAAAA" />
+          </div>
+        </template>
+      </v-text-field>
+    </div>
+    <div class="flex justify-end mt-5 mx-[50px]">
+      <v-btn
+        v-if="showAdmin"
+        @click="goToNewRtnPage"
+        color="#021f3d"
+        size="x-large"
+        class="rounde-lg"
+      >
+        루틴 등록하기
+      </v-btn>
+    </div>
+    <div class="mt-5 mx-[35px]">
       <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
       <BaseRtnCardGroup :routines="currentRoutines" />
     </div>
-    <div class="flex justify-end mt-5 mr-6">
-      <v-btn v-if="showAdmin" @click="goToNewRtnPage" color="primary">
-        등록하기
-      </v-btn>
-    </div>
+
     <div class="mb-10">
       <BasePagination :totalPages="totalPages" v-model="currentPage" />
     </div>
@@ -117,3 +134,12 @@ const goToNewRtnPage = () => {
   router.push(pathNames.boRtnNewPage)
 }
 </script>
+<style scoped>
+.rtn-board-header-wrap {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
+}
+</style>

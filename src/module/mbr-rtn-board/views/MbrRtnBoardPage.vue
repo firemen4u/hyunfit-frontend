@@ -5,11 +5,13 @@ import BaseRtnCardContainer from '/src/module/@base/components/BaseRtnCardContai
 
 <template>
   <BaseContainer>
-    <BaseBodyWrapper>
-      <div class="mt-10">
-        <BaseRtnCardContainer :showMember="true" />
-      </div>
-    </BaseBodyWrapper>
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
+        <div class="bg-white shadow-lg rounded-xl overflow-hidden mt-3">
+          <BaseRtnCardContainer :showMember="true" />
+        </div>
+      </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 
