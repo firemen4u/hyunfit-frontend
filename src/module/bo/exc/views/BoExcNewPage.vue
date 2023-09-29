@@ -216,7 +216,7 @@
                 type="submit"
                 size="x-large"
                 color="#021f3d"
-                class="w-[180px] rounded-lg"
+                class="w-[300px] rounded-lg"
                 >등록하기</v-btn
               >
             </div>

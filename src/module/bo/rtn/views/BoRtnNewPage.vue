@@ -433,7 +433,7 @@ async function onSubmit() {
                 size="x-large"
                 :loading="loading"
               >
-                루틴 등록하기
+                등록하기
               </v-btn>
               <div>
                 <v-input v-model="formValidator"> </v-input>

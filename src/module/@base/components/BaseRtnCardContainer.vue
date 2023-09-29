@@ -3,7 +3,7 @@
   <div class="all-content-wrap">
     <div class="rtn-board-header-wrap flex items-center px-10">
       <div v-if="showAdmin" class="text-4xl font-black text-[#021f3d]">
-        루틴 목록
+        트레이닝 프로그램 관리
       </div>
       <div v-if="showMember" class="text-4xl font-black text-[#021f3d]">
         <div>HYUNFIT과 함께 운동하고</div>
@@ -37,10 +37,10 @@
         size="x-large"
         class="rounde-lg"
       >
-        루틴 등록하기
+        프로그램 등록하기
       </v-btn>
     </div>
-    <div class="mt-5 mx-[35px]">
+    <div class="mt-3 mx-[35px]">
       <!-- BaseRtnCardGroup 컴포넌트에 props로 routines 전달 -->
       <BaseRtnCardGroup :routines="currentRoutines" />
     </div>
