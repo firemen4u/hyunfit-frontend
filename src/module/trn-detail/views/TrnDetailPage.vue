@@ -2,7 +2,7 @@
 // https://soomgo.com/profile/users/195673?prev=searchPro&hasFilter=false&serviceSelected=true&from=pro_list&serviceInfo=%7B%22id%22%3A88,%22name%22%3A%22%ED%8D%BC%EC%8A%A4%EB%84%90%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%8B%9D%28PT%29%22,%22slug%22%3A%22%ED%8D%BC%EC%8A%A4%EB%84%90%ED%8A%B8%EB%A0%88%EC%9D%B4%EB%8B%9D%22%7D
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import { BaseRating } from '/src/module/@base/components'
-import { ref, onMounted, onBeforeMount, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import TrnDetailTimeslotContainer from '@/module/trn-detail/components/TrnDetailTimeslotContainer.vue'
 import BaseChipGroup from '@/module/@base/components/BaseChipGroup.vue'
@@ -14,7 +14,7 @@ import {
 
 import UiHandler from '@/module/trn-detail/services/trnDetailUiHandler'
 
-import ReviewStickerGroup from '@/module/trn-detail/components/TrnDetailReviewStickerGroup.vue'
+import TrnDetailReviewStickerGroup from '@/module/trn-detail/components/TrnDetailReviewStickerGroup.vue'
 import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
 import QnASection from '@/module/trn-detail/components/TrnDetailQnASection.vue'
@@ -26,6 +26,7 @@ import {
 } from '@/module/trn-detail/stores/trnDetailCommon'
 import ReportDateUtils from '@/module/report/services/reportDateUtils'
 import ApiClient from '@/services/api'
+import router, { pathNames } from '@/router'
 
 let trnData = ref([])
 const route = useRoute()
@@ -95,12 +96,14 @@ async function confirmReservation(trnSeq) {
     ptNoteStickers: ptReservationOptionSelected.value.join(','),
   }
   try {
-    let result = await postPersonalTraining(data)
-    console.log(data)
-    reservationConfirmLoading.value = false
-    // await router.push(pathNames.mbrRsvCompletionPage)
+    await postPersonalTraining(data)
+    setTimeout(async () => {
+      reservationConfirmLoading.value = false
+      await router.push(pathNames.mbrRsvCompletionPage)
+    }, 1000)
   } catch (error) {
     reservationFailureReason.value = error
+    console.log(error)
   }
 }
 async function reloadDatePicker(date) {
@@ -119,15 +122,13 @@ async function initPage() {
     alert('유저데이터 불러오기 실패. ')
   }
   trnData.value = await getTrnDetail(route.params.trnId)
+  console.log(trnData.value)
   await reloadDatePicker(new Date())
   lazyLoadProfileImage(trnData.value.trnProfileUrl)
 }
 
-onBeforeMount(() => {
-  initPage()
-})
-
 onMounted(() => {
+  initPage()
   let observer = new IntersectionObserver(
     entry => {
       entry.forEach(section => {
@@ -346,7 +347,9 @@ onMounted(() => {
                       </div>
                       <div class="my-3">{{ review.ptrContent }}</div>
 
-                      <ReviewStickerGroup :stickers="review.ptrStickers" />
+                      <TrnDetailReviewStickerGroup
+                        :stickers="review.ptrStickers ? review.ptrStickers : ''"
+                      />
                     </div>
                   </div>
                 </div>
@@ -374,7 +377,7 @@ onMounted(() => {
                     show-adjacent-months
                     max-width="100%"
                     :min="Date.now()"
-                    color="#D23361"
+                    color="#185492"
                     title=""
                     header=""
                     @update:modelValue="date => reloadTimeslots(date)"

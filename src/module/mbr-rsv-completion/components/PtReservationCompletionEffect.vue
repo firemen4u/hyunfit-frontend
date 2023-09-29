@@ -53,15 +53,15 @@
 
 <style scoped>
 .st0 {
-  fill: #b40238;
+  fill: #185492;
   fill-opacity: 0.4;
 }
 .st1 {
-  fill: #b40238;
+  fill: #185492;
   fill-opacity: 0.1;
 }
 .st2 {
-  fill: #c0003e;
+  fill: #185492;
 }
 #completion {
   width: 200px;
