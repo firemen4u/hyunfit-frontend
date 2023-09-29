@@ -12,24 +12,27 @@
                 <div class="flex items-center">
                   <p class="col-1">운동 이름</p>
                   <v-text-field
+                    counter
                     v-model="exc_name"
                     clearable
-                    maxlength="20"
-                    placeholder="20자 내로 작성하세요"
-                    hide-details
+                    maxlength="25"
+                    placeholder="25자 내로 작성하세요"
                     variant="solo"
+                    :rules="[rules.nonEmpty]"
                   ></v-text-field>
                 </div>
 
                 <div class="flex items-center mt-4">
                   <p class="col-1">운동 설명</p>
                   <v-textarea
+                    counter
                     v-model="exc_content"
                     clearable
-                    placeholder="50자 내로 작성하세요"
-                    maxlength="50"
+                    placeholder="70자 내로 작성하세요"
+                    maxlength="70"
                     variant="solo"
                     single-line
+                    :rules="[rules.nonEmpty]"
                   ></v-textarea>
                 </div>
                 <div class="flex items-center mt-4">
@@ -51,15 +54,15 @@
                 </div>
                 <div class="flex justify-between">
                   <div class="flex items-center mt-4">
-                    <p class="col-1">1회당 칼로리 소모량</p>
+                    <p class="col-1">세트당 칼로리 소모량</p>
                     <v-text-field
                       v-model="exc_calories_per_rep"
                       type="number"
                       clearable
                       placeholder="1회당 칼로리 소모량"
-                      hide-details
                       variant="solo"
                       suffix="kcal"
+                      :rules="[rules.gtZero]"
                     ></v-text-field>
                   </div>
 
@@ -70,7 +73,7 @@
                       type="number"
                       clearable
                       placeholder="지정할 세트 수"
-                      hide-details
+                      :rules="[rules.gtZero]"
                       variant="solo"
                       suffix="set"
                     ></v-text-field>
@@ -84,7 +87,7 @@
                       type="number"
                       clearable
                       placeholder="세트당 동작 횟수"
-                      hide-details
+                      :rules="[rules.gtZero]"
                       variant="solo"
                       suffix="회"
                     ></v-text-field>
@@ -94,9 +97,10 @@
                     <p class="col-1">세트당 시간</p>
                     <v-text-field
                       v-model="exc_time_per_set_in_sec"
+                      type="number"
                       clearable
                       placeholder="운동에 대해 지정한 세트당 시간"
-                      hide-details
+                      :rules="[rules.gtZero]"
                       variant="solo"
                       suffix="S"
                     ></v-text-field>
@@ -112,12 +116,12 @@
                       :items="target_items"
                       chips
                       clearable
-                      hide-details
                       label="부위"
                       multiple
                       variant="solo"
                       color="primary"
                       bg-color="white"
+                      :rules="[rules.hasElement]"
                     ></v-select>
                   </div>
                 </div>
@@ -171,7 +175,7 @@
                 <div class="flex items-center mb-4">
                   <BoExcFileInput
                     v-model="files_exc_model"
-                    label="모델 데이터"
+                    label="모델 데이터(.zip)"
                     :prepend-icon="CloudArrowUpSvg"
                   ></BoExcFileInput>
                 </div>
@@ -199,6 +203,7 @@
                       v-model="files_exc_view_row_qual"
                       label="썸네일 운동 영상"
                       :prepend-icon="PictureSvg"
+                      :rules="[rules.hasFile]"
                     ></BoExcFileInput>
                   </div>
                   <div class="file-input">
@@ -206,6 +211,9 @@
                       v-model="files_exc_mp3"
                       label="운동 가이드 메시지"
                       :prepend-icon="Mp3Svg"
+                      :rules="[rules.hasFile]"
+                      density="comfortable"
+                      :show-size="1000"
                     ></BoExcFileInput>
                   </div>
                 </div>
@@ -238,6 +246,7 @@ import {
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import { ref, onMounted } from 'vue'
 import ApiClient from '/src/services/api'
+import router, { pathNames } from '@/router'
 
 const target_items = ref([
   '광배근',
@@ -303,11 +312,11 @@ const exc_name = ref('')
 const exc_content = ref('')
 const exc_type = ref('1')
 const exc_difficulty = ref('1')
-const exc_calories_per_rep = ref('0')
-const exc_time_per_set_in_sec = ref('0')
-const exc_set_count = ref('0')
-const excRepCountPerSet = ref('0')
-const admSeq = ref('0')
+const exc_calories_per_rep = ref(0)
+const exc_time_per_set_in_sec = ref(0)
+const exc_set_count = ref(0)
+const excRepCountPerSet = ref(0)
+const admSeq = ref('1')
 
 // 초기 데이터 로딩: 관리자 정보 가져오기
 onMounted(async () => {
@@ -321,6 +330,43 @@ onMounted(async () => {
 })
 
 const submit = async () => {
+  let errorMessage = ''
+
+  if (!exc_name.value) errorMessage = '운동 이름을 입력하세요.'
+  else if (!exc_content.value) errorMessage = '운동 설명을 입력하세요.'
+  else if (!exc_type.value) errorMessage = '운동 종류를 선택하세요.'
+  else if (!exc_difficulty.value) errorMessage = '운동 난이도를 선택하세요.'
+  else if (exc_calories_per_rep.value <= 0)
+    errorMessage = '세트당 칼로리 소모량을 입력하세요.'
+  else if (exc_set_count.value <= 0)
+    errorMessage = '지정할 세트 수를 입력하세요.'
+  else if (excRepCountPerSet.value <= 0)
+    errorMessage = '세트당 동작 횟수를 입력하세요.'
+  else if (exc_time_per_set_in_sec.value <= 0)
+    errorMessage = '세트당 시간을 입력하세요.'
+  else if (!selectedBodyParts.value.length)
+    errorMessage = '운동 부위를 선택하세요.'
+  else if (!files_exc_model.value.length)
+    errorMessage = '모델 데이터를 업로드하세요.'
+  else if (!files_exc_preview.value.length)
+    errorMessage = '운동 가이드 영상을 업로드하세요.'
+  else if (!files_exc_view.value.length)
+    errorMessage = '운동 영상을 업로드하세요.'
+  else if (!files_exc_view_row_qual.value.length)
+    errorMessage = '썸네일 운동 영상을 업로드하세요.'
+  else if (!files_exc_mp3.value.length)
+    errorMessage = '운동 가이드 메시지를 업로드하세요.'
+
+  if (errorMessage) {
+    alert(errorMessage)
+    return
+  }
+
+  const isConfirmed = window.confirm('등록하시겠습니까?')
+  if (!isConfirmed) {
+    return // 취소를 누르면 함수실행 안함
+  }
+
   const exerciseTargets = selectedBodyParts.value.map(bodyPart => ({
     exctgArea: target_items_mapping[bodyPart],
     exctgWeight: bodyPartWeights.value[target_items_mapping[bodyPart]] * 0.01,
@@ -337,6 +383,7 @@ const submit = async () => {
     excTimePerSetInSec: exc_time_per_set_in_sec.value,
     exerciseTargets,
   }
+
   try {
     // exercise 등록하는 api 호출
     const firstApiResponse = await ApiClient.post('/exercises', values)
@@ -411,12 +458,26 @@ const submit = async () => {
     ])
 
     alert('등록 성공!')
-    window.location.reload() // 페이지 새로고침
+    router.push(pathNames.boExcBoardPage)
   } catch (error) {
     console.error(error)
     console.error(error.response.data)
     alert('등록 실패!')
   }
+}
+const rules = {
+  nonEmpty: value => {
+    return !!value || '필수항목입니다.'
+  },
+  hasElement: li => {
+    return !!li.length || '최소 한 개의 운동 부위가 선택되어야 합니다.'
+  },
+  hasFile: li => {
+    return !!li.length || '데이터가 입력되어야 합니다.'
+  },
+  gtZero: value => {
+    return (value && value > 0) || '값이 0보다 커야 합니다.'
+  },
 }
 </script>
 
@@ -424,6 +485,7 @@ const submit = async () => {
 .col-1 {
   width: 150px;
   margin-left: 10px;
+  margin-bottom: 13px;
 }
 .v-text-field {
   width: 330px;
