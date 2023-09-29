@@ -60,7 +60,9 @@
 .border-1\.5 {
   border-width: 1.5px;
 }
-
+.border-1 {
+  border-width: 1px;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

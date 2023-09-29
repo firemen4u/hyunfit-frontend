@@ -24,6 +24,9 @@ import DumbbellSvg from './DumbbellSvg.vue'
 import Mp3Svg from './Mp3Svg.vue'
 import VideoSvg from './VideoSvg.vue'
 import ThumbnailSvg from './ThumbnailSvg.vue'
+import RadioCompletedSvg from '@/module/@base/svg/RadioCompletedSvg.vue'
+import RadioSelectedSvg from '@/module/@base/svg/RadioSelectedSvg.vue'
+import RadioDefaultSvg from '@/module/@base/svg/RadioDefaultSvg.vue'
 
 export {
   HeartSvg,
@@ -52,4 +55,7 @@ export {
   Mp3Svg,
   ThumbnailSvg,
   VideoSvg,
+  RadioCompletedSvg,
+  RadioSelectedSvg,
+  RadioDefaultSvg,
 }

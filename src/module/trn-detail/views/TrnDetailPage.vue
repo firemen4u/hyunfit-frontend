@@ -375,6 +375,8 @@ onMounted(() => {
                     max-width="100%"
                     :min="Date.now()"
                     color="#D23361"
+                    title=""
+                    header=""
                     @update:modelValue="date => reloadTimeslots(date)"
                     @update:displayDate="date => reloadDatePicker(date)"
                   ></v-date-picker

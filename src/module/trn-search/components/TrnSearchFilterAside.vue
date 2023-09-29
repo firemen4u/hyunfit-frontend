@@ -19,7 +19,7 @@ function resetFilter(e) {
         @click="resetFilter"
       >
         <span class="mr-1 text-gray-600">초기화</span>
-        <RefreshSvg size="14" color="#4B5563" />
+        <RefreshSvg :size="14" color="#4B5563" />
       </button>
     </div>
     <slot></slot>

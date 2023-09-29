@@ -6,7 +6,6 @@
     clearable
     flat
     bg-color="#F8F8F8"
-    variant="flat"
     @keyup.enter="search"
     :disabled="loading"
     type="text"
