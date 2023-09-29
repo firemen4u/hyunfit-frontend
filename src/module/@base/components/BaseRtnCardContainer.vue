@@ -9,6 +9,7 @@
       <div class="rtn-board-header">
         <!-- admSeq가 있는 경우에만 "등록하기" 버튼을 표시 -->
         <div class="flex justify-end mt-5 mr-6 mb-5">
+          <SearchSvg :size="15" />
           <input
             type="text"
             v-model="searchTerm"
@@ -34,6 +35,7 @@
 </template>
 
 <script setup>
+import { SearchSvg } from '/src/module/@base/svg'
 import { ref, computed, onMounted, watch } from 'vue'
 import BaseRtnCardGroup from '/src/module/@base/components/BaseRtnCardGroup.vue'
 import ApiClient from '/src/services/api'

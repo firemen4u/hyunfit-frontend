@@ -28,7 +28,7 @@ const props = defineProps({
 const emit = defineEmits(['updateExcType'])
 
 const items = [
-  { label: '전체 목록', value: 0 },
+  { label: '전체 목록', value: null },
   { label: '상체', value: 1 },
   { label: '하체', value: 2 },
   { label: '전신', value: 3 },
