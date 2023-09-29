@@ -1,21 +1,21 @@
 <template>
   <div>
-    <v-dialog v-model="show" max-width="700px">
+    <v-dialog v-model="show" max-width="700px" max-height="700px">
       <v-card>
-        <!--헤더부분-->
         <v-card-title class="mt-3">
-          <div class="flex">
-            <span class="headline">피드백 작성하기</span>
+          <div class="flex justify-between ml-1">
+            <span class="headline text-2xl">피드백 작성하기</span>
             <v-spacer></v-spacer>
-            <v-btn icon @click="closeModal" size="x-small">
-              <v-icon size="default">mdi-close</v-icon>
-            </v-btn>
+            <v-btn
+              @click="closeModal"
+              :icon="CrossSvg"
+              size="small"
+              variant="text"
+            />
           </div>
         </v-card-title>
-
         <v-card-text>
-          <!--바디부분-->
-          <div class="flex justify-between flex-row mt-4 ml-4 mr-4">
+          <div class="flex justify-between flex-row">
             <div class="flex flex-col items-center">
               <div class="fb-detail-category">PT번호</div>
               <div class="fb-detail-category">회 원 명</div>
@@ -37,8 +37,7 @@
               </div>
             </div>
           </div>
-          <!--피드백작성-->
-          <div class="flex flex-col ml-4 mr-4">
+          <div class="flex flex-col">
             <div class="flex flex-row justify-between">
               <div class="font-semibold">피드백 내용</div>
               <v-card-actions>
@@ -48,7 +47,6 @@
             </div>
             <v-textarea
               counter
-              class="text-box h-[500px]"
               :value="
                 noFeedbackData.trnfContent !== null
                   ? noFeedbackData.trnfContent
@@ -60,7 +58,6 @@
             ></v-textarea>
           </div>
         </v-card-text>
-        <!--꼬리(submit버튼)-->
         <div class="flex justify-center mb-5">
           <v-btn color="primary" @click="submitFeedback(noFeedbackData)">
             {{ noFeedbackData.trnfContent !== null ? '수정하기' : '작성하기' }}
@@ -75,6 +72,7 @@
 import ApiClient from '/src/services/api.js'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
+import CrossSvg from '@/module/@base/svg/CrossSvg.vue'
 </script>
 
 <script>
@@ -154,9 +152,5 @@ export default {
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 12px;
-}
-.text-box {
-  width: 620px;
-  border-radius: 5px;
 }
 </style>

@@ -1,10 +1,6 @@
 <template>
-  <!--최상위 div-->
   <div class="rsv-list-container">
-    <div class="rsv-list-header flex items-center bg-gray-100 text-black h-9">
-      <div class="ml-4">예약 현황 ({{ rsvCnt() }}건)</div>
-    </div>
-    <div v-if="showCardList" class="rsv-smr-card-container">
+    <div v-if="showCardList" class="rsv-smr-card-container mt-3 mb-5">
       <div v-for="index in 5" :key="index">
         <ReservationSummaryCard
           class="shadow-lg"
@@ -15,7 +11,6 @@
     </div>
     <div class="rsv-list-inner">
       <div class="flex flex-col bg-white mt-1 mb-1">
-        <!--카테고리(컬럼명)-->
         <div class="rsv-list-category">
           <div class="rsv-list-seq">#</div>
           <div class="rsv-list-ptSeq">예약번호</div>
@@ -24,7 +19,6 @@
           <div class="rsv-list-ptStatus">예약상태</div>
           <div class="rsv-list-mbrName">회 원 명</div>
         </div>
-        <!--리스트(행)-->
         <div>
           <div v-if="reservations.length === 0" class="rsv-noData">
             이달의 예약이 없습니다.
@@ -83,6 +77,7 @@ export default {
     return {
       showCardList: false,
       sendingData: {
+        totalCnt: 0,
         completeCnt: 0,
         noShowCnt: 0,
         upcomingCnt: 0,
@@ -124,7 +119,7 @@ export default {
         if (response !== null) {
           this.reservations = response
           this.totalPages = Math.ceil(response.length / 10)
-          this.plusCnt()
+          this.calCnt()
           this.showCardList = true
         }
       })
@@ -137,7 +132,7 @@ export default {
       this.selectedReservation = reservation
       this.showDetail = true
     },
-    plusCnt() {
+    calCnt() {
       for (let i = 0; i < this.reservations.length; i++) {
         const reservation = this.reservations[i]
         if (reservation.ptReservationStatus === 1) {
@@ -156,9 +151,7 @@ export default {
           this.sendingData.noShowCnt = this.sendingData.noShowCnt + 1
         }
       }
-    },
-    rsvCnt() {
-      return this.reservations.length
+      this.sendingData.totalCnt = this.reservations.length
     },
     formatDate(timestamp) {
       return dayjs(timestamp).locale('ko').format('YYYY-MM-DD')
@@ -188,26 +181,18 @@ export default {
 </script>
 
 <style scoped>
-.rsv-list-header {
-  /* border-top-left-radius: 10px;
-  border-top-right-radius: 10px; */
-}
 .rsv-list-container {
   display: flex;
   flex-direction: column;
   width: 1000px;
-  /* box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
-  border-radius: 10px; */
 }
 .rsv-list-inner {
   display: flex;
   flex-direction: column;
   width: 1000px;
   background-color: white;
-  min-height: 530px;
+  min-height: 505px;
   justify-content: space-between;
-  /* border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px; */
 }
 .rsv-smr-card-container {
   display: flex;
@@ -215,9 +200,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 980px;
-  height: 140px;
-  margin-left: 10px;
-  margin-right: 10px;
+  height: 100px;
 }
 .rsv-list-seq {
   display: flex;

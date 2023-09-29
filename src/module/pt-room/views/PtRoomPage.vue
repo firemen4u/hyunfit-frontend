@@ -19,7 +19,11 @@
     </div>
     <div id="controllerButtonContainer" class="flex justify-center mt-14">
       <div class="flex justify-start w-1/3">
-        <HyunfitLogoGradientSvg class="ml-20 mt-7" :size="120" />
+        <HyunfitLogoMonoVer2Svg
+          color="#ffffff"
+          class="ml-20 mt-7"
+          :size="120"
+        />
         <LessoningTime
           class="ml-5 mt-6"
           v-if="showLessoningTime"
@@ -51,9 +55,9 @@
 import CurrentTime from '../components/CurrentTimeComponent.vue'
 import CurrentDate from '../components/CurrentDateComponent.vue'
 import LessoningTime from '../components/LessoningTimeComponent.vue'
-import { HyunfitLogoGradientSvg } from '@/module/@base/svg'
 import { OpenVidu } from 'openvidu-browser'
 import ApiClient from '/src/services/api.js'
+import HyunfitLogoMonoVer2Svg from '@/module/@base/svg/HyunfitLogoMonoVer2Svg.vue'
 </script>
 
 <script>

@@ -1,22 +1,25 @@
 <template>
   <div>
-    <v-dialog v-model="show" max-width="450px">
+    <v-dialog v-model="show" max-width="400px">
       <v-card>
         <!--헤더부분-->
         <v-card-title class="mt-3">
-          <div class="flex justify-between ml-1 mr-1">
-            <span class="headline">예약 상세 정보</span>
+          <div class="flex justify-between ml-1">
+            <span class="headline text-2xl">예약 상세 정보</span>
             <v-spacer></v-spacer>
-            <v-btn icon @click="closeModal" size="x-small">
-              <v-icon size="default">mdi-close</v-icon>
-            </v-btn>
+            <v-btn
+              @click="closeModal"
+              :icon="CrossSvg"
+              size="small"
+              variant="text"
+            />
           </div>
         </v-card-title>
         <v-card-text>
           <!--바디부분-->
-          <div class="flex flex-row ml-4">
+          <div class="flex flex-row">
             <!--카테고리-->
-            <div class="flex flex-col mr-4 items-center">
+            <div class="flex flex-col items-center">
               <div class="rsvdetail-category">예약번호</div>
               <div class="rsvdetail-category">예약일자</div>
               <div class="rsvdetail-category">예약시간</div>
@@ -39,7 +42,7 @@
             </div>
           </div>
           <!--고객요청사항-->
-          <div class="flex flex-col ml-4">
+          <div class="flex flex-col">
             <div class="font-semibold mt-1">고객요청사항</div>
             <div class="sticker-container mt-3">
               <BaseCheckChip
@@ -66,6 +69,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
 import { BaseChipGroup } from '@/module/@base/components'
+import CrossSvg from '@/module/@base/svg/CrossSvg.vue'
 </script>
 <script>
 import router, { pathNames } from '@/router'
@@ -172,25 +176,5 @@ export default {
 
 .sticker-container {
   width: 400px;
-}
-
-.ptEntryButton {
-  width: 125px;
-  height: 35px;
-  border-radius: 5px;
-  background: linear-gradient(
-    120deg,
-    rgb(144, 12, 63),
-    rgb(199, 0, 57),
-    rgb(249, 76, 16)
-  );
-  color: white;
-  font-weight: 600;
-}
-
-.divider {
-  height: 1px;
-  background-color: rgb(222, 222, 222);
-  margin: 10 10px;
 }
 </style>
