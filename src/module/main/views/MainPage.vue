@@ -11,6 +11,19 @@ import SurveyCard from '@/module/main/components/cards/SurveyCard.vue'
 
 import MainBannerCard from '@/module/main/components/cards/MainBannerCard.vue'
 import MainFooter from '@/module/main/components/MainFooter.vue'
+import { onMounted, ref } from 'vue'
+import MainApi from '@/module/main/services/mainApi'
+import ApiClient from '@/services/api'
+import router, { pathNames } from '@/router'
+
+const rcm = ref(null)
+const userdata = ref(null)
+onMounted(async () => {
+  userdata.value = await ApiClient.me()
+  if (userdata.value) {
+    rcm.value = await MainApi.getRecommendations(userdata.value)
+  }
+})
 </script>
 
 <template>
@@ -22,28 +35,25 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
             <MainBannerCard />
           </MainCardContainer>
           <MainCardContainer color="#0d1851" class="col-span-2">
-            <RoutineRcmCard />
+            <RoutineRcmCard :rcm="rcm" :userdata="userdata" />
           </MainCardContainer>
           <MainCardContainer :color="'#e7edf4'" class="col-span-1">
-            <ReportCard />
+            <ReportCard @click="router.push(pathNames.reportPage)" />
           </MainCardContainer>
           <MainCardContainer :color="'#bc2391'" class="col-span-1">
-            <RoutineCard />
+            <RoutineCard @click="router.push(pathNames.mbrRtnBoardPage)" />
           </MainCardContainer>
           <MainCardContainer color="#1c1b8e" class="col-span-1">
-            <TrainerCard />
+            <TrainerCard @click="router.push(pathNames.trnSearchPage)" />
           </MainCardContainer>
           <MainCardContainer color="#331e51" class="col-span-1">
-
-            <SurveyCard />
+            <SurveyCard @click="router.push(pathNames.surveyPage)" />
           </MainCardContainer>
         </div>
       </div>
-
     </div>
 
     <MainFooter />
-
   </BaseContainer>
 </template>
 
@@ -85,7 +95,6 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
     rgba(72, 184, 236, 0.9) 74%,
     rgba(116, 255, 67, 0) 120%
   );
-
 }
 
 .article::after {
@@ -116,6 +125,5 @@ import MainFooter from '@/module/main/components/MainFooter.vue'
   .body-wrapper {
     width: 1100px;
   }
-
 }
 </style>

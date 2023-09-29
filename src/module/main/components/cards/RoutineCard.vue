@@ -8,7 +8,7 @@ const animation = ref(false)
   <div
     @mouseenter="animation = true"
     @mouseleave="animation = false"
-    class="flex flex-col h-full w-full p-10 justify-start overflow-hidden"
+    class="flex cursor-pointer flex-col h-full w-full p-10 justify-start overflow-hidden"
   >
     <div class="main-card-subtitle mb-3 font-black">트레이닝 프로그램</div>
 

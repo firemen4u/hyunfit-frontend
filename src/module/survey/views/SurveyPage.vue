@@ -152,7 +152,7 @@ async function updateMemberInfo() {
   flex-direction: column; /* 내부 요소를 세로로 정렬 */
   align-items: center; /* 내부 요소를 가로로 가운데 정렬 */
   text-align: center; /* 텍스트 가운데 정렬 */
-  justify-content: start;
+  justify-content: flex-start;
   margin-top: 30px;
 }
 </style>
