@@ -27,6 +27,8 @@ import ThumbnailSvg from './ThumbnailSvg.vue'
 import RadioCompletedSvg from '@/module/@base/svg/RadioCompletedSvg.vue'
 import RadioSelectedSvg from '@/module/@base/svg/RadioSelectedSvg.vue'
 import RadioDefaultSvg from '@/module/@base/svg/RadioDefaultSvg.vue'
+import ExcTypeSvg from '@/module/@base/svg/ExcTypeSvg.vue'
+import LevelSvg from '@/module/@base/svg/LevelSvg.vue'
 
 export {
   HeartSvg,
@@ -58,4 +60,6 @@ export {
   RadioCompletedSvg,
   RadioSelectedSvg,
   RadioDefaultSvg,
+  LevelSvg,
+  ExcTypeSvg,
 }
