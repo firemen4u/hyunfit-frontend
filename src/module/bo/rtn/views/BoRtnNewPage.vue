@@ -43,31 +43,31 @@ const rtn_goal_radio = [
 // 무릎 운동 고려
 const rtn_knee_health_considered_radio = [
   { label: '예', value: 1 },
-  { label: '아니오', value: 2 },
+  { label: '아니오', value: 0 },
 ]
 
 // 층간 소음 고려
 const rtn_noise_considered_radio = [
   { label: '예', value: 1 },
-  { label: '아니오', value: 2 },
+  { label: '아니오', value: 0 },
 ]
 
 // 오래 앉아 있는 사람
 const rtn_long_sitter_radio = [
   { label: '예', value: 1 },
-  { label: '아니오', value: 2 },
+  { label: '아니오', value: 0 },
 ]
 
 // 목 어깨 포커스
 const rtn_neck_shoulder_focused_radio = [
   { label: '예', value: 1 },
-  { label: '아니오', value: 2 },
+  { label: '아니오', value: 0 },
 ]
 
 // 허리 디스크 고려
 const rtn_back_disk_considered_radio = [
   { label: '예', value: 1 },
-  { label: '아니오', value: 2 },
+  { label: '아니오', value: 0 },
 ]
 
 //submit 시키기
