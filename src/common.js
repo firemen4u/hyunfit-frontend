@@ -40,7 +40,7 @@ ChartJS.register(
 const Colors = {
   background: '#FFFFFF',
   surface: '#FFFFFF',
-  primary: '#D23361',
+  primary: '#044589',
   'primary-darken-1': '#3700B3',
   secondary: '#03DAC6',
   'secondary-darken-1': '#018786',

@@ -1,136 +1,158 @@
-<template>
-  <BaseContainer nofooter>
-    <!-- <v-stepper :items="items" style="width: 1000px">
-    <template v-for="(step, index) in items" :key="index" v-slot:item="props">
-      {{ index }}
-      <v-card style="height: 600px" class="border">
-        <v-card-title>{{ step }}</v-card-title>
-        <v-card-text>
-          <component :is="props.item"></component>
-        </v-card-text>
-      </v-card>
-    </template>
-  </v-stepper> -->
-
-    <v-stepper
-      :items="['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']"
-      class="mt-12"
-    >
-      <template v-slot:item.1>
-        <v-card title=" " flat class="card-shape"
-          ><Step1
-            :memberInfo="memberInfo"
-            @updateMemberInfo="updateMemberInfo"
-          ></Step1
-        ></v-card>
-      </template>
-
-      <template v-slot:item.2>
-        <v-card title=" " flat class="card-shape"
-          ><Step2
-            :memberInfo="memberInfo"
-            @updateMemberInfo="updateMemberInfo"
-          ></Step2
-        ></v-card>
-      </template>
-
-      <template v-slot:item.3>
-        <v-card title=" " flat class="card-shape"
-          ><Step3
-            :memberInfo="memberInfo"
-            @updateMemberInfo="updateMemberInfo"
-          ></Step3
-        ></v-card>
-      </template>
-
-      <template v-slot:item.4>
-        <v-card title=" " flat class="card-shape"
-          ><Step4
-            :memberInfo="memberInfo"
-            @updateMemberInfo="updateMemberInfo"
-          ></Step4
-        ></v-card>
-      </template>
-
-      <template v-slot:item.5>
-        <v-card title=" " flat class="card-shape"
-          ><Step5
-            :memberInfo="memberInfo"
-            @updateMemberInfo="updateMemberInfo"
-          ></Step5
-        ></v-card>
-      </template>
-    </v-stepper>
-    <button class="mbr-update-button mt-8 mb-8" @click="updateRequest()">
-      설정완료
-    </button>
-  </BaseContainer>
-</template>
-
-<script>
-import { VStepper } from 'vuetify/labs/VStepper'
-import Step1 from '@/module/survey/components/StepOne.vue'
-import Step2 from '@/module/survey/components/StepTwo.vue'
-import Step3 from '@/module/survey/components/StepThree.vue'
-import Step4 from '@/module/survey/components/StepFour.vue'
-import Step5 from '@/module/survey/components/StepFive.vue'
+<script setup>
 import BaseContainer from '@/module/@base/views/BaseContainer.vue'
-import ApiClient from '/src/services/api.js'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { VStepper, VStepperItem, VStepperWindow } from 'vuetify/labs/VStepper'
+import SurveyStepperActions from '@/module/survey/components/SurveyStepperActions.vue'
+import SurveyGoal from '@/module/survey/components/SurveyGoal.vue'
+import SurveyLevel from '@/module/survey/components/SurveyLevel.vue'
+import SurveyTarget from '@/module/survey/components/SurveyTarget.vue'
+import SurveyKnowMore from '@/module/survey/components/SurveyKnowMore.vue'
+import SurveyAbout from '@/module/survey/components/SurveyAbout.vue'
+import ApiClient from '@/services/api'
 import router, { pathNames } from '@/router'
-export default {
-  components: {
-    BaseContainer,
-    VStepper,
-    Step1,
-    Step2,
-    Step3,
-    Step4,
-    Step5,
-  },
-  data() {
-    return {
-      items: [Step1, Step2, Step3, Step4, Step5],
-      memberInfo: {
-        mbrGender: null,
-        mbrExerciseGoal: null,
-        mbrBirthdate: null,
-        mbrHeight: null,
-        mbrWeight: null,
-        mbrExerciseExperienceLevel: null,
-        mbrKneeHealthConsidered: null,
-        mbrNoiseConsidered: null,
-        mbrLongSitter: null,
-        mbrNeckShoulderFocused: null,
-        mbrBackDiskConsidered: null,
-        mbrExerciseTarget: null,
-        checkAgree: null,
-      },
-    }
-  },
-  methods: {
-    updateMemberInfo(memberInfoFromChild) {
-      this.memberInfo = memberInfoFromChild
-    },
-    async updateRequest() {
-      if (this.memberInfo.checkAgree) {
-        const responseUser = await ApiClient.get('/members/me')
-        ApiClient.put('/members/' + responseUser.mbrId, this.memberInfo)
-        router.push(pathNames.mainPage)
-      } else {
-        alert('개인정보수집에 동의해주세요')
-      }
-    },
-  },
+
+const userData = ref(null)
+onMounted(async () => {
+  userData.value = await ApiClient.me()
+})
+const loading = ref(false)
+const env = reactive({
+  step: ref(1),
+  steps: ref(5),
+})
+
+const disable = computed(() => {
+  return (
+    (env.step === 1 && !memberInfo.mbrExerciseGoal) ||
+    (env.step === 3 && !memberInfo.mbrExerciseTarget) ||
+    (env.step === 4 && knowMoreDisabled.value) ||
+    (env.step === 5 && aboutDisabled.value)
+  )
+})
+const hide = computed(() => {
+  return env.step === 1 ? 'prev' : env.step === env.steps ? 'next' : undefined
+})
+
+const knowMoreDisabled = ref(true)
+const aboutDisabled = ref(true)
+
+const memberInfo = reactive({
+  mbrExerciseGoal: ref(null),
+  mbrExerciseExperienceLevel: ref(0),
+  mbrExerciseTarget: ref(null),
+  mbrMore: reactive({
+    mbrKneeHealthConsidered: ref(null),
+    mbrNoiseConsidered: ref(null),
+    mbrNeckShoulderFocused: ref(null),
+    mbrBackDiskConsidered: ref(null),
+    mbrLongSitter: ref(null),
+  }),
+  mbrBasic: reactive({
+    mbrGender: ref(1),
+    mbrBirthdate: ref(''),
+    mbrHeight: ref(''),
+    mbrWeight: ref(''),
+    consentAgreement: ref(false),
+  }),
+})
+
+async function updateMemberInfo() {
+  const body = {
+    mbrExerciseGoal: memberInfo.mbrExerciseGoal,
+    mbrExerciseTarget: memberInfo.mbrExerciseTarget,
+    mbrExerciseExperienceLevel: memberInfo.mbrExerciseExperienceLevel,
+    mbrKneeHealthConsidered: memberInfo.mbrMore.mbrKneeHealthConsidered,
+    mbrNoiseConsidered: memberInfo.mbrMore.mbrNoiseConsidered,
+    mbrNeckShoulderFocused: memberInfo.mbrMore.mbrNeckShoulderFocused,
+    mbrBackDiskConsidered: memberInfo.mbrMore.mbrBackDiskConsidered,
+    mbrLongSitter: memberInfo.mbrMore.mbrLongSitter,
+    mbrBirthdate: memberInfo.mbrBasic.mbrBirthdate,
+  }
+  if (memberInfo.mbrBasic.mbrGender >= 0) {
+    body.mbrGender = memberInfo.mbrBasic.mbrGender
+  }
+  if (memberInfo.mbrBasic.mbrHeight !== '') {
+    body.mbrHeight = memberInfo.mbrBasic.mbrHeight
+  }
+  if (memberInfo.mbrBasic.mbrWeight !== '') {
+    body.mbrWeight = memberInfo.mbrBasic.mbrWeight
+  }
+  loading.value = true
+  await ApiClient.put('/members/' + userData.value.mbrId, body)
+
+  setTimeout(() => {
+    loading.value = false
+    router.push(pathNames.mainPage)
+  }, 1000)
 }
 </script>
 
+<template>
+  <BaseContainer nofooter>
+    <div class="flex justify-center primary-background survey-container">
+      <v-stepper class="survey-stepper rounded-xl mt-10" v-model="env.step">
+        <template v-slot:default="{ prev, next }">
+          <div
+            class="v-stepper-header-container w-full flex justify-center mt-10"
+          >
+            <div v-for="n in env.steps" :key="`${n}-step`">
+              <v-stepper-item
+                :style="{ padding: 0, margin: '0 5px', zIndex: 1 }"
+                :color="'#044589'"
+                :complete="env.step > n"
+                :value="n"
+              >
+              </v-stepper-item>
+            </div>
+          </div>
+          <v-stepper-window>
+            <SurveyGoal v-model="memberInfo.mbrExerciseGoal" />
+            <SurveyLevel v-model="memberInfo.mbrExerciseExperienceLevel" />
+            <SurveyTarget v-model="memberInfo.mbrExerciseTarget" />
+            <SurveyKnowMore
+              v-model="memberInfo.mbrMore"
+              @update:disabled="val => (knowMoreDisabled = val)"
+            />
+            <SurveyAbout
+              v-model="memberInfo.mbrBasic"
+              :username="userData?.mbrName"
+              @update:disabled="val => (aboutDisabled = val)"
+            />
+          </v-stepper-window>
+          <SurveyStepperActions
+            :disable="disable"
+            :hide="hide"
+            @click:prev="prev"
+            @click:next="next"
+            @click:done="updateMemberInfo"
+            :loading="loading"
+          ></SurveyStepperActions>
+        </template>
+      </v-stepper>
+    </div>
+  </BaseContainer>
+</template>
+
 <style scoped>
-.mbr-update-button {
-  width: 125px;
-  height: 35px;
-  border-radius: 5px;
-  background: #d23360d2;
-  color: white;
-  font-weight: 600;
+.survey-container {
+  height: 1000px;
+}
+.survey-stepper {
+  height: 750px;
+  width: 800px;
+}
+</style>
+<style>
+.v-stepper-header-container .v-stepper-item .v-avatar {
+  margin: 0;
+}
+.stepper-window-container {
+  height: 480px;
+  display: flex;
+  flex-direction: column; /* 내부 요소를 세로로 정렬 */
+  align-items: center; /* 내부 요소를 가로로 가운데 정렬 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  justify-content: start;
+  margin-top: 30px;
 }
 </style>

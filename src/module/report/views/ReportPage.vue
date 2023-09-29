@@ -451,6 +451,8 @@ const reportData = computed(() => {
                     max-width="100%"
                     color="#D23361"
                     :elevation="0"
+                    title=""
+                    header=""
                     @click="onDatePickerClicked()"
                   />
                 </v-locale-provider>
