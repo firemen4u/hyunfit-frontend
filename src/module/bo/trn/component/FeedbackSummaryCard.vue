@@ -1,9 +1,9 @@
 <template>
-  <div class="smr-card">
+  <div class="smr-card mr-[45px]">
     <div :class="'mini-color-bar-' + this.index"></div>
     <div class="card-main">
       <div class="card-header">
-        <span class="ml-3">이달의 {{ settingData.status }}</span>
+        <span class="ml-3">피드백 {{ settingData.status }}</span>
       </div>
       <div class="card-rate">
         <div class="gauge">
@@ -40,23 +40,15 @@ export default {
   methods: {
     setData() {
       if (this.index == 1) {
-        if (
-          this.sendToChild.completeCnt +
-            this.sendToChild.noShowCnt +
-            this.sendToChild.upcomingCnt +
-            this.sendToChild.cancelCnt ===
-          0
-        ) {
+        if (this.sendToChild.writeCnt + this.sendToChild.unWriteCnt === 0) {
           this.settingData = { status: '진행률', output: '0%' }
         } else {
           this.settingData = {
             status: '진행률',
             output:
               Math.round(
-                ((this.sendToChild.completeCnt + this.sendToChild.noShowCnt) /
-                  (this.sendToChild.completeCnt +
-                    this.sendToChild.noShowCnt +
-                    this.sendToChild.upcomingCnt)) *
+                (this.sendToChild.writeCnt /
+                  (this.sendToChild.writeCnt + this.sendToChild.unWriteCnt)) *
                   100
               ) +
               '%(총 ' +
@@ -66,44 +58,26 @@ export default {
         }
       } else if (this.index == 2) {
         this.settingData = {
-          status: '노쇼',
-          output: this.sendToChild.noShowCnt,
+          status: '완료',
+          output: this.sendToChild.writeCnt,
         }
       } else if (this.index == 3) {
         this.settingData = {
-          status: '취소',
-          output: this.sendToChild.cancelCnt,
-        }
-      } else if (this.index == 4) {
-        this.settingData = {
-          status: '예정',
-          output: this.sendToChild.upcomingCnt,
-        }
-      } else {
-        this.settingData = {
-          status: '완료',
-          output: this.sendToChild.completeCnt,
+          status: '미완료',
+          output: this.sendToChild.unWriteCnt,
         }
       }
     },
   },
   computed: {
     gaugeWidth() {
-      if (this.settingData.status === '진행률') {
-        const total =
-          this.sendToChild.completeCnt +
-          this.sendToChild.noShowCnt +
-          this.sendToChild.upcomingCnt
-        const completed = total - this.sendToChild.upcomingCnt
-        const percentage = (completed / total) * 100
+      if (this.settingData.status === '미작성') {
+        const percentage =
+          (this.sendToChild.unWriteCnt / this.sendToChild.totalCnt) * 100
         return percentage + '%'
       } else {
-        const completed = this.settingData.output
-        const total =
-          this.sendToChild.completeCnt +
-          this.sendToChild.noShowCnt +
-          this.sendToChild.upcomingCnt
-        const percentage = (completed / total) * 100
+        const percentage =
+          (this.sendToChild.writeCnt / this.sendToChild.totalCnt) * 100
         return percentage + '%'
       }
     },
@@ -120,20 +94,6 @@ export default {
   background-color: #aaaaaa;
 }
 .mini-color-bar-2 {
-  width: 6px;
-  height: 85px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: rgb(195, 35, 35);
-}
-.mini-color-bar-4 {
-  width: 6px;
-  height: 85px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: rgb(255, 251, 0);
-}
-.mini-color-bar-5 {
   width: 6px;
   height: 85px;
   border-top-left-radius: 8px;

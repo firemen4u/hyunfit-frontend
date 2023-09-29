@@ -1,28 +1,48 @@
 <template>
   <BaseContainer category="trainer" footer="false">
-    <div class="nfb-container-top primary-background">
-      <div class="nfb-container flex justify-center">
-        <div class="nfb-list-outer" ref="listOuter">
-          <div class="flex flex-row text-3xl font-bold mt-8 ml-10 mb-5">
-            피드백리스트
-            <div class="flex text-end flex-row text-xl ml-10">
-              <button class="mr-3 align-baseline" @click="prevMonth">
-                &lt;
-              </button>
-              {{ year }}년 {{ formattedMonth }}월
-              <button class="ml-3 align-baseline" @click="nextMonth">
-                &gt;
-              </button>
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
+        <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10">
+          <div
+            class="trn-fb-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
+          >
+            <div
+              class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
+            >
+              <div class="banner-img-cover-text py-12 px-10 mb-5">
+                <p class="text-4xl font-black mt-5 text-[#021f3d]">
+                  월간 피드백 리스트
+                </p>
+              </div>
             </div>
           </div>
-          <div class="flex justify-center">
-            <NoFeedbackList
-              :key="reLoadKey"
-              :targetDate="targetDate"
-            ></NoFeedbackList>
+          <div class="rsv-container-top primary-background">
+            <div class="nfb-list-outer" ref="listOuter">
+              <p class="text-2xl font-black mt-5 ml-[51px]">
+                {{ year }}년 {{ formattedMonth }}월
+                <v-btn
+                  :icon="LeftArrowSvg"
+                  variant="flat"
+                  color="#F9FAFB"
+                  @click="prevMonth"
+                />
+                <v-btn
+                  :icon="RightArrowSvg"
+                  variant="flat"
+                  color="#F9FAFB"
+                  @click="nextMonth"
+                />
+              </p>
+            </div>
+            <div class="flex justify-center">
+              <NoFeedbackList
+                :key="reLoadKey"
+                :targetDate="targetDate"
+              ></NoFeedbackList>
+            </div>
           </div>
         </div>
-      </div>
+      </BaseBodyWrapper>
     </div>
   </BaseContainer>
 </template>
@@ -30,6 +50,7 @@
 <script setup>
 import { BaseContainer, BaseBodyWrapper } from '/src/module/@base/views'
 import NoFeedbackList from '/src/module/bo/trn/component/NoFeedbackList.vue'
+import { LeftArrowSvg, RightArrowSvg } from '@/module/@base/svg'
 </script>
 
 <script>
@@ -106,5 +127,11 @@ export default {
 }
 .text-end {
   align-items: end;
+}
+.trn-fb-banner-container {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
 }
 </style>

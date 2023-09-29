@@ -18,7 +18,7 @@ const headerPages = [
   {
     displayName: 'AI트레이닝',
     destination: pathNames.mbrRtnBoardPage,
-    
+
     menus: [
       { menuName: '프로그램', destination: pathNames.mbrRtnBoardPage },
       { menuName: '리포트', destination: pathNames.reportPage },

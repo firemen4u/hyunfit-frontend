@@ -1,12 +1,16 @@
 <template>
-  <!--최상위 div-->
   <div class="nfb-list-container">
-    <div class="nfb-list-header flex items-center bg-gray-100 text-black h-9">
-      <div class="ml-4">피드백 현황({{ nfbCnt() }}건)</div>
+    <div v-if="showCardList" class="fb-smr-card-container mt-3 mb-5">
+      <div v-for="index in 3" :key="index">
+        <FeedbackSummaryCard
+          class="shadow-lg"
+          :sendToChild="sendingData"
+          :index="index"
+        ></FeedbackSummaryCard>
+      </div>
     </div>
     <div class="nfb-list-inner content-between">
-      <div class="flex flex-col bg-white mt-9 mb-7">
-        <!--카테고리(컬럼명)-->
+      <div class="flex flex-col bg-white mt-1 mb-1">
         <div class="nfb-list-category">
           <div class="nfb-list-seq">#</div>
           <div class="nfb-list-fbSeq">피드백번호</div>
@@ -15,7 +19,6 @@
           <div class="nfb-list-fbStatus">작성상태</div>
           <div class="nfb-list-mbrName">회 원 명</div>
         </div>
-        <!--리스트(행)-->
         <div>
           <div v-if="noFeedbackList.length === 0" class="nfb-noData">
             이달의 피드백이 없습니다.
@@ -35,7 +38,7 @@
                 {{ formatTarget(nofeedback.trnfSubmissionDue) }}
               </div>
               <div class="nfb-list-fbStatus">
-                {{ nofeedback.trnfContent !== null ? '작성' : '미작성' }}
+                {{ nofeedback.trnfContent !== null ? '완료' : '미완료' }}
               </div>
               <div class="nfb-list-mbrName">{{ nofeedback.mbrName }}</div>
             </button>
@@ -58,12 +61,14 @@ import 'dayjs/locale/ko'
 import CreateFeedbackModal from './CreateFeedbackModal.vue'
 import ApiClient from '/src/services/api.js'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
+import FeedbackSummaryCard from '/src/module/bo/trn/component/FeedbackSummaryCard.vue'
 </script>
 
 <script>
 export default {
   components: {
     CreateFeedbackModal,
+    FeedbackSummaryCard,
   },
   props: {
     targetDate: String,
@@ -73,7 +78,12 @@ export default {
       showDetail: false,
       selectedNoFeedback: null,
       noFeedbackList: [],
-      trnSeq: 1,
+      sendingData: {
+        totalCnt: 0,
+        writeCnt: 0,
+        unWriteCnt: 0,
+      },
+      showCardList: false,
       currentPage: 1,
       totalPages: 0,
     }
@@ -103,6 +113,8 @@ export default {
       .then(response => {
         this.noFeedbackList = response
         this.totalPages = Math.ceil(response.length / 10)
+        this.calCnt()
+        this.showCardList = true
       })
       .catch(error => {
         console.error('API 요청 실패:', error)
@@ -118,6 +130,17 @@ export default {
     },
     formatTarget(timestamp) {
       return dayjs(timestamp).locale('ko').format('YYYY-MM')
+    },
+    calCnt() {
+      for (let i = 0; i < this.noFeedbackList.length; i++) {
+        const feedback = this.noFeedbackList[i]
+        if (feedback.trnfContent === null) {
+          this.sendingData.unWriteCnt = this.sendingData.unWriteCnt + 1
+        } else {
+          this.sendingData.writeCnt = this.sendingData.writeCnt + 1
+        }
+      }
+      this.sendingData.totalCnt = this.nfbCnt()
     },
     nfbCnt() {
       return this.noFeedbackList.length
@@ -137,9 +160,13 @@ export default {
 </script>
 
 <style scoped>
-.nfb-list-header {
-  /* border-top-left-radius: 10px;
-    border-top-right-radius: 10px; */
+.fb-smr-card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  width: 980px;
+  height: 100px;
 }
 .nfb-list-container {
   display: flex;
@@ -147,18 +174,14 @@ export default {
   justify-content: center;
   margin-bottom: 30px;
   width: 1000px;
-  /* box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
-    border-radius: 10px; */
 }
 .nfb-list-inner {
   display: flex;
   flex-direction: column;
   width: 1000px;
-  min-height: 660px;
+  min-height: 505px;
   justify-content: space-between;
   background-color: white;
-  /* border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px; */
 }
 .nfb-list-seq {
   display: flex;
