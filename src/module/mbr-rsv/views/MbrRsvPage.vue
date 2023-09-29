@@ -52,7 +52,7 @@
             </div>
             <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
               <div class="mbr-rsv-history-item mt-[40px] mb-1">
-                <p class="text-3xl font-bold mb-6">지난 트레이닝 클래스</p>
+                <p class="text-2xl font-black mb-6">지난 트레이닝 클래스</p>
 
                 <div v-if="reservedResponse?.personalTrainingDTOList.length">
                   <div

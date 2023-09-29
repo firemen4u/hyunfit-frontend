@@ -12,11 +12,11 @@
       style="width: 490px"
       @click="enterPtRoom"
     >
-      <div class="card-header w-[480px] my-1">
+      <div class="card-header w-[480px] my-1 mb-2">
         <div class="flex flex-col">
           <div class="text-gray-900 font-bold flex justify-between">
             <div class="flex items-center">
-              <p class="train-type text-xl font-bold mr-2 align-middle">
+              <p class="train-type text-lg font-black mr-2 align-middle">
                 {{ props.responseData.trnTypeName }}
               </p>
               <p class="train-datetime text-xs self-end text-gray-500">

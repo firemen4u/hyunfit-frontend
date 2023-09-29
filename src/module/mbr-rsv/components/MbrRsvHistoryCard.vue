@@ -7,7 +7,7 @@
         title="trainer profile img"
       ></div>
       <div class="flex-col">
-        <div class="text-xl font-bold">
+        <div class="text-lg font-black">
           {{ props.responseData.trnName }}
         </div>
         <div class="text-base flex text-gray-500">
@@ -33,7 +33,7 @@
     >
       <div class="flex justify-between mb-1">
         <div class="flex">
-          <div class="text-lg font-extrabold">
+          <div class="text-lg font-bold">
             {{ props.responseData.trnTypeName }}
           </div>
           <div
