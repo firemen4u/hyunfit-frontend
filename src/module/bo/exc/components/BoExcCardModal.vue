@@ -2,8 +2,24 @@
 <script setup>
 import dateUtil from '/src/utils/date.js'
 import ExctgUtils from '@/module/bo/exc/services/excUtils'
+import { watch, ref } from 'vue'
 const props = defineProps({
+  show: Boolean,
+  showDeleteBtn: Boolean,
   exercise: Object,
+})
+
+const isActive = ref(props.show)
+
+watch(
+  () => props.show,
+  newVal => {
+    isActive.value = newVal
+  }
+)
+
+watch(isActive, newVal => {
+  emit('update:show', newVal)
 })
 
 const emit = defineEmits([])
@@ -58,7 +74,7 @@ const deleteExercise = () => {
 </script>
 
 <template>
-  <v-dialog width="auto">
+  <v-dialog v-model="isActive" width="auto">
     <template v-slot:default="{ isActive }">
       <div class="bg-white rounded-lg p-4" @click.stop>
         <div class="flex justify-end">

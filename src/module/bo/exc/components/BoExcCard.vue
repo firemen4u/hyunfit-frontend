@@ -1,15 +1,11 @@
 <template>
   <div
-    class="exc-card flex flex-col shadow-md rounded-lg hover:translate-y-[-10px] hover:bg-gray-100"
+    class="exc-card flex shadow-md rounded-lg hover:bg-gray-100 w-[1000px] cursor-pointer"
     @click="handleClick"
   >
-    <div>
-      <video controls loop muted autoplay class="exc-img">
-        <source :src="videoSrc" />
-      </video>
-    </div>
-    <div class="exc-name">운동 이름 : {{ exercise.excName }}</div>
-    <div class="exc-content">운동 설명 : {{ exercise.excContent }}</div>
+    <div class="exc-name font-extrabold w-[150px]">{{ exercise.excName }}</div>
+    <p class="px-2">|</p>
+    <div class="exc-content">{{ exercise.excContent }}</div>
   </div>
 </template>
 
@@ -35,7 +31,6 @@ const videoSrc = computed(
 
 <style scoped>
 .exc-card {
-  width: 200px;
   padding: 20px;
   margin: 5px;
 }

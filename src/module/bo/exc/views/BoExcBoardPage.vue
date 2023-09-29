@@ -1,33 +1,56 @@
 <template>
-  <div class="bg-gray-50 w-full">
-    <BaseContainer category="admin">
+  <BaseContainer category="admin">
+    <div class="w-100 flex justify-center primary-background">
       <BaseBodyWrapper>
-        <div class="pt-10">
-          <div class="flex justify-between">
-            <div class="text-3xl font-bold">트레이닝 리스트</div>
+        <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
+          <div class="bo-excNewBoard-banner flex items-center px-10">
+            <div class="text-4xl font-black">트레이닝 관리</div>
+          </div>
+
+          <div class="mt-6 px-[50px]">
+            <v-text-field
+              label="운동 이름으로 검색하세요."
+              single-line
+              hide-details
+              clearable
+              flat
+              bg-color="#F8F8F8"
+              variant="solo"
+              v-model="searchText"
+              type="text"
+            >
+              <template v-slot:prepend-inner>
+                <div class="px-5">
+                  <SearchSvg :size="20" color="#AAAAAA" />
+                </div>
+              </template>
+            </v-text-field>
+          </div>
+
+          <div class="flex justify-between items-center mt-5 mx-[50px]">
+            <div class="flex">
+              <BoExcBoardFilterContainer
+                class="flex"
+                @updateExcType="updateExcType"
+                :modelValue="selectedExcType"
+              />
+            </div>
+            <v-btn
+              @click="goToExcNewPage"
+              color="#021f3d"
+              size="x-large"
+              class="rounded-lg"
+              >운동 등록하기</v-btn
+            >
           </div>
 
           <div
             class="content-wrap p-2 mt-5 mb-20 border-gray-100 rounded-lg bg-white"
           >
-            <div class="flex justify-between items-center">
-              <BoExcBoardFilterContainer
-                class="flex"
-                @updateExcType="updateExcType"
-              />
-              <div class="mr-5">
-                <input
-                  type="text"
-                  v-model="searchText"
-                  placeholder=" 운동 검색"
-                  class="border-2 border-solid border-gray-400 rounded-md pl-4 hover:border-gray-600"
-                />
-              </div>
-            </div>
             <div class="exc-wrap w-full">
               <div
                 v-if="paginatedExercises.length > 0"
-                class="flex flex-wrap ml-4"
+                class="flex flex-wrap justify-center"
               >
                 <div
                   v-for="exercise in paginatedExercises"
@@ -38,12 +61,11 @@
               </div>
               <div v-else>해당하는 운동이 없습니다.</div>
             </div>
-            <div class="flex justify-end mr-5 mb-10">
-              <v-btn @click="goToExcNewPage" color="primary"
-                >운동 등록하기</v-btn
-              >
-            </div>
-            <BasePagination v-model="currentPage" :total-pages="totalPages" />
+            <BasePagination
+              v-model="currentPage"
+              :total-pages="totalPages"
+              class="mt-3"
+            />
           </div>
         </div>
         <BoExcCardModal
@@ -54,10 +76,11 @@
           @deleteExercise="deleteExercise"
         />
       </BaseBodyWrapper>
-    </BaseContainer>
-  </div>
+    </div>
+  </BaseContainer>
 </template>
 <script setup>
+import { SearchSvg } from '/src/module/@base/svg'
 import {
   BoExcCard,
   BoExcBoardFilterContainer,
@@ -84,7 +107,7 @@ const updateExcType = value => {
   console.log('After reset:', currentPage.value) // 로그 추가
 }
 
-const itemsPerPage = ref(15) // 한 페이지당 표시될 아이템 수
+const itemsPerPage = ref(8) // 한 페이지당 표시될 아이템 수
 const currentPage = ref(1) // 현재 페이지
 
 const totalPages = computed(() => {
@@ -175,6 +198,13 @@ const deleteExercise = async excSeq => {
 </script>
 <style scoped>
 .exc-wrap {
-  height: 650px;
+  height: 100%;
+}
+.bo-excNewBoard-banner {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
 }
 </style>

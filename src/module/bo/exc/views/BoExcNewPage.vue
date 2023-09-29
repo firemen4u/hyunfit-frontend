@@ -1,220 +1,229 @@
 <template>
   <BaseContainer category="admin">
-    <BaseBodyWrapper>
-      <div class="pt-10">
-        <div class="flex justify-between">
-          <div class="text-3xl font-bold mb-5">트레이닝 동작 등록</div>
-        </div>
-        <form @submit.prevent="submit">
-          <div>
-            <div class="exc-content-wrap">
-              <div class="flex items-center">
-                <p class="col-1">운동 이름</p>
-                <v-text-field
-                  v-model="exc_name"
-                  clearable
-                  maxlength="20"
-                  placeholder="20자 내로 작성하세요"
-                  hide-details
-                  variant="solo"
-                ></v-text-field>
-              </div>
-
-              <div class="flex items-center mt-4">
-                <p class="col-1">운동 설명</p>
-                <v-textarea
-                  v-model="exc_content"
-                  clearable
-                  placeholder="50자 내로 작성하세요"
-                  maxlength="50"
-                  variant="solo"
-                  single-line
-                ></v-textarea>
-              </div>
-              <div class="flex items-center mt-4">
-                <p class="col-1">운동 종류</p>
-                <BoExcRadioButton
-                  :options="radioOptions1"
-                  v-model="exc_type"
-                  hide-details
-                />
-              </div>
-
-              <div class="flex items-center mt-4">
-                <p class="col-1">운동 난이도</p>
-                <BoExcRadioButton
-                  :options="radioOptions2"
-                  v-model="exc_difficulty"
-                  hide-details
-                />
-              </div>
-              <div class="flex justify-between">
-                <div class="flex items-center mt-4">
-                  <p class="col-1">1회당 칼로리 소모량</p>
+    <div class="w-100 flex justify-center primary-background">
+      <BaseBodyWrapper>
+        <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
+          <div class="bo-excNew-banner flex items-center px-10">
+            <div class="text-4xl font-black">트레이닝 동작 등록</div>
+          </div>
+          <form @submit.prevent="submit" class="px-[50px] mt-6">
+            <div>
+              <div class="exc-content-wrap">
+                <div class="flex items-center">
+                  <p class="col-1">운동 이름</p>
                   <v-text-field
-                    v-model="exc_calories_per_rep"
-                    type="number"
+                    v-model="exc_name"
                     clearable
-                    placeholder="1회당 칼로리 소모량"
+                    maxlength="20"
+                    placeholder="20자 내로 작성하세요"
                     hide-details
                     variant="solo"
-                    suffix="kcal"
                   ></v-text-field>
                 </div>
 
                 <div class="flex items-center mt-4">
-                  <p class="col-1">지정할 세트 수</p>
-                  <v-text-field
-                    v-model="exc_set_count"
-                    type="number"
+                  <p class="col-1">운동 설명</p>
+                  <v-textarea
+                    v-model="exc_content"
                     clearable
-                    placeholder="지정할 세트 수"
-                    hide-details
+                    placeholder="50자 내로 작성하세요"
+                    maxlength="50"
                     variant="solo"
-                    suffix="set"
-                  ></v-text-field>
+                    single-line
+                  ></v-textarea>
                 </div>
-              </div>
-              <div class="flex justify-between">
                 <div class="flex items-center mt-4">
-                  <p class="col-1">세트당 동작 횟수</p>
-                  <v-text-field
-                    v-model="excRepCountPerSet"
-                    type="number"
-                    clearable
-                    placeholder="세트당 동작 횟수"
+                  <p class="col-1">운동 종류</p>
+                  <BoExcRadioButton
+                    :options="radioOptions1"
+                    v-model="exc_type"
                     hide-details
-                    variant="solo"
-                    suffix="회"
-                  ></v-text-field>
+                  />
                 </div>
 
                 <div class="flex items-center mt-4">
-                  <p class="col-1">세트당 시간</p>
-                  <v-text-field
-                    v-model="exc_time_per_set_in_sec"
-                    clearable
-                    placeholder="운동에 대해 지정한 세트당 시간"
+                  <p class="col-1">운동 난이도</p>
+                  <BoExcRadioButton
+                    :options="radioOptions2"
+                    v-model="exc_difficulty"
                     hide-details
-                    variant="solo"
-                    suffix="S"
-                  ></v-text-field>
+                  />
+                </div>
+                <div class="flex justify-between">
+                  <div class="flex items-center mt-4">
+                    <p class="col-1">1회당 칼로리 소모량</p>
+                    <v-text-field
+                      v-model="exc_calories_per_rep"
+                      type="number"
+                      clearable
+                      placeholder="1회당 칼로리 소모량"
+                      hide-details
+                      variant="solo"
+                      suffix="kcal"
+                    ></v-text-field>
+                  </div>
+
+                  <div class="flex items-center mt-4">
+                    <p class="col-1">지정할 세트 수</p>
+                    <v-text-field
+                      v-model="exc_set_count"
+                      type="number"
+                      clearable
+                      placeholder="지정할 세트 수"
+                      hide-details
+                      variant="solo"
+                      suffix="set"
+                    ></v-text-field>
+                  </div>
+                </div>
+                <div class="flex justify-between">
+                  <div class="flex items-center mt-4">
+                    <p class="col-1">세트당 동작 횟수</p>
+                    <v-text-field
+                      v-model="excRepCountPerSet"
+                      type="number"
+                      clearable
+                      placeholder="세트당 동작 횟수"
+                      hide-details
+                      variant="solo"
+                      suffix="회"
+                    ></v-text-field>
+                  </div>
+
+                  <div class="flex items-center mt-4">
+                    <p class="col-1">세트당 시간</p>
+                    <v-text-field
+                      v-model="exc_time_per_set_in_sec"
+                      clearable
+                      placeholder="운동에 대해 지정한 세트당 시간"
+                      hide-details
+                      variant="solo"
+                      suffix="S"
+                    ></v-text-field>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="exc-target-wrap">
-              <div class="">
-                <div class="flex items-center mt-4">
-                  <p class="col-1">운동 부위</p>
-                  <v-select
-                    v-model="selectedBodyParts"
-                    :items="target_items"
-                    chips
-                    clearable
-                    hide-details
-                    label="부위"
-                    multiple
-                    color="primary"
-                    bg-color="white"
-                  ></v-select>
+              <div class="exc-target-wrap">
+                <div class="">
+                  <div class="flex items-center mt-4">
+                    <p class="col-1">운동 부위</p>
+                    <v-select
+                      v-model="selectedBodyParts"
+                      :items="target_items"
+                      chips
+                      clearable
+                      hide-details
+                      label="부위"
+                      multiple
+                      variant="solo"
+                      color="primary"
+                      bg-color="white"
+                    ></v-select>
+                  </div>
                 </div>
-              </div>
-              <div v-if="selectedBodyParts.length > 0">
-                <div
-                  v-for="(bodyPart, index) in selectedBodyParts"
-                  :key="index"
-                >
-                  <div class="flex w-full items-center mt-2 mb-2">
-                    <p class="col-1"></p>
-                    <div class="label-wrap ml-14">
-                      <span class="custom-label">{{ bodyPart }}</span>
-                    </div>
-                    <div class="slider-wrap">
-                      <v-slider
-                        v-model="
-                          bodyPartWeights[target_items_mapping[bodyPart]]
-                        "
-                        class="target-slider"
-                        color="#d2336177"
-                        track-color="#bbbbbb"
-                        thumb-color="#d23361"
-                        :max="100"
-                        :step="10"
-                        hide-details
-                        show-ticks="always"
-                        style="width: 800px"
-                      >
-                        <template v-slot:append>
-                          <v-text-field
-                            v-model="
-                              bodyPartWeights[target_items_mapping[bodyPart]]
-                            "
-                            placeholder="0"
-                            hide-details
-                            type="number"
-                            style="width: 80px"
-                            density="compact"
-                            variant="outlined"
-                          ></v-text-field>
-                        </template>
-                      </v-slider>
+                <div v-if="selectedBodyParts.length > 0">
+                  <div
+                    v-for="(bodyPart, index) in selectedBodyParts"
+                    :key="index"
+                  >
+                    <div class="flex w-full items-center mt-2 mb-2">
+                      <p class="col-1"></p>
+                      <div class="label-wrap ml-14">
+                        <span class="custom-label">{{ bodyPart }}</span>
+                      </div>
+                      <div class="slider-wrap">
+                        <v-slider
+                          v-model="
+                            bodyPartWeights[target_items_mapping[bodyPart]]
+                          "
+                          class="target-slider"
+                          color="#d2336177"
+                          track-color="#bbbbbb"
+                          thumb-color="#d23361"
+                          :max="100"
+                          :step="10"
+                          hide-details
+                          show-ticks="always"
+                          style="width: 650px"
+                        >
+                          <template v-slot:append>
+                            <v-text-field
+                              v-model="
+                                bodyPartWeights[target_items_mapping[bodyPart]]
+                              "
+                              placeholder="0"
+                              hide-details
+                              type="number"
+                              style="width: 80px"
+                              density="compact"
+                              variant="outlined"
+                            ></v-text-field>
+                          </template>
+                        </v-slider>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="flex flex-col">
+                <hr class="mt-4" />
+                <p class="mt-4 mb-8 font-bold text-lg">운동 데이터 업로드</p>
+                <div class="flex items-center mb-4">
+                  <BoExcFileInput
+                    v-model="files_exc_model"
+                    label="모델 데이터"
+                    :prepend-icon="CloudArrowUpSvg"
+                  ></BoExcFileInput>
+                </div>
+                <div class="file-input-wrap flex items-center mb-4">
+                  <div class="file-input">
+                    <BoExcFileInput
+                      class="mr-4"
+                      v-model="files_exc_preview"
+                      label="운동 가이드 영상"
+                      :prepend-icon="ThumbnailSvg"
+                    ></BoExcFileInput>
+                  </div>
+                  <div class="file-input">
+                    <BoExcFileInput
+                      v-model="files_exc_view"
+                      label="운동 영상"
+                      :prepend-icon="VideoSvg"
+                    ></BoExcFileInput>
+                  </div>
+                </div>
+                <div class="file-input-wrap flex items-center mb-4">
+                  <div class="file-input">
+                    <BoExcFileInput
+                      class="mr-4"
+                      v-model="files_exc_view_row_qual"
+                      label="썸네일 운동 영상"
+                      :prepend-icon="PictureSvg"
+                    ></BoExcFileInput>
+                  </div>
+                  <div class="file-input">
+                    <BoExcFileInput
+                      v-model="files_exc_mp3"
+                      label="운동 가이드 메시지"
+                      :prepend-icon="Mp3Svg"
+                    ></BoExcFileInput>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="flex flex-col">
-              <hr />
-              <p class="mt-8 mb-8 font-bold text-lg">운동 데이터 업로드</p>
-              <div class="flex items-center mb-4">
-                <BoExcFileInput
-                  v-model="files_exc_model"
-                  label="모델 데이터"
-                  :prepend-icon="CloudArrowUpSvg"
-                ></BoExcFileInput>
-              </div>
-              <div class="file-input-wrap flex items-center mb-4">
-                <div class="file-input">
-                  <BoExcFileInput
-                    class="mr-4"
-                    v-model="files_exc_preview"
-                    label="운동 가이드 영상"
-                    :prepend-icon="ThumbnailSvg"
-                  ></BoExcFileInput>
-                </div>
-                <div class="file-input">
-                  <BoExcFileInput
-                    v-model="files_exc_view"
-                    label="운동 영상"
-                    :prepend-icon="VideoSvg"
-                  ></BoExcFileInput>
-                </div>
-              </div>
-              <div class="file-input-wrap flex items-center mb-4">
-                <div class="file-input">
-                  <BoExcFileInput
-                    class="mr-4"
-                    v-model="files_exc_view_row_qual"
-                    label="썸네일 운동 영상"
-                    :prepend-icon="PictureSvg"
-                  ></BoExcFileInput>
-                </div>
-                <div class="file-input">
-                  <BoExcFileInput
-                    v-model="files_exc_mp3"
-                    label="운동 가이드 메시지"
-                    :prepend-icon="Mp3Svg"
-                  ></BoExcFileInput>
-                </div>
-              </div>
+            <div class="text-center mt-10 mb-10">
+              <v-btn
+                type="submit"
+                size="x-large"
+                color="#021f3d"
+                class="w-[180px] rounded-lg"
+                >등록하기</v-btn
+              >
             </div>
-          </div>
-          <div class="text-center mt-10 mb-10">
-            <v-btn type="submit" class="bg-primary w-48 h-36">등록하기</v-btn>
-          </div>
-        </form>
-      </div>
-    </BaseBodyWrapper>
+          </form>
+        </div>
+      </BaseBodyWrapper>
+    </div>
   </BaseContainer>
 </template>
 <script setup>
@@ -413,11 +422,11 @@ const submit = async () => {
 
 <style scoped>
 .col-1 {
-  width: 200px;
+  width: 150px;
   margin-left: 10px;
 }
 .v-text-field {
-  width: 300px;
+  width: 330px;
 }
 .v-radio-group .v-input__control {
   width: 300px;
@@ -430,6 +439,13 @@ const submit = async () => {
   width: 550px;
 }
 .label-wrap {
-  width: 100px;
+  width: 150px;
+}
+.bo-excNew-banner {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
 }
 </style>
