@@ -48,31 +48,35 @@ const mapExperienceLevel = level => {
   return rtnExperienceLevelMapping[level] || '알 수 없음'
 }
 
-const rtnConsiderMapping = {
-  0: '0',
-  1: '목건강을 고려 1'
+const considerationsMapping = {
+  rtnGoal: {
+    1: '# 체중 관리',
+    2: '# 건광 관리'
+  },
+  rtnKneeHealthConsidered: {
+    0: '',
+    1: '# 무릎 건강을 고려한'
+  },
+  rtnNoiseConsidered: {
+    0: '',
+    1: '# 층간 소음을 고려한'
+  },
+  rtnLongSitter: {
+    0: '',
+    1: '# 오래 앉아있는 사람을 위한'
+  },
+  rtnNeckShoulderFocused: {
+    0: '',
+    1: '# 목과 어깨에 집중된'
+  },
+  rtnBackDiskConsidered: {
+    0: '',
+    1: '# 허리디스크 환자를 고려한'
+  }
 }
 
-const mapConsider = level => {
-  return rtnConsiderMapping[level] || '알 수 없음'
-}
-
-const rtnConsiderMapping2 = {
-  0: '0',
-  1: '허리건강을 고려 2'
-}
-
-const mapConsider2 = level => {
-  return rtnConsiderMapping2[level] || '알 수 없음'
-}
-
-const rtnConsiderMapping3 = {
-  0: '0',
-  1: '등 건강을 고려 3'
-}
-
-const mapConsider3 = level => {
-  return rtnConsiderMapping3[level] || '알 수 없음'
+const mapConsideration = (key, level) => {
+  return (considerationsMapping[key] && considerationsMapping[key][level]) || ''
 }
 </script>
 <template>
@@ -107,13 +111,13 @@ const mapConsider3 = level => {
                   <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
                   <p>{{ selectedRoutine.exercises.length }}개</p>
                 </div>
-                <div>
-                  <p>{{ selectedRoutine.rtnGoal }}</p>
-                  <p>{{ selectedRoutine.rtnKneeHealthConsidered }}</p>
-                  <p>{{ selectedRoutine.rtnNoiseConsidered }}</p>
-                  <p>{{ selectedRoutine.rtnLongSitter }}</p>
-                  <p>{{ selectedRoutine.rtnNeckShoulderFocused }}</p>
-                  <p>{{ selectedRoutine.rtnBackDiskConsidered }}</p>
+                <div class="flex flex-wrap text-sm text-gray-500 mt-3">
+                  <p class="pr-1">{{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}</p>
+                  <p class="px-1" v-if="selectedRoutine.rtnKneeHealthConsidered === 1">{{ mapConsideration('rtnKneeHealthConsidered', selectedRoutine.rtnKneeHealthConsidered) }}</p>
+                  <p class="px-1" v-if="selectedRoutine.rtnNoiseConsidered === 1">{{ mapConsideration('rtnNoiseConsidered', selectedRoutine.rtnNoiseConsidered) }}</p>
+                  <p class="px-1" v-if="selectedRoutine.rtnLongSitter === 1">{{ mapConsideration('rtnLongSitter', selectedRoutine.rtnLongSitter) }}</p>
+                  <p class="px-1" v-if="selectedRoutine.rtnNeckShoulderFocused === 1">{{ mapConsideration('rtnNeckShoulderFocused', selectedRoutine.rtnNeckShoulderFocused) }}</p>
+                  <p class="px-1" v-if="selectedRoutine.rtnBackDiskConsidered === 1">{{ mapConsideration('rtnBackDiskConsidered', selectedRoutine.rtnBackDiskConsidered) }}</p>
                 </div>
               </div>
               <div v-if="showMember" class="flex justify-center">
