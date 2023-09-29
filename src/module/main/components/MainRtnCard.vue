@@ -2,7 +2,7 @@
   <BaseCardTemplate :cover-src="src">
     <div class="content-wrapper p-1">
       <div class="flex items-center">
-        <div class="text-lg font-black self-center">하체 근력 강화 루틴</div>
+        <div class="text-lg font-black self-center">하체 근력 강화 프로그램</div>
         <BaseLabel class="ml-1">22분</BaseLabel>
       </div>
 

@@ -164,7 +164,7 @@ const openModal = exercise => {
         </div>
         <div>
           <div class="flex items-baseline ml-2 mb-2">
-            <div class="w-28 font-semibold">루틴 시간 :</div>
+            <div class="w-28 font-semibold">프로그램 시간 :</div>
             <div class="text-xl font-bold mx-1">
               <slot name="totalMinutes"></slot>
             </div>
