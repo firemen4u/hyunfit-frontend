@@ -8,13 +8,13 @@ const animation = ref(false)
   <div
     @mouseenter="animation = true"
     @mouseleave="animation = false"
-    class="flex flex-col h-full w-full p-10 justify-start overflow-hidden"
+    class="cursor-pointer flex flex-col h-full w-full p-10 justify-start overflow-hidden"
   >
-    <div class="main-card-subtitle mb-3 font-black">맞춤형</div>
+    <div class="main-card-subtitle mb-3 font-black">개인 설정</div>
 
-    <div class="text-3xl font-bold text-white">알려줘요</div>
+    <div class="text-3xl font-bold text-white">오직 나를 위한</div>
 
-    <div class="text-3xl font-bold text-white">너굴맨</div>
+    <div class="text-3xl font-bold text-white">맞춤형 추천 받아보기</div>
 
     <div class="flex justify-center rounded-sm">
       <img

@@ -8,7 +8,7 @@ const animation = ref(false)
   <div
     @mouseenter="animation = true"
     @mouseleave="animation = false"
-    class="flex flex-col h-full w-full p-10 justify-start overflow-hidden"
+    class="flex cursor-pointer flex-col h-full w-full p-10 justify-start overflow-hidden"
   >
     <div class="main-card-subtitle mb-3 font-black">현핏 리포트</div>
 
@@ -39,5 +39,6 @@ const animation = ref(false)
   background-image: url('https://fs.hyunfit.life/api/hyunfit/file/pie-graph-icon.png');
   background-size: 20px;
   text-indent: 28px;
+  background-position-y: 1px;
 }
 </style>

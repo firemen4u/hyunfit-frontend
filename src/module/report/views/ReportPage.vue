@@ -130,7 +130,7 @@ function renderCharts() {
     labels: ['Excellent', 'Good', 'Bad'],
     datasets: [
       {
-        backgroundColor: ['#D23361', '#ffd344', '#9f9f9f'],
+        backgroundColor: ['#185492', '#6dacee', '#afafaf'],
         data: [
           divide(reportData.value?.counts.excellent, total),
           divide(reportData.value?.counts.good, total),
@@ -154,10 +154,10 @@ function renderCharts() {
       {
         label: '칼로리 소모량',
         data: timestamps.map(ts => (ts in timestampMap ? timestampMap[ts] : 0)),
-        backgroundColor: 'rgba(245,86,132,0.8)', // Bar의 색상
-        borderColor: 'rgba(210,51,97,0.57)',
+        backgroundColor: 'rgba(24,84,146,0.71)', // Bar의 색상
+        borderColor: '#185492',
         borderRadius: 10, // Bar의 border radius 설정
-        barThickness: 5,
+        barThickness: 8,
       },
     ],
   }
@@ -194,12 +194,12 @@ function renderCharts() {
     datasets: [
       {
         label: '운동량',
-        backgroundColor: 'rgba(255,99,132,0.2)',
-        borderColor: 'rgba(255,99,132,1)',
-        pointBackgroundColor: 'rgba(255,99,132,1)',
+        backgroundColor: 'rgba(24,84,146,0.48)',
+        borderColor: 'rgba(24,84,146,0.8)',
+        pointBackgroundColor: '#185492',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(255,99,132,1)',
+        pointHoverBorderColor: '#185492',
         data: Object.values(targetSummaryData).map(v =>
           ((v / totalCalories) * 10).toFixed(1)
         ),
@@ -449,7 +449,7 @@ const reportData = computed(() => {
                     class="report-page-date-picker"
                     hide-actions
                     max-width="100%"
-                    color="#D23361"
+                    color="#185492"
                     :elevation="0"
                     title=""
                     header=""
@@ -527,11 +527,12 @@ const reportData = computed(() => {
 /* 활성 상태일 때의 스타일을 정의합니다. */
 .report-chart
   .v-btn.v-btn--active.v-btn--icon.v-btn--density-default.v-btn--size-default.v-btn--variant-flat {
-  background-color: #d23361 !important; /* 활성 색상 설정 */
+  background-color: #185492 !important; /* 활성 색상 설정 */
 }
 .report-chart
   .v-btn.v-btn--icon.bg-exercised.v-btn--density-default.v-btn--size-default.v-btn--variant-flat {
-  background-color: #f686a6 !important; /* 활성 색상 설정 */
+  background-color: #185492 !important; /* 활성 색상 설정 */
+  opacity: 0.8;
 }
 .report-page-date-picker .v-date-picker-month {
   padding: 12px;

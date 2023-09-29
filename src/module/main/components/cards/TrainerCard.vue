@@ -3,7 +3,9 @@ import TrainerInfiniteScroll from '@/module/main/components/cards/TraninerInfini
 </script>
 
 <template>
-  <div class="overflow-hidden h-full w-full flex flex-col justify-start">
+  <div
+    class="cursor-pointer overflow-hidden h-full w-full flex flex-col justify-start"
+  >
     <div class="flex flex-col p-10">
       <div class="main-card-subtitle mb-3 font-black">화상 트레이닝</div>
 
@@ -20,8 +22,9 @@ import TrainerInfiniteScroll from '@/module/main/components/cards/TraninerInfini
 <style scoped>
 .main-card-subtitle {
   color: #ced1d9;
-  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/online-meeting-icon.png');
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/dslr-camera-icon.png');
   background-size: 20px;
   text-indent: 28px;
+  background-position-y: 1px;
 }
 </style>

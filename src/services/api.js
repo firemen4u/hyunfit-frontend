@@ -28,7 +28,15 @@ function appendAuthorization(config) {
   }
   config.headers['Authorization'] = authorization
 }
-
+function printError(error) {
+  if (error.response) {
+    console.error('Axios 오류:', error.response.status)
+    console.error('Axios 응답 데이터:', error.response.data)
+  } else {
+    console.error('Axios 서버 응답 없음:', error.message)
+  }
+  console.log('요청 URL: ', error.config.baseURL + error.config.url)
+}
 function instanceResolver(type) {
   if (type === 'fs') {
     return fsInstance
@@ -51,6 +59,7 @@ async function _get(url, config = {}, instance) {
       return response.data
     })
     .catch(error => {
+      printError(error)
       throw error
     })
 }
@@ -62,6 +71,7 @@ async function _post(url, data, config, instance) {
     .post(url, data, config)
     .then(response => response.data)
     .catch(error => {
+      printError(error)
       throw error
     })
 }
@@ -76,6 +86,7 @@ async function _put(url, data, config, instance) {
     .put(url, data, config)
     .then(response => response.data)
     .catch(error => {
+      printError(error)
       throw error
     })
 }
@@ -93,6 +104,7 @@ function remove(url, config = {}, type) {
     .delete(url, config)
     .then(response => response.data)
     .catch(error => {
+      printError(error)
       throw error
     })
 }
