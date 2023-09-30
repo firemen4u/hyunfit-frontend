@@ -51,28 +51,28 @@ const mapExperienceLevel = level => {
 const considerationsMapping = {
   rtnGoal: {
     1: '# 체중 관리',
-    2: '# 건광 관리'
+    2: '# 건강 관리',
   },
   rtnKneeHealthConsidered: {
     0: '',
-    1: '# 무릎 건강을 고려한'
+    1: '# 무릎 건강을 고려한',
   },
   rtnNoiseConsidered: {
     0: '',
-    1: '# 층간 소음을 고려한'
+    1: '# 층간 소음을 고려한',
   },
   rtnLongSitter: {
     0: '',
-    1: '# 오래 앉아있는 사람을 위한'
+    1: '# 오래 앉아있는 사람을 위한',
   },
   rtnNeckShoulderFocused: {
     0: '',
-    1: '# 목과 어깨에 집중된'
+    1: '# 목과 어깨에 집중된',
   },
   rtnBackDiskConsidered: {
     0: '',
-    1: '# 허리디스크 환자를 고려한'
-  }
+    1: '# 허리디스크 환자를 고려한',
+  },
 }
 
 const mapConsideration = (key, level) => {
@@ -112,12 +112,61 @@ const mapConsideration = (key, level) => {
                   <p>{{ selectedRoutine.exercises.length }}개</p>
                 </div>
                 <div class="flex flex-wrap text-sm text-gray-500 mt-3">
-                  <p class="pr-1">{{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}</p>
-                  <p class="px-1" v-if="selectedRoutine.rtnKneeHealthConsidered === 1">{{ mapConsideration('rtnKneeHealthConsidered', selectedRoutine.rtnKneeHealthConsidered) }}</p>
-                  <p class="px-1" v-if="selectedRoutine.rtnNoiseConsidered === 1">{{ mapConsideration('rtnNoiseConsidered', selectedRoutine.rtnNoiseConsidered) }}</p>
-                  <p class="px-1" v-if="selectedRoutine.rtnLongSitter === 1">{{ mapConsideration('rtnLongSitter', selectedRoutine.rtnLongSitter) }}</p>
-                  <p class="px-1" v-if="selectedRoutine.rtnNeckShoulderFocused === 1">{{ mapConsideration('rtnNeckShoulderFocused', selectedRoutine.rtnNeckShoulderFocused) }}</p>
-                  <p class="px-1" v-if="selectedRoutine.rtnBackDiskConsidered === 1">{{ mapConsideration('rtnBackDiskConsidered', selectedRoutine.rtnBackDiskConsidered) }}</p>
+                  <p class="pr-1">
+                    {{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnKneeHealthConsidered === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnKneeHealthConsidered',
+                        selectedRoutine.rtnKneeHealthConsidered
+                      )
+                    }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnNoiseConsidered === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnNoiseConsidered',
+                        selectedRoutine.rtnNoiseConsidered
+                      )
+                    }}
+                  </p>
+                  <p class="pr-1" v-if="selectedRoutine.rtnLongSitter === 1">
+                    {{
+                      mapConsideration(
+                        'rtnLongSitter',
+                        selectedRoutine.rtnLongSitter
+                      )
+                    }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnNeckShoulderFocused === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnNeckShoulderFocused',
+                        selectedRoutine.rtnNeckShoulderFocused
+                      )
+                    }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnBackDiskConsidered === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnBackDiskConsidered',
+                        selectedRoutine.rtnBackDiskConsidered
+                      )
+                    }}
+                  </p>
                 </div>
               </div>
               <div v-if="showMember" class="flex justify-center">
@@ -228,8 +277,8 @@ const mapConsideration = (key, level) => {
   width: 1000px;
 }
 .rtn-detail-img {
-  max-width: 300px;
-  max-height: 175px;
+  max-width: 350px;
+  max-height: 300px;
 }
 .rtn-detail-col {
   margin-top: 10px;
