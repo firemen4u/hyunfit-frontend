@@ -81,7 +81,7 @@ const deleteExercise = () => {
 
 <template>
   <v-dialog v-model="isActive" width="auto">
-    <template v-slot:default="{ isActive }">
+    <template v-slot:default>
       <div class="bg-white rounded-lg px-5 py-5" @click.stop>
         <div class="exc-modal-excName text-3xl font-black" title="운동 이름">
           <p>{{ exercise.excName }}</p>
