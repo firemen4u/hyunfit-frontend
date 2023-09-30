@@ -1,8 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import HeartSvg from '@/module/@base/svg/HeartSvg.vue'
+import { HeartSvg, LevelSvg, RewardSvg } from '@/module/@base/svg'
 import BaseLabel from '@/module/@base/components/BaseLabel.vue'
-import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
 import BoExcCard from '/src/module/@base/components/BaseExcCard.vue'
 import router, { pathNames } from '@/router'
@@ -11,7 +10,6 @@ const props = defineProps({
   routines: Array,
   showMember: Boolean,
 })
-
 
 const goToAiTraining = () => {
   router.push(pathNames.aiTrainingPage)
@@ -36,6 +34,49 @@ const startRoutine = () => {
     console.log('루틴 시작:', selectedRoutine.value)
     goToAiTraining() // 이 함수를 호출하여 AI 트레이닝 페이지로 이동
   }
+}
+
+const rtnExperienceLevelMapping = {
+  1: '초급',
+  2: '초중급',
+  3: '중급',
+  4: '중상급',
+  5: '상급',
+}
+
+const mapExperienceLevel = level => {
+  return rtnExperienceLevelMapping[level] || '알 수 없음'
+}
+
+const considerationsMapping = {
+  rtnGoal: {
+    1: '# 체중 관리',
+    2: '# 건강 관리',
+  },
+  rtnKneeHealthConsidered: {
+    0: '',
+    1: '# 무릎 건강을 고려한',
+  },
+  rtnNoiseConsidered: {
+    0: '',
+    1: '# 층간 소음을 고려한',
+  },
+  rtnLongSitter: {
+    0: '',
+    1: '# 오래 앉아있는 사람을 위한',
+  },
+  rtnNeckShoulderFocused: {
+    0: '',
+    1: '# 목과 어깨에 집중된',
+  },
+  rtnBackDiskConsidered: {
+    0: '',
+    1: '# 허리디스크 환자를 고려한',
+  },
+}
+
+const mapConsideration = (key, level) => {
+  return (considerationsMapping[key] && considerationsMapping[key][level]) || ''
 }
 </script>
 <template>
@@ -69,6 +110,63 @@ const startRoutine = () => {
                 <div class="rtn-detail-col flex">
                   <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
                   <p>{{ selectedRoutine.exercises.length }}개</p>
+                </div>
+                <div class="flex flex-wrap text-sm text-gray-500 mt-3">
+                  <p class="pr-1">
+                    {{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnKneeHealthConsidered === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnKneeHealthConsidered',
+                        selectedRoutine.rtnKneeHealthConsidered
+                      )
+                    }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnNoiseConsidered === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnNoiseConsidered',
+                        selectedRoutine.rtnNoiseConsidered
+                      )
+                    }}
+                  </p>
+                  <p class="pr-1" v-if="selectedRoutine.rtnLongSitter === 1">
+                    {{
+                      mapConsideration(
+                        'rtnLongSitter',
+                        selectedRoutine.rtnLongSitter
+                      )
+                    }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnNeckShoulderFocused === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnNeckShoulderFocused',
+                        selectedRoutine.rtnNeckShoulderFocused
+                      )
+                    }}
+                  </p>
+                  <p
+                    class="pr-1"
+                    v-if="selectedRoutine.rtnBackDiskConsidered === 1"
+                  >
+                    {{
+                      mapConsideration(
+                        'rtnBackDiskConsidered',
+                        selectedRoutine.rtnBackDiskConsidered
+                      )
+                    }}
+                  </p>
                 </div>
               </div>
               <div v-if="showMember" class="flex justify-center">
@@ -143,6 +241,14 @@ const startRoutine = () => {
 
               <div class="text-xs ml-0.5">포인트 {{ data.rtnRewardPoint }}</div>
             </div>
+            <div
+              class="flex items-center border-1.5 border-gray-200 rounded-full text-sm font-semibold text-gray-700 px-2 py-1 mr-1"
+            >
+              <LevelSvg :size="16"></LevelSvg>
+              <div class="text-xs ml-0.5">
+                <p>{{ mapExperienceLevel(data.rtnExperienceLevel) }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -171,8 +277,8 @@ const startRoutine = () => {
   width: 1000px;
 }
 .rtn-detail-img {
-  max-width: 300px;
-  max-height: 175px;
+  max-width: 350px;
+  max-height: 300px;
 }
 .rtn-detail-col {
   margin-top: 10px;
