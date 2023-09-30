@@ -84,7 +84,7 @@ const mapConsideration = (key, level) => {
     <div class="card-container bg-gray-50 rounded-lg">
       <div class="rtn-detail-wrap my-5 mb-10">
         <div class="rtn-detail-content flex justify-between items-end">
-          <div class="ml-10">
+          <div class="ml-10 w-[560px]">
             <div class="rtn-detail-name">
               <p class="text-3xl font-extrabold">
                 {{ selectedRoutine.rtnName }}
@@ -111,69 +111,66 @@ const mapConsideration = (key, level) => {
                   <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
                   <p>{{ selectedRoutine.exercises.length }}개</p>
                 </div>
-                <div class="flex flex-wrap text-sm text-gray-500 mt-3">
-                  <p class="pr-1">
-                    {{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}
-                  </p>
-                  <p
-                    class="pr-1"
-                    v-if="selectedRoutine.rtnKneeHealthConsidered === 1"
-                  >
-                    {{
-                      mapConsideration(
-                        'rtnKneeHealthConsidered',
-                        selectedRoutine.rtnKneeHealthConsidered
-                      )
-                    }}
-                  </p>
-                  <p
-                    class="pr-1"
-                    v-if="selectedRoutine.rtnNoiseConsidered === 1"
-                  >
-                    {{
-                      mapConsideration(
-                        'rtnNoiseConsidered',
-                        selectedRoutine.rtnNoiseConsidered
-                      )
-                    }}
-                  </p>
-                  <p class="pr-1" v-if="selectedRoutine.rtnLongSitter === 1">
-                    {{
-                      mapConsideration(
-                        'rtnLongSitter',
-                        selectedRoutine.rtnLongSitter
-                      )
-                    }}
-                  </p>
-                  <p
-                    class="pr-1"
-                    v-if="selectedRoutine.rtnNeckShoulderFocused === 1"
-                  >
-                    {{
-                      mapConsideration(
-                        'rtnNeckShoulderFocused',
-                        selectedRoutine.rtnNeckShoulderFocused
-                      )
-                    }}
-                  </p>
-                  <p
-                    class="pr-1"
-                    v-if="selectedRoutine.rtnBackDiskConsidered === 1"
-                  >
-                    {{
-                      mapConsideration(
-                        'rtnBackDiskConsidered',
-                        selectedRoutine.rtnBackDiskConsidered
-                      )
-                    }}
-                  </p>
-                </div>
               </div>
               <div v-if="showMember" class="flex justify-center">
                 <v-btn size="x-large" color="primary" @click="startRoutine">
                   프로그램 시작하기
                 </v-btn>
               </div>
+            </div>
+            <div class="flex flex-wrap text-sm text-gray-500 mt-5">
+              <p class="pr-1">
+                {{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}
+              </p>
+              <p
+                class="pr-1"
+                v-if="selectedRoutine.rtnKneeHealthConsidered === 1"
+              >
+                {{
+                  mapConsideration(
+                    'rtnKneeHealthConsidered',
+                    selectedRoutine.rtnKneeHealthConsidered
+                  )
+                }}
+              </p>
+              <p class="pr-1" v-if="selectedRoutine.rtnNoiseConsidered === 1">
+                {{
+                  mapConsideration(
+                    'rtnNoiseConsidered',
+                    selectedRoutine.rtnNoiseConsidered
+                  )
+                }}
+              </p>
+              <p class="pr-1" v-if="selectedRoutine.rtnLongSitter === 1">
+                {{
+                  mapConsideration(
+                    'rtnLongSitter',
+                    selectedRoutine.rtnLongSitter
+                  )
+                }}
+              </p>
+              <p
+                class="pr-1"
+                v-if="selectedRoutine.rtnNeckShoulderFocused === 1"
+              >
+                {{
+                  mapConsideration(
+                    'rtnNeckShoulderFocused',
+                    selectedRoutine.rtnNeckShoulderFocused
+                  )
+                }}
+              </p>
+              <p
+                class="pr-1"
+                v-if="selectedRoutine.rtnBackDiskConsidered === 1"
+              >
+                {{
+                  mapConsideration(
+                    'rtnBackDiskConsidered',
+                    selectedRoutine.rtnBackDiskConsidered
+                  )
+                }}
+              </p>
             </div>
           </div>
           <div class="mr-8">
@@ -277,7 +274,7 @@ const mapConsideration = (key, level) => {
   width: 1000px;
 }
 .rtn-detail-img {
-  max-width: 350px;
+  max-width: 330px;
   max-height: 300px;
 }
 .rtn-detail-col {
