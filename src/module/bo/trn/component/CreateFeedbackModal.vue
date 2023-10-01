@@ -56,7 +56,7 @@
                 :value="
                   noFeedbackData.trnfContent !== null
                     ? noFeedbackData.trnfContent
-                    : trnfContent
+                    : feedbackContent
                 "
                 clearable
                 variant="solo"
@@ -136,30 +136,25 @@ export default {
       this.closeModal()
     },
     async getGptFeedback(mbrSeq) {
-      console.log(mbrSeq)
-      console.log('bef', this.loading, this.textarea)
 
       this.loading = true
       this.textarea = false
 
-      console.log('aft', this.loading, this.textarea)
       const targetDate = dayjs(
         this.formatTarget(this.noFeedbackData.trnfSubmissionDue)
       )
       this.startDate = targetDate.startOf('month').format('YYYY-MM-01 00:00:00')
       this.endDate = targetDate.endOf('month').format('YYYY-MM-DD 00:00:00')
-      // let sendingData = await ApiClient.get('/members/' + mbrSeq + '/report', {
-      //   params: {
-      //     startDate: this.startDate,
-      //     endDate: this.endDate,
-      //   },
-      // })
-      // let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
-      // console.log('getaft', this.loading, this.textarea)
-      // this.loading = false
-      // this.textarea = true
-      // console.log('fin', this.loading, this.textarea)
-      // this.feedbackContent = response.content
+      let sendingData = await ApiClient.get('/members/' + mbrSeq + '/report', {
+        params: {
+          startDate: this.startDate,
+          endDate: this.endDate,
+        },
+      })
+      let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
+      this.loading = false
+      this.textarea = true
+      this.feedbackContent = response.content
     },
   },
 }
