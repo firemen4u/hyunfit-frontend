@@ -28,13 +28,13 @@
               </p>
             </div>
             <div class="ml-15">
-              <v-btn
+              <!-- <v-btn
                 class="float-right bg-primary rounded-lg w-[70px]"
                 @click="enterPtRoom"
                 size="small"
               >
                 입장하기
-              </v-btn>
+              </v-btn> -->
             </div>
             <ReservaionDetailModal
               :show="showDetail"

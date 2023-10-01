@@ -46,21 +46,6 @@
                   @input="validateBirthdate"
                 ></v-text-field>
               </div>
-              <!-- <div class="p-2 flex h-24">
-                  <p class="mr-2 mt-4 w-1/6">추천 운동</p>
-                  <div class="flex flex-col justify-center items-start">
-                    <p class="text-gray-400 text-sm">
-                      회원가입시 입력한 정보를 수정해 추천 운동을 설정할 수
-                      있어요!
-                    </p>
-                    <button
-                      class="bg-primary mt-2 p-2 pr-16 pl-16 rounded-md"
-                      onclick="/survey"
-                    >
-                      설정하기
-                    </button>
-                  </div>
-                </div> -->
               <hr class="mbr-hr" />
               <div class="p-2 flex h-24">
                 <p class="mr-2 mt-4 w-1/6">키</p>

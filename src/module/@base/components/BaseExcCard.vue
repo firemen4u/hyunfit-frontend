@@ -1,7 +1,14 @@
 <template>
   <div class="exc-card flex flex-col shadow-md rounded-lg bg-white">
     <div class="flex justify-center">
-      <video loop muted autoplay class="exc-img rounded-md">
+      <video
+        ref="videoRef"
+        loop
+        muted
+        class="exc-img rounded-md"
+        @mouseenter="playVideo"
+        @mouseleave="pauseVideo"
+      >
         <source :src="videoSrc" />
       </video>
     </div>
@@ -14,16 +21,27 @@
 
 <script setup>
 import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   exercise: Object,
 })
 
+const videoRef = ref(null) // 비디오 요소에 대한 참조
+
 const videoSrc = computed(
   () =>
     `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${props.exercise.excSeq}.mp4`
 )
+// 마우스를 올렸을 때 비디오를 재생하는 함수
+const playVideo = () => {
+  videoRef.value.play()
+}
+
+// 마우스를 벗어났을 때 비디오를 일시 중지하는 함수
+const pauseVideo = () => {
+  videoRef.value.pause()
+}
 </script>
 
 <style scoped>
