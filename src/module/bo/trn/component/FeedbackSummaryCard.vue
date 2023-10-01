@@ -151,7 +151,7 @@ export default {
 }
 .card-cnt {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   width: 150px;
   height: 25px;
 }

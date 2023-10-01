@@ -72,17 +72,13 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import axios from 'axios'
 import ApiClient from '/src/services/api.js'
 import { BACKEND_API_BASE_URL } from '@/config'
 import router, { pathNames } from '@/router'
-import HyunfitLogoMonoVer2Svg from '@/module/@base/svg/HyunfitLogoMonoVer2Svg.vue'
-</script>
 
-<script>
 export default {
-  setup() {},
   data() {
     return {
       selectedRole: 'member',
