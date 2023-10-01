@@ -2,7 +2,7 @@
   <BaseContainer category="trainer" footer="false">
     <div class="w-100 flex justify-center primary-background">
       <BaseBodyWrapper>
-        <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10">
+        <div class="w-full h-screen mt-3 bg-white rounded-xl shadow-lg pb-10">
           <div
             class="trn-fb-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
           >
