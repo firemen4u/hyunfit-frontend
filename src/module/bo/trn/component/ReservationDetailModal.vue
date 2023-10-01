@@ -45,19 +45,25 @@
           <div class="flex flex-col">
             <div class="font-semibold mt-1">고객요청사항</div>
             <div class="sticker-container mt-3">
-              <BaseCheckChip
-                class="mr-2 mb-2"
-                v-for="(option, index) in options"
-                :key="index"
+              <BaseChipGroup
+                v-model="options"
+                :items="options"
                 :disabled="true"
-                :label="option"
+                :filter="true"
+                :font-size="11"
               />
             </div>
           </div>
         </v-card-text>
         <!--꼬리(입장버튼)-->
         <div class="flex justify-center mb-5">
-          <v-btn color="primary" @click="enterPtRoom"> PT Room 입장 </v-btn>
+          <v-btn
+            color="primary"
+            v-if="reservationData.ptReservationStatus == '예정'"
+            @click="enterPtRoom"
+          >
+            PT Room 입장
+          </v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -67,7 +73,6 @@
 <script setup>
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
-import BaseCheckChip from '@/module/@base/components/BaseCheckChip.vue'
 import { BaseChipGroup } from '@/module/@base/components'
 import CrossSvg from '@/module/@base/svg/CrossSvg.vue'
 </script>

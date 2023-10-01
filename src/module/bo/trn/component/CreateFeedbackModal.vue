@@ -3,7 +3,7 @@
     <v-dialog v-model="show" max-width="700px" max-height="700px">
       <v-card>
         <v-card-title class="mt-3">
-          <div class="flex justify-between ml-1">
+          <div class="flex justify-between ml-[4.5px]">
             <span class="headline text-2xl">피드백 작성하기</span>
             <v-spacer></v-spacer>
             <v-btn
@@ -38,24 +38,42 @@
             </div>
           </div>
           <div class="flex flex-col">
-            <div class="flex flex-row justify-between">
-              <div class="font-semibold">피드백 내용</div>
+            <div class="flex flex-row justify-between h-11">
+              <div class="fb font-semibold self-center">피드백 내용</div>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary">gpt 보고서 받아보기</v-btn>
+                <v-btn
+                  color="primary"
+                  @click="getGptFeedback(noFeedbackData.mbrSeq)"
+                  >gpt 보고서 받아보기</v-btn
+                >
               </v-card-actions>
             </div>
-            <v-textarea
-              counter
-              :value="
-                noFeedbackData.trnfContent !== null
-                  ? noFeedbackData.trnfContent
-                  : trnfContent
-              "
-              clearable
-              variant="solo"
-              single-line
-            ></v-textarea>
+            <div class="w-[650px] h-40">
+              <v-textarea
+                v-if="textarea"
+                counter
+                :value="
+                  noFeedbackData.trnfContent !== null
+                    ? noFeedbackData.trnfContent
+                    : trnfContent
+                "
+                clearable
+                variant="solo"
+                single-line
+              >
+              </v-textarea>
+              <div
+                v-if="loading"
+                class="absolute w-[650px] h-40 flex justify-center items-center rounded-md"
+              >
+                <img
+                  src="https://fs.hyunfit.life/api/hyunfit/file/gpt-loader.gif"
+                  class="h-40 rounded-xl"
+                  alt=""
+                />
+              </div>
+            </div>
           </div>
         </v-card-text>
         <div class="flex justify-center mb-5">
@@ -97,6 +115,8 @@ export default {
       feedbackContent: '',
       startDate: '',
       endDate: '',
+      loading: false,
+      textarea: true,
     }
   },
   methods: {
@@ -116,19 +136,30 @@ export default {
       this.closeModal()
     },
     async getGptFeedback(mbrSeq) {
+      console.log(mbrSeq)
+      console.log('bef', this.loading, this.textarea)
+
+      this.loading = true
+      this.textarea = false
+
+      console.log('aft', this.loading, this.textarea)
       const targetDate = dayjs(
         this.formatTarget(this.noFeedbackData.trnfSubmissionDue)
       )
       this.startDate = targetDate.startOf('month').format('YYYY-MM-01 00:00:00')
       this.endDate = targetDate.endOf('month').format('YYYY-MM-DD 00:00:00')
-      let sendingData = await ApiClient.get('/members/' + mbrSeq + '/report', {
-        params: {
-          startDate: this.startDate,
-          endDate: this.endDate,
-        },
-      })
-      let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
-      this.feedbackContent = response.content
+      // let sendingData = await ApiClient.get('/members/' + mbrSeq + '/report', {
+      //   params: {
+      //     startDate: this.startDate,
+      //     endDate: this.endDate,
+      //   },
+      // })
+      // let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
+      // console.log('getaft', this.loading, this.textarea)
+      // this.loading = false
+      // this.textarea = true
+      // console.log('fin', this.loading, this.textarea)
+      // this.feedbackContent = response.content
     },
   },
 }
