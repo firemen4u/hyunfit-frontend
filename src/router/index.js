@@ -49,14 +49,14 @@ const pathNames = {
   },
   trnSearchPage: {
     name: 'trnSearchPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
   },
   mbrRsvPage: {
     name: 'mbrRsvPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
@@ -69,7 +69,7 @@ const pathNames = {
   },
   trnDetailPage: {
     name: 'trnDetailPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
@@ -118,7 +118,7 @@ const pathNames = {
   },
   mbrPtFeedbackPage: {
     name: 'mbrPtFeedbackPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },

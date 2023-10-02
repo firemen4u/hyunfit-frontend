@@ -93,9 +93,7 @@ onBeforeMount(() => {
           class="flex flex-col items-center bg-white shadow-lg mt-3 rounded-xl overflow-hidden"
         >
           <div class="training-class-banner py-12 px-10 mb-5">
-            <p class="text-4xl font-black mt-5 text-[#021f3d]">
-              트레이닝 클래스 찾기
-            </p>
+            <p class="text-4xl font-black mt-5 text-[#021f3d]">트레이너 찾기</p>
             <p class="text-2xl font-bold mt-5 text-[#021f3d]">
               집에서도 전문 트레이너를 만나볼 수 있어요.
             </p>

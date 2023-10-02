@@ -28,8 +28,8 @@ const selectedDate = ref(
   new Date(new Date().getFullYear(), new Date().getMonth())
 )
 
-const imageLoading = ref(false)
-const reportLoading = ref(false)
+const imageLoading = ref(true)
+const reportLoading = ref(true)
 
 const reportImageRef = ref(null)
 const reportImageUrl = ref(null)
@@ -77,7 +77,7 @@ async function loadReport() {
     () => calorieChartRef.value?.chart,
     () => {
       if (calorieChartRef.value?.chart) {
-        calorieChartRef.value.chart.resize(725, 200)
+        calorieChartRef.value.chart.resize(650, 175)
         watchCalorieChart()
       }
     }
@@ -86,7 +86,7 @@ async function loadReport() {
     () => targetChartRef.value?.chart,
     () => {
       if (targetChartRef.value?.chart) {
-        targetChartRef.value.chart.resize(380, 380)
+        targetChartRef.value.chart.resize(350, 350)
         watchTargetChart()
       }
     }
@@ -95,7 +95,7 @@ async function loadReport() {
     () => scoreChartRef.value?.chart,
     () => {
       if (scoreChartRef.value?.chart) {
-        scoreChartRef.value.chart.resize(350, 140)
+        scoreChartRef.value.chart.resize(300, 140)
         watchScoreChart()
       }
     }
@@ -272,219 +272,243 @@ const reportData = computed(() => {
 </script>
 
 <template>
-  <div class="bg-gray-50 w-full">
-    <BaseContainer>
+  <BaseContainer>
+    <div class="primary-background">
       <BaseBodyWrapper>
-        <div class="report-summary-container w-full mt-15 mb-2">
-          <ReportMonthPicker
-            :model-value="selectedDate"
-            @search="d => onClickLoadReport(d)"
-          />
-          <div class="report-summary-wrapper flex justify-between my-5">
-            <div
-              class="report-summary-item bg-white h-40 rounded-lg shadow-lg flex flex-col items-center"
-            >
-              <div class="text-center font-bold text-lg mb-2 mt-5">
-                이번 달 기록
-              </div>
-              <base-circular-loader
-                class="h-16"
-                :loading="reportLoading"
-                :size="30"
-              >
-                <div
-                  class="flex items-center h-16 justify-space-evenly w-full mt-2"
-                >
-                  <div class="flex flex-col items-center w-28">
-                    <div>
-                      <CircleCheckSvg :color="Colors.primary" :size="24" />
-                    </div>
-                    <div class="flex items-baseline font-semibold">
-                      <div class="font-black text-lg">
-                        {{ charts.date.data?.length }}
-                      </div>
-                      <div class="font-semibold text-neutral-700">일 출석</div>
-                    </div>
-                  </div>
-                  <div class="flex flex-col items-center w-28">
-                    <div>
-                      <CalorieSvg :color="Colors.primary" :size="24" />
-                    </div>
-                    <div class="flex items-baseline">
-                      <div class="font-black text-lg">
-                        {{ reportData?.totalCalories }}
-                      </div>
-                      <div class="font-semibold text-sm ml-1 text-neutral-700">
-                        kcal
-                      </div>
-                    </div>
-                  </div>
-                  <div class="flex flex-col items-center w-28">
-                    <div>
-                      <TimerSvg :color="Colors.primary" :size="24" />
-                    </div>
-                    <div class="flex">
-                      <div
-                        v-if="reportData?.time.hours"
-                        class="flex items-baseline"
-                      >
-                        <div class="font-black text-lg">
-                          {{ reportData?.time.hours }}
-                        </div>
-                        <div class="font-semibold mr-1 text-neutral-700">
-                          시간
-                        </div>
-                      </div>
-                      <div class="flex items-baseline">
-                        <div class="font-black text-lg">
-                          {{ reportData?.time.minutes }}
-                        </div>
-                        <div class="font-semibold text-neutral-700">분</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </base-circular-loader>
-            </div>
-            <div
-              class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center"
-            >
-              <div class="text-center flex items-center justify-center mt-5">
-                <div class="font-bold text-lg mr-2">HyunFit 스코어</div>
-              </div>
-
-              <base-circular-loader
-                class="h-16"
-                :loading="reportLoading"
-                :size="30"
-              >
-                <div
-                  class="flex items-center h-16 justify-space-evenly w-full mt-2"
-                >
-                  <div
-                    class="flex items-baseline justify-center w-full mt-2"
-                    :style="{ color: Colors.primary }"
-                  >
-                    <div class="font-black text-2xl">
-                      {{ reportData?.totalCalories }}
-                    </div>
-                    <div class="ml-1 font-semibold">P</div>
-                  </div>
-                </div>
-              </base-circular-loader>
-            </div>
-            <div
-              class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center justify-center"
-            >
-              <div class="text-center font-bold"></div>
-              <base-circular-loader
-                class="h-16"
-                :loading="!charts.score.ready"
-                :size="30"
-              >
-                <Doughnut
-                  v-if="charts.score.ready"
-                  ref="scoreChartRef"
-                  :data="charts.score?.data"
-                  :options="scoreChartOptions"
-                />
-              </base-circular-loader>
-            </div>
-          </div>
-        </div>
         <div
-          class="ReportAnatomyContainer mt-15 mb-2 grid grid-cols-2 gap-[25px]"
+          class="flex flex-col items-center bg-gray-50 shadow-lg mt-3 rounded-xl overflow-hidden"
         >
-          <div class="ReportAnatomyImage">
-            <div class="report-title">분석</div>
-            <div
-              class="flex items-center bg-white justify-center rounded-lg shadow-lg py-6 h-[400px]"
-            >
-              <base-circular-loader
-                :loading="imageLoading"
-                :size="30"
-                class="h-full"
-              >
-                <img
-                  ref="reportImageRef"
-                  :src="reportImageUrl"
-                  class="h-[350px]"
-                  alt=""
-                />
-              </base-circular-loader>
-            </div>
+          <div class="training-class-banner py-12 px-10">
+            <p class="text-4xl font-black mt-5 text-[#021f3d]">
+              트레이닝 리포트
+            </p>
+            <p class="text-2xl font-bold mt-5 text-[#021f3d]">
+              운동 기록을 한눈에 확인해보세요.
+            </p>
           </div>
-          <div class="ReportTargetChart">
-            <div class="report-title">부위별 차트</div>
-            <div
-              class="flex items-center bg-white justify-center rounded-lg shadow-lg py-6 h-[400px]"
-            >
-              <base-circular-loader
-                :loading="imageLoading"
-                :size="30"
-                class="h-full"
-              >
-                <Radar
-                  v-if="charts.target.ready"
-                  ref="targetChartRef"
-                  :options="targetChartOptions"
-                  :data="charts.target.data"
-                />
-              </base-circular-loader>
-            </div>
-          </div>
-        </div>
-        <div class="ReportChartContainer w-full mt-15 mb-2">
-          <div class="flex justify-between">
-            <div class="report-chart-item">
-              <div class="report-title">캘린더</div>
-              <div
-                class="report-chart bg-white rounded-lg shadow-lg report-page-date-picker-wrapper py-2 px-3 flex items-center"
-                ref="reportPageDatePickerWrapper"
-              >
-                <v-locale-provider locale="ko">
-                  <v-date-picker
-                    v-model="selectedDate"
-                    :display-date="selectedDate"
-                    class="report-page-date-picker"
-                    hide-actions
-                    max-width="100%"
-                    color="#185492"
-                    :elevation="0"
-                    title=""
-                    header=""
-                    @click="onDatePickerClicked()"
-                  />
-                </v-locale-provider>
+          <div class="px-10 w-full">
+            <div class="report-summary-container mt-6 mb-2">
+              <ReportMonthPicker
+                :model-value="selectedDate"
+                @search="d => onClickLoadReport(d)"
+              />
+              <div class="report-summary-wrapper flex justify-between my-5">
+                <div
+                  class="report-summary-item bg-white h-40 rounded-lg shadow-lg flex flex-col items-center"
+                >
+                  <div class="report-title text-center mb-2 mt-3">
+                    이번 달 기록
+                  </div>
+                  <base-circular-loader
+                    class="h-16"
+                    :loading="reportLoading"
+                    :size="30"
+                  >
+                    <div
+                      class="flex items-center h-16 justify-space-evenly w-full mt-2"
+                    >
+                      <div class="flex flex-col items-center w-28">
+                        <div>
+                          <CircleCheckSvg :color="Colors.primary" :size="24" />
+                        </div>
+                        <div class="flex items-baseline font-semibold">
+                          <div class="font-black text-lg">
+                            {{ charts.date.data?.length }}
+                          </div>
+                          <div class="font-semibold text-neutral-700">
+                            일 출석
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-center w-28">
+                        <div>
+                          <CalorieSvg :color="Colors.primary" :size="24" />
+                        </div>
+                        <div class="flex items-baseline">
+                          <div class="font-black text-lg">
+                            {{ reportData?.totalCalories }}
+                          </div>
+                          <div
+                            class="font-semibold text-sm ml-1 text-neutral-700"
+                          >
+                            kcal
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-center w-28">
+                        <div>
+                          <TimerSvg :color="Colors.primary" :size="24" />
+                        </div>
+                        <div class="flex">
+                          <div
+                            v-if="reportData?.time.hours"
+                            class="flex items-baseline"
+                          >
+                            <div class="font-black text-lg">
+                              {{ reportData?.time.hours }}
+                            </div>
+                            <div class="font-semibold mr-1 text-neutral-700">
+                              시간
+                            </div>
+                          </div>
+                          <div class="flex items-baseline">
+                            <div class="font-black text-lg">
+                              {{ reportData?.time.minutes }}
+                            </div>
+                            <div class="font-semibold text-neutral-700">분</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </base-circular-loader>
+                </div>
+                <div
+                  class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center"
+                >
+                  <div class="report-title text-center mb-2 mt-3">
+                    HyunFit 스코어
+                  </div>
+
+                  <base-circular-loader
+                    class="h-16"
+                    :loading="reportLoading"
+                    :size="30"
+                  >
+                    <div
+                      class="flex items-center h-16 justify-space-evenly w-full mt-2"
+                    >
+                      <div
+                        class="flex items-baseline justify-center w-full mt-2"
+                        :style="{ color: Colors.primary }"
+                      >
+                        <div class="font-black text-2xl">
+                          {{ reportData?.totalCalories }}
+                        </div>
+                        <div class="ml-1 font-semibold">P</div>
+                      </div>
+                    </div>
+                  </base-circular-loader>
+                </div>
+                <div
+                  class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center justify-center"
+                >
+                  <div class="text-center font-bold"></div>
+                  <base-circular-loader
+                    class="h-16"
+                    :loading="!charts.score.ready"
+                    :size="30"
+                  >
+                    <Doughnut
+                      v-if="charts.score.ready"
+                      ref="scoreChartRef"
+                      :data="charts.score?.data"
+                      :options="scoreChartOptions"
+                    />
+                  </base-circular-loader>
+                </div>
               </div>
             </div>
-            <div class="report-chart-item-col-2">
-              <div class="report-title">칼로리</div>
-              <div class="report-chart bg-white rounded-lg shadow-lg">
-                <Bar
-                  v-if="charts.calorie.ready"
-                  ref="calorieChartRef"
-                  :options="calorieChartOptions"
-                  :data="charts.calorie?.data"
-                ></Bar>
+            <div
+              class="ReportAnatomyContainer mt-5 mb-2 grid grid-cols-2 gap-[25px] w-full"
+            >
+              <div class="ReportAnatomyImage">
+                <div
+                  class="flex flex-col items-center bg-white justify-center rounded-lg shadow-lg py-3 h-[420px]"
+                >
+                  <div class="report-title">분석</div>
+                  <base-circular-loader :loading="imageLoading" :size="30">
+                    <img
+                      ref="reportImageRef"
+                      :src="reportImageUrl"
+                      class="h-[350px]"
+                      alt=""
+                    />
+                  </base-circular-loader>
+                </div>
+              </div>
+              <div class="ReportTargetChart">
+                <div
+                  class="flex flex-col items-center bg-white justify-center rounded-lg shadow-lg py-3 h-[420px]"
+                >
+                  <div class="report-title">부위별 차트</div>
+                  <base-circular-loader
+                    :loading="imageLoading"
+                    :size="30"
+                    class="h-full"
+                  >
+                    <Radar
+                      v-if="charts.target.ready"
+                      ref="targetChartRef"
+                      :options="targetChartOptions"
+                      :data="charts.target.data"
+                    />
+                  </base-circular-loader>
+                </div>
               </div>
             </div>
+            <div class="ReportChartContainer w-full mt-5 mb-2">
+              <div class="flex justify-between">
+                <div class="report-chart-item">
+                  <div
+                    class="report-chart flex flex-col bg-white rounded-lg shadow-lg report-page-date-picker-wrapper py-2 px-3 items-center"
+                    ref="reportPageDatePickerWrapper"
+                  >
+                    <div class="report-title">캘린더</div>
+                    <v-locale-provider locale="ko">
+                      <v-date-picker
+                        v-model="selectedDate"
+                        :display-date="selectedDate"
+                        class="report-page-date-picker"
+                        hide-actions
+                        max-width="100%"
+                        color="#185492"
+                        :elevation="0"
+                        title=""
+                        header=""
+                        @click="onDatePickerClicked()"
+                      />
+                    </v-locale-provider>
+                  </div>
+                </div>
+                <div class="report-chart-item-col-2">
+                  <div
+                    class="report-chart flex flex-col items-center bg-white rounded-lg shadow-lg py-2 px-3"
+                  >
+                    <div class="report-title">칼로리</div>
+                    <Bar
+                      v-if="charts.calorie.ready"
+                      ref="calorieChartRef"
+                      :options="calorieChartOptions"
+                      :data="charts.calorie?.data"
+                    ></Bar>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ReportExcTimelineContainer />
           </div>
         </div>
-        <ReportExcTimelineContainer />
       </BaseBodyWrapper>
-    </BaseContainer>
-  </div>
+    </div>
+  </BaseContainer>
 </template>
 
 <style>
+.training-class-banner {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
+}
+
 .report-chart-item,
 .report-summary-item {
-  width: 350px;
+  width: 325px;
 }
 .report-chart-item-col-2,
 .report-summary-item-col-2 {
-  width: 725px;
+  width: 670px;
 }
 .report-title {
   font-weight: 900;
@@ -494,7 +518,7 @@ const reportData = computed(() => {
   margin-bottom: 16px;
 }
 .report-chart {
-  height: 200px;
+  height: 240px;
 }
 .report-summary-container .shadow {
   -moz-box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);

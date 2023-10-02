@@ -25,11 +25,11 @@ const headerPages = [
     ],
   },
   {
-    displayName: '트레이닝 클래스',
-    destination: pathNames.trnSearchPage,
+    displayName: '라이브 클래스',
+    destination: pathNames.mbrRsvPage,
     menus: [
+      { menuName: '라이브 클래스', destination: pathNames.mbrRsvPage },
       { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
-      { menuName: '내 예약', destination: pathNames.mbrRsvPage },
       { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedbackPage },
     ],
   },
@@ -113,7 +113,11 @@ const pageItemClasses = pg => {
   return 'text-gray-400 font-medium hover:text-gray-200 hover:font-bold'
 }
 const menuItemClasses = pg => {
-  if (route.name === pg.destination.name) {
+  console.log(route.name, pg.destination.name)
+  if (
+    route.name === pg.destination.name ||
+    (route.name === 'trnDetailPage' && pg.destination.name === 'trnSearchPage')
+  ) {
     return 'text-gray-800 font-bold'
   }
   return 'text-gray-400 font-medium hover:text-gray-800 hover:font-bold'
