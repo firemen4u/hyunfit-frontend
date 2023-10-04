@@ -19,6 +19,7 @@ import BoRtnNewPage from '/src/module/bo/rtn/views/BoRtnNewPage.vue'
 import MbrRsvCompletionPage from '@/module/mbr-rsv-completion/views/MbrRsvCompletionPage.vue'
 import MbrRtnBoardPage from '@/module/mbr-rtn-board/views/MbrRtnBoardPage.vue'
 import MbrMyPointPage from '/src/module/mbr-my/views/MbrMyPointPage.vue'
+import AiTrainingErrorPage from '@/module/ai-training/view/AiTrainingErrorPage.vue'
 function buildPath(page, params, query) {
   return {
     name: page.name,
@@ -49,14 +50,14 @@ const pathNames = {
   },
   trnSearchPage: {
     name: 'trnSearchPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
   },
   mbrRsvPage: {
     name: 'mbrRsvPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
@@ -67,9 +68,15 @@ const pathNames = {
       return buildPath(this, params, query)
     },
   },
+  aiTrainingErrorPage: {
+    name: 'aiTrainingErrorPage',
+    with: function (params, query) {
+      return buildPath(this, params, query)
+    },
+  },
   trnDetailPage: {
     name: 'trnDetailPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
@@ -118,7 +125,7 @@ const pathNames = {
   },
   mbrPtFeedbackPage: {
     name: 'mbrPtFeedbackPage',
-    parent: () => pathNames.trnSearchPage.name,
+    parent: () => pathNames.mbrRsvPage.name,
     with: function (params, query) {
       return buildPath(this, params, query)
     },
@@ -199,6 +206,11 @@ const router = createRouter({
       path: '/ai-training',
       name: pathNames.aiTrainingPage.name,
       component: AiTrainingPage,
+    },
+    {
+      path: '/ai-training/error',
+      name: pathNames.aiTrainingErrorPage.name,
+      component: AiTrainingErrorPage,
     },
     {
       path: '/trainers/:trnId',

@@ -22,7 +22,7 @@
 
         <video
           v-show="!loading"
-          @loadeddata="loading = false"
+          @canplaythrough="loading = false"
           loop
           muted
           autoplay

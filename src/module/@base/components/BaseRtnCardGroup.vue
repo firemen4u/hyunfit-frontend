@@ -11,10 +11,6 @@ const props = defineProps({
   showMember: Boolean,
 })
 
-const goToAiTraining = () => {
-  router.push(pathNames.aiTrainingPage)
-}
-
 const showModal = ref(false) // 모달 상태
 const selectedRoutine = ref(null) // 선택된 루틴 정보를 담을 변수
 
@@ -27,12 +23,15 @@ function srcUrlOf(rtnSeq) {
   return `${FILE_SERVER_HYUNFIT_URL}/routine_thumbnail_${rtnSeq}.jpg`
 }
 
-const startRoutine = () => {
+const startRoutine = async () => {
   // 여기서 selectedRoutine 를 사용하여 루틴 정보를 전송하는 코드 쓰면 돼
   // 선택된 루틴 정보가 있고, 그 정보를 기반으로 AI 트레이닝 페이지로 이동하고 싶다면
   if (selectedRoutine.value) {
-    console.log('루틴 시작:', selectedRoutine.value)
-    goToAiTraining() // 이 함수를 호출하여 AI 트레이닝 페이지로 이동
+    await router.push(
+      pathNames.aiTrainingPage.with(undefined, {
+        rtnSeq: selectedRoutine.value.rtnSeq,
+      })
+    )
   }
 }
 

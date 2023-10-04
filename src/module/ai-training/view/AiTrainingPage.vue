@@ -22,88 +22,97 @@
   <!--    <div>exercise Count {{ setScoreCount }}</div>-->
   <!--    <div>pause Time {{ pauseTime }}</div>-->
   <!--  </div>-->
-  <div class="ai-training-container flex">
+  <div v-show="initialLoading" class="initial-loader">
+    <div
+      class="initial-loader-content flex flex-col items-center justify-center"
+    >
+      <div>카메라를 로딩중이에요</div>
+      <div class="mb-5">잠시만 기다려 주세요</div>
+
+      <AiTrainingLoader :size="30" />
+    </div>
+  </div>
+  <div v-show="!initialLoading" class="ai-training-container flex">
     <AITrainingMyVideo
-        v-show="visibility.my"
-        :loading="loading"
-        :windowSize="windowSize.my"
-        :exercise="currentExercise"
-        :break-time="breakTime"
-        :pause-time="pauseTime"
-        @prediction="score => updateCount(score)"
+      v-show="visibility.my"
+      :loading="loading"
+      :windowSize="windowSize.my"
+      :exercise="currentExercise"
+      :break-time="breakTime"
+      :pause-time="pauseTime"
+      :debug-mode="debugMode"
+      @model:ready="onModelReady()"
+      @model:init="initialLoading = false"
+      @prediction="score => updateCount(score)"
+      @distance:ok="toNextExercise()"
     ></AITrainingMyVideo>
-    <AITrainingBreak v-if="breakTime"/>
+    <AITrainingBreak v-if="breakTime" />
     <AITrainingTeachingVideo
-        v-if="visibility.teaching"
-        :loading="loading"
-        :windowSize="windowSize.teaching"
-        :exercise="currentExercise"
-        :break-time="breakTime"
-        :pause-time="pauseTime"
-        @event:ready="onTeachingVideoReady()"
+      v-if="visibility.teaching"
+      :loading="loading"
+      :windowSize="windowSize.teaching"
+      :exercise="currentExercise"
+      :break-time="breakTime"
+      :pause-time="pauseTime"
+      @event:ready="onTeachingVideoReady()"
     />
     <AITrainingStatusContainer
-        v-if="visibility.counter"
-        :exercise="currentExercise"
-        :setScoreCount="setScoreCount"
-        :setCount="setCount"
-        :key="rerenderKey"
+      v-if="visibility.counter"
+      :exercise="currentExercise"
+      :setScoreCount="setScoreCount"
+      :setCount="setCount"
+      :key="rerenderKey"
     />
-    <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft"/>
-    <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()"/>
+    <AITrainingTimer v-show="visibility.timer" :timer-limit="timeLeft" />
+    <AiTrainingSkipButton v-show="visibility.skip" @click="toNextExercise()" />
     <div
-        class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
-        v-if="loading && currentExercise?.type !== 'INTRO'"
+      class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
+      v-if="loading && currentExercise?.type !== 'INTRO'"
     >
       <a-i-training-info
-          v-if="currentExercise?.type !== 'EXERCISE'"
-          :exerciseType="currentExercise?.type"
-          :exerciseName="currentExercise?.name"
+        v-if="currentExercise?.type !== 'EXERCISE'"
+        :exerciseType="currentExercise?.type"
+        :exerciseName="currentExercise?.name"
       ></a-i-training-info>
       <a-i-training-info
-          v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
-          :exerciseType="currentExercise?.type"
-          :exerciseName="currentExercise?.name"
-          :breakTime="breakTime"
+        v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
+        :exerciseType="currentExercise?.type"
+        :exerciseName="currentExercise?.name"
+        :breakTime="breakTime"
       ></a-i-training-info>
     </div>
     <a-i-training-info
-        v-if="
+      v-if="
         notification !== '' &&
         currentExercise?.type === 'EXERCISE' &&
         !breakTime
       "
-        :exercise-name="notification"
-        :breakTime="breakTime"
+      :exercise-name="notification"
+      :breakTime="breakTime"
     ></a-i-training-info>
     <a-i-training-info
-        v-if="breakTime && !loading"
-        :breakTime="breakTime"
-        :loading="loading"
+      v-if="breakTime && !loading"
+      :breakTime="breakTime"
+      :loading="loading"
     >
     </a-i-training-info>
     <a-i-training-info v-if="pauseTime" :pauseTime="pauseTime">
     </a-i-training-info>
     <a-i-training-bottom-bar
-        @event:pause="toggleTime()"
-        @event:exit="exit()"
+      @event:pause="toggleTime()"
+      @event:exit="exit()"
+      @event:toggle-debug="debugMode = !debugMode"
     ></a-i-training-bottom-bar>
 
-    <AITrainingExit v-if="currentExercise?.type === 'EXIT'"
-                    :exitStatus="currentExercise"
+    <AITrainingExit
+      v-if="currentExercise?.type === 'EXIT'"
+      :exitStatus="currentExercise"
     >
     </AITrainingExit>
-    <div>
-      <audio
-          ref="audioSrc"
-          src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit_bgm_1.mp3"
-          loop
-      />
-    </div>
   </div>
 </template>
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import ApiClient from '@/services/api'
 import {
@@ -116,27 +125,47 @@ import AiTrainingSkipButton from '@/module/ai-training/component/AiTrainingSkipB
 import AITrainingBreak from '@/module/ai-training/component/AITrainingBreak.vue'
 import AITrainingInfo from '@/module/ai-training/component/AITrainingInfo.vue'
 import AITrainingBottomBar from '@/module/ai-training/component/AITrainingBottomBar.vue'
-import {FILE_SERVER_BASE_URL} from '@/config'
-import AITrainingExit from "@/module/ai-training/component/AITrainingExit.vue";
+import { BACKEND_API_BASE_URL, FILE_SERVER_BASE_URL } from '@/config'
+import AITrainingExit from '@/module/ai-training/component/AITrainingExit.vue'
+import { useRoute } from 'vue-router'
+import router, { pathNames } from '@/router'
+import AiTrainingLoader from '@/module/ai-training/component/AiTrainingLoader.vue'
 
 const memberData = ref(null)
 const rerenderKey = ref(0)
 const exerciseQueue = ref(null)
 
-let exitTime = ref(false)
-const audioSrc = ref(null)
+// const exitTime = ref(false)
 
-let exitStatus = ref(false)
-let loading = ref(true)
-let breakTime = ref(false)
-let pauseTime = ref(false)
-let setCount = ref(1)
-let currentIndex = ref(0)
-let startExerciseTime = ref(0)
-let endExerciseTime = ref(0)
-let setFinished = computed(
-    () => setCount.value >= currentExercise.value?.setCount
+// const exitStatus = ref(false)
+const loading = computed(() => {
+  return (
+    videoLoading.value ||
+    (modelLoading.value &&
+      typesToLoadModel.includes(currentExercise.value?.type))
+  )
+})
+
+const videoLoading = ref(true)
+const modelLoading = ref(true)
+
+const initialLoading = ref(true)
+
+const breakTime = ref(false)
+const pauseTime = ref(false)
+const setCount = ref(1)
+const currentIndex = ref(0)
+const startExerciseTime = ref(0)
+const endExerciseTime = ref(0)
+const setFinished = computed(
+  () => setCount.value >= currentExercise.value?.setCount
 )
+
+const debugMode = ref(false)
+
+const typesToLoadModel = ['INTRO', 'WARMUP', 'EXERCISE']
+
+const route = useRoute()
 
 const windowSize = reactive({
   my: ref('w-full'),
@@ -195,7 +224,6 @@ function exit() {
 
 function updateCount(scoreType) {
   if (setScoreCount.value < currentExercise.value.exerciseCount) {
-    console.log('scoreType', scoreType)
     if (scoreType === 'excellent') {
       scores.excellent += 1
       setScoreCount.value += 1
@@ -209,7 +237,7 @@ function updateCount(scoreType) {
       setScoreCount.value += 1
       notification.value = 'bad'
     }
-    console.log('notification', notification.value)
+
     totalScoreCount.value = scores.excellent + scores.good + scores.bad
     setTimeout(() => {
       notification.value = ''
@@ -217,9 +245,7 @@ function updateCount(scoreType) {
   }
 }
 
-function updateEvent() {
-
-}
+function updateEvent() {}
 
 function toggleTime() {
   if (timeDelta === 0) {
@@ -248,8 +274,19 @@ onMounted(() => {
 
 async function init() {
   loading.value = true
-  await loadMemberData()
-  await loadData()
+  try {
+    await loadMemberData()
+  } catch (e) {
+    alert('로그인이 필요한 페이지입니다.')
+    await router.push(pathNames.loginPage)
+    return
+  }
+  try {
+    await loadData()
+  } catch (e) {
+    await router.push(pathNames.aiTrainingErrorPage)
+    return
+  }
   setTimer()
   timer.stop()
   updateWindowUi()
@@ -262,17 +299,12 @@ function toNextExercise() {
   if (currentExercise.value.type === 'EXERCISE' && !setFinished.value) {
     if (breakTime.value) {
       startExerciseTime.value = Date.now()
-      console.log('startExerciseTime : ', startExerciseTime.value)
       setCount.value += 1
-      console.log('setCount', setCount.value)
       timer.start(currentExercise.value.timerLimit - 0.01)
       breakTime.value = false
     } else {
-      console.log('쉬는 시간 체크', setCount.value)
       endExerciseTime.value = Date.now()
-      console.log('endExerciseTime : ', endExerciseTime.value)
       sendExerciseData()
-      console.log('세트 끝나고 데이터 보내기')
       setScoreCount.value = 0
       timer.start(10 - 0.01)
       breakTime.value = true
@@ -292,7 +324,9 @@ function toNextExercise() {
     sendPointData()
   }
   updateWindowUi()
-  loading.value = true
+  videoLoading.value = true
+  modelLoading.value = true
+  console.log('set to loading')
   timer.stop()
 }
 
@@ -312,8 +346,14 @@ async function sendPointData() {
 }
 
 function onTeachingVideoReady() {
-  loading.value = false
+  videoLoading.value = false
+  console.log('teachingvideo ready!')
   timer.start(currentExercise.value.timerLimit - 0.01)
+}
+
+function onModelReady() {
+  modelLoading.value = false
+  console.log('modelLoaded!')
 }
 
 async function sendExerciseData() {
@@ -327,18 +367,18 @@ async function sendExerciseData() {
     exchBadCnt: scores.bad,
     exchTotalCalories: currentExercise.value.calorie,
   }
-  const exp = (data.exchExcelentCnt * 1.2 + data.exchGoodCnt + data.exchBadCnt * 0.6) / currentExercise.value.calorie * (data.exchExcelentCnt + data.exchGoodCnt + data.exchBadCnt)
+  const exp =
+    ((data.exchExcelentCnt * 1.2 + data.exchGoodCnt + data.exchBadCnt * 0.6) /
+      currentExercise.value.calorie) *
+    (data.exchExcelentCnt + data.exchGoodCnt + data.exchBadCnt)
   const memberExp = {
     mbrSeq: memberData.value.mbrSeq,
     mevType: 1,
-    mevAmount: exp
+    mevAmount: exp,
   }
   try {
     if (totalScoreCount.value !== 0) {
       await ApiClient.post(`/exercise-history`, data)
-      console.log('completed history', data)
-      console.log('exchTotalCalories', currentExercise.value.calorie)
-      console.log('memberExp', memberExp)
       await ApiClient.post(`/member-event`, memberExp)
 
       totalScoreCount.value = 0
@@ -355,14 +395,6 @@ async function sendExerciseData() {
     alert('Exercise History API 통신 에러!')
   }
 }
-
-
-function getRandomNumber(min, max) {
-  // min(포함)과 max(포함) 사이의 랜덤한 정수 생성
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const randomNumber = getRandomNumber(1, 5);
 
 function updateWindowUi() {
   switch (currentExercise.value?.type) {
@@ -418,19 +450,18 @@ function createExerciseQueueItem(exercise, type) {
   if (type === 'GUIDE') {
     item['timerLimit'] = 10
     item[
-        'videoUrl'
-        ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
-    item['audioUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/guide_message_${exercise.excSeq}.mp3`
-    item['bgmUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${randomNumber}.mp3`
+      'videoUrl'
+    ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/preview_video_${exercise.excSeq}.mp4`
   } else {
     item['timerLimit'] = exercise.excTimePerSetInSec
     item[
-        'videoUrl'
-        ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
-    item['audioUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/guide_message_${exercise.excSeq}.mp3`
-    item['bgmUrl'] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${randomNumber}.mp3`
+      'videoUrl'
+    ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/exercise_video_${exercise.excSeq}.mp4`
   }
-  console.log('audio 찾기 - in main Page', item)
+  item[
+    'audioUrl'
+  ] = `${FILE_SERVER_BASE_URL}/api/hyunfit/file/guide_message_${exercise.excSeq}.mp3`
+
   return item
 }
 
@@ -438,52 +469,63 @@ let rtnRewardPoint = 0
 
 async function loadMemberData() {
   memberData.value = await ApiClient.get('/members/me')
-  if (memberData.value === null) {
-    console.log('유저 데이터 로드 실패')
-    alert('유저 데이터 로드 실패')
-  }
 }
 
 async function loadData() {
-  try {
-    await axios.get('https://api.hyunfit.life/routines/121').then(response => {
-      rtnRewardPoint = response.data.rtnRewardPoint
+  let rtnSeq = route.query.rtnSeq
+  if (!rtnSeq) {
+    throw new Error('유효하지 않은 접근입니다. rtnSeq not found.')
+  }
 
-      const temp = [
-        {
-          type: 'INTRO',
-          timerLimit: 999,
-        },
-        {
-          type: 'WARMUP',
-          name: '워밍업',
-          timerLimit: 100,
-          videoUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warmingup.mp4`,
-          audioUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warming_up_audio.mp3`,
-          bgmUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${randomNumber}.mp3`
-        },
-      ]
-      for (const exercise of response.data.exercises) {
-        temp.push(createExerciseQueueItem(exercise, 'GUIDE'))
-        temp.push(createExerciseQueueItem(exercise, 'EXERCISE'))
-      }
-      temp.push({
-        type: 'EXIT',
-        timerLimit: -1,
+  try {
+    await axios
+      .get(`${BACKEND_API_BASE_URL}/routines/${rtnSeq}`)
+      .then(response => {
+        rtnRewardPoint = response.data.rtnRewardPoint
+
+        const temp = [
+          {
+            type: 'INTRO',
+            timerLimit: 999,
+            excSeq: 0,
+          },
+          {
+            type: 'WARMUP',
+            name: '워밍업',
+            timerLimit: 100,
+            videoUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warmingup.mp4`,
+            audioUrl: `${FILE_SERVER_BASE_URL}/api/hyunfit/file/warming_up_audio.mp3`,
+            excSeq: 0,
+          },
+        ]
+        for (const exercise of response.data.exercises) {
+          temp.push(createExerciseQueueItem(exercise, 'GUIDE'))
+          temp.push(createExerciseQueueItem(exercise, 'EXERCISE'))
+        }
+        temp.push({
+          type: 'EXIT',
+          timerLimit: -1,
+        })
+        exerciseQueue.value = temp
       })
-      console.log('response', response)
-      console.log('temp', temp)
-      exerciseQueue.value = temp
-    })
   } catch (error) {
-    console.error('데이터를 가져오는 중 에러 발생 : ', error)
-    alert('운동데이터 로딩 실패 ', error)
+    throw new Error(`운동데이터 로딩에 실패하였습니다. ${error}`)
   }
 }
-
-
 </script>
 <style scoped>
+.initial-loader {
+  position: relative;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+.initial-loader-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .info-container {
   background-color: rgb(102, 102, 102);
 }

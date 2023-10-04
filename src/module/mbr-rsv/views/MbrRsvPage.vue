@@ -14,10 +14,10 @@
             >
               <div class="banner-img-cover-text py-12 px-10 mb-5">
                 <p class="text-4xl font-black mt-5 text-[#021f3d]">
-                  나의 트레이닝 스케쥴
+                  라이브 클래스
                 </p>
                 <p class="text-2xl font-bold mt-5 text-[#021f3d]">
-                  더 강해지는 나만의 길, 함께 달려요!
+                  오늘은 어떤 클래스가 있으신가요?
                 </p>
               </div>
             </div>
@@ -28,7 +28,7 @@
               class="mbr-rsv-upcomming-rsv-container w-full border-b-0 border-gray-200 mt-3"
             >
               <div>
-                <p class="text-2xl font-black my-3">다가오는 트레이닝 클래스</p>
+                <p class="text-2xl font-black my-3">다가오는 라이브 클래스</p>
               </div>
               <div
                 class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-between"
@@ -52,7 +52,7 @@
             </div>
             <div class="mbr-rsv-history-contaioner" title="예약 내역 카드">
               <div class="mbr-rsv-history-item mt-[40px] mb-1">
-                <p class="text-2xl font-black mb-6">지난 트레이닝 클래스</p>
+                <p class="text-2xl font-black mb-6">지난 라이브 클래스</p>
 
                 <div v-if="reservedResponse?.personalTrainingDTOList.length">
                   <div
@@ -68,7 +68,7 @@
                 </div>
                 <div v-else class="h-[300px] flex justify-center items-center">
                   <p class="text-2xl text-gray-500">
-                    지난 트레이닝 클래스 기록이 없습니다.
+                    지난 라이브 클래스 기록이 없습니다.
                   </p>
                 </div>
                 <template class="border-solid border-4 border-orange-400">

@@ -4,7 +4,10 @@
       <BaseBodyWrapper>
         <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
           <div class="bo-excNewBoard-banner flex items-center px-10">
-            <div class="text-4xl font-black">트레이닝 관리</div>
+            <div class="">
+              <p class="text-2xl font-bold text-[#021f3d]">오피스</p>
+              <p class="text-4xl font-black mt-3 text-[#021f3d]">트레이닝</p>
+            </div>
           </div>
 
           <div class="mt-6 px-[50px]">

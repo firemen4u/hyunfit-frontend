@@ -1,58 +1,11 @@
-<template>
-  <div class="my-video bg-orange-200" :class="windowSize">
-    <div class="fixed z-[1000] top-0 left-0 bg-[#FFFFFFBB]">
-      <!--      <div-->
-      <!--        class="md-2"-->
-      <!--        :class="-->
-      <!--          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
-      <!--        "-->
-      <!--      >-->
-      <!--        기본자세: {{ predictions[0]?.className }}:-->
-      <!--        {{ Math.round(predictions[0]?.probability * 100) }}%-->
-      <!--      </div>-->
-      <!--      <div-->
-      <!--        class="md-2"-->
-      <!--        :class="-->
-      <!--          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''-->
-      <!--        "-->
-      <!--      >-->
-      <!--        운동자세: {{ predictions[1]?.className }}:-->
-      <!--        {{ Math.round(predictions[1]?.probability * 100) }}%-->
-      <!--      </div>-->
-      <!--      <div>flag: {{ flag }}</div>-->
-      <!--      <div>Count: {{ exerciseCounts }}</div>-->
-      <!--      <div>확률: {{ predictedProbability }}</div>-->
-      <!--      <div>인정된 자세: {{ getScoreType() }}</div>-->
-      <div>
-        쿨다운:
-        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
-      </div>
-      <div>freezePrediction: {{ freezePrediction }}</div>
-    </div>
-    <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
-    <div id="label-container"></div>
-  </div>
-</template>
-
-<style scoped>
-canvas {
-}
-
-canvas video {
-}
-</style>
-
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import {computed, onMounted, reactive, ref} from 'vue'
-import {FILE_SERVER_BASE_URL} from '@/config'
+import { computed, reactive, ref, watch } from 'vue'
+import { FILE_SERVER_BASE_URL } from '@/config'
 
 const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
-
-const excSeq = 82
-const modelName = `ai_model_${excSeq}`
 
 let flag = false
 const width = 1000
@@ -62,13 +15,30 @@ const maxPredictionInterval = 200
 const predictions = ref([])
 const lastPredictionTime = ref(0)
 const predictedProbability = ref(null)
-const minExerciseDuration = 500
-const emit = defineEmits(['prediction'])
-
+const minExerciseDuration = 300
+const emit = defineEmits([
+  'prediction',
+  'model:ready',
+  'model:init',
+  'distance:ok',
+])
+let distanceOkTimeout
 const freezePrediction = computed(
-    () =>
-        props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
+  () =>
+    props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
 )
+
+const notificationMessages = [
+  `머리부터 발끝까지
+  다 보고 싶어요`,
+  `조금만 더 뒤로
+  가볼까요?`,
+  `완벽해요 지금 바로
+  레디! 액션!`,
+]
+const notificationMessageIndex = ref(0)
+const isDistanceOk = ref(false)
+const distanceOkMessageTriggered = ref(false)
 
 const exerciseCounts = reactive({
   excellent: ref(0),
@@ -82,27 +52,54 @@ const props = defineProps({
   windowSize: String,
   breakTime: Boolean,
   pauseTime: Boolean,
+  debugMode: Boolean,
 })
 
-onMounted(() => {
-  init()
-})
+const typesToLoadModel = ['INTRO', 'WARMUP', 'EXERCISE']
+
+const exerciseWatcher = watch(
+  () => props.exercise,
+  async exercise => {
+    if (typesToLoadModel.includes(exercise.type)) {
+      await loadModel(exercise)
+      if (exercise.type === 'INTRO') {
+        await loadWebcam()
+        emit('model:init')
+      }
+      emit('model:ready')
+    }
+  }
+)
+
+function triggerDistanceOkMessage() {
+  notificationMessageIndex.value = 2
+  distanceOkTimeout = setTimeout(() => {
+    emit('distance:ok')
+    distanceOkMessageTriggered.value = true
+  }, 3000)
+}
+
+function cancelDistanceOk(score) {
+  notificationMessageIndex.value = score < 0.5 ? 0 : 1
+  if (!isDistanceOk.value) return
+  isDistanceOk.value = false
+  clearTimeout(distanceOkTimeout)
+}
 
 function emitCountEvent() {
+  if (freezePrediction.value) return
   let type = getScoreType()
   emit('prediction', type)
 }
 
-async function loadModel() {
-  const modelURL = `${BASEURL}/${modelName}/model.json`
-  const metadataURL = `${BASEURL}/${modelName}/metadata.json`
+async function loadModel(exercise) {
+  const modelURL = `${BASEURL}/ai_model_${exercise.excSeq}/model.json`
+  const metadataURL = `${BASEURL}/ai_model_${exercise.excSeq}/metadata.json`
   model = await tmPose.load(modelURL, metadataURL)
+  maxPredictions = model.getTotalClasses()
 }
 
-async function init() {
-  await loadModel()
-  maxPredictions = model.getTotalClasses()
-
+async function loadWebcam() {
   const flip = true // whether to flip the webcam
   try {
     webcam = new tmPose.Webcam(width, height, flip) // width, height, flip
@@ -148,12 +145,12 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
+  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
   // Prediction 2: run input through teachable machine classification model
   drawPose(pose)
 
   // if (freezePrediction.value) return)
-  if (pose.score < 0.4 || freezePrediction.value) {
+  if ((pose && pose.score < 0.4) || freezePrediction.value) {
     predictions.value = []
     return
   }
@@ -198,30 +195,114 @@ async function predict() {
 
 function getColorFromPoseScore(score) {
   if (props.exercise.type === 'INTRO') {
-    if (score < 0.9) return '#e70000'
+    if (score < 0.9) {
+      cancelDistanceOk(score)
+      return '#e70000'
+    }
+
+    if (!isDistanceOk.value) {
+      isDistanceOk.value = true
+      triggerDistanceOkMessage()
+    }
     return '#00c700'
   }
   if (score > 0.9) return '#FFFFFF'
-  else return '#CACACA'
+  else return '#bababa'
 }
 
 function drawPose(pose) {
   if (webcam.canvas) {
-    let drawColor = getColorFromPoseScore(pose.score)
     ctx.drawImage(webcam.canvas, 0, 0)
     // draw the keypoints and skeleton
     if (pose) {
+      let drawColor = getColorFromPoseScore(pose.score)
       const minPartConfidence = 0.5
       tmPose.drawKeypoints(
-          pose.keypoints,
-          minPartConfidence,
-          ctx,
-          10,
-          drawColor + 'BB',
-          drawColor
+        pose.keypoints,
+        minPartConfidence,
+        ctx,
+        10,
+        drawColor + 'BB',
+        drawColor
       )
       tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx, 7, drawColor)
     }
   }
 }
 </script>
+
+<template>
+  <div class="my-video" :class="windowSize">
+    <div
+      v-if="props.debugMode"
+      class="fixed z-[1000] top-0 left-[40%] bg-[#FFFFFFBB]"
+    >
+      <div
+        class="md-2"
+        :class="
+          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
+        "
+      >
+        기본자세: {{ predictions[0]?.className }}:
+        {{ Math.round(predictions[0]?.probability * 100) }}%
+      </div>
+      <div
+        class="md-2"
+        :class="
+          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
+        "
+      >
+        운동자세: {{ predictions[1]?.className }}:
+        {{ Math.round(predictions[1]?.probability * 100) }}%
+      </div>
+      <div>flag: {{ flag }}</div>
+      <div>Count: {{ exerciseCounts }}</div>
+      <div>확률: {{ predictedProbability }}</div>
+      <div>인정된 자세: {{ getScoreType() }}</div>
+      <div>
+        쿨다운:
+        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
+      </div>
+      <div>freezePrediction: {{ freezePrediction }}</div>
+    </div>
+
+    <div
+      class="notification-card"
+      v-if="!distanceOkMessageTriggered && props.exercise?.type === 'INTRO'"
+    >
+      <div class="notification-card-content">
+        {{ notificationMessages[notificationMessageIndex] }}
+      </div>
+    </div>
+    <canvas id="canvas" style="width: 100%; height: 100%"></canvas>
+    <div id="label-container"></div>
+  </div>
+</template>
+
+<style scoped>
+.notification-card {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100px;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.notification-card-content {
+  padding: 16px 44px;
+  color: transparent;
+  font-size: 60px;
+  line-height: 78px;
+  font-weight: 900;
+  text-align: center;
+  background: white;
+  -webkit-background-clip: text;
+  background-clip: text;
+  white-space: pre-line;
+}
+</style>

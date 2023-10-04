@@ -21,7 +21,7 @@ function search(modifier) {
 
 <template>
   <div class="flex items-center">
-    <div class="text-2xl font-black">
+    <div class="text-2xl font-black w-60">
       {{ props.modelValue.getFullYear() }}년
       {{ props.modelValue.getMonth() + 1 }}월 리포트
     </div>
