@@ -181,36 +181,57 @@ const router = createRouter({
       path: '/',
       name: pathNames.mainPage.name,
       component: MainPage,
+      meta: {
+        title: '오늘도 핏! 하게 | 현핏',
+      },
     },
     {
       path: '/login',
       name: pathNames.loginPage.name,
       component: LoginPage,
+      meta: {
+        title: '로그인 | 현핏',
+      },
     },
     {
       path: '/survey',
       name: pathNames.surveyPage.name,
       component: SurveyPage,
+      meta: {
+        title: '운동환경 재설정 | 현핏',
+      },
     },
     {
       path: '/trainers',
       name: pathNames.trnSearchPage.name,
       component: TrnSearchPage,
+      meta: {
+        title: '트레이너 찾기 | 현핏',
+      },
     },
     {
       path: '/mbr-rsv',
       name: pathNames.mbrRsvPage.name,
       component: MbrRsvPage,
+      meta: {
+        title: '라이브 클래스 | 현핏',
+      },
     },
     {
       path: '/ai-training',
       name: pathNames.aiTrainingPage.name,
       component: AiTrainingPage,
+      meta: {
+        title: '트레이닝 프로그램 | 현핏',
+      },
     },
     {
       path: '/ai-training/error',
       name: pathNames.aiTrainingErrorPage.name,
       component: AiTrainingErrorPage,
+      meta: {
+        title: '오류 - 트레이닝 프로그램 | 현핏',
+      },
     },
     {
       path: '/trainers/:trnId',
@@ -221,66 +242,105 @@ const router = createRouter({
       path: '/ptroom',
       name: pathNames.ptRoomPage.name,
       component: PtRoomPage,
+      meta: {
+        title: '라이브 클래스 | 현핏',
+      },
     },
     {
       path: '/boTrnRsvBoard',
       name: pathNames.boTrnRsvBoardPage.name,
       component: BoTrnRsvBoardPage,
+      meta: {
+        title: '오피스 - 월간 라이브 클래스 | 현핏',
+      },
     },
     {
       path: '/boTrnFbBoard',
       name: pathNames.boTrnFbBoardPage.name,
       component: BoTrnFbBoardPage,
+      meta: {
+        title: '오피스 - 월간 피드백 | 현핏',
+      },
     },
     {
       path: '/mbr-myPage',
       name: pathNames.mbrMyPage.name,
       component: MbrMyPage,
+      meta: {
+        title: '마이페이지 | 현핏',
+      },
     },
     {
       path: '/mbr-myPoint',
       name: pathNames.mbrMyPointPage.name,
       component: MbrMyPointPage,
+      meta: {
+        title: '포인트 | 현핏',
+      },
     },
     {
       path: '/report',
       name: pathNames.reportPage.name,
       component: ReportPage,
+      meta: {
+        title: '현핏 리포트 | 현핏',
+      },
     },
     {
       path: '/mbr-pt-feedback',
       name: pathNames.mbrPtFeedbackPage.name,
       component: MbrPtFeedbackPage,
+      meta: {
+        title: '트레이너 피드백 | 현핏',
+      },
     },
     {
       path: '/bo-excNew',
       name: pathNames.boExcNewPage.name,
       component: BoExcNewPage,
+      meta: {
+        title: '오피스 - 트레이닝 등록 | 현핏',
+      },
     },
     {
       path: '/bo-excBoard',
       name: pathNames.boExcBoardPage.name,
       component: BoExcBoardPage,
+      meta: {
+        title: '오피스 - 트레이닝 | 현핏',
+      },
     },
     {
       path: '/bo-rtnBoard',
       name: pathNames.boRtnBoardPage.name,
       component: BoRtnBoardPage,
+      meta: {
+        title: '오피스 - 트레이닝 프로그램 | 현핏',
+      },
     },
     {
       path: '/bo-rtnNew',
       name: pathNames.boRtnNewPage.name,
       component: BoRtnNewPage,
+      meta: {
+        title: '오피스 - 트레이닝 프로그램 등록 | 현핏',
+      },
     },
     {
       path: '/reservations/complete',
       name: pathNames.mbrRsvCompletionPage.name,
       component: MbrRsvCompletionPage,
+      meta: {
+        title: '라이브 클래스 예약 | 현핏',
+      },
     },
     {
       path: '/routines',
       name: pathNames.mbrRtnBoardPage.name,
       component: MbrRtnBoardPage,
+      meta: {
+        title: '트레이닝 프로그램 | 현핏',
+      },
     },
   ],
   scrollBehavior(to, from, savedPosition) {
@@ -291,6 +351,10 @@ const router = createRouter({
       return { top: 0 }
     }
   },
+})
+router.afterEach((to, from) => {
+  const title = to.meta.title === undefined ? '현핏' : to.meta.title
+  document.title = title
 })
 export default router
 
