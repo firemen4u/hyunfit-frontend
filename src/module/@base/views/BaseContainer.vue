@@ -20,7 +20,8 @@ const props = defineProps({
       ></v-progress-linear>
     </div>
     <main
-      class="d-flex flex-column justify-center align-center mt-16 w-100"
+      class="d-flex flex-column justify-center align-center w-100"
+      :class="!noheader ? 'mt-16' : ''"
       style="contain: paint"
     >
       <slot></slot>

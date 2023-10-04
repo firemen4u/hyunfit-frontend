@@ -37,11 +37,11 @@ const headerPages = [
 
 const adminPages = [
   {
-    displayName: '운동관리',
+    displayName: '트레이닝 관리',
     destination: pathNames.boExcBoardPage,
   },
   {
-    displayName: '프로그램관리',
+    displayName: '트레이닝 프로그램 관리',
     destination: pathNames.boRtnBoardPage,
   },
 ]

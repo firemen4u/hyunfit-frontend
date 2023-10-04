@@ -1,40 +1,53 @@
 <template>
   <div v-show="!loading" class="teaching-video bg-white" :class="windowSize">
     <video
-        :key="props.exercise.videoUrl"
-        ref="videoElement"
-        @loadeddata="onTeachingVideoReady()"
-        preload="auto"
-        style="width: 100%; height: 100%; object-fit: cover; border-radius: 0"
-        @error="alert('Video 로드 실패 ' + props.exercise.videoUrl)"
+      :key="props.exercise.videoUrl"
+      ref="videoElement"
+      @canplaythrough="onTeachingVideoReady()"
+      preload="auto"
+      style="width: 100%; height: 100%; object-fit: cover; border-radius: 0"
+      @error="alert('Video 로드 실패 ' + props.exercise.videoUrl)"
     >
-      <source :src="props.exercise.videoUrl"/>
+      <source :src="props.exercise.videoUrl" />
     </video>
     <audio
-        :key="props.exercise.audioUrl"
-        ref="audioElement"
-        preload="auto"
-        @error="alert('Sound 로드 실패 ' + props.exercise.audioUrl)"
+      :key="props.exercise.audioUrl"
+      ref="audioElement"
+      preload="auto"
+      @ended="onAudioEnded()"
+      @error="alert('Sound 로드 실패 ' + props.exercise.audioUrl)"
     >
-      <source :src="props.exercise.audioUrl"/>
+      <source :src="props.exercise.audioUrl" />
     </audio>
     <audio
-        :key="props.exercise.bgmUrl"
-        ref="bgmElement"
-        preload="auto"
-        @error="alert('Sound 로드 실패 ' + props.exercise.bgmUrl)"
+      v-if="bgmUrl"
+      :key="bgmUrl"
+      ref="bgmElement"
+      preload="auto"
+      @canplaythrough="onBgmLoaded()"
+      @ended="playNextBgm()"
+      @error="alert('Sound 로드 실패 ' + bgmUrl)"
     >
-      <source :src="props.exercise.bgmUrl"/>
+      <source :src="bgmUrl" />
     </audio>
   </div>
 </template>
 <script setup>
-import {ref, watch} from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { FILE_SERVER_BASE_URL } from '@/config'
 
 const videoElement = ref(null)
 const audioElement = ref(null)
 const bgmElement = ref(null)
+const bgmUrl = computed(() => {
+  return `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${
+    bgmList.value[bgmIdx.value]
+  }.mp3`
+})
+const bgmList = ref([])
+const bgmIdx = ref(0)
 
+const audioEnded = ref(false)
 const props = defineProps({
   loading: Boolean,
   windowSize: String,
@@ -45,52 +58,67 @@ const props = defineProps({
 })
 const emit = defineEmits(['event:ready', 'event:start'])
 
-
 watch(
-    () => props.breakTime,
-    newVal => {
-      if (newVal === true) {
-        videoElement.value.pause()
-        audioElement.value.pause();
-        bgmElement.value.pause();
-      } else {
-        videoElement.value.currentTime = 0
-        videoElement.value.play()
-        audioElement.value.play();
-        bgmElement.value.play();
-      }
+  () => props.breakTime,
+  newVal => {
+    if (newVal === true) {
+      videoElement.value.pause()
+    } else {
+      videoElement.value.currentTime = 0
+      videoElement.value.play()
     }
+  }
 )
 
 watch(
-    () => props.pauseTime,
-    newVal => {
-      if (newVal === true) {
-        videoElement.value.pause()
-        audioElement.value.pause();
-        bgmElement.value.pause();
-      } else {
-        videoElement.value.play()
-        audioElement.value.play();
-        bgmElement.value.play();
-      }
+  () => props.pauseTime,
+  newVal => {
+    if (newVal === true) {
+      videoElement.value.pause()
+      bgmElement.value.pause()
+    } else {
+      videoElement.value.play()
+      bgmElement.value.play()
     }
+  }
 )
+
+onMounted(() => {
+  let numbers = []
+  for (let i = 1; i <= 20; i++) {
+    numbers.push(i)
+  }
+
+  for (let i = 0; i < 20; i++) {
+    const randomIndex = Math.floor(Math.random() * numbers.length)
+    const randomNum = numbers.splice(randomIndex, 1)[0]
+    bgmList.value.push(randomNum)
+  }
+})
+function playNextBgm() {
+  bgmIdx.value += 1
+}
+
+function onAudioEnded() {
+  audioEnded.value = true
+  bgmElement.value.volume = 0.2
+  bgmElement.value.play()
+}
+
+function onBgmLoaded() {
+  bgmElement.value.play()
+}
 
 function onTeachingVideoReady() {
   setTimeout(() => {
     videoElement.value.play()
+    if (props.exercise.type === 'GUIDE' || props.exercise.type === 'WARMUP') {
+      audioElement.value.play()
+      bgmElement.value.play()
+      bgmElement.value.volume = 0.1
+    }
     emit('event:ready')
   }, 1000)
-  console.log('audio 찾기 - in teaching video', props.exercise.audioUrl)
-  audioElement.value.play()
-  setTimeout(() => {
-    console.log('bgm 실행 - after delay');
-    bgmElement.value.volume = 0.3
-    bgmElement.value.play();
-    emit('event:ready')
-
-  }, 10000);
 }
 </script>
 

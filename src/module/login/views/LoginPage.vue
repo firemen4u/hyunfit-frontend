@@ -2,12 +2,10 @@
   <div class="background">
     <div class="login-box">
       <div class="flex justify-center">
-        <button @click="moveToMain()">
-          <img
-            src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit-logo-colored.png"
-            class="w-60 h-14"
-          />
-        </button>
+        <img
+          src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit-logo-colored.png"
+          class="w-60 h-14"
+        />
       </div>
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <div>

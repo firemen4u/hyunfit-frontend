@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
 import MainApi from '@/module/main/services/mainApi'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
+import router, { pathNames } from '@/router'
 const props = defineProps({
   rcm: Array,
   userdata: Object,
@@ -60,16 +61,18 @@ const rcmWatcher = watch(
 )
 
 function playVideo() {
-  console.log('haha')
   routineVideoElem.value.play()
-  // videoTimeout.value = setTimeout(() => {
-  //
-  // }, 1000)
 }
 function pauseVideo() {
   clearTimeout(videoTimeout.value)
   routineVideoElem.value.currentTime = 0
   routineVideoElem.value.pause()
+}
+
+async function gotoAiTraining(routine) {
+  await router.push(
+    pathNames.aiTrainingPage.with(undefined, { rtnSeq: routine.rtnSeq })
+  )
 }
 </script>
 
@@ -108,7 +111,7 @@ function pauseVideo() {
             </div>
           </div>
 
-          <MainPlayButton />
+          <MainPlayButton @click="gotoAiTraining(routine)" />
         </div>
       </div>
       <div

@@ -3,11 +3,16 @@
   <div class="all-content-wrap">
     <div class="rtn-board-header-wrap flex items-center px-10">
       <div v-if="showAdmin" class="text-4xl font-black text-[#021f3d]">
-        트레이닝 프로그램 관리
+        <p class="text-4xl font-black mt-5 text-[#021f3d]">백오피스</p>
+        <p class="text-2xl font-bold mt-5 text-[#021f3d]">
+          트레이닝 프로그램 관리
+        </p>
       </div>
       <div v-if="showMember" class="text-4xl font-black text-[#021f3d]">
-        <div>HYUNFIT과 함께 운동하고</div>
-        <div class="mt-2">건강한 운동 습관을 완성해보세요!</div>
+        <p class="text-4xl font-black mt-5 text-[#021f3d]">트레이닝 프로그램</p>
+        <p class="text-2xl font-bold mt-5 text-[#021f3d]">
+          HYUNFIT과 함께 건강한 운동 습관을 완성해보세요!
+        </p>
       </div>
     </div>
     <div class="mt-6 px-[50px]">
@@ -98,7 +103,6 @@ onMounted(async () => {
   try {
     const fetchedRoutines = await ApiClient.get('/routines')
     routines.value = fetchedRoutines.sort((a, b) => b.rtnSeq - a.rtnSeq) // seq로 정렬
-    
   } catch (error) {
     console.error('API 호출 중 에러 발생:', error)
   }
