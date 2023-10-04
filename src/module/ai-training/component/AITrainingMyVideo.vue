@@ -1,8 +1,8 @@
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { computed, reactive, ref, watch } from 'vue'
-import { FILE_SERVER_BASE_URL } from '@/config'
+import {computed, reactive, ref, watch} from 'vue'
+import {FILE_SERVER_BASE_URL} from '@/config'
 
 const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
@@ -24,8 +24,8 @@ const emit = defineEmits([
 ])
 let distanceOkTimeout
 const freezePrediction = computed(
-  () =>
-    props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
+    () =>
+        props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
 )
 
 const notificationMessages = [
@@ -58,17 +58,17 @@ const props = defineProps({
 const typesToLoadModel = ['INTRO', 'WARMUP', 'EXERCISE']
 
 const exerciseWatcher = watch(
-  () => props.exercise,
-  async exercise => {
-    if (typesToLoadModel.includes(exercise.type)) {
-      await loadModel(exercise)
-      if (exercise.type === 'INTRO') {
-        await loadWebcam()
-        emit('model:init')
+    () => props.exercise,
+    async exercise => {
+      if (typesToLoadModel.includes(exercise.type)) {
+        await loadModel(exercise)
+        if (exercise.type === 'INTRO') {
+          await loadWebcam()
+          emit('model:init')
+        }
+        emit('model:ready')
       }
-      emit('model:ready')
     }
-  }
 )
 
 function triggerDistanceOkMessage() {
@@ -145,7 +145,7 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
+  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
   // Prediction 2: run input through teachable machine classification model
   drawPose(pose)
 
@@ -218,12 +218,12 @@ function drawPose(pose) {
       let drawColor = getColorFromPoseScore(pose.score)
       const minPartConfidence = 0.5
       tmPose.drawKeypoints(
-        pose.keypoints,
-        minPartConfidence,
-        ctx,
-        10,
-        drawColor + 'BB',
-        drawColor
+          pose.keypoints,
+          minPartConfidence,
+          ctx,
+          10,
+          drawColor + 'BB',
+          drawColor
       )
       tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx, 7, drawColor)
     }
@@ -234,12 +234,12 @@ function drawPose(pose) {
 <template>
   <div class="my-video" :class="windowSize">
     <div
-      v-if="props.debugMode"
-      class="fixed z-[1000] top-0 left-[40%] bg-[#FFFFFFBB]"
+        v-if="props.debugMode"
+        class="fixed z-[1000] top-0 left-[40%] bg-[#FFFFFFBB]"
     >
       <div
-        class="md-2"
-        :class="
+          class="md-2"
+          :class="
           predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
         "
       >
@@ -247,8 +247,8 @@ function drawPose(pose) {
         {{ Math.round(predictions[0]?.probability * 100) }}%
       </div>
       <div
-        class="md-2"
-        :class="
+          class="md-2"
+          :class="
           predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
         "
       >
@@ -267,8 +267,8 @@ function drawPose(pose) {
     </div>
 
     <div
-      class="notification-card"
-      v-if="!distanceOkMessageTriggered && props.exercise?.type === 'INTRO'"
+        class="notification-card"
+        v-if="!distanceOkMessageTriggered && props.exercise?.type === 'INTRO'"
     >
       <div class="notification-card-content">
         {{ notificationMessages[notificationMessageIndex] }}
@@ -280,6 +280,14 @@ function drawPose(pose) {
 </template>
 
 <style scoped>
+#canvas {
+  display: block;
+  aspect-ratio: auto 1280 / 720;
+  overflow-clip-margin: content-box;
+  overflow: clip;
+}
+
+
 .notification-card {
   position: absolute;
   display: flex;
@@ -290,6 +298,7 @@ function drawPose(pose) {
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 100px;
+
   background-color: rgba(0, 0, 0, 0.75);
 }
 
