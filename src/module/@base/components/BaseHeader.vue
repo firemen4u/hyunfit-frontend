@@ -60,7 +60,7 @@ const trainerPages = [
 const profileMenus = [
   { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
-  { displayName: '비밀번호 변경', destination: '/' },
+  { displayName: '현핏 포인트', destination: pathNames.mbrMyPointPage },
 ]
 function getPages() {
   if (props.category === 'admin') return adminPages

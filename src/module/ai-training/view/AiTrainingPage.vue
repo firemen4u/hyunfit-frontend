@@ -482,7 +482,7 @@ async function loadData() {
       .get(`${BACKEND_API_BASE_URL}/routines/${rtnSeq}`)
       .then(response => {
         rtnRewardPoint = response.data.rtnRewardPoint
-
+        document.title = `${response.data.rtnName} | 현핏`
         const temp = [
           {
             type: 'INTRO',

@@ -14,7 +14,6 @@ import {
 
 import UiHandler from '@/module/trn-detail/services/trnDetailUiHandler'
 
-import TrnDetailReviewStickerGroup from '@/module/trn-detail/components/TrnDetailReviewStickerGroup.vue'
 import { useRoute } from 'vue-router'
 import BaseCompactRating from '@/module/@base/components/BaseCompactRating.vue'
 import QnASection from '@/module/trn-detail/components/TrnDetailQnASection.vue'
@@ -27,6 +26,7 @@ import {
 import ReportDateUtils from '@/module/report/services/reportDateUtils'
 import ApiClient from '@/services/api'
 import router, { pathNames } from '@/router'
+import BaseReviewStickerGroup from '@/module/@base/components/BaseReviewStickerGroup.vue'
 
 let trnData = ref([])
 const route = useRoute()
@@ -122,6 +122,9 @@ async function initPage() {
     alert('유저데이터 불러오기 실패. ')
   }
   trnData.value = await getTrnDetail(route.params.trnId)
+
+  document.title = `${trnData.value.trnName} - 트레이너 | 현핏`
+
   console.log(trnData.value)
   await reloadDatePicker(new Date())
   lazyLoadProfileImage(trnData.value.trnProfileUrl)
@@ -347,7 +350,7 @@ onMounted(() => {
                       </div>
                       <div class="my-3">{{ review.ptrContent }}</div>
 
-                      <TrnDetailReviewStickerGroup
+                      <BaseReviewStickerGroup
                         :stickers="review.ptrStickers ? review.ptrStickers : ''"
                       />
                     </div>

@@ -125,6 +125,7 @@ async function gotoAiTraining(routine) {
           v-if="videoSrc"
           class="h-[170px]"
           loop
+          disablePictureInPicture
           preload="auto"
           muted
           :src="videoSrc"
