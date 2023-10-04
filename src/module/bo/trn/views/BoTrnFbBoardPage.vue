@@ -10,14 +10,10 @@
               class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
             >
               <div class="banner-img-cover-text py-12 px-10 mb-5">
-                <div class="text-4xl font-black text-[#021f3d]">
-                  <p class="text-4xl font-black mt-5 text-[#021f3d]">
-                    백오피스
-                  </p>
-                  <p class="text-2xl font-bold mt-5 text-[#021f3d]">
-                    월간 피드백 현황
-                  </p>
-                </div>
+                <p class="text-2xl font-bold text-[#021f3d]">오피스</p>
+                <p class="text-4xl font-black mt-3 text-[#021f3d]">
+                  월간 피드백
+                </p>
               </div>
             </div>
           </div>
