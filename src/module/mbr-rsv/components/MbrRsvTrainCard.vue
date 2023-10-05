@@ -86,10 +86,10 @@ function enterPtRoom() {
   reservationDate.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
 
   // 오늘 날짜가 아니면 alert 창을 표시하고 함수를 종료
-  if (today.getTime() !== reservationDate.getTime()) {
-    alert('오늘의 예약중인 클래스만 입장할 수 있습니다.')
-    return
-  }
+  // if (today.getTime() !== reservationDate.getTime()) {
+  //   alert('오늘 예약중인 클래스만 입장할 수 있습니다.')
+  //   return
+  // }
 
   const isConfirmed = window.confirm('입장하시겠습니까?')
 
