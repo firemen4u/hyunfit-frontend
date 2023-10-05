@@ -62,13 +62,15 @@
 
                 <div
                   v-if="loading"
-                  class="absolute w-[650px] h-40 flex justify-center items-center rounded-md"
+                  class="absolute w-[1120px] h-[500px] rounded-md flex flex-col justify-center items-center bg-[#eeeeee]"
                 >
                   <img
-                    src="https://fs.hyunfit.life/api/hyunfit/file/gpt-loader.gif"
-                    class="h-40 rounded-xl"
-                    alt=""
+                    src="https://fs.hyunfit.life/api/hyunfit/file/chat-gpt.gif"
+                    class="w-40 h-40"
                   />
+                  <span class="font-semibold"
+                    >GPT가 보고서를 작성중입니다..</span
+                  >
                 </div>
               </div>
               <div class="flex justify-center">
@@ -148,7 +150,6 @@ export default {
     async getGptFeedback(mbrSeq) {
       this.loading = true
       this.textarea = false
-
       const targetDate = dayjs(
         this.formatTarget(this.noFeedbackData.trnfSubmissionDue)
       )
