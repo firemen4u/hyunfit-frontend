@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-dialog v-model="show" max-width="700px" max-height="700px">
+    <v-dialog v-model="show" max-width="1200">
       <v-card>
-        <v-card-title class="mt-3">
-          <div class="flex justify-between ml-[4.5px]">
-            <span class="headline text-2xl">피드백 작성하기</span>
+        <div class="h-full w-full flex justify-center flex-col p-10">
+          <div class="flex justify-between mb-5">
+            <span class="headline text-2xl font-black">피드백 작성하기</span>
             <v-spacer></v-spacer>
             <v-btn
               @click="closeModal"
@@ -13,73 +13,80 @@
               variant="text"
             />
           </div>
-        </v-card-title>
-        <v-card-text>
-          <div class="flex justify-between flex-row">
-            <div class="flex flex-col items-center">
-              <div class="fb-detail-category">PT번호</div>
-              <div class="fb-detail-category">회 원 명</div>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="info-gray-box">{{ noFeedbackData.trnfSeq }}</div>
-              <div class="info-gray-box">{{ noFeedbackData.mbrName }}</div>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="fb-detail-category">최근PT일자</div>
-              <div class="fb-detail-category">피드백대상월</div>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="info-gray-box">
-                {{ formatDate(noFeedbackData.trnfCreationDate) }}
+          <div class="">
+            <div class="flex justify-start flex-row">
+              <div class="flex flex-col items-center">
+                <div class="fb-detail-category">PT번호</div>
+                <div class="fb-detail-category">회 원 명</div>
               </div>
-              <div class="info-gray-box">
-                {{ formatTarget(noFeedbackData.trnfSubmissionDue) }}
+              <div class="flex flex-col items-center mr-8">
+                <div class="info-gray-box">{{ noFeedbackData.trnfSeq }}</div>
+                <div class="info-gray-box">{{ noFeedbackData.mbrName }}</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="fb-detail-category">최근PT일자</div>
+                <div class="fb-detail-category">피드백대상월</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="info-gray-box">
+                  {{ formatDate(noFeedbackData.trnfCreationDate) }}
+                </div>
+                <div class="info-gray-box">
+                  {{ formatTarget(noFeedbackData.trnfSubmissionDue) }}
+                </div>
               </div>
             </div>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-row justify-between h-11">
-              <div class="fb font-semibold self-center">피드백 내용</div>
-              <v-card-actions>
-                <v-spacer></v-spacer>
+            <div class="flex flex-col">
+              <div class="flex flex-row justify-end h-11 mb-1">
                 <v-btn
                   color="primary"
+                  variant="flat"
                   @click="getGptFeedback(noFeedbackData.mbrSeq)"
                   >gpt 보고서 받아보기</v-btn
                 >
-              </v-card-actions>
-            </div>
-            <div class="w-[650px] h-40">
-              <v-textarea
-                v-if="textarea"
-                counter
-                :value="
-                  noFeedbackData.trnfContent !== null
-                    ? noFeedbackData.trnfContent
-                    : feedbackContent
-                "
-                clearable
-                variant="solo"
-                single-line
-              >
-              </v-textarea>
-              <div
-                v-if="loading"
-                class="absolute w-[650px] h-40 flex justify-center items-center rounded-md"
-              >
-                <img
-                  src="https://fs.hyunfit.life/api/hyunfit/file/gpt-loader.gif"
-                  class="h-40 rounded-xl"
-                  alt=""
-                />
+              </div>
+              <div class="h-[500px]">
+                <v-textarea
+                  v-if="textarea"
+                  counter
+                  v-model="feedbackContent"
+                  variant="solo"
+                  single-line
+                  hide-details
+                  rows="20"
+                  no-resize
+                  flat
+                  bg-color="#eeeeee"
+                >
+                </v-textarea>
+
+                <div
+                  v-if="loading"
+                  class="absolute w-[650px] h-40 flex justify-center items-center rounded-md"
+                >
+                  <img
+                    src="https://fs.hyunfit.life/api/hyunfit/file/gpt-loader.gif"
+                    class="h-40 rounded-xl"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <v-btn
+                  class="mt-10"
+                  width="200"
+                  color="primary"
+                  @click="submitFeedback(noFeedbackData)"
+                >
+                  {{
+                    noFeedbackData.trnfContent !== null
+                      ? '수정하기'
+                      : '작성하기'
+                  }}
+                </v-btn>
               </div>
             </div>
           </div>
-        </v-card-text>
-        <div class="flex justify-center mb-5">
-          <v-btn color="primary" @click="submitFeedback(noFeedbackData)">
-            {{ noFeedbackData.trnfContent !== null ? '수정하기' : '작성하기' }}
-          </v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -103,6 +110,9 @@ export default {
   computed: {
     show: {
       get() {
+        if (this.modelValue == true) {
+          this.feedbackContent = this.noFeedbackData.trnfContent
+        }
         return this.modelValue
       },
       set(value) {
@@ -136,7 +146,6 @@ export default {
       this.closeModal()
     },
     async getGptFeedback(mbrSeq) {
-
       this.loading = true
       this.textarea = false
 

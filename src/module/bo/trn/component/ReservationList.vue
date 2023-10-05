@@ -276,7 +276,7 @@ export default {
 }
 .rsv-list:hover {
   font-weight: 900;
-  color: rgb(199, 0, 57);
+  color: rgb(3, 0, 199);
   cursor: pointer;
 }
 </style>
