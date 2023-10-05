@@ -1,8 +1,9 @@
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import {computed, reactive, ref, watch} from 'vue'
-import {FILE_SERVER_BASE_URL} from '@/config'
+import { computed, reactive, ref, watch } from 'vue'
+import { FILE_SERVER_BASE_URL } from '@/config'
+import DebugProgressBar from '@/module/ai-training/component/DebugProgressBar.vue'
 
 const BASEURL = `${FILE_SERVER_BASE_URL}/api/hyunfit/model`
 let model, webcam, ctx, labelContainer, maxPredictions
@@ -11,11 +12,11 @@ let flag = false
 const width = 1000
 const height = 1000
 
-const maxPredictionInterval = 200
+const maxPredictionInterval = 50
 const predictions = ref([])
 const lastPredictionTime = ref(0)
 const predictedProbability = ref(null)
-const minExerciseDuration = 300
+const minExerciseDuration = 100
 const emit = defineEmits([
   'prediction',
   'model:ready',
@@ -24,8 +25,8 @@ const emit = defineEmits([
 ])
 let distanceOkTimeout
 const freezePrediction = computed(
-    () =>
-        props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
+  () =>
+    props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
 )
 
 const notificationMessages = [
@@ -39,6 +40,7 @@ const notificationMessages = [
 const notificationMessageIndex = ref(0)
 const isDistanceOk = ref(false)
 const distanceOkMessageTriggered = ref(false)
+const increment = computed(() => (props.exercise.excType === 4 ? 0.5 : 1))
 
 const exerciseCounts = reactive({
   excellent: ref(0),
@@ -58,17 +60,17 @@ const props = defineProps({
 const typesToLoadModel = ['INTRO', 'WARMUP', 'EXERCISE']
 
 const exerciseWatcher = watch(
-    () => props.exercise,
-    async exercise => {
-      if (typesToLoadModel.includes(exercise.type)) {
-        await loadModel(exercise)
-        if (exercise.type === 'INTRO') {
-          await loadWebcam()
-          emit('model:init')
-        }
-        emit('model:ready')
+  () => props.exercise,
+  async exercise => {
+    if (typesToLoadModel.includes(exercise.type)) {
+      await loadModel(exercise)
+      if (exercise.type === 'INTRO') {
+        await loadWebcam()
+        emit('model:init')
       }
+      emit('model:ready')
     }
+  }
 )
 
 function triggerDistanceOkMessage() {
@@ -145,12 +147,13 @@ async function predict() {
   // Prediction #1: run input through posenet
   // estimatePose can take in an image, video or canvas html element
 
-  const {pose, posenetOutput} = await model.estimatePose(webcam.canvas)
+  const { pose, posenetOutput } = await model.estimatePose(webcam.canvas)
+
   // Prediction 2: run input through teachable machine classification model
   drawPose(pose)
 
   // if (freezePrediction.value) return)
-  if ((pose && pose.score < 0.4) || freezePrediction.value) {
+  if (!pose || pose.score < 0.6 || freezePrediction.value) {
     predictions.value = []
     return
   }
@@ -161,6 +164,7 @@ async function predict() {
 
   // 자세 예측
   predictions.value = await model.predict(posenetOutput)
+
   if (predictions.value.length !== maxPredictions) return
 
   let pred
@@ -218,12 +222,12 @@ function drawPose(pose) {
       let drawColor = getColorFromPoseScore(pose.score)
       const minPartConfidence = 0.5
       tmPose.drawKeypoints(
-          pose.keypoints,
-          minPartConfidence,
-          ctx,
-          10,
-          drawColor + 'BB',
-          drawColor
+        pose.keypoints,
+        minPartConfidence,
+        ctx,
+        10,
+        drawColor + 'BB',
+        drawColor
       )
       tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx, 7, drawColor)
     }
@@ -234,41 +238,15 @@ function drawPose(pose) {
 <template>
   <div class="my-video" :class="windowSize">
     <div
-        v-if="props.debugMode"
-        class="fixed z-[1000] top-0 left-[40%] bg-[#FFFFFFBB]"
+      v-if="props.debugMode"
+      class="fixed px-3 py-3 z-[1000] w-[400px] top-[5%] left-[40%] bg-[#FFFFFFEE] rounded-lg"
     >
-      <div
-          class="md-2"
-          :class="
-          predictions[0]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
-        "
-      >
-        기본자세: {{ predictions[0]?.className }}:
-        {{ Math.round(predictions[0]?.probability * 100) }}%
-      </div>
-      <div
-          class="md-2"
-          :class="
-          predictions[1]?.probability > 0.5 ? 'bg-red-500 text-white' : ''
-        "
-      >
-        운동자세: {{ predictions[1]?.className }}:
-        {{ Math.round(predictions[1]?.probability * 100) }}%
-      </div>
-      <div>flag: {{ flag }}</div>
-      <div>Count: {{ exerciseCounts }}</div>
-      <div>확률: {{ predictedProbability }}</div>
-      <div>인정된 자세: {{ getScoreType() }}</div>
-      <div>
-        쿨다운:
-        {{ Math.max(minExerciseDuration - Date.now() + lastPredictionTime, 0) }}
-      </div>
-      <div>freezePrediction: {{ freezePrediction }}</div>
+      <DebugProgressBar :predictions="predictions" />
     </div>
 
     <div
-        class="notification-card"
-        v-if="!distanceOkMessageTriggered && props.exercise?.type === 'INTRO'"
+      class="notification-card"
+      v-if="!distanceOkMessageTriggered && props.exercise?.type === 'INTRO'"
     >
       <div class="notification-card-content">
         {{ notificationMessages[notificationMessageIndex] }}
@@ -286,7 +264,6 @@ function drawPose(pose) {
   overflow-clip-margin: content-box;
   overflow: clip;
 }
-
 
 .notification-card {
   position: absolute;
