@@ -13,7 +13,17 @@
               variant="text"
             />
           </div>
-          <div class="">
+          <div class="relative">
+            <div
+              v-if="gptLoading"
+              class="gpt-loader flex flex-col items-center"
+            >
+              <img
+                src="https://fs.hyunfit.life/api/hyunfit/file/chat-gpt.gif"
+                class="w-40 h-40"
+              />
+              <span class="font-black">GPT가 보고서를 작성중입니다...</span>
+            </div>
             <div class="text-xl font-black mb-3">회원 정보</div>
             <div class="flex justify-start flex-row">
               <div class="flex flex-col">
@@ -43,13 +53,14 @@
                 <v-btn
                   color="primary"
                   variant="flat"
+                  :disabled="gptLoading"
                   @click="getGptFeedback(noFeedbackData.mbrSeq)"
                   >gpt 보고서 받아보기</v-btn
                 >
               </div>
               <div>
                 <v-textarea
-                  v-if="textarea"
+                  :disabled="gptLoading"
                   counter
                   v-model="feedbackContent"
                   variant="solo"
@@ -58,28 +69,17 @@
                   rows="13"
                   no-resize
                   flat
+                  :loading="gptLoading"
                   bg-color="#f4f3f6"
                 >
                 </v-textarea>
-
-                <div
-                  v-if="loading"
-                  class="absolute w-[1120px] h-[500px] rounded-md flex flex-col justify-center items-center bg-[#eeeeee]"
-                >
-                  <img
-                    src="https://fs.hyunfit.life/api/hyunfit/file/chat-gpt.gif"
-                    class="w-40 h-40"
-                  />
-                  <span class="font-semibold"
-                    >GPT가 보고서를 작성중입니다..</span
-                  >
-                </div>
               </div>
               <div class="flex justify-center">
                 <v-btn
                   class="mt-10"
                   width="200"
                   color="primary"
+                  :disabled="gptLoading"
                   @click="submitFeedback(noFeedbackData)"
                 >
                   {{
@@ -129,8 +129,7 @@ export default {
       feedbackContent: '',
       startDate: '',
       endDate: '',
-      loading: false,
-      textarea: true,
+      gptLoading: false,
     }
   },
   methods: {
@@ -150,8 +149,7 @@ export default {
       this.closeModal()
     },
     async getGptFeedback(mbrSeq) {
-      this.loading = true
-      this.textarea = false
+      this.gptLoading = true
       const targetDate = dayjs(
         this.formatTarget(this.noFeedbackData.trnfSubmissionDue)
       )
@@ -164,8 +162,7 @@ export default {
         },
       })
       let response = await ApiClient.post('/trainer-feedbacks/gpt', sendingData)
-      this.loading = false
-      this.textarea = true
+      this.gptLoading = false
       this.feedbackContent = response.content
     },
   },
@@ -173,6 +170,14 @@ export default {
 </script>
 
 <style scoped>
+.gpt-loader {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 60%;
+  left: 50%;
+  z-index: 2;
+}
+
 .fb-detail-category {
   display: flex;
   align-items: center;
