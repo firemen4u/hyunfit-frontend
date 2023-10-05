@@ -74,11 +74,9 @@ function parse(stickers) {
 }
 
 function getIcon(i) {
-  console.log(i)
   return reviews[i].icon
 }
 function getContent(i) {
-  console.log(i)
   return reviews[i].content
 }
 function getCategory(i) {

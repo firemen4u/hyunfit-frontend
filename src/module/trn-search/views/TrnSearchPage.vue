@@ -87,7 +87,7 @@ onBeforeMount(() => {
 
 <template>
   <BaseContainer :loading="loading">
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center primary-background mb-[150px]">
       <BaseBodyWrapper>
         <div
           class="flex flex-col items-center bg-white shadow-lg mt-3 rounded-xl overflow-hidden"

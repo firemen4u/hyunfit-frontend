@@ -45,6 +45,7 @@ const datetimeSelected = computed(() => {
   }
   return null
 })
+const minDate = new Date().setDate(new Date().getDate() - 1)
 
 let timeslotsLoading = ref(false)
 let ptReservationOptionSelected = ref([])
@@ -379,7 +380,7 @@ onMounted(() => {
                     class="trn-detail-date-picker"
                     show-adjacent-months
                     max-width="100%"
-                    :min="Date.now()"
+                    :min="minDate"
                     color="#185492"
                     title=""
                     header=""
@@ -395,6 +396,7 @@ onMounted(() => {
                     @update:modelValue="value => (timeSelected = value)"
                     :disabled="reservationConfirmLoading"
                     :reservedTimeslots="reservedTimeslots"
+                    :dateSelected="dateSelected"
                   />
                 </div>
               </div>

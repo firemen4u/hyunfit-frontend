@@ -1,108 +1,107 @@
 <template>
   <div>
-    <v-dialog v-model="show" max-width="605">
+    <v-dialog v-model="show" width="650">
       <v-card>
         <!--헤더부분-->
-        <v-card-title class="mt-3">
-          <div class="flex justify-between ml-1">
-            <span class="headline text-2xl font-bold">예약 상세 정보</span>
-            <v-spacer></v-spacer>
-            <v-btn
-              @click="closeModal"
-              :icon="CrossSvg"
-              size="small"
-              variant="text"
-            />
-          </div>
-        </v-card-title>
-        <v-card-text>
-          <div class="headline text-xl font-semibold mb-2">예약정보</div>
-          <div class="flex flex-row mb-3">
-            <!--카테고리-->
-            <div class="flex flex-col items-center">
-              <div class="rsvdetail-category">예약번호</div>
-              <div class="rsvdetail-category">예약일자</div>
-            </div>
-            <!--정보-->
-            <div class="flex flex-col items-center">
-              <div class="info-gray-box">{{ reservationData.ptSeq }}</div>
-              <div class="info-gray-box">
-                {{ formatDate(reservationData.ptReservationDate) }}
-              </div>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="rsvdetail-category">예약상태</div>
-              <div class="rsvdetail-category">예약시간</div>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="info-gray-box">
-                {{ reservationData.ptReservationStatus }}
-              </div>
-              <div class="info-gray-box">
-                {{ formatTime(reservationData.ptReservationDate) }}
-              </div>
-            </div>
-          </div>
-          <div class="headline text-xl font-semibold mb-2">회원정보</div>
-          <div class="flex flex-row mb-3">
-            <!--카테고리-->
-            <div class="flex flex-col items-center">
-              <div class="rsvdetail-category">회원번호</div>
-              <pre class="rsvdetail-category">성       별</pre>
-              <pre class="rsvdetail-category">키</pre>
-              <div class="rsvdetail-category">운동레벨</div>
-            </div>
-            <!--정보-->
-            <div class="flex flex-col items-center">
-              <div class="info-gray-box">{{ reservationData.mbrSeq }}</div>
-              <div class="info-gray-box">{{ this.memberInfo.mbrGender }}</div>
-              <div class="info-gray-box">{{ this.memberInfo.mbrHeight }}</div>
-              <div class="info-gray-box">
-                {{ this.memberInfo.mbrExerciseExperienceLevel }}
-              </div>
-            </div>
-            <div class="flex flex-col items-center">
-              <pre class="rsvdetail-category">회  원  명</pre>
-              <div class="rsvdetail-category">운동목표</div>
-              <pre class="rsvdetail-category">몸  무  게</pre>
-            </div>
-            <div class="flex flex-col items-center">
-              <div class="info-gray-box">
-                {{ reservationData.mbrName }}
-              </div>
-              <div class="info-gray-box">
-                {{ this.memberInfo.mbrExerciseGoal }}
-              </div>
-              <div class="info-gray-box">{{ this.memberInfo.mbrWeight }}</div>
-            </div>
-          </div>
-          <!--고객요청사항-->
-          <div class="flex flex-col">
-            <div class="text-xl font-semibold">회원요청사항</div>
-            <div class="sticker-container">
-              <BaseChipGroup
-                v-model="options"
-                :items="options"
-                :disabled="true"
-                :filter="true"
-                :font-size="11"
+        <div class="flex flex-col px-10 py-5">
+          <div class="mt-3">
+            <div class="flex justify-between">
+              <span class="headline text-3xl font-black mb-10"
+                >예약 상세 정보</span
+              >
+              <v-spacer></v-spacer>
+              <v-btn
+                @click="closeModal"
+                :icon="CrossSvg"
+                size="small"
+                variant="text"
               />
             </div>
           </div>
-        </v-card-text>
-        <!--꼬리(입장버튼)-->
-        <div class="flex justify-center mb-5 mt-3">
-          <v-btn
-            width="200"
-            color="primary"
-            v-if="
-              reservationData.ptReservationStatus == '예정' ||
-              reservationData.ptReservationStatus == '재입장'
-            "
-            @click="enterPtRoom"
-          >
-            라이브클래스 입장
-          </v-btn>
+          <div>
+            <div class="headline text-2xl font-bold mb-3">예약정보</div>
+            <div class="flex flex-row">
+              <!--카테고리-->
+              <div class="flex flex-col items-center">
+                <div class="rsvdetail-category">예약번호</div>
+                <div class="rsvdetail-category">예약일자</div>
+              </div>
+              <!--정보-->
+              <div class="flex flex-col items-center">
+                <div class="info-gray-box">{{ reservationData.ptSeq }}</div>
+                <div class="info-gray-box">
+                  {{ formatDate(reservationData.ptReservationDate) }}
+                </div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="rsvdetail-category">예약상태</div>
+                <div class="rsvdetail-category">예약시간</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="info-gray-box">
+                  {{ reservationData.ptReservationStatus }}
+                </div>
+                <div class="info-gray-box">
+                  {{ formatTime(reservationData.ptReservationDate) }}
+                </div>
+              </div>
+            </div>
+            <div class="headline text-2xl font-bold mt-7 mb-3">회원정보</div>
+            <div class="flex flex-row mb-3">
+              <!--카테고리-->
+              <div class="flex flex-col items-center">
+                <div class="rsvdetail-category">회원번호</div>
+                <pre class="rsvdetail-category">성별</pre>
+                <pre class="rsvdetail-category">키</pre>
+                <div class="rsvdetail-category">운동 레벨</div>
+              </div>
+              <!--정보-->
+              <div class="flex flex-col items-center">
+                <div class="info-gray-box">{{ reservationData.mbrSeq }}</div>
+                <div class="info-gray-box">{{ this.memberInfo.mbrGender }}</div>
+                <div class="info-gray-box">{{ this.memberInfo.mbrHeight }}</div>
+                <div class="info-gray-box">
+                  {{ this.memberInfo.mbrExerciseExperienceLevel }}
+                </div>
+              </div>
+              <div class="flex flex-col items-center">
+                <pre class="rsvdetail-category">회원명</pre>
+                <div class="rsvdetail-category">운동 목표</div>
+                <pre class="rsvdetail-category">몸무게</pre>
+              </div>
+              <div class="flex flex-col items-center">
+                <div class="info-gray-box">
+                  {{ reservationData.mbrName }}
+                </div>
+                <div class="info-gray-box">
+                  {{ this.memberInfo.mbrExerciseGoal }}
+                </div>
+                <div class="info-gray-box">{{ this.memberInfo.mbrWeight }}</div>
+              </div>
+            </div>
+            <!--고객요청사항-->
+            <div v-if="reservationData.ptNoteStickers" class="flex flex-col">
+              <div class="text-2xl font-bold mt-7 mb-3">회원요청사항</div>
+              <BaseRequestChipGroup
+                :stickers="reservationData.ptNoteStickers"
+              />
+            </div>
+          </div>
+          <!--꼬리(입장버튼)-->
+          <div class="flex justify-center mb-5 mt-10">
+            <v-btn
+              height="50"
+              width="250"
+              color="primary"
+              v-if="
+                reservationData.ptReservationStatus == '예정' ||
+                reservationData.ptReservationStatus == '재입장'
+              "
+              @click="enterPtRoom"
+            >
+              <div class="text-lg font-black">라이브클래스 입장</div>
+            </v-btn>
+          </div>
         </div>
       </v-card>
     </v-dialog>
@@ -115,6 +114,7 @@ import 'dayjs/locale/ko'
 import { BaseChipGroup } from '@/module/@base/components'
 import CrossSvg from '@/module/@base/svg/CrossSvg.vue'
 import ApiClient from '/src/services/api.js'
+import BaseRequestChipGroup from '@/module/@base/components/BaseRequestChipGroup.vue'
 </script>
 <script>
 import router, { pathNames } from '@/router'
@@ -126,13 +126,6 @@ export default {
   },
   data() {
     return {
-      options: [
-        '운동이 처음이에요',
-        '살을 빼고 싶어요',
-        '부상 이력이 있어요',
-        '코어를 강화하고 싶어요',
-        '식단 조언도 함께 받고 싶어요',
-      ],
       memberInfo: {
         mbrGender: null,
         mbrHeight: null,
@@ -163,7 +156,7 @@ export default {
       let res = await ApiClient.get(
         '/members/by/' + this.reservationData.mbrSeq
       )
-      console.log(res)
+
       if (res.mbrExerciseExperienceLevel == 1) {
         this.memberInfo.mbrExerciseExperienceLevel = '초급'
       } else if (res.mbrExerciseExperienceLevel == 2) {
@@ -176,9 +169,9 @@ export default {
         this.memberInfo.mbrExerciseExperienceLevel = '상급'
       }
       if (res.mbrExerciseGoal == 1) {
-        this.memberInfo.mbrExerciseGoal = '체지방감량'
+        this.memberInfo.mbrExerciseGoal = '체중관리'
       } else {
-        this.memberInfo.mbrExerciseGoal = '근량증대'
+        this.memberInfo.mbrExerciseGoal = '건강관리'
       }
       if (res.mbrGender == 1) {
         this.memberInfo.mbrGender = '남성'
@@ -243,25 +236,12 @@ export default {
 .info-gray-box {
   display: flex;
   align-items: center;
-  background-color: rgb(234, 236, 244);
+  background-color: rgb(243 244 246);
   width: 200px;
   height: 30px;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 12px;
   margin-right: 10px;
-}
-
-.needs-gray-box {
-  background-color: rgb(234, 236, 244);
-  width: 350px;
-  height: 100px;
-  padding: 10px;
-  display: inline-block;
-  border-radius: 5px;
-}
-
-.sticker-container {
-  width: 400px;
 }
 </style>

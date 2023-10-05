@@ -273,7 +273,7 @@ const reportData = computed(() => {
 
 <template>
   <BaseContainer>
-    <div class="primary-background">
+    <div class="primary-background mb-[150px]">
       <BaseBodyWrapper>
         <div
           class="flex flex-col items-center bg-gray-50 shadow-lg mt-3 rounded-xl overflow-hidden"

@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 let times = [
   { displayText: '오전 7:00', value: '07:00' },
   { displayText: '오전 8:00', value: '08:00' },
@@ -21,8 +23,22 @@ const props = defineProps({
   modelValue: String,
   disabled: Boolean,
   reservedTimeslots: Array,
+  dateSelected: Date,
 })
 const emit = defineEmits(['update:modelValue'])
+
+const dayDiff = computed(() => {
+  const now = new Date()
+  const tg = new Date(props.dateSelected)
+  now.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
+  tg.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
+
+  return Math.floor((now - tg) / 86400)
+})
+function isBefore(t) {
+  if (dayDiff.value) return false
+  return !(new Date().getHours() < parseInt(t.value.split(':')[0]))
+}
 </script>
 
 <template>
@@ -39,7 +55,11 @@ const emit = defineEmits(['update:modelValue'])
       :value="t.value"
       @click="$emit('update:modelValue', t.value)"
       :color="modelValue === t.value ? 'primary' : ''"
-      :disabled="props.disabled || props.reservedTimeslots?.includes(t.value)"
+      :disabled="
+        props.disabled ||
+        props.reservedTimeslots?.includes(t.value) ||
+        isBefore(t)
+      "
     >
       <div
         class="btn-content text-[11px] px-2 text-neutral-600 tracking-wide"

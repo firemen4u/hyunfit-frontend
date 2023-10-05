@@ -9,7 +9,7 @@
       <div v-if="showMember" class="text-4xl font-black text-[#021f3d]">
         <p class="text-4xl font-black mt-5 text-[#021f3d]">트레이닝 프로그램</p>
         <p class="text-2xl font-bold mt-5 text-[#021f3d]">
-          HYUNFIT과 함께 건강한 운동 습관을 완성해보세요!
+          현핏과 함께 건강한 운동 습관을 완성해보세요!
         </p>
       </div>
     </div>
@@ -65,7 +65,7 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 const routines = ref([])
 const searchTerm = ref('')
 const loggedInUser = ref(null)
-const itemsPerPage = 12
+const itemsPerPage = 9
 const currentPage = ref(1)
 
 //showAdmin:true, showMember:true 인곳에 버튼 보이게 하기
@@ -78,9 +78,9 @@ const filteredRoutines = computed(() => {
 })
 
 // onPageChange 추가
-watch(currentPage, newVal => {
-  console.log('currentPage changed:', newVal)
-})
+// watch(currentPage, newVal => {
+//   console.log('currentPage changed:', newVal)
+// })
 
 const totalPages = computed(() =>
   Math.ceil(filteredRoutines.value.length / itemsPerPage)

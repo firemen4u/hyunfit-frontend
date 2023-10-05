@@ -1,16 +1,16 @@
 <template>
   <BaseContainer>
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center primary-background mb-[150px]">
       <BaseBodyWrapper>
         <div
-            class="mbr-rsv-container w-full mt-3 bg-white rounded-xl shadow-lg "
-            v-if="reservingResponse !== null"
+          class="mbr-rsv-container w-full mt-3 bg-gray-50 rounded-xl shadow-lg"
+          v-if="reservingResponse !== null"
         >
           <div
-              class="mbr-rsv-banner-container h-[200px] overflow-hidden relative rounded-t-xl mb-5"
+            class="mbr-rsv-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
           >
             <div
-                class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
+              class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
             >
               <div class="banner-img-cover-text py-12 px-10 mb-5">
                 <p class="text-4xl font-black mt-5 text-[#021f3d]">
@@ -22,26 +22,24 @@
               </div>
             </div>
           </div>
-          <div class="">
-            <div
-                class="mbr-rsv-upcomming-rsv-container w-full px-10 mb-5 pb-10 border-gray-200 mt-3"
-            >
+          <div>
+            <div class="w-full px-10 border-gray-200 my-10">
               <div>
-                <p class="text-2xl font-black my-3">다가오는 라이브 클래스</p>
+                <p class="text-2xl font-black mb-3">다가오는 라이브 클래스</p>
               </div>
               <div
-                  class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-between"
-                  title="예약한 트레이너의 카드"
-                  v-if="reservingResponse.personalTrainingDTOList.length"
+                class="mbr-rsv-upcomming-rsv-item flex flex-wrap justify-between"
+                title="예약한 트레이너의 카드"
+                v-if="reservingResponse.personalTrainingDTOList.length"
               >
                 <MbrRsvTrainCard
-                    v-for="training in reservingResponse.personalTrainingDTOList.slice(
+                  v-for="training in reservingResponse.personalTrainingDTOList.slice(
                     0,
                     2
                   )"
-                    :key="training.id"
-                    :responseData="training"
-                ></MbrRsvTrainCard>
+                  :key="training.id"
+                  :responseData="training"
+                />
               </div>
               <div v-else class="h-[200px] flex justify-center items-center">
                 <p class="text-2xl text-gray-500">
@@ -49,42 +47,50 @@
                 </p>
               </div>
             </div>
+            <hr class="mbr-hr border-[2px] rounded-xl border-gray-100 mx-10" />
             <div class="px-10 pb-10 rounded-b-2xl">
               <div class="mbr-rsv-history-container" title="예약 내역 카드">
-                <div class="mbr-rsv-history-item  p-3 ">
-                  <p class="text-2xl font-black mb-6">지난 라이브 클래스</p>
+                <div class="mbr-rsv-history-item">
+                  <p class="text-2xl font-black mt-10 mb-6">
+                    지난 라이브 클래스
+                  </p>
 
                   <div v-if="reservedResponse?.personalTrainingDTOList.length">
                     <div
-                        v-for="training in reservedResponse?.personalTrainingDTOList"
-                        :key="training.id"
-                        class="mbr-rsv-history-card"
+                      v-for="training in reservedResponse?.personalTrainingDTOList"
+                      :key="training.id"
+                      class="mbr-rsv-history-card"
                     >
                       <MbrRsvHistoryCard
-                          :responseData="training"
-                          @toggle-modal="toggleModal(training.ptSeq)"
+                        :responseData="training"
+                        @toggle-modal="toggleModal(training.ptSeq)"
                       />
                     </div>
                   </div>
-                  <div v-else class="h-[300px] flex justify-center items-center">
+                  <div
+                    v-else
+                    class="h-[300px] flex justify-center items-center"
+                  >
                     <p class="text-2xl text-gray-500">
                       지난 라이브 클래스 기록이 없습니다.
                     </p>
                   </div>
-                  <template class="border-solid border-4 border-orange-400">
-                  </template>
                 </div>
               </div>
               <div class="mt-5 mb-5">
-                <BasePagination v-model="currentPage" :total-pages="totalPages"/>
+                <BasePagination
+                  v-model="currentPage"
+                  :total-pages="totalPages"
+                />
               </div>
             </div>
           </div>
         </div>
         <MbrRsvReviewModal
-            v-model="modalActive"
-            :responseData="reservedResponse"
-            :targetSeq="selectedSeq"
+          v-model="modalActive"
+          :responseData="reservedResponse"
+          :targetSeq="selectedSeq"
+          @action:save="saveAndReload()"
         >
         </MbrRsvReviewModal>
       </BaseBodyWrapper>
@@ -92,13 +98,14 @@
   </BaseContainer>
 </template>
 <script setup>
-import {BaseBodyWrapper, BaseContainer} from '/src/module/@base/views'
-import {ref, onBeforeMount, computed, watch} from 'vue'
+import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
+import { ref, onBeforeMount, computed, watch } from 'vue'
 import MbrRsvTrainCard from '/src/module/mbr-rsv/components/MbrRsvTrainCard.vue'
 import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import ApiClient from '/src/services/api.js'
+import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 
 let memberSource = ''
 let selectedSeq = ref('')
@@ -131,8 +138,8 @@ async function getNextPt() {
   }
   try {
     reservedResponse.value = await ApiClient.get(
-        `/members/${memberSource.mbrSeq}/personal-trainings`,
-        {params: paramsReserved}
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserved }
     )
   } catch (error) {
     console.error('다음 페이지 API 요청 실패:', error)
@@ -148,8 +155,8 @@ async function saveAndReload() {
   }
   try {
     reservedResponse.value = await ApiClient.get(
-        `/members/${memberSource.mbrSeq}/personal-trainings`,
-        {params: paramsReserved}
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserved }
     )
   } catch (error) {
     console.log('update reserved api 실패!')
@@ -161,7 +168,7 @@ async function init() {
     memberSource = await ApiClient.get('/members/me')
 
     itemsTotalPage.value = await ApiClient.get(
-        `/members/${memberSource.mbrSeq}/personal-trainings/count`
+      `/members/${memberSource.mbrSeq}/personal-trainings/count`
     )
 
     const paramsReserving = {
@@ -170,8 +177,8 @@ async function init() {
       ptReservationStatus: 1,
     }
     reservingResponse.value = await ApiClient.get(
-        `/members/${memberSource.mbrSeq}/personal-trainings`,
-        {params: paramsReserving}
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserving }
     )
 
     const paramsReserved = {
@@ -180,15 +187,15 @@ async function init() {
       ptReservationStatus: 0,
     }
     reservedResponse.value = await ApiClient.get(
-        `/members/${memberSource.mbrSeq}/personal-trainings`,
-        {params: paramsReserved}
+      `/members/${memberSource.mbrSeq}/personal-trainings`,
+      { params: paramsReserved }
     )
 
     console.log('reserving', reservingResponse.value)
     console.log('reserved', reservedResponse.value)
     console.log(
-        'reserved total items',
-        reservedResponse.value.personalTrainingDTOList.length
+      'reserved total items',
+      reservedResponse.value.personalTrainingDTOList.length
     )
   } catch (error) {
     console.error('API 요청 실패:', error)

@@ -259,7 +259,7 @@ async function onSubmit() {
 
 <template>
   <BaseContainer category="admin">
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center primary-background mb-[150px]">
       <BaseBodyWrapper>
         <v-form
           :disabled="loading"
@@ -269,7 +269,12 @@ async function onSubmit() {
         >
           <div class="bo-rtnNew-banner flex items-center px-10">
             <div class="text-4xl font-black text-[#021f3d]">
-              새로운 트레이닝 프로그램 만들기
+              <div>
+                <p class="text-2xl font-bold text-[#021f3d]">오피스</p>
+                <p class="text-4xl font-black mt-3 text-[#021f3d]">
+                  트레이닝 프로그램 등록
+                </p>
+              </div>
             </div>
           </div>
           <div class="rtnNew-contents-wrap px-[50px]">

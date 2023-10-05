@@ -1,5 +1,6 @@
 <script setup>
 import { BaseHeader, BaseFooter } from '/src/module/@base/components'
+import MainFooter from '@/module/main/components/MainFooter.vue'
 const props = defineProps({
   noheader: Boolean,
   nofooter: Boolean,
@@ -25,7 +26,7 @@ const props = defineProps({
       style="contain: paint"
     >
       <slot></slot>
-      <BaseFooter v-if="!nofooter" />
+      <MainFooter v-if="!nofooter" />
     </main>
   </div>
 </template>

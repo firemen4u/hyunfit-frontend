@@ -4,13 +4,13 @@
       class="flex justify-center items-center align-baseline mt-20 mb-3 ml-36 mr-36"
     ></div>
     <div id="ptCamContainer" class="flex flex-col justify-center">
-      <button class="start-button" v-if="showButton" @click="startPt">
+      <button v-if="!joined" class="start-button" @click="startPt">
         <img src="/src/assets/images/start-button.png" />
       </button>
       <div
+        v-show="joined"
         id="after-join"
         class="flex justify-center"
-        v-if="showAfterJoin"
         ref="afterJoin"
       >
         <div id="publisher" class="mr-10"></div>
@@ -24,25 +24,36 @@
           class="ml-20 mt-7"
           :size="120"
         />
-        <LessoningTime
-          class="ml-5 mt-6"
-          v-if="showLessoningTime"
-        ></LessoningTime>
+        <LessoningTime class="ml-2 mt-6" v-if="joined"></LessoningTime>
       </div>
       <div class="flex justify-center align-middle w-1/3">
         <v-col cols="auto">
-          <v-btn icon="mdi-plus" size="large" color="red" @click="beforeLeave()"
+          <v-btn size="large" color="red" @click="beforeLeave()"
             ><img src="/src/assets/images/phone-hangup.png" alt=""
           /></v-btn>
         </v-col>
         <v-col cols="auto">
-          <v-btn icon="mdi-plus" size="large" color="grey" @click="toggleVideo"
-            ><img :src="videoImgPath" alt=""
+          <v-btn
+            size="large"
+            :color="controller.video ? 'grey' : 'red'"
+            :ripple="false"
+            @click="toggleVideo"
+            ><img
+              class="w-6 h-6"
+              :src="controller.video ? paths.videoOn : paths.videoOff"
+              alt=""
           /></v-btn>
         </v-col>
         <v-col cols="auto">
-          <v-btn icon="mdi-plus" size="large" color="grey" @click="toggleAudio"
-            ><img :src="audioImgPath" alt=""
+          <v-btn
+            size="large"
+            :color="controller.audio ? 'grey' : 'red'"
+            :ripple="false"
+            @click="toggleAudio"
+            ><img
+              class="w-6 h-6"
+              :src="controller.audio ? paths.audioOn : paths.audioOff"
+              alt=""
           /></v-btn>
         </v-col>
       </div>
@@ -56,184 +67,215 @@ import LessoningTime from '../components/LessoningTimeComponent.vue'
 import { OpenVidu } from 'openvidu-browser'
 import ApiClient from '/src/services/api.js'
 import HyunfitLogoMonoVer2Svg from '@/module/@base/svg/HyunfitLogoMonoVer2Svg.vue'
-</script>
+import { onBeforeMount, reactive, ref } from 'vue'
 
-<script>
-export default {
-  data() {
-    return {
-      OV: null,
-      session: null,
-      subscriber: [],
-      showAfterJoin: true,
-      bottonAfterJoin: true,
-      isAudioMuted: false,
-      videoImgPath: '/src/assets/images/Vector.png',
-      audioImgPath: '/src/assets/images/microphone.png',
-      showButton: true,
-      showLessoningTime: false,
-      personalTrainingDTO: {
-        ptReservationStatus: null,
-      },
+const paths = {
+  videoOn: 'https://fs.hyunfit.life/api/hyunfit/file/meeting-video-on.png',
+  videoOff: 'https://fs.hyunfit.life/api/hyunfit/file/meeting-video-off.png',
+  audioOn:
+    'https://fs.hyunfit.life/api/hyunfit/file/meeting-microphone-off.png',
+  audioOff:
+    'https://fs.hyunfit.life/api/hyunfit/file/meeting-microphone-on.png',
+}
+
+const joined = ref(false)
+
+const OV = ref(null)
+const session = ref(null)
+const subscriber = ref([])
+const publisher = ref(null)
+
+const controller = reactive({
+  video: ref(true),
+  audio: ref(true),
+})
+
+const personalTrainingDTO = {
+  ptReservationStatus: null,
+}
+
+onBeforeMount(() => {
+  window.addEventListener('beforeunload', handleBeforeUnload)
+})
+
+async function startPt() {
+  let userRole = localStorage.getItem('userRoleName')
+  let sessionId = localStorage.getItem('ptSeq')
+  await joinSession(userRole, sessionId)
+}
+
+async function getToken(currUserRole, mySessionId) {
+  if (currUserRole === 'member') {
+    return await createToken(mySessionId)
+  } else {
+    const sessionId = await createSession(mySessionId)
+    return await createToken(sessionId)
+  }
+}
+
+async function createSession(ptSeq) {
+  const response = await ApiClient.post('/openvidu/sessions', { ptSeq })
+  return response.sessionId
+}
+
+async function createToken(sessionId) {
+  try {
+    const res = await ApiClient.post(
+      '/openvidu/sessions/' + sessionId + '/connections',
+      {}
+    )
+    return res.token
+  } catch (e) {
+    if (e.response.status === 404) {
+      alert('아직 상담사가 상담을 시작하지 않았습니다.\n잠시만 기다려주세요!')
+    } else {
+      alert(`오류가 발생했습니다.  ${e}`)
     }
-  },
-  created() {
-    window.addEventListener('beforeunload', this.handleBeforeUnload)
-  },
-  methods: {
-    async startPt() {
-      this.showButton = false
-      let userRole = localStorage.getItem('userRoleName')
-      let sessionId = localStorage.getItem('ptSeq')
-      this.joinSession(userRole, sessionId)
-    },
-    async getToken(currUserRole, mySessionId) {
-      if (currUserRole == 'member') {
-        return await this.createToken(mySessionId)
-      } else {
-        const sessionId = await this.createSession(mySessionId)
-        return await this.createToken(sessionId)
-      }
-    },
-    async createSession(ptSeq) {
-      const response = await ApiClient.post('/openvidu/sessions', { ptSeq })
-      return response.sessionId
-    },
-    async createToken(sessionId) {
-      return ApiClient.post(
-        '/openvidu/sessions/' + sessionId + '/connections',
-        {}
-      )
-        .then(response => {
-          return response.token
+  }
+}
+
+async function joinSession(currUserRole, mySessionId) {
+  OV.value = new OpenVidu()
+  OV.value.enableProdMode()
+  session.value = OV.value.initSession()
+  session.value.on('streamCreated', ({ stream }) => {
+    let sub = session.value.subscribe(stream, 'subscriber')
+    subscriber.value.push(sub)
+    personalTrainingDTO.ptReservationStatus = 2
+    ApiClient.put('/personal-trainings/' + mySessionId, personalTrainingDTO)
+  })
+
+  session.value.on('exception', ({ exception }) => {
+    console.warn('OpenVidu warning', exception)
+  })
+
+  getToken(currUserRole, mySessionId).then(token => {
+    session.value
+      .connect(token)
+      .then(() => {
+        publisher.value = OV.value.initPublisher('publisher', {
+          audioSource: undefined,
+          videoSource: undefined,
+          publishAudio: controller.audio,
+          publishVideo: controller.video,
+          resolution: '',
+          frameRate: 30,
+          insertMode: 'APPEND',
+          mirror: false,
         })
-        .catch(error => {
-          this.showButton = true
-          alert(
-            '아직 상담사가 상담을 시작하지 않았습니다.\n잠시만 기다려주세요!'
-          )
-        })
-    },
-    async joinSession(currUserRole, mySessionId) {
-      this.OV = new OpenVidu()
-      this.session = this.OV.initSession()
-      this.session.on('streamCreated', ({ stream }) => {
-        let subscriber = this.session.subscribe(stream, 'subscriber')
-        this.subscriber.push(subscriber)
-        this.showLessoningTime = true
-        this.personalTrainingDTO.ptReservationStatus = 2
-        ApiClient.put(
-          '/personal-trainings/' + mySessionId,
-          this.personalTrainingDTO
+        session.value.publish(publisher.value)
+        const videoElement = document.createElement('video')
+        videoElement.classList.add('custom-video')
+        joined.value = true
+      })
+      .catch(error => {
+        console.log(
+          'There was an error connecting to the session:',
+          error.code,
+          error.message
         )
       })
-      this.session.on('exception', ({ exception }) => {
-        console.warn(exception)
-      })
-      this.bottonAfterJoin = false
-      this.getToken(currUserRole, mySessionId).then(token => {
-        this.session
-          .connect(token)
-          .then(() => {
-            let publisher = this.OV.initPublisher('publisher', {
-              audioSource: undefined,
-              videoSource: undefined,
-              publishAudio: true,
-              publishVideo: true,
-              resolution: '',
-              frameRate: 30,
-              insertMode: 'APPEND',
-              mirror: false,
-            })
-            this.mainStreamManager = publisher
-            this.publisher = publisher
-            this.session.publish(publisher)
-            const videoElement = document.createElement('video')
-            videoElement.classList.add('custom-video')
-          })
-          .catch(error => {
-            console.log(
-              'There was an error connecting to the session:',
-              error.code,
-              error.message
-            )
-          })
-      })
-    },
-    async toggleVideo() {
-      this.videoImgPath =
-        this.videoImgPath === '/src/assets/images/Vector.png'
-          ? '/src/assets/images/video-off-svgrepo-com.png'
-          : '/src/assets/images/Vector.png'
-      this.videoImgPath === '/src/assets/images/Vector.png'
-        ? this.publisher.publishVideo(true)
-        : this.publisher.publishVideo(false)
-    },
-    async toggleAudio() {
-      this.audioImgPath =
-        this.audioImgPath === '/src/assets/images/microphone.png'
-          ? '/src/assets/images/mute-1-svgrepo-com.png'
-          : '/src/assets/images/microphone.png'
+  })
+}
+async function toggleVideo() {
+  if (!publisher.value?.publishVideo) return
+  controller.video = !controller.video
+  await publisher.value.publishVideo(controller.video)
+}
+async function toggleAudio() {
+  if (!publisher.value?.publishAudio) return
+  controller.audio = !controller.audio
+  await publisher.value.publishAudio(controller.audio)
+}
+function beforeLeave() {
+  const confirmMessage = '상담을 종료하시겠습니까?'
+  if (window.confirm(confirmMessage)) {
+    leaveSession()
+  }
+}
+async function leaveSession() {
+  if (session.value) session.value.disconnect()
 
-      this.audioImgPath === '/src/assets/images/microphone.png'
-        ? this.publisher.publishAudio(true)
-        : this.publisher.publishAudio(false)
-    },
-    beforeLeave() {
-      const confirmMessage = '상담을 종료하시겠습니까?'
-      if (window.confirm(confirmMessage)) {
-        this.leaveSession()
-      }
-    },
-    async leaveSession() {
-      if (this.session) this.session.disconnect()
+  session.value = undefined
+  publisher.value = undefined
+  subscriber.value = undefined
+  OV.value = undefined
 
-      this.session = undefined
-      this.mainStreamManager = undefined
-      this.publisher = undefined
-      this.subscriber = undefined
-      this.OV = undefined
+  const mySessionId = localStorage.getItem('ptSeq')
 
-      const mySessionId = localStorage.getItem('ptSeq')
+  if (personalTrainingDTO.ptReservationStatus === 2) {
+    personalTrainingDTO.ptReservationStatus = 3
+  } else {
+    personalTrainingDTO.ptReservationStatus = 5
+  }
+  try {
+    await ApiClient.put(
+      '/personal-trainings/' + mySessionId,
+      personalTrainingDTO
+    )
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+  localStorage.removeItem('ptSeq')
+  window.opener.location.reload()
+  window.close()
+}
 
-      if (this.personalTrainingDTO.ptReservationStatus === 2) {
-        this.personalTrainingDTO.ptReservationStatus = 3
-      } else {
-        this.personalTrainingDTO.ptReservationStatus = 5
-      }
-      try {
-        ApiClient.put(
-          '/personal-trainings/' + mySessionId,
-          this.personalTrainingDTO
-        )
-      } catch (error) {
-        console.error('API 요청 실패:', error)
-      }
-      localStorage.removeItem('ptSeq')
-      window.opener.location.reload()
-      window.close()
-    },
-    handleBeforeUnload(event) {
-      try {
-        this.personalTrainingDTO.ptReservationStatus = 1
-        let sessionId = localStorage.getItem('ptSeq')
-        ApiClient.put(
-          '/personal-trainings/' + sessionId,
-          this.personalTrainingDTO
-        )
-        localStorage.removeItem('ptSeq')
-      } catch (error) {
-        console.error('API 요청 실패:', error)
-      }
-      window.removeEventListener('beforeunload', this.handleBeforeUnload)
-    },
-  },
+async function handleBeforeUnload(event) {
+  try {
+    personalTrainingDTO.ptReservationStatus = 1
+    let sessionId = localStorage.getItem('ptSeq')
+    await ApiClient.put('/personal-trainings/' + sessionId, personalTrainingDTO)
+    localStorage.removeItem('ptSeq')
+  } catch (error) {
+    console.error('API 요청 실패:', error)
+  }
+  window.removeEventListener('beforeunload', handleBeforeUnload)
 }
 </script>
 
+<!--<script>-->
+<!--export default {-->
+<!--  data() {-->
+<!--    return {-->
+<!--      OV: null,-->
+<!--      session: null,-->
+<!--      subscriber: [],-->
+<!--      joined: true,-->
+<!--      isAudioMuted: false,-->
+<!--      videoImgPath: '/src/assets/images/Vector.png',-->
+<!--      audioImgPath: '/src/assets/images/microphone.png',-->
+<!--      showStartButton: true,-->
+<!--      showLessonTime: false,-->
+<!--      personalTrainingDTO: {-->
+<!--        ptReservationStatus: null,-->
+<!--      },-->
+<!--    }-->
+<!--  },-->
+<!--  created() {-->
+<!--    window.addEventListener('beforeunload', this.handleBeforeUnload)-->
+<!--  },-->
+<!--  methods: {-->
+<!--    async startPt() {-->
+<!--      let userRole = localStorage.getItem('userRoleName')-->
+<!--      let sessionId = localStorage.getItem('ptSeq')-->
+<!--      this.joinSession(userRole, sessionId)-->
+<!--    },-->
+<!--    async getToken(currUserRole, mySessionId) {-->
+<!--      if (currUserRole == 'member') {-->
+<!--        return await this.createToken(mySessionId)-->
+<!--      } else {-->
+<!--        const sessionId = await this.createSession(mySessionId)-->
+<!--        return await this.createToken(sessionId)-->
+<!--      }-->
+<!--    },-->
+<!--  },-->
+<!--}-->
+<!--</script>-->
+
 <style scoped>
 #ptRoom {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background-color: black;
 }
@@ -255,10 +297,9 @@ export default {
 }
 video {
   width: 100%;
-  border-radius: 1%;
+  border-radius: 50px;
 }
 #controllerButtonContainer {
-  height: 15%;
   position: relative;
   text-align: center;
 }

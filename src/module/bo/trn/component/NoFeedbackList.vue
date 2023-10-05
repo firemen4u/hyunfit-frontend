@@ -1,12 +1,14 @@
 <template>
   <div class="nfb-list-container">
-    <div v-if="showCardList" class="fb-smr-card-container mt-3 mb-5">
-      <div v-for="index in 3" :key="index">
-        <FeedbackSummaryCard
-          class="shadow-lg"
-          :sendToChild="sendingData"
-          :index="index"
-        ></FeedbackSummaryCard>
+    <div class="h-28 mt-3">
+      <div v-if="showCardList" class="flex flex-row justify-start">
+        <div v-for="index in 3" :key="index">
+          <FeedbackSummaryCard
+            class="shadow-lg"
+            :sendToChild="sendingData"
+            :index="index"
+          ></FeedbackSummaryCard>
+        </div>
       </div>
     </div>
     <div class="nfb-list-inner content-between">
@@ -14,10 +16,10 @@
         <div class="nfb-list-category">
           <div class="nfb-list-seq">#</div>
           <div class="nfb-list-fbSeq">피드백번호</div>
-          <div class="nfb-list-ptDate">최근PT일자</div>
+          <div class="nfb-list-mbrName">회 원 명</div>
+          <div class="nfb-list-ptDate">최근 클래스진행일</div>
           <div class="nfb-list-fbtarget">피드백대상월</div>
           <div class="nfb-list-fbStatus">작성상태</div>
-          <div class="nfb-list-mbrName">회 원 명</div>
         </div>
         <div>
           <div v-if="noFeedbackList.length === 0" class="nfb-noData">
@@ -31,6 +33,7 @@
             <button class="nfb-list mb-1" @click="showDetailModal(nofeedback)">
               <div class="nfb-list-seq">{{ index + 1 }}</div>
               <div class="nfb-list-fbSeq">{{ nofeedback.trnfSeq }}</div>
+              <div class="nfb-list-mbrName">{{ nofeedback.mbrName }}</div>
               <div class="nfb-list-ptDate">
                 {{ formatDate(nofeedback.trnfCreationDate) }}
               </div>
@@ -40,7 +43,6 @@
               <div class="nfb-list-fbStatus">
                 {{ nofeedback.trnfContent !== null ? '완료' : '미완료' }}
               </div>
-              <div class="nfb-list-mbrName">{{ nofeedback.mbrName }}</div>
             </button>
           </div>
           <CreateFeedbackModal

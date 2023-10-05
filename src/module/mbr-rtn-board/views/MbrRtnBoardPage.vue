@@ -7,7 +7,9 @@ import BaseRtnCardContainer from '/src/module/@base/components/BaseRtnCardContai
   <BaseContainer>
     <div class="w-100 flex justify-center primary-background">
       <BaseBodyWrapper>
-        <div class="bg-white shadow-lg rounded-xl overflow-hidden mt-3">
+        <div
+          class="bg-white shadow-lg rounded-xl overflow-hidden mt-3 min-h-[1300px] mb-[150px]"
+        >
           <BaseRtnCardContainer :showMember="true" />
         </div>
       </BaseBodyWrapper>
