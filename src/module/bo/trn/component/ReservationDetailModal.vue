@@ -58,10 +58,14 @@
               <!--정보-->
               <div class="flex flex-col items-center">
                 <div class="info-gray-box">{{ reservationData.mbrSeq }}</div>
-                <div class="info-gray-box">{{ this.memberInfo.mbrGender }}</div>
-                <div class="info-gray-box">{{ this.memberInfo.mbrHeight }}</div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo.mbrExerciseExperienceLevel }}
+                  {{ this.memberInfo?.mbrGender }}
+                </div>
+                <div class="info-gray-box">
+                  {{ this.memberInfo?.mbrHeight }}
+                </div>
+                <div class="info-gray-box">
+                  {{ this.memberInfo?.mbrExerciseExperienceLevel }}
                 </div>
               </div>
               <div class="flex flex-col items-center">
@@ -74,9 +78,11 @@
                   {{ reservationData.mbrName }}
                 </div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo.mbrExerciseGoal }}
+                  {{ this.memberInfo?.mbrExerciseGoal }}
                 </div>
-                <div class="info-gray-box">{{ this.memberInfo.mbrWeight }}</div>
+                <div class="info-gray-box">
+                  {{ this.memberInfo?.mbrWeight }}
+                </div>
               </div>
             </div>
             <!--고객요청사항-->
@@ -156,7 +162,6 @@ export default {
       let res = await ApiClient.get(
         '/members/by/' + this.reservationData.mbrSeq
       )
-
       if (res.mbrExerciseExperienceLevel == 1) {
         this.memberInfo.mbrExerciseExperienceLevel = '초급'
       } else if (res.mbrExerciseExperienceLevel == 2) {
