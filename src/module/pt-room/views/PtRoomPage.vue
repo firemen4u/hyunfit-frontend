@@ -52,8 +52,6 @@
 </template>
 
 <script setup>
-import CurrentTime from '../components/CurrentTimeComponent.vue'
-import CurrentDate from '../components/CurrentDateComponent.vue'
 import LessoningTime from '../components/LessoningTimeComponent.vue'
 import { OpenVidu } from 'openvidu-browser'
 import ApiClient from '/src/services/api.js'
@@ -116,7 +114,7 @@ export default {
           )
         })
     },
-    joinSession(currUserRole, mySessionId) {
+    async joinSession(currUserRole, mySessionId) {
       this.OV = new OpenVidu()
       this.session = this.OV.initSession()
       this.session.on('streamCreated', ({ stream }) => {
@@ -181,16 +179,13 @@ export default {
         ? this.publisher.publishAudio(true)
         : this.publisher.publishAudio(false)
     },
-    beforeLeave(to, from, next) {
+    beforeLeave() {
       const confirmMessage = '상담을 종료하시겠습니까?'
-      if (!window.confirm(confirmMessage)) {
-        next(false)
-      } else {
+      if (window.confirm(confirmMessage)) {
         this.leaveSession()
-        next()
       }
     },
-    leaveSession() {
+    async leaveSession() {
       if (this.session) this.session.disconnect()
 
       this.session = undefined
@@ -203,18 +198,19 @@ export default {
 
       if (this.personalTrainingDTO.ptReservationStatus === 2) {
         this.personalTrainingDTO.ptReservationStatus = 3
-        ApiClient.put(
-          '/personal-trainings/' + mySessionId,
-          this.personalTrainingDTO
-        )
       } else {
         this.personalTrainingDTO.ptReservationStatus = 5
+      }
+      try {
         ApiClient.put(
           '/personal-trainings/' + mySessionId,
           this.personalTrainingDTO
         )
+      } catch (error) {
+        console.error('API 요청 실패:', error)
       }
       localStorage.removeItem('ptSeq')
+      window.opener.location.reload()
       window.close()
     },
     handleBeforeUnload(event) {

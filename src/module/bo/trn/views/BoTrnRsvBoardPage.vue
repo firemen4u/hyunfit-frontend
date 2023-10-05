@@ -2,7 +2,7 @@
   <BaseContainer category="trainer" footer="false">
     <div class="w-100 flex justify-center primary-background">
       <BaseBodyWrapper>
-        <div class="w-full h-screen mt-3 bg-white rounded-xl shadow-lg pb-10">
+        <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10 mb-[150px]">
           <div
             class="trn-rsv-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
           >
@@ -21,16 +21,10 @@
             <div class="rsv-container">
               <p class="text-2xl font-black mt-5 ml-[51px]">
                 {{ year }}년 {{ formattedMonth }}월
-                <v-btn
-                  :icon="LeftArrowSvg"
-                  variant="flat"
-                  color="#F9FAFB"
-                  @click="prevMonth"
-                />
+                <v-btn :icon="LeftArrowSvg" variant="flat" @click="prevMonth" />
                 <v-btn
                   :icon="RightArrowSvg"
                   variant="flat"
-                  color="#F9FAFB"
                   @click="nextMonth"
                 />
               </p>
@@ -122,7 +116,7 @@ export default {
   justify-content: center;
   background-color: rgb(255, 255, 255);
   width: 1100px;
-  height: auto;
+  height: 705px;
 }
 .rsv-sidebar {
   width: 220px;
@@ -133,7 +127,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   width: 900px;
-  height: auto;
+  height: 705px;
   background: #ffffff;
 }
 .text-end {

@@ -2,7 +2,7 @@
   <BaseContainer category="trainer" footer="false">
     <div class="w-100 flex justify-center primary-background">
       <BaseBodyWrapper>
-        <div class="w-full h-screen mt-3 bg-white rounded-xl shadow-lg pb-10">
+        <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10 mb-[150px]">
           <div
             class="trn-fb-banner-container h-[200px] overflow-hidden relative rounded-t-xl"
           >
@@ -21,16 +21,10 @@
             <div class="nfb-list-outer" ref="listOuter">
               <p class="text-2xl font-black mt-5 ml-[51px]">
                 {{ year }}년 {{ formattedMonth }}월
-                <v-btn
-                  :icon="LeftArrowSvg"
-                  variant="flat"
-                  color="#F9FAFB"
-                  @click="prevMonth"
-                />
+                <v-btn :icon="LeftArrowSvg" variant="flat" @click="prevMonth" />
                 <v-btn
                   :icon="RightArrowSvg"
                   variant="flat"
-                  color="#F9FAFB"
                   @click="nextMonth"
                 />
               </p>
