@@ -59,13 +59,13 @@
               <div class="flex flex-col items-center">
                 <div class="info-gray-box">{{ reservationData.mbrSeq }}</div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo?.mbrGender }}
+                  {{ memberInfo?.mbrGender }}
                 </div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo?.mbrHeight }}
+                  {{ memberInfo?.mbrHeight }}
                 </div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo?.mbrExerciseExperienceLevel }}
+                  {{ memberInfo?.mbrExerciseExperienceLevel }}
                 </div>
               </div>
               <div class="flex flex-col items-center">
@@ -78,16 +78,16 @@
                   {{ reservationData.mbrName }}
                 </div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo?.mbrExerciseGoal }}
+                  {{ memberInfo?.mbrExerciseGoal }}
                 </div>
                 <div class="info-gray-box">
-                  {{ this.memberInfo?.mbrWeight }}
+                  {{ memberInfo?.mbrWeight }}
                 </div>
               </div>
             </div>
             <!--고객요청사항-->
             <div v-if="reservationData.ptNoteStickers" class="flex flex-col">
-              <div class="text-2xl font-bold mt-7 mb-3">회원요청사항</div>
+              <div class="text-2xl font-bold mt-5 mb-3">회원요청사항</div>
               <BaseRequestChipGroup
                 :stickers="reservationData.ptNoteStickers"
               />
@@ -162,6 +162,7 @@ export default {
       let res = await ApiClient.get(
         '/members/by/' + this.reservationData.mbrSeq
       )
+      console.log(res)
       if (res.mbrExerciseExperienceLevel == 1) {
         this.memberInfo.mbrExerciseExperienceLevel = '초급'
       } else if (res.mbrExerciseExperienceLevel == 2) {
