@@ -7,16 +7,16 @@ const props = defineProps({
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-wrap gap-y-2">
     <v-chip
-      class="hyunfit-base-chip"
+      class="hyunfit-base-chip mr-3"
       v-for="(item, idx) in ReviewConst.parse(stickers)"
       :key="idx"
       variant="outlined"
       color="primary"
       :model-value="true"
     >
-      <div>{{ ReviewConst.requests[item] }}</div>
+      <div class="text-base"># {{ ReviewConst.requests[item] }}</div>
     </v-chip>
   </div>
 </template>

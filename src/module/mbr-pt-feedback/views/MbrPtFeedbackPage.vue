@@ -1,9 +1,9 @@
 <template>
   <BaseContainer>
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center primary-background mb-[150px]">
       <BaseBodyWrapper>
         <div
-          class="tfb-content-container flex-col mt-3 my-[100px] shadow-xl rounded-xl bg-white"
+          class="tfb-content-container flex-col mt-3 shadow-xl rounded-xl bg-white"
         >
           <div
             class="tfb-content-header flex w-full h-[200px] items-center justify-items-end rounded-t-xl"

@@ -1,12 +1,14 @@
 <template>
   <div class="rsv-list-container">
-    <div v-if="showCardList" class="rsv-smr-card-container mt-3 mb-5">
-      <div v-for="index in 5" :key="index">
-        <ReservationSummaryCard
-          class="shadow-lg"
-          :sendToChild="sendingData"
-          :index="index"
-        ></ReservationSummaryCard>
+    <div class="h-28 mt-3">
+      <div v-if="showCardList" class="flex flex-row justify-between">
+        <div v-for="index in 5" :key="index">
+          <ReservationSummaryCard
+            class="shadow-lg"
+            :sendToChild="sendingData"
+            :index="index"
+          ></ReservationSummaryCard>
+        </div>
       </div>
     </div>
     <div class="rsv-list-inner">
@@ -14,10 +16,10 @@
         <div class="rsv-list-category">
           <div class="rsv-list-seq">#</div>
           <div class="rsv-list-ptSeq">예약번호</div>
+          <div class="rsv-list-mbrName">회원명</div>
           <div class="rsv-list-ptDate">예약일자</div>
           <div class="rsv-list-ptTime">예약시간</div>
           <div class="rsv-list-ptStatus">예약상태</div>
-          <div class="rsv-list-mbrName">회 원 명</div>
         </div>
         <div>
           <div v-if="reservations.length === 0" class="rsv-noData">
@@ -31,6 +33,7 @@
             <button class="rsv-list mb-1" @click="showDetailModal(reservation)">
               <div class="rsv-list-seq">{{ index + 1 }}</div>
               <div class="rsv-list-ptSeq">{{ reservation.ptSeq }}</div>
+              <div class="rsv-list-mbrName">{{ reservation.mbrName }}</div>
               <div class="rsv-list-ptDate">
                 {{ formatDate(reservation.ptReservationDate) }}
               </div>
@@ -40,7 +43,6 @@
               <div class="rsv-list-ptStatus">
                 {{ reservation.ptReservationStatus }}
               </div>
-              <div class="rsv-list-mbrName">{{ reservation.mbrName }}</div>
             </button>
           </div>
           <ReservationDetailModal
@@ -193,14 +195,6 @@ export default {
   background-color: white;
   min-height: 505px;
   justify-content: space-between;
-}
-.rsv-smr-card-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 980px;
-  height: 100px;
 }
 .rsv-list-seq {
   display: flex;

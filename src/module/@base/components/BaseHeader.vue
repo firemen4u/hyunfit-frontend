@@ -154,15 +154,13 @@ const userName = computed(() => {
   if ('mbrName' in userData.value) return userData.value.mbrName
   if ('admName' in userData.value) return userData.value.admName
   if ('trnName' in userData.value) return userData.value.trnName
-  console.log('at `userName` BaseHeader: name not found', userData)
   return 'unknown'
 })
 
 const userProfile = computed(() => {
   if ('mbrProfileUrl' in userData.value) return userData.value.mbrProfileUrl
-  if ('admProfileUrl' in userData.value) return userData.value.admProfileUrl
   if ('trnProfileUrl' in userData.value) return userData.value.trnProfileUrl
-  return ''
+  return null
 })
 onMounted(async () => {
   userData.value = await ApiClient.me()
@@ -242,7 +240,11 @@ onMounted(async () => {
               <img
                 v-if="loggedIn"
                 class="h-8 w-8 rounded-full mr-1 object-cover"
-                :src="userProfile"
+                :src="
+                  userProfile
+                    ? userProfile
+                    : '/src/assets/images/default-user-profile2.png'
+                "
                 alt=""
               />
               <img
@@ -274,7 +276,11 @@ onMounted(async () => {
                   <img
                     v-if="loggedIn"
                     class="h-24 w-24 rounded-full object-cover"
-                    :src="userProfile"
+                    :src="
+                      userProfile
+                        ? userProfile
+                        : '/src/assets/images/default-user-profile2.png'
+                    "
                     alt=""
                   />
                   <img

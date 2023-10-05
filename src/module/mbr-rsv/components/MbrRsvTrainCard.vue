@@ -1,31 +1,29 @@
 <template>
   <div class="flex flex-col">
-    <div class="mb-2">
-      <p
-        class="text-xs rounded-lg text-center text-white w-[50px] bg-[#d23361] py-[4px]"
-      >
-        {{ daysDiff }}
-      </p>
-    </div>
-    <div
-      class="mbr-rsv-upcomming-rsv-item-card flex flex-col border-0 border-gray-400 rounded-lg py-2 px-2 bg-gray-100 shadow-lg hover:bg-gray-300"
-      style="width: 490px"
-      @click="enterPtRoom"
+    <p
+      class="mb-2 text-xs rounded text-center text-white w-[50px] bg-[#d23361] py-[4px]"
     >
-      <div class="card-header w-[480px] my-1 mb-2">
+      {{ daysDiff }}
+    </p>
+    <div
+      class="flex flex-col bg-white hover:bg-red rounded-lg py-3 px-4 shadow-md cursor-pointer"
+      style="width: 500px"
+      @click="openLiveClassModal"
+    >
+      <div class="card-header">
         <div class="flex flex-col">
           <div class="text-gray-900 font-bold flex justify-between">
-            <div class="flex items-center">
-              <p class="train-type text-lg font-black mr-2 align-middle">
+            <div class="flex items-baseline mb-2">
+              <div class="train-type text-lg font-black mr-2 align-middle">
                 {{ props.responseData.trnTypeName }}
-              </p>
-              <p class="train-datetime text-xs self-end text-gray-500">
+              </div>
+              <div class="train-datetime text-xs text-gray-500">
                 {{
                   dateUtil.timestampToFullDate(
                     props.responseData.ptReservationDate
                   )
                 }}
-              </p>
+              </div>
             </div>
             <div class="ml-15">
               <!-- <v-btn
@@ -46,7 +44,7 @@
       </div>
       <div class="rsv-train-info w-84 flex leading-normal rounded-r-lg">
         <div
-          class="trainer-profile-img h-24 w-24 bg-cover overflow-hidden rounded-lg mr-4 mb-1"
+          class="trainer-profile-img h-20 w-20 bg-cover overflow-hidden rounded-lg mr-4 mb-1"
           :style="`background-image: url('${props.responseData.trnProfileUrl}')`"
           title="trainer profile img"
         ></div>
@@ -64,6 +62,42 @@
         </div>
       </div>
     </div>
+    <v-dialog v-model="enterLiveClassModalOpen" width="500">
+      <v-card>
+        <div class="px-5 py-5">
+          <div>
+            <div class="mb-5 text-lg">
+              {{ hoursLeft() }}
+            </div>
+            <div class="text-xl mb-5">
+              <span class="font-black mr-1">{{ responseData.trnName }}</span
+              >트레이너님과의
+              <span class="font-black">{{ responseData.trnTypeName }}</span>
+              클래스에
+              <div>입장하시겠습니까?</div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-y-1">
+            <v-btn
+              color="primary"
+              :ripple="false"
+              variant="flat"
+              block
+              @click="enterPtRoom"
+              >입장하기</v-btn
+            >
+            <v-btn
+              color="primary"
+              variant="outlined"
+              block
+              :ripple="false"
+              @click="enterLiveClassModalOpen = false"
+              >취소하기</v-btn
+            >
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -78,25 +112,45 @@ const props = defineProps({
 })
 let daysDiff = ref('')
 
-function enterPtRoom() {
+const enterLiveClassModalOpen = ref(false)
+
+function openLiveClassModal() {
+  enterLiveClassModalOpen.value = true
+}
+function hoursLeft() {
   const today = new Date()
   today.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
 
   const reservationDate = new Date(props.responseData.ptReservationDate)
   reservationDate.setHours(0, 0, 0, 0) // 시간, 분, 초, 밀리초를 0으로 설정
 
-  // 오늘 날짜가 아니면 alert 창을 표시하고 함수를 종료
-  // if (today.getTime() !== reservationDate.getTime()) {
-  //   alert('오늘 예약중인 클래스만 입장할 수 있습니다.')
-  //   return
-  // }
+  const diff = (reservationDate - today) / 1000
+  const days = Math.floor(diff / 86400)
 
-  const isConfirmed = window.confirm('입장하시겠습니까?')
-
-  if (isConfirmed) {
-    localStorage.setItem('ptSeq', props.responseData.ptSeq)
-    window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
+  if (days >= 2) {
+    return `클래스 예약 ${days}일 전 입니다.`
   }
+  if (days === 1) {
+    return `클래스 예약 하루 전입니다.`
+  }
+  if (diff < 0) {
+    return '클래스 예정시간이 이미 지났습니다.'
+  }
+  let hours = Math.floor(diff / 3600)
+  if (hours) {
+    return `클래스 예약이 ${hours}시간 남았습니다.`
+  }
+
+  let minutes = Math.floor(diff % 60)
+  if (minutes > 3) {
+    return `클래스 입장 ${minutes}분 전입니다.`
+  }
+  return '클래스가 곧 시작합니다.'
+}
+function enterPtRoom() {
+  localStorage.setItem('ptSeq', props.responseData.ptSeq)
+  enterLiveClassModalOpen.value = false
+  window.open(router.resolve(pathNames.ptRoomPage.name).href, '_blank')
 }
 
 function calcDay() {

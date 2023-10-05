@@ -1,10 +1,10 @@
 <template>
   <BaseContainer category="admin">
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center primary-background mb-[150px]">
       <BaseBodyWrapper>
         <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
           <div class="bo-excNewBoard-banner flex items-center px-10">
-            <div class="">
+            <div>
               <p class="text-2xl font-bold text-[#021f3d]">오피스</p>
               <p class="text-4xl font-black mt-3 text-[#021f3d]">트레이닝</p>
             </div>

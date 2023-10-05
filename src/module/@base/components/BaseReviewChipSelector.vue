@@ -17,21 +17,22 @@ const selected = val => innerValue.value.includes(val)
     multiple
     v-model="innerValue"
     @update:modelValue="value => emit('update:modelValue', value)"
+    class="flex justify-center"
   >
     <v-chip
       class="hyunfit-base-chip"
-      v-for="idx in ReviewConst.reviews.length - 1"
+      v-for="idx in ReviewConst.reviews.length"
       :key="idx"
       filter
-      :variant="selected(idx) ? 'outlined' : 'outlined'"
+      variant="outlined"
       :ripple="false"
       color="primary"
-      :value="idx"
+      :value="idx - 1"
       :tabindex="-1"
     >
       <div class="flex justify-center items-center">
-        <img class="h-4 w-4 mr-1" :src="ReviewConst.getIcon(idx)" alt="" />
-        <div>{{ ReviewConst.getContent(idx) }}</div>
+        <img class="h-4 w-4 mr-2" :src="ReviewConst.getIcon(idx - 1)" alt="" />
+        <div>{{ ReviewConst.getContent(idx - 1) }}</div>
       </div>
     </v-chip>
   </v-chip-group>
