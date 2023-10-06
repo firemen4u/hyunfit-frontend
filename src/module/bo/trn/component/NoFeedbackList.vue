@@ -88,6 +88,7 @@ export default {
       showCardList: false,
       currentPage: 1,
       totalPages: 0,
+      loadInterval: null,
     }
   },
   computed: {
@@ -101,28 +102,37 @@ export default {
       return this.noFeedbackList.slice(startIndex, endIndex)
     },
   },
-  async created() {
-    this.startDate = dayjs(this.targetDate)
-      .startOf('month')
-      .format('YYYY-MM-01 00:00:00')
-    this.endDate = dayjs(this.targetDate)
-      .endOf('month')
-      .format('YYYY-MM-DD 00:00:00')
-    let response = await ApiClient.get('/trainers/me')
-    await ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback', {
-      params: { startDate: this.startDate, endDate: this.endDate },
-    })
-      .then(response => {
-        this.noFeedbackList = response
-        this.totalPages = Math.ceil(response.length / 10)
-        this.calCnt()
-        this.showCardList = true
-      })
-      .catch(error => {
-        console.error('API 요청 실패:', error)
-      })
+  async mounted() {
+    await this.loadFeedbackList()
+    this.loadInterval = setInterval(async () => {
+      await this.loadFeedbackList()
+    }, 5000)
+  },
+  async beforeUnmount() {
+    clearInterval(this.loadInterval)
   },
   methods: {
+    async loadFeedbackList() {
+      this.startDate = dayjs(this.targetDate)
+        .startOf('month')
+        .format('YYYY-MM-01 00:00:00')
+      this.endDate = dayjs(this.targetDate)
+        .endOf('month')
+        .format('YYYY-MM-DD 00:00:00')
+      let response = await ApiClient.get('/trainers/me')
+      await ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback', {
+        params: { startDate: this.startDate, endDate: this.endDate },
+      })
+        .then(response => {
+          this.noFeedbackList = response
+          this.totalPages = Math.ceil(response.length / 10)
+          this.calCnt()
+          this.showCardList = true
+        })
+        .catch(error => {
+          console.error('API 요청 실패:', error)
+        })
+    },
     showDetailModal(nofeedback) {
       this.selectedNoFeedback = nofeedback
       this.showDetail = true

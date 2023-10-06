@@ -33,9 +33,6 @@ const tutorialDialogOpen = ref(false)
     <div class="article body-wrapper mb-[150px]">
       <div class="mt-3">
         <div class="grid grid-cols-3 gap-3">
-          <div @click="tutorialDialogOpen = !tutorialDialogOpen">
-            {{ tutorialDialogOpen }}
-          </div>
           <MainCardContainer class="col-span-3">
             <MainBannerCard />
           </MainCardContainer>
@@ -57,7 +54,6 @@ const tutorialDialogOpen = ref(false)
         </div>
       </div>
     </div>
-    <TutorialDialog v-model="tutorialDialogOpen" :userdata="userdata" />
     <MainFooter />
   </BaseContainer>
 </template>
