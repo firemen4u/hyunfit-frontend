@@ -98,8 +98,6 @@ export default {
           }
         )
 
-        console.log('responses:', response)
-
         if (response !== '') {
           this.responseFeedbackData = response.trnfContent
           this.responsetrnName = response.trnName
