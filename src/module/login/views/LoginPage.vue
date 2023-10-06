@@ -1,7 +1,7 @@
 <template>
   <div class="background">
     <div class="login-box">
-      <div class="flex justify-center">
+      <div class="flex justify-center mb-10">
         <button @click="moveToMain">
           <img
             src="https://fs.hyunfit.life/api/hyunfit/file/hyunfit-logo-colored.png"
@@ -9,64 +9,53 @@
           />
         </button>
       </div>
-      <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-        <div>
-          <label
-            for="email"
-            class="block text-lg font-medium leading-6 text-black"
-            >ID</label
+      <div class="w-full px-10">
+        <v-form @submit.prevent="submit">
+          <v-text-field
+            label="ID"
+            variant="outlined"
+            v-model="this.user.username"
+            :disabled="loading"
           >
-          <div class="mt-2">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required=""
-              v-model="this.user.username"
-              @keyup.enter="loginForm"
-              class="block w-full rounded-md border-0 p-2 text-black shadow-sm ring-1 ring-inset ring-black focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-        <div class="mt-3">
-          <div class="flex items-center justify-between">
-            <label
-              for="password"
-              class="block text-lg font-medium leading-6 text-black"
-              >PW</label
-            >
-          </div>
-          <div class="mt-2">
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              required=""
-              v-model="this.user.password"
-              @keyup.enter="loginForm"
-              class="block w-full rounded-md border-0 p-2 text-black shadow-sm ring-1 ring-inset ring-black focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-        <v-radio-group v-model="selectedRole" class="mt-3">
-          <div class="flex justify-between ml-4 mr-4">
-            <v-radio value="member" label="Member" />
-            <v-radio value="admin" label="Admin" />
-            <v-radio value="trainer" label="Trainer" />
-          </div>
-        </v-radio-group>
-        <div>
-          <button
+          </v-text-field>
+          <v-text-field
+            label="Password"
+            variant="outlined"
+            type="password"
+            v-model="this.user.password"
+            :disabled="loading"
+          >
+          </v-text-field>
+          <v-radio-group
+            v-model="selectedRole"
+            hide-details
+            :disabled="loading"
+          >
+            <div class="flex justify-between ml-4 mr-4">
+              <v-radio value="member" label="Member" />
+              <v-radio value="admin" label="Admin" />
+              <v-radio value="trainer" label="Trainer" />
+            </div>
+          </v-radio-group>
+          <v-btn
             type="submit"
-            class="flex mt-3 w-full justify-center rounded-md bg-[#132377] px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#132377] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#132377]"
-            @click="loginForm"
-            @keyup.enter="loginForm"
+            class="mt-8"
+            color="primary"
+            height="50"
+            :loading="loading"
+            block
+            :ripple="false"
           >
-            Login
-          </button>
-        </div>
+            <div class="font-black text-lg">Login</div>
+          </v-btn>
+          <div class="h-8">
+            <v-input :rules="[rules.login]">
+              <template v-slot:message="{ message }"
+                ><div class="text-base">{{ message }}</div>
+              </template>
+            </v-input>
+          </div>
+        </v-form>
       </div>
     </div>
   </div>
@@ -88,9 +77,40 @@ export default {
         role: null,
       },
       token: null,
+      loginMessage: '',
+      loading: false,
+      rules: {
+        login: async () => {
+          if (!this.user.username || !this.user.password)
+            return '아이디와 비밀번호를 전부 입력해 주세요.'
+          return await axios
+            .post(
+              `${BACKEND_API_BASE_URL}/auth/${this.selectedRole}`,
+              this.user
+            )
+            .then(response => {
+              this.token = response.headers.get('authorization')
+              ApiClient.setTokenOnLocalStorage(this.token, this.selectedRole)
+              this.moveToMain(localStorage.getItem('userRoleName'))
+            })
+            .catch(error => {
+              console.log(error)
+              if (error.response.status === 404) {
+                return '아이디 또는 비밀번호 오류입니다.'
+              } else {
+                alert(`로그인에 실패하였습니다 ${error}`)
+              }
+            })
+        },
+      },
     }
   },
   methods: {
+    async submit(event) {
+      this.loading = true
+      const result = await event
+      this.loading = false
+    },
     moveToMain(userRole) {
       if (userRole === 'admin') {
         router.push(pathNames.boExcBoardPage)
@@ -109,8 +129,11 @@ export default {
           this.moveToMain(localStorage.getItem('userRoleName'))
         })
         .catch(error => {
-          alert(`로그인 실패 ${error}`)
-          alert('loginfail')
+          if (error.response.status === 404) {
+            this.loginMessage = '아이디 또는 비밀번호 오류입니다.'
+          } else {
+            this.loginMessage = '아이디 또는 비밀번호 오류입니다.'
+          }
         })
     },
   },

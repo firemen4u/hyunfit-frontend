@@ -58,8 +58,8 @@ const trainerPages = [
 ]
 
 const profileMenus = [
-  { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '마이페이지', destination: pathNames.mbrMyPage },
+  { displayName: '운동환경 재설정', destination: pathNames.surveyPage },
   { displayName: '현핏 포인트', destination: pathNames.mbrMyPointPage },
 ]
 function getPages() {
@@ -76,6 +76,7 @@ function getMenus() {
 let menuOpen = ref(false)
 let profileMenu = ref(null)
 let profileMenuButton = ref(null)
+
 function closeMenuOutsideClick(event) {
   if (
     menuOpen.value &&
@@ -83,14 +84,14 @@ function closeMenuOutsideClick(event) {
     !profileMenuButton.value?.contains(event.target)
   ) {
     menuOpen.value = false
-    window.removeEventListener('click', closeMenuOutsideClick)
+    window.removeEventListener('mouseup', closeMenuOutsideClick)
   }
 }
 function toggleMenu() {
-  menuOpen.value = !menuOpen.value
-  if (menuOpen.value === true) {
-    window.addEventListener('click', closeMenuOutsideClick)
+  if (menuOpen.value === false) {
+    window.addEventListener('mouseup', closeMenuOutsideClick)
   }
+  menuOpen.value = !menuOpen.value
 }
 
 const route = useRoute()
@@ -113,7 +114,6 @@ const pageItemClasses = pg => {
   return 'text-gray-400 font-medium hover:text-gray-200 hover:font-bold'
 }
 const menuItemClasses = pg => {
-  console.log(route.name, pg.destination.name)
   if (
     route.name === pg.destination.name ||
     (route.name === 'trnDetailPage' && pg.destination.name === 'trnSearchPage')
@@ -154,6 +154,14 @@ const userName = computed(() => {
   if ('mbrName' in userData.value) return userData.value.mbrName
   if ('admName' in userData.value) return userData.value.admName
   if ('trnName' in userData.value) return userData.value.trnName
+  return 'unknown'
+})
+
+const userAccountType = computed(() => {
+  if (!loggedIn.value) return null
+  if ('mbrSeq' in userData.value) return '회원'
+  if ('admSeq' in userData.value) return '관리자'
+  if ('trnSeq' in userData.value) return '트레이너'
   return 'unknown'
 })
 
@@ -231,30 +239,45 @@ onMounted(async () => {
         <!--        Profile dropdown-->
         <div class="flex items-center">
           <div class="relative">
-            <button
-              class="profile-dropdown-button flex items-center cursor-pointer focus:outline-none"
-              @click="toggleMenu()"
-              ref="profileMenuButton"
-              tabindex="-1"
-            >
-              <img
-                v-if="loggedIn"
-                class="h-8 w-8 rounded-full mr-1 object-cover"
-                :src="
-                  userProfile
-                    ? userProfile
-                    : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
-                "
-                alt=""
-              />
-              <img
+            <div class="flex items-center">
+              <div v-if="loggedIn" class="text-white text-sm mr-2">
+                <span class="font-semibold">
+                  {{ userName }} {{ userAccountType }}님,
+                </span>
+                <span class="text-gray-300">환영합니다</span>
+              </div>
+              <button
                 v-else
-                class="h-8 w-8 rounded-full mr-1 object-cover"
-                src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png"
-                alt=""
-              />
-              <DownArrowSvg :size="22" color="#AAAAAA" />
-            </button>
+                @click="router.push(pathNames.loginPage)"
+                class="cursor-pointer"
+              >
+                <span class="text-gray-300 mr-2">로그인</span>
+              </button>
+              <button
+                class="profile-dropdown-button flex items-center cursor-pointer focus:outline-none"
+                @click="toggleMenu()"
+                ref="profileMenuButton"
+                tabindex="-1"
+              >
+                <img
+                  v-if="loggedIn"
+                  class="h-8 w-8 rounded-full mr-1 object-cover"
+                  :src="
+                    userProfile
+                      ? userProfile
+                      : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
+                  "
+                  alt=""
+                />
+                <img
+                  v-else
+                  class="h-8 w-8 rounded-full mr-1 object-cover"
+                  src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png"
+                  alt=""
+                />
+                <DownArrowSvg :size="22" color="#AAAAAA" />
+              </button>
+            </div>
             <transition
               enter-active-class="transition ease-out duration-100"
               enter-from-class="transform opacity-0 scale-95"
@@ -279,14 +302,14 @@ onMounted(async () => {
                     :src="
                       userProfile
                         ? userProfile
-                        : '/src/assets/images/default-user-profile2.png'
+                        : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
                     "
                     alt=""
                   />
                   <img
                     v-else
                     class="h-24 w-24 rounded-full object-cover"
-                    src="/src/assets/images/default-user-profile.png"
+                    src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png"
                     alt=""
                   />
                   <div

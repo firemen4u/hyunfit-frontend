@@ -286,7 +286,7 @@ const reportData = computed(() => {
               운동 기록을 한눈에 확인해보세요.
             </p>
           </div>
-          <div class="px-10 w-full">
+          <div class="px-10 w-full pb-7">
             <div class="report-summary-container mt-6 mb-2">
               <ReportMonthPicker
                 :model-value="selectedDate"
@@ -485,7 +485,7 @@ const reportData = computed(() => {
                 </div>
               </div>
             </div>
-            <ReportExcTimelineContainer />
+            <!--            <ReportExcTimelineContainer />-->
           </div>
         </div>
       </BaseBodyWrapper>
