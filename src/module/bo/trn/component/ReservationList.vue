@@ -168,11 +168,12 @@ export default {
     async listReload() {
       let resposeData = await ApiClient.get('/trainers/me')
       await ApiClient.get(
-        '/trainers/' + resposeData.trnSeq + '/personal-training'
+        '/trainers/' + resposeData.trnSeq + '/personal-training',
+        { params: { startDate: this.startDate, endDate: this.endDate } }
       )
         .then(response => {
           this.reservations = response
-          this.plusCnt()
+          this.calCnt()
         })
         .catch(error => {
           console.error('API 요청 실패:', error)
