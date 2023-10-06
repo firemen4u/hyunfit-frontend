@@ -1,7 +1,7 @@
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { FILE_SERVER_BASE_URL } from '@/config'
 import DebugProgressBar from '@/module/ai-training/component/DebugProgressBar.vue'
 
@@ -26,9 +26,12 @@ const emit = defineEmits([
 let distanceOkTimeout
 const freezePrediction = computed(
   () =>
-    props.exercise?.type !== 'EXERCISE' || props.breakTime || props.pauseTime
+    props.loading ||
+    props.exercise?.type !== 'EXERCISE' ||
+    props.breakTime ||
+    props.pauseTime
 )
-
+const motionCaptureScore = ref(0)
 const notificationMessages = [
   `머리부터 발끝까지
   다 보고 싶어요`,
@@ -40,13 +43,14 @@ const notificationMessages = [
 const notificationMessageIndex = ref(0)
 const isDistanceOk = ref(false)
 const distanceOkMessageTriggered = ref(false)
-const increment = computed(() => (props.exercise.excType === 4 ? 0.5 : 1))
 
-const exerciseCounts = reactive({
-  excellent: ref(0),
-  good: ref(0),
-  bad: ref(0),
-})
+// const exerciseCounts = reactive({
+//   excellent: ref(0),
+//   good: ref(0),
+//   bad: ref(0),
+// })
+
+const classLabels = ref([])
 
 const props = defineProps({
   exercise: Object,
@@ -59,7 +63,8 @@ const props = defineProps({
 
 const typesToLoadModel = ['INTRO', 'WARMUP', 'EXERCISE']
 
-const exerciseWatcher = watch(
+// model and webcam Loader
+watch(
   () => props.exercise,
   async exercise => {
     if (typesToLoadModel.includes(exercise.type)) {
@@ -69,6 +74,16 @@ const exerciseWatcher = watch(
         emit('model:init')
       }
       emit('model:ready')
+    }
+  }
+)
+
+watch(
+  () => props.exercise,
+  exercise => {
+    if (exercise.type !== 'INTRO' && distanceOkTimeout) {
+      clearTimeout(distanceOkTimeout)
+      distanceOkTimeout = null
     }
   }
 )
@@ -99,6 +114,7 @@ async function loadModel(exercise) {
   const metadataURL = `${BASEURL}/ai_model_${exercise.excSeq}/metadata.json`
   model = await tmPose.load(modelURL, metadataURL)
   maxPredictions = model.getTotalClasses()
+  classLabels.value = model.getClassLabels()
 }
 
 async function loadWebcam() {
@@ -129,7 +145,7 @@ async function loadWebcam() {
 function getScoreType() {
   if (predictedProbability.value > 0.98) return 'excellent'
   if (predictedProbability.value > 0.92) return 'good'
-  if (predictedProbability.value > 0.4) return 'bad'
+  if (predictedProbability.value > 0.5) return 'bad'
 }
 
 function updatePredictedProbability(probability) {
@@ -152,8 +168,9 @@ async function predict() {
   // Prediction 2: run input through teachable machine classification model
   drawPose(pose)
 
+  motionCaptureScore.value = pose ? pose.score : 0
   // if (freezePrediction.value) return)
-  if (!pose || pose.score < 0.6 || freezePrediction.value) {
+  if (!pose || pose.score < 0.8 || freezePrediction.value) {
     predictions.value = []
     return
   }
@@ -176,8 +193,8 @@ async function predict() {
     }
   }
   if (!pred) return
-  // 올바른 자세일 확률이 30% 이상일 경우
-  if (pred.probability > 0.3) {
+  // 올바른 자세일 확률이 50% 이상일 경우
+  if (pred.probability > 0.5) {
     if (!flag) {
       flag = true
       lastPredictionTime.value = currentTime
@@ -188,7 +205,7 @@ async function predict() {
   // 일반 자세라면
   if (flag && currentTime - lastPredictionTime.value >= minExerciseDuration) {
     //일반 자세인데, flag가 켜져 있었고 충분한 시간이 지났다면
-    exerciseCounts[getScoreType()] += 1
+    // exerciseCounts[getScoreType()] += 1
     emitCountEvent()
   } else {
     flag = false
@@ -238,10 +255,14 @@ function drawPose(pose) {
 <template>
   <div class="my-video" :class="windowSize">
     <div
-      v-if="props.debugMode"
+      v-if="props.debugMode && exercise.type === 'EXERCISE'"
       class="fixed px-3 py-3 z-[1000] w-[400px] top-[5%] left-[40%] bg-[#FFFFFFEE] rounded-lg"
     >
-      <DebugProgressBar :predictions="predictions" />
+      <DebugProgressBar
+        :labels="classLabels"
+        :predictions="predictions"
+        :score="motionCaptureScore"
+      />
     </div>
 
     <div

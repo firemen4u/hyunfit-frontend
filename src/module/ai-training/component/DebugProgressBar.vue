@@ -2,20 +2,25 @@
 import { computed, ref } from 'vue'
 
 const props = defineProps({
-  predictions: Object,
+  labels: Array,
+  score: Number,
+  predictions: Array,
 })
-
-const probability = computed(() => {
-  let p = props.prediction?.probability * 100
-  return p ? p : 0
-})
+//
+// const probability = computed(() => {
+//   let p = props.prediction?.probability * 100
+//   return p ? p : 0
+// })
 </script>
 
 <template>
   <div>
-    {{ predictions[0]?.className.split(':')[1] }}
+    <div class="text-center text-black font-black text-2xl mb-2">
+      인식률: {{ Math.round(score * 100) }}%
+    </div>
+    <div class="text-lg font-bold mb-1">{{ labels[0]?.split(':')[1] }}</div>
     <v-progress-linear
-      :model-value="predictions[0].probability * 100"
+      :model-value="predictions[0] ? predictions[0]?.probability * 100 : 0"
       color="#00a600"
       height="25"
       rounded="5"
@@ -24,9 +29,11 @@ const probability = computed(() => {
         <div class="text-lg text-white font-black">{{ Math.ceil(value) }}%</div>
       </template></v-progress-linear
     >
-    {{ predictions[1]?.className.split(':')[1] }}
+    <div class="text-lg font-bold mt-3 mb-1">
+      {{ labels[1]?.split(':')[1] }}
+    </div>
     <v-progress-linear
-      :model-value="predictions[1].probability * 100"
+      :model-value="predictions[1] ? predictions[1]?.probability * 100 : 0"
       color="#FF0000"
       height="25"
       rounded="5"

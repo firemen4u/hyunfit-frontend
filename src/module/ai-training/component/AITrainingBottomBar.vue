@@ -1,28 +1,38 @@
 <template>
-  <v-btn-toggle
-    class="fixed bottom-20 left-50 justify-center w-full"
-    shaped
-    mandatory
-  >
-    <v-btn class="item" @click="emit('event:toggleDebug')">
-      <div class="text-white">Debug</div>
-    </v-btn>
-    <v-btn class="item">
-      <v-icon class="button">
-        <SoundSvg></SoundSvg>
-      </v-icon>
-    </v-btn>
-    <v-btn class="item" @click="emit('event:pause')">
-      <v-icon class="button">
-        <PauseSvg></PauseSvg>
-      </v-icon>
-    </v-btn>
-    <v-btn class="item" @click="dialog = true">
-      <v-icon class="button">
-        <ExitSvg width="24" height="24" />
-      </v-icon>
-    </v-btn>
-  </v-btn-toggle>
+  <div class="fixed bottom-20 left-50 flex items-center justify-center w-full">
+    <div class="rounded overflow-hidden">
+      <v-btn
+        class="item"
+        :color="debugMode ? 'red' : ''"
+        @click="emit('event:toggleDebug')"
+        rounded="0"
+        size="large"
+      >
+        <div class="text-white">Debug</div>
+      </v-btn>
+      <v-btn class="item" rounded="0" size="large">
+        <v-icon class="button">
+          <SoundSvg></SoundSvg>
+        </v-icon>
+      </v-btn>
+      <v-btn
+        class="item"
+        :color="pauseTime ? 'red' : ''"
+        @click="emit('event:pause')"
+        rounded="0"
+        size="large"
+      >
+        <v-icon class="button">
+          <PauseSvg></PauseSvg>
+        </v-icon>
+      </v-btn>
+      <v-btn class="item" @click="dialog = true" rounded="0" size="large">
+        <v-icon class="button">
+          <ExitSvg width="24" height="24" />
+        </v-icon>
+      </v-btn>
+    </div>
+  </div>
 
   <v-dialog v-model="dialog" width="400px">
     <v-card
@@ -55,6 +65,11 @@ import PauseSvg from '@/module/@base/svg/PauseSvg.vue'
 import SoundSvg from '@/module/@base/svg/SoundSvg.vue'
 import { ref } from 'vue'
 import AIExitSvg from '@/module/@base/svg/WarningSvg.vue'
+
+const props = defineProps({
+  pauseTime: Boolean,
+  debugMode: Boolean,
+})
 
 const emit = defineEmits([
   'event:sound',

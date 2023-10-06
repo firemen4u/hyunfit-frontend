@@ -15,6 +15,7 @@ import { onMounted, ref } from 'vue'
 import MainApi from '@/module/main/services/mainApi'
 import ApiClient from '@/services/api'
 import router, { pathNames } from '@/router'
+import TutorialDialog from '@/module/main/components/TutorialDialog.vue'
 
 const rcm = ref(null)
 const userdata = ref(null)
@@ -24,6 +25,7 @@ onMounted(async () => {
     rcm.value = await MainApi.getRecommendations(userdata.value)
   }
 })
+const tutorialDialogOpen = ref(false)
 </script>
 
 <template>
@@ -31,6 +33,9 @@ onMounted(async () => {
     <div class="article body-wrapper mb-[150px]">
       <div class="mt-3">
         <div class="grid grid-cols-3 gap-3">
+          <div @click="tutorialDialogOpen = !tutorialDialogOpen">
+            {{ tutorialDialogOpen }}
+          </div>
           <MainCardContainer class="col-span-3">
             <MainBannerCard />
           </MainCardContainer>
@@ -52,7 +57,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-
+    <TutorialDialog v-model="tutorialDialogOpen" :userdata="userdata" />
     <MainFooter />
   </BaseContainer>
 </template>
