@@ -5,6 +5,9 @@ import BaseLabel from '@/module/@base/components/BaseLabel.vue'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
 import BoExcCard from '/src/module/@base/components/BaseExcCard.vue'
 import router, { pathNames } from '@/router'
+import excUtils from '../../bo/exc/services/excUtils'
+import TimerSvg from '@/module/@base/svg/TimerSvg.vue'
+import BaseRtnCardModalChips from '@/module/@base/components/BaseRtnCardModalChips.vue'
 
 const props = defineProps({
   routines: Array,
@@ -80,44 +83,45 @@ const mapConsideration = (key, level) => {
 </script>
 <template>
   <v-dialog v-model="showModal" width="auto">
-    <div class="card-container bg-gray-50 rounded-lg">
-      <div class="rtn-detail-wrap my-5 mb-10">
-        <div class="rtn-detail-content flex justify-between items-end">
-          <div class="ml-10 w-[560px]">
-            <div class="rtn-detail-name">
-              <p class="text-3xl font-extrabold">
-                {{ selectedRoutine.rtnName }}
-              </p>
-            </div>
-            <div class="rtn-detail-col flex">
-              <p class="rtn-detail-col-1 font-bold">루틴 설명</p>
-              <p class="rtn-detail-col-2 text-md">
-                {{ selectedRoutine.rtnContent }}
-              </p>
-            </div>
-            <div class="flex justify-between items-end">
-              <div>
-                <div class="rtn-detail-col flex">
-                  <p class="rtn-detail-col-1 font-bold">소요 시간</p>
-                  <p class="">{{ selectedRoutine.rtnDurationInMin }}분</p>
-                </div>
+    <div class="card-container bg-white rounded-lg py-5">
+      <div class="rtn-detail-wrap mb-3">
+        <div class="rtn-detail-content flex justify-between items-start">
+          <div class="flex flex-col justify-end">
+            <div class="ml-10 w-[560px]">
+              <div class="rtn-detail-name">
+                <p class="text-3xl font-extrabold mb-3">
+                  {{ selectedRoutine.rtnName }}
+                </p>
+              </div>
+              <BaseRtnCardModalChips :routine="selectedRoutine" />
+              <div class="flex justify-between items-start mt-3 h-[140px]">
+                <div>
+                  <div class="rtn-detail-col flex">
+                    <p class="rtn-detail-col-1 font-bold">루틴 설명</p>
+                    <p class="rtn-detail-col-2 text-md">
+                      {{ selectedRoutine.rtnContent }}
+                    </p>
+                  </div>
 
-                <div class="rtn-detail-col flex">
-                  <p class="rtn-detail-col-1 font-bold">소모 칼로리</p>
-                  <p>{{ selectedRoutine.rtnCaloriesBurnt }} Kcal</p>
+                  <div class="rtn-detail-col flex">
+                    <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
+                    <p>{{ selectedRoutine.exercises.length }}개</p>
+                  </div>
                 </div>
-                <div class="rtn-detail-col flex">
-                  <p class="rtn-detail-col-1 font-bold">트레이닝 수</p>
-                  <p>{{ selectedRoutine.exercises.length }}개</p>
-                </div>
-              </div>
-              <div v-if="showMember" class="flex justify-center">
-                <v-btn size="x-large" color="primary" @click="startRoutine">
-                  프로그램 시작하기
-                </v-btn>
               </div>
             </div>
-            <div class="flex flex-wrap text-sm text-gray-500 mt-5">
+          </div>
+          <div class="mr-8 rounded-lg overflow-hidden">
+            <img
+              class="w-[350px] h-[225px] object-cover bg-gray-200"
+              :src="srcUrlOf(selectedRoutine.rtnSeq)"
+              alt="이미지"
+            />
+          </div>
+        </div>
+        <div class="flex justify-between px-8 mt-3">
+          <div>
+            <div class="items-end flex flex-wrap text-gray-500">
               <p class="pr-1">
                 {{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}
               </p>
@@ -172,28 +176,28 @@ const mapConsideration = (key, level) => {
               </p>
             </div>
           </div>
-          <div class="mr-8">
-            <img
-              class="rtn-detail-img object-cover bg-gray-200"
-              :src="srcUrlOf(selectedRoutine.rtnSeq)"
-              alt="이미지"
-            />
-          </div>
+          <v-btn
+            v-if="showMember"
+            size="x-large"
+            color="primary"
+            class="w-[350px]"
+            @click="startRoutine"
+          >
+            프로그램 시작하기
+          </v-btn>
         </div>
       </div>
 
-      <div class="">
-        <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
-        <div
-          v-if="selectedRoutine"
-          class="rtn-excCard-wrap flex-wrap grid grid-cols-3 justify-items-center py-2 px-2 mx-7 mb-8 bg-gray-200 rounded-lg"
-        >
-          <BoExcCard
-            v-for="exercise in selectedRoutine.exercises"
-            :exercise="exercise"
-            :key="exercise.excSeq"
-          />
-        </div>
+      <!-- 선택된 루틴의 운동 정보를 렌더링합니다. -->
+      <div
+        v-if="selectedRoutine"
+        class="rtn-excCard-wrap flex-wrap grid grid-cols-3 justify-items-center py-2 px-2 mx-7 mb-8 bg-gray-100 rounded-lg"
+      >
+        <BoExcCard
+          v-for="exercise in selectedRoutine.exercises"
+          :exercise="exercise"
+          :key="exercise.excSeq"
+        />
       </div>
     </div>
   </v-dialog>
@@ -235,7 +239,7 @@ const mapConsideration = (key, level) => {
             >
               <RewardSvg :size="16"></RewardSvg>
 
-              <div class="text-xs ml-0.5">포인트 {{ data.rtnRewardPoint }}</div>
+              <div class="text-xs ml-0.5">{{ data.rtnRewardPoint }} 포인트</div>
             </div>
             <div
               class="flex items-center border-1.5 border-gray-200 rounded-full text-sm font-semibold text-gray-700 px-2 py-1 mr-1"
@@ -265,25 +269,26 @@ const mapConsideration = (key, level) => {
   height: 55px;
 }
 .rtn-excCard-wrap {
-  max-height: 615px;
-  overflow: scroll;
+  height: 450px;
+  overflow-y: scroll;
 }
 
 .card-container {
   width: 1000px;
+  height: 800px;
 }
 .rtn-detail-img {
-  max-width: 330px;
-  max-height: 300px;
+  width: 330px;
+  height: 300px;
 }
 .rtn-detail-col {
   margin-top: 10px;
 }
 .rtn-detail-col-1 {
-  width: 100px;
+  width: 140px;
 }
 .rtn-detail-col-2 {
-  width: 450px;
+  width: 420px;
 }
 .rtn-detail-name {
   width: 560px;
