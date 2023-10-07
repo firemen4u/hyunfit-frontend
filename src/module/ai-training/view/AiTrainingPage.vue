@@ -244,8 +244,6 @@ function updateCount(scoreType) {
   }
 }
 
-function updateEvent() {}
-
 function toggleTime() {
   if (timeDelta === 0) {
     timer.resume()

@@ -22,7 +22,10 @@ const userdata = ref(null)
 onMounted(async () => {
   userdata.value = await ApiClient.me()
   if (userdata.value) {
+    userdata.value.loggedIn = true
     rcm.value = await MainApi.getRecommendations(userdata.value)
+  } else {
+    userdata.value = { loggedIn: false }
   }
 })
 const tutorialDialogOpen = ref(false)

@@ -57,7 +57,9 @@
 
                   <div v-if="reservedResponse?.personalTrainingDTOList.length">
                     <div
-                      v-for="training in reservedResponse?.personalTrainingDTOList"
+                      v-for="training in reservedResponse?.personalTrainingDTOList.filter(
+                        pt => pt.ptReservationStatus > 2
+                      )"
                       :key="training.id"
                       class="mbr-rsv-history-card"
                     >

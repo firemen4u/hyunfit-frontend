@@ -20,6 +20,7 @@ const props = defineProps({
     </div>
     <div class="text-lg font-bold mb-1">{{ labels[0]?.split(':')[1] }}</div>
     <v-progress-linear
+      class="debug-progress"
       :model-value="predictions[0] ? predictions[0]?.probability * 100 : 0"
       color="#00a600"
       height="25"
@@ -33,6 +34,7 @@ const props = defineProps({
       {{ labels[1]?.split(':')[1] }}
     </div>
     <v-progress-linear
+      class="debug-progress"
       :model-value="predictions[1] ? predictions[1]?.probability * 100 : 0"
       color="#FF0000"
       height="25"
@@ -45,4 +47,8 @@ const props = defineProps({
   </div>
 </template>
 
-<style scoped></style>
+<style>
+.debug-progress {
+  transition: none;
+}
+</style>

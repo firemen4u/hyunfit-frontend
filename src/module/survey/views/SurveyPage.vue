@@ -14,6 +14,18 @@ import router, { pathNames } from '@/router'
 const userData = ref(null)
 onMounted(async () => {
   userData.value = await ApiClient.me()
+
+  if (userData.value?.mbrGender) {
+    memberInfo.mbrBasic.mbrGender = userData.value.mbrGender
+    memberInfo.mbrBasic.mbrBirthdate = userData.value.mbrBirthdate
+    memberInfo.mbrBasic.mbrHeight = userData.value.mbrHeight
+    memberInfo.mbrBasic.mbrWeight = userData.value.mbrWeight
+
+    if (memberInfo.mbrBasic.mbrHeight || memberInfo.mbrBasic.mbrWeight) {
+      memberInfo.mbrBasic.consentAgreement = true
+    }
+    aboutDisabled.value = false
+  }
 })
 const loading = ref(false)
 const env = reactive({
@@ -38,7 +50,7 @@ const aboutDisabled = ref(true)
 
 const memberInfo = reactive({
   mbrExerciseGoal: ref(null),
-  mbrExerciseExperienceLevel: ref(0),
+  mbrExerciseExperienceLevel: ref(1),
   mbrExerciseTarget: ref(null),
   mbrMore: reactive({
     mbrKneeHealthConsidered: ref(null),
@@ -116,6 +128,7 @@ async function updateMemberInfo() {
             <SurveyAbout
               v-model="memberInfo.mbrBasic"
               :username="userData?.mbrName"
+              :disabled="aboutDisabled"
               @update:disabled="val => (aboutDisabled = val)"
             />
           </v-stepper-window>

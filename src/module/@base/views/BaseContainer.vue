@@ -12,12 +12,12 @@ const props = defineProps({
   <BaseHeader v-if="!noheader" :category="category" />
 
   <div ref="app" class="w-100">
-    <div class="base-loader fixed mt-[64px] w-full">
+    <div class="base-loader fixed mt-[64px] w-full z-[5]">
       <v-progress-linear
         :active="loading"
         height="5"
         :indeterminate="loading"
-        :color="'#a9dbf5'"
+        :color="'#a0bbff'"
       ></v-progress-linear>
     </div>
     <main

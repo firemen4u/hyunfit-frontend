@@ -5,6 +5,7 @@ import ExcUtils from '@/module/bo/exc/services/excUtils'
 import MainApi from '@/module/main/services/mainApi'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
 import router, { pathNames } from '@/router'
+import ExitSvg from '@/module/@base/svg/ExitSvg.vue'
 const props = defineProps({
   rcm: Array,
   userdata: Object,
@@ -74,12 +75,15 @@ async function gotoAiTraining(routine) {
     pathNames.aiTrainingPage.with(undefined, { rtnSeq: routine.rtnSeq })
   )
 }
+setTimeout(() => {
+  console.log(props.userdata)
+}, 1000)
 </script>
 
 <template>
   <div class="flex h-full w-full justify-between items-center relative">
     <div
-      v-if="loading || videoLoading"
+      v-if="userdata?.loggedIn !== false && (loading || videoLoading)"
       class="absolute bg-[#0d1851] w-full flex justify-center items-center h-full z-[3]"
     >
       <img
@@ -88,8 +92,11 @@ async function gotoAiTraining(routine) {
         alt=""
       />
     </div>
-    <div class="flex p-10 justify-between items-center">
-      <div class="">
+    <div
+      v-if="userdata?.loggedIn"
+      class="flex p-10 justify-between items-center"
+    >
+      <div>
         <div class="main-card-subtitle mb-3 font-black">오늘의 추천</div>
         <div class="mr-5">
           <div class="text-3xl font-bold text-white">
@@ -132,6 +139,28 @@ async function gotoAiTraining(routine) {
           @canplaythrough="videoLoading = false"
         />
       </div>
+    </div>
+
+    <div
+      v-if="userdata?.loggedIn === false"
+      class="flex items-center justify-center flex-col w-full"
+    >
+      <div class="text-gray-300 text-2xl mb-3 text-center">
+        지금 로그인하고
+        <div class="mt-1">
+          <span class="text-white font-semibold"> 현핏 트레이닝 추천</span>을
+          받아보세요
+        </div>
+      </div>
+
+      <v-btn
+        @click="router.push(pathNames.loginPage)"
+        variant="outlined"
+        size="x-large"
+        color="white"
+        :append-icon="ExitSvg"
+        ><div class="text-xl">로그인하기</div></v-btn
+      >
     </div>
   </div>
 </template>

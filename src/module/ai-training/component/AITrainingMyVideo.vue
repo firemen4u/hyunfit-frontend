@@ -1,7 +1,7 @@
 <script setup>
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { FILE_SERVER_BASE_URL } from '@/config'
 import DebugProgressBar from '@/module/ai-training/component/DebugProgressBar.vue'
 
@@ -87,6 +87,15 @@ watch(
     }
   }
 )
+
+onBeforeUnmount(() => {
+  if (model) {
+    model = undefined
+  }
+  if (webcam) {
+    webcam.stop()
+  }
+})
 
 function triggerDistanceOkMessage() {
   notificationMessageIndex.value = 2

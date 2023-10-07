@@ -3,8 +3,10 @@
   <div class="all-content-wrap">
     <div class="rtn-board-header-wrap flex items-center px-10">
       <div v-if="showAdmin" class="text-4xl font-black text-[#021f3d]">
-        <p class="text-2xl font-bold text-[#021f3d]">오피스</p>
-        <p class="text-4xl font-black mt-3 text-[#021f3d]">트레이닝 프로그램</p>
+        <p class="text-2xl font-bold text-[#021f3d]">관리자</p>
+        <p class="text-4xl font-black mt-3 text-[#021f3d]">
+          트레이닝 프로그램 관리
+        </p>
       </div>
       <div v-if="showMember" class="text-4xl font-black text-[#021f3d]">
         <p class="text-4xl font-black mt-5 text-[#021f3d]">트레이닝 프로그램</p>

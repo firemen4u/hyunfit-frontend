@@ -7,6 +7,7 @@
       preload="auto"
       style="width: 100%; height: 100%; object-fit: cover; border-radius: 0"
       @error="alert('Video 로드 실패 ' + props.exercise.videoUrl)"
+      disablePictureInPicture
     >
       <source :src="props.exercise.videoUrl" />
     </video>
