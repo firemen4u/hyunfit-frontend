@@ -1,23 +1,24 @@
 <template>
   <div id="ptRoom">
+    <div class="flex justify-center content-center mt-12 mb-12"></div>
     <div
-      class="flex justify-center items-center align-baseline mt-20 mb-3 ml-36 mr-36"
-    ></div>
-    <div id="ptCamContainer" class="flex flex-col justify-center">
+      id="ptCamContainer"
+      class="flex flex-col justify-center content-center"
+    >
       <button v-if="!joined" class="start-button" @click="startPt">
         <img src="/src/assets/images/start-button.png" />
       </button>
       <div
         v-show="joined"
         id="after-join"
-        class="flex justify-center"
+        class="flex justify-around"
         ref="afterJoin"
       >
-        <div id="publisher" class="mr-10"></div>
+        <div id="publisher"></div>
         <div id="subscriber"></div>
       </div>
     </div>
-    <div id="controllerButtonContainer" class="flex justify-center mt-14">
+    <div id="controllerButtonContainer" class="flex justify-center mt-12">
       <div class="flex justify-start w-1/3">
         <HyunfitLogoMonoVer2Svg
           color="#ffffff"
@@ -56,6 +57,18 @@
               alt=""
           /></v-btn>
         </v-col>
+        <v-col cols="auto">
+          <v-btn
+            size="large"
+            :color="'grey'"
+            :ripple="false"
+            @click="changeSize"
+            ><img
+              class="w-6 h-6"
+              :src="controller.screen ? paths.screenHalf : paths.screenFocused"
+              alt=""
+          /></v-btn>
+        </v-col>
       </div>
       <div class="w-1/3"></div>
     </div>
@@ -76,9 +89,13 @@ const paths = {
     'https://fs.hyunfit.life/api/hyunfit/file/meeting-microphone-off.png',
   audioOff:
     'https://fs.hyunfit.life/api/hyunfit/file/meeting-microphone-on.png',
+  screenFocused: 'https://fs.hyunfit.life/api/hyunfit/file/screen-focused.png',
+  screenHalf: 'https://fs.hyunfit.life/api/hyunfit/file/screen-half.png',
 }
 
 const joined = ref(false)
+
+const change = null
 
 const OV = ref(null)
 const session = ref(null)
@@ -88,6 +105,7 @@ const publisher = ref(null)
 const controller = reactive({
   video: ref(true),
   audio: ref(true),
+  screen: ref(true),
 })
 
 const personalTrainingDTO = {
@@ -97,6 +115,54 @@ const personalTrainingDTO = {
 onBeforeMount(() => {
   window.addEventListener('beforeunload', handleBeforeUnload)
 })
+
+function changeSize() {
+  if (!controller.screen) {
+    const videoDiv = document.querySelector('#after-join')
+    videoDiv.style.justifyContent = 'space-around'
+
+    const publisherDiv = document.querySelector('#publisher')
+    publisherDiv.style.width = ''
+    publisherDiv.style.justifyContent = ''
+    publisherDiv.style.position = ''
+    publisherDiv.style.zIndex = ''
+    publisherDiv.style.marginTop = ''
+    publisherDiv.style.marginLeft = ''
+    const resizePub = publisherDiv.querySelector('video')
+    resizePub.style.width = '900px'
+    resizePub.style.height = '700px'
+    resizePub.style.border = ''
+
+    const subscriberDiv = document.querySelector('#subscriber')
+    const resizeSub = subscriberDiv.querySelector('video')
+    resizeSub.style.width = '900px'
+    resizeSub.style.height = '700px'
+    controller.screen = !controller.screen
+  } else {
+    const videoDiv = document.querySelector('#after-join')
+    videoDiv.style.justifyContent = 'center'
+
+    const publisherDiv = document.querySelector('#publisher')
+    publisherDiv.style.width = '950px'
+    publisherDiv.style.justifyContent = 'flex-start'
+    publisherDiv.style.position = 'absolute'
+    publisherDiv.style.zIndex = '1'
+    publisherDiv.style.marginTop = '12px'
+    publisherDiv.style.marginLeft = '10px'
+
+    const resizePub = publisherDiv.querySelector('video')
+    resizePub.style.width = '300px'
+    resizePub.style.height = '235px'
+    resizePub.style.zIndex = '1'
+    resizePub.style.border = '3px solid gray'
+
+    const subscriberDiv = document.querySelector('#subscriber')
+    const resizeSub = subscriberDiv.querySelector('video')
+    resizeSub.style.width = '1000px'
+    resizeSub.style.height = '750px'
+    controller.screen = !controller.screen
+  }
+}
 
 async function startPt() {
   let userRole = localStorage.getItem('userRoleName')
@@ -129,7 +195,7 @@ async function createToken(sessionId) {
     if (e.response.status === 404) {
       alert('아직 상담사가 상담을 시작하지 않았습니다.\n잠시만 기다려주세요!')
     } else {
-      alert(`오류가 발생했습니다.  ${e}`)
+      alert('아직 상담사가 상담을 시작하지 않았습니다.\n잠시만 기다려주세요!')
     }
   }
 }
@@ -140,6 +206,11 @@ async function joinSession(currUserRole, mySessionId) {
   session.value = OV.value.initSession()
   session.value.on('streamCreated', ({ stream }) => {
     let sub = session.value.subscribe(stream, 'subscriber')
+    sub.on('videoElementCreated', event => {
+      const videoElement = event.element
+      videoElement.style.width = '900px'
+      videoElement.style.height = '700px'
+    })
     subscriber.value.push(sub)
     personalTrainingDTO.ptReservationStatus = 2
     ApiClient.put('/personal-trainings/' + mySessionId, personalTrainingDTO)
@@ -158,7 +229,7 @@ async function joinSession(currUserRole, mySessionId) {
           videoSource: undefined,
           publishAudio: controller.audio,
           publishVideo: controller.video,
-          resolution: '',
+          resolution: '900x700',
           frameRate: 30,
           insertMode: 'APPEND',
           mirror: false,
@@ -234,45 +305,6 @@ async function handleBeforeUnload(event) {
 }
 </script>
 
-<!--<script>-->
-<!--export default {-->
-<!--  data() {-->
-<!--    return {-->
-<!--      OV: null,-->
-<!--      session: null,-->
-<!--      subscriber: [],-->
-<!--      joined: true,-->
-<!--      isAudioMuted: false,-->
-<!--      videoImgPath: '/src/assets/images/Vector.png',-->
-<!--      audioImgPath: '/src/assets/images/microphone.png',-->
-<!--      showStartButton: true,-->
-<!--      showLessonTime: false,-->
-<!--      personalTrainingDTO: {-->
-<!--        ptReservationStatus: null,-->
-<!--      },-->
-<!--    }-->
-<!--  },-->
-<!--  created() {-->
-<!--    window.addEventListener('beforeunload', this.handleBeforeUnload)-->
-<!--  },-->
-<!--  methods: {-->
-<!--    async startPt() {-->
-<!--      let userRole = localStorage.getItem('userRoleName')-->
-<!--      let sessionId = localStorage.getItem('ptSeq')-->
-<!--      this.joinSession(userRole, sessionId)-->
-<!--    },-->
-<!--    async getToken(currUserRole, mySessionId) {-->
-<!--      if (currUserRole == 'member') {-->
-<!--        return await this.createToken(mySessionId)-->
-<!--      } else {-->
-<!--        const sessionId = await this.createSession(mySessionId)-->
-<!--        return await this.createToken(sessionId)-->
-<!--      }-->
-<!--    },-->
-<!--  },-->
-<!--}-->
-<!--</script>-->
-
 <style scoped>
 #ptRoom {
   width: 100vw;
@@ -285,11 +317,6 @@ async function handleBeforeUnload(event) {
 #after-join {
   display: flex;
   flex-direction: row;
-}
-#publisher,
-#subscriber {
-  width: 45%;
-  border-radius: 1%;
 }
 #margin {
   width: 5%;
