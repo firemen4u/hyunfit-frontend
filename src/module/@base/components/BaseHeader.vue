@@ -291,7 +291,7 @@ onMounted(async () => {
                 <img
                   v-else
                   class="h-8 w-8 rounded-full mr-1 object-cover"
-                  src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png.jpg"
+                  src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png"
                   alt=""
                 />
                 <DownArrowSvg :size="22" color="#AAAAAA" />
