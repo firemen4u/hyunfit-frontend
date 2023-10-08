@@ -34,7 +34,9 @@ async function gotoMain() {
             class="w-full mt-3"
             @click="gotoMbrReservation"
           >
-            <div class="font-bold text-lg">MY 예약 확인하기</div>
+            <div class="font-bold text-lg text-none">
+              My 라이브 클래스 확인하기
+            </div>
           </v-btn>
           <v-btn
             :ripple="false"

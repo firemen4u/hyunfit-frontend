@@ -25,10 +25,10 @@ const headerPages = [
     ],
   },
   {
-    displayName: '라이브 클래스',
+    displayName: 'My 라이브 클래스',
     destination: pathNames.mbrRsvPage,
     menus: [
-      { menuName: '라이브 클래스', destination: pathNames.mbrRsvPage },
+      { menuName: 'My 라이브 클래스', destination: pathNames.mbrRsvPage },
       { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
       { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedbackPage },
     ],
@@ -48,11 +48,11 @@ const adminPages = [
 
 const trainerPages = [
   {
-    displayName: '예약현황',
+    displayName: '라이브 클래스 관리',
     destination: pathNames.boTrnRsvBoardPage,
   },
   {
-    displayName: '피드백 현황',
+    displayName: '회원 피드백 관리',
     destination: pathNames.boTrnFbBoardPage,
   },
 ]

@@ -48,8 +48,8 @@
   </v-dialog>
 </template>
 <script setup>
-import { computed, onActivated, ref } from 'vue'
-import { BaseRating, BaseChipGroup } from '/src/module/@base/components'
+import { computed, ref } from 'vue'
+import { BaseRating } from '/src/module/@base/components'
 import ApiClient from '/src/services/api.js'
 import BaseReviewChipSelector from '@/module/@base/components/BaseReviewChipSelector.vue'
 

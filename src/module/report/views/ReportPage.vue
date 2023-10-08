@@ -5,7 +5,6 @@ import { Bar, Radar, Doughnut } from 'vue-chartjs'
 import { Colors } from '/src/common'
 import { ref, onMounted, watch, computed, reactive } from 'vue'
 import { CircleCheckSvg, CalorieSvg, TimerSvg } from '@/module/@base/svg'
-import ReportExcTimelineContainer from '@/module/report/components/ReportExcTimelineContainer.vue'
 import {
   calorieChartOptions,
   scoreChartOptions,
@@ -415,7 +414,7 @@ const reportData = computed(() => {
                 <div
                   class="flex flex-col items-center bg-white justify-center rounded-lg shadow-lg py-3 h-[420px]"
                 >
-                  <div class="report-title">분석</div>
+                  <div class="report-title">신체활성도</div>
                   <base-circular-loader :loading="imageLoading" :size="30">
                     <img
                       ref="reportImageRef"
@@ -430,7 +429,7 @@ const reportData = computed(() => {
                 <div
                   class="flex flex-col items-center bg-white justify-center rounded-lg shadow-lg py-3 h-[420px]"
                 >
-                  <div class="report-title">부위별 차트</div>
+                  <div class="report-title">신체활성도 차트</div>
                   <base-circular-loader
                     :loading="imageLoading"
                     :size="30"
