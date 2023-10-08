@@ -34,7 +34,7 @@ const videoTimeout = ref(null)
 function totalMinutes(exercises) {
   return Math.round(
     exercises.reduce((acc, curr) => {
-      return acc + (curr.excSetCount * curr.excTimePerSetInSec) / 60
+      return acc + (curr?.excSetCount * curr?.excTimePerSetInSec) / 60
     }, 0)
   )
 }
@@ -44,7 +44,8 @@ async function setRtnData(rcm) {
   rtn.rtnDurationInMin = totalMinutes(rtn.exercises)
   rtn.rtnTarget = targets[rtn.rtnTarget - 1]
   rtn.rtnExperienceLevel = levels[rtn.rtnExperienceLevel - 1]
-  videoSrc.value = `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${rtn.exercises[0].excSeq}.mp4`
+  if (!rtn.exercises) console.log('error! ', rtn.exercises)
+  videoSrc.value = `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${rtn.exercises[0]?.excSeq}.mp4`
   routine.value = rtn
   setTimeout(() => {
     loading.value = false
