@@ -181,6 +181,13 @@ const userAccountType = computed(() => {
   return 'unknown'
 })
 
+const defaultProfile = computed(() => {
+  if (props.category) {
+    return 'https://fs.hyunfit.life/api/hyunfit/file/trn_9_profile.jpg'
+  }
+  return 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
+})
+
 const userProfile = computed(() => {
   if ('mbrProfileUrl' in userData.value) return userData.value.mbrProfileUrl
   if ('trnProfileUrl' in userData.value) return userData.value.trnProfileUrl
@@ -278,17 +285,13 @@ onMounted(async () => {
                 <img
                   v-if="loggedIn"
                   class="h-8 w-8 rounded-full mr-1 object-cover"
-                  :src="
-                    userProfile
-                      ? userProfile
-                      : 'https://fs.hyunfit.life/api/hyunfit/file/trn_9_profile.jpg'
-                  "
+                  :src="userProfile ? userProfile : defaultProfile"
                   alt=""
                 />
                 <img
                   v-else
                   class="h-8 w-8 rounded-full mr-1 object-cover"
-                  src="https://fs.hyunfit.life/api/hyunfit/file/trn_9_profile.jpg"
+                  src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png.jpg"
                   alt=""
                 />
                 <DownArrowSvg :size="22" color="#AAAAAA" />
@@ -315,11 +318,7 @@ onMounted(async () => {
                   <img
                     v-if="loggedIn"
                     class="h-24 w-24 rounded-full object-cover"
-                    :src="
-                      userProfile
-                        ? userProfile
-                        : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
-                    "
+                    :src="userProfile ? userProfile : defaultProfile"
                     alt=""
                   />
                   <img

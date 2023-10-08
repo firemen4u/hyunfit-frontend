@@ -287,7 +287,7 @@ export default {
           <div class="bo-rtnNew-banner flex items-center px-10">
             <div class="text-4xl font-black text-[#021f3d]">
               <div>
-                <p class="text-2xl font-bold text-[#021f3d]">관리자</p>
+                <p class="text-2xl font-bold text-[#021f3d]">트레이너</p>
                 <p class="text-4xl font-black mt-3 text-[#021f3d]">
                   트레이닝 프로그램 등록
                 </p>
