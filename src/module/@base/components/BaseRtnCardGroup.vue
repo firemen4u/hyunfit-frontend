@@ -122,11 +122,11 @@ const mapConsideration = (key, level) => {
         <div class="flex justify-between px-8 mt-3">
           <div>
             <div class="items-end flex flex-wrap text-gray-500">
-              <p class="pr-1">
+              <p class="pr-2">
                 {{ mapConsideration('rtnGoal', selectedRoutine.rtnGoal) }}
               </p>
               <p
-                class="pr-1"
+                class="pr-2"
                 v-if="selectedRoutine.rtnKneeHealthConsidered === 1"
               >
                 {{
@@ -136,7 +136,7 @@ const mapConsideration = (key, level) => {
                   )
                 }}
               </p>
-              <p class="pr-1" v-if="selectedRoutine.rtnNoiseConsidered === 1">
+              <p class="pr-2" v-if="selectedRoutine.rtnNoiseConsidered === 1">
                 {{
                   mapConsideration(
                     'rtnNoiseConsidered',
@@ -144,7 +144,7 @@ const mapConsideration = (key, level) => {
                   )
                 }}
               </p>
-              <p class="pr-1" v-if="selectedRoutine.rtnLongSitter === 1">
+              <p class="pr-2" v-if="selectedRoutine.rtnLongSitter === 1">
                 {{
                   mapConsideration(
                     'rtnLongSitter',
@@ -153,7 +153,7 @@ const mapConsideration = (key, level) => {
                 }}
               </p>
               <p
-                class="pr-1"
+                class="pr-2"
                 v-if="selectedRoutine.rtnNeckShoulderFocused === 1"
               >
                 {{
@@ -164,7 +164,7 @@ const mapConsideration = (key, level) => {
                 }}
               </p>
               <p
-                class="pr-1"
+                class="pr-2"
                 v-if="selectedRoutine.rtnBackDiskConsidered === 1"
               >
                 {{
@@ -270,7 +270,7 @@ const mapConsideration = (key, level) => {
 }
 .rtn-excCard-wrap {
   height: 450px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .card-container {

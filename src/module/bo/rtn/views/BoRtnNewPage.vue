@@ -241,6 +241,12 @@ const rules = {
 const formValid = ref(false)
 async function onSubmit() {
   if (!formValid.value) return
+
+  const isConfirmed = window.confirm('등록하시겠습니까?')
+  if (!isConfirmed) {
+    return // 취소를 누르면 함수실행 안함
+  }
+
   loading.value = true
   await sendDataToAPI()
   loading.value = false
