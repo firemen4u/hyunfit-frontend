@@ -26,7 +26,7 @@ const targets = [
 const videoSrc = ref(null)
 const routineVideoElem = ref(null)
 function randomInt() {
-  return Math.floor(Math.random() * 3)
+  return Math.floor(Math.random() * 2)
 }
 
 const videoTimeout = ref(null)

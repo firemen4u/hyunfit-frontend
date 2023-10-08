@@ -105,7 +105,7 @@
               "
               @click="enterPtRoom"
             >
-              <div class="text-lg font-black">라이브클래스 입장</div>
+              <div class="text-lg font-black">라이브클래스 개설</div>
             </v-btn>
           </div>
         </div>
