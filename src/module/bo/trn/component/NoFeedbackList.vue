@@ -159,9 +159,12 @@ export default {
     },
     async listReload() {
       let response = await ApiClient.get('/trainers/me')
-      ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback')
+      await ApiClient.get('/trainers/' + response.trnSeq + '/nofeedback', {
+        params: { startDate: this.startDate, endDate: this.endDate },
+      })
         .then(response => {
           this.noFeedbackList = response
+          this.calCnt()
         })
         .catch(error => {
           console.error('API 요청 실패:', error)

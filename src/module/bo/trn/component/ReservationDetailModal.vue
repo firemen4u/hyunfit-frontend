@@ -162,7 +162,6 @@ export default {
       let res = await ApiClient.get(
         '/members/by/' + this.reservationData.mbrSeq
       )
-      console.log(res)
       if (res.mbrExerciseExperienceLevel == 1) {
         this.memberInfo.mbrExerciseExperienceLevel = '초급'
       } else if (res.mbrExerciseExperienceLevel == 2) {
