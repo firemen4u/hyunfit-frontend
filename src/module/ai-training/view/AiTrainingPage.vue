@@ -69,36 +69,35 @@
       class="info-container fixed top-0 left-0 w-full h-full bg-gray-200"
       v-if="loading && currentExercise?.type !== 'INTRO'"
     >
+      <!--       운동 이름 메시지 -->
       <a-i-training-info
         v-if="currentExercise?.type !== 'EXERCISE'"
         :exerciseType="currentExercise?.type"
         :exerciseName="currentExercise?.name"
-      ></a-i-training-info>
+      />
+      <!--      -->
       <a-i-training-info
         v-if="currentExercise?.type === 'EXERCISE' && !breakTime"
         :exerciseType="currentExercise?.type"
         :exerciseName="currentExercise?.name"
         :breakTime="breakTime"
-      ></a-i-training-info>
+      />
     </div>
     <a-i-training-info
-      v-if="
-        notification !== '' &&
-        currentExercise?.type === 'EXERCISE' &&
-        !breakTime
-      "
-      :exercise-name="notification"
+      v-if="notification"
+      :notification="notification"
       :breakTime="breakTime"
-    ></a-i-training-info>
+    />
     <a-i-training-info
       v-if="breakTime && !loading"
       :breakTime="breakTime"
       :loading="loading"
-    >
-    </a-i-training-info>
-    <a-i-training-info v-if="pauseTime" :pauseTime="pauseTime">
-    </a-i-training-info>
+    />
+    <a-i-training-info v-if="pauseTime" :pauseTime="pauseTime" />
+
     <a-i-training-bottom-bar
+      :pauseTime="pauseTime"
+      :debugMode="debugMode"
       @event:pause="toggleTime()"
       @event:exit="exit()"
       @event:toggle-debug="debugMode = !debugMode"
@@ -245,8 +244,6 @@ function updateCount(scoreType) {
   }
 }
 
-function updateEvent() {}
-
 function toggleTime() {
   if (timeDelta === 0) {
     timer.resume()
@@ -273,7 +270,6 @@ onMounted(() => {
 })
 
 async function init() {
-  loading.value = true
   try {
     await loadMemberData()
   } catch (e) {
@@ -294,8 +290,6 @@ async function init() {
 
 function toNextExercise() {
   if (!currentExercise.value) return
-  console.log('currentExercise', currentExercise.value)
-
   if (currentExercise.value.type === 'EXERCISE' && !setFinished.value) {
     if (breakTime.value) {
       startExerciseTime.value = Date.now()
@@ -326,7 +320,6 @@ function toNextExercise() {
   updateWindowUi()
   videoLoading.value = true
   modelLoading.value = true
-  console.log('set to loading')
   timer.stop()
 }
 
@@ -337,7 +330,6 @@ async function sendPointData() {
     mevAmount: rtnRewardPoint,
   }
   try {
-    console.log('루틴 포인트 보내기', memberPoint)
     await ApiClient.post(`/member-event`, memberPoint)
   } catch (error) {
     console.log('루틴 포인트 데이터 전송 실패')
@@ -347,13 +339,13 @@ async function sendPointData() {
 
 function onTeachingVideoReady() {
   videoLoading.value = false
-  console.log('teachingvideo ready!')
   timer.start(currentExercise.value.timerLimit - 0.01)
 }
 
 function onModelReady() {
-  modelLoading.value = false
-  console.log('modelLoaded!')
+  setTimeout(() => {
+    modelLoading.value = false
+  }, 1000)
 }
 
 async function sendExerciseData() {

@@ -6,26 +6,26 @@ import { VStepperWindowItem } from 'vuetify/labs/VStepper'
 const props = defineProps({
   modelValue: Object,
   username: String,
+  disabled: Boolean,
 })
 
 const innerValue = ref(props.modelValue)
 const emit = defineEmits(['update:modelValue', 'update:disabled'])
 
-const form = ref(false)
+const form = ref(props.disabled)
 
 function updateDisabled() {
-  let disabled = true
-  if (form.value) {
-    if (
-      (innerValue.value.mbrHeight || innerValue.value.mbrWeight) &&
-      innerValue.value.consentAgreement
-    ) {
-      disabled = false
-    } else if (!innerValue.value.mbrHeight && !innerValue.value.mbrWeight) {
-      disabled = false
-    }
+  let formDisabled = true
+  if (
+    (innerValue.value.mbrHeight || innerValue.value.mbrWeight) &&
+    innerValue.value.consentAgreement
+  ) {
+    formDisabled = false
+  } else if (!innerValue.value.mbrHeight && !innerValue.value.mbrWeight) {
+    formDisabled = false
   }
-  emit('update:disabled', disabled)
+
+  emit('update:disabled', formDisabled)
 }
 const rules = {
   birthdate: value => {
@@ -108,6 +108,7 @@ function isValidBirthdate(dateString) {
           color="primary"
           style="height: 80px; margin-bottom: 4px"
           @change="updateDisabled()"
+          validate-on="input"
         ></v-text-field>
 
         <v-btn-toggle
@@ -117,6 +118,7 @@ function isValidBirthdate(dateString) {
           color="primary"
           mandatory
           @click="updateDisabled()"
+          validate-on="input"
         >
           <v-btn width="100" class="rounded" :value="1" :ripple="false"
             >여성</v-btn
@@ -143,7 +145,8 @@ function isValidBirthdate(dateString) {
           style="height: 80px; margin-bottom: 4px"
           @update:modelValue="updateDisabled()"
           @input="updateDisabled()"
-        ></v-text-field>
+          validate-on="input"
+        />
 
         <!-- 몸무게 입력 -->
         <v-text-field
@@ -157,7 +160,8 @@ function isValidBirthdate(dateString) {
           :rules="[rules.weight]"
           @update:modelValue="updateDisabled()"
           @input="updateDisabled()"
-        ></v-text-field>
+          validate-on="input"
+        />
 
         <!-- 정보 수집 동의 (체크박스) -->
         <v-checkbox

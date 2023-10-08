@@ -9,6 +9,7 @@ import ApiClient from '/src/services/api'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import PointCoinSvg from '@/module/@base/svg/PointCoinSvg.vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
+import router, { pathNames } from '@/router'
 
 // 프로그램 타켓부위
 const rtn_target_radio = [
@@ -166,9 +167,6 @@ const selectedExercises = ref([]) // 모달에서 받은 exercises
 const sendDataToAPI = async () => {
   // API 전송 로직
   try {
-    console.log(averageTarget)
-    console.log(minutesCategory)
-    console.log(averageDifficulty)
     const payload = {
       admSeq: admSeq.value,
       rtnName: rtn_name.value,
@@ -185,7 +183,6 @@ const sendDataToAPI = async () => {
       rtnRewardPoint: rtn_reward_point.value,
       exercises: selectedExercises.value,
     }
-    console.log(payload)
 
     // 첫 번째 API 호출
     const firstApiResponse = await ApiClient.post(
@@ -193,8 +190,6 @@ const sendDataToAPI = async () => {
       payload
     )
     const rtnSeq = firstApiResponse.rtnSeq
-
-    console.log(`Received rtnSeq: ${rtnSeq}`)
 
     // 파일 업로드 설정
     const config = {
@@ -218,11 +213,7 @@ const sendDataToAPI = async () => {
       formData,
       config
     )
-
-    console.log('Data sent to API:', JSON.stringify(payload, null, 2)) // 콘솔에 로깅
-    console.log(`File upload success: ${secondApiResponse.value}`)
     alert('등록 성공!')
-    window.location.reload() // 페이지 새로고침
   } catch (error) {
     console.error(error)
     alert('등록 실패!')
@@ -250,10 +241,10 @@ const rules = {
 const formValid = ref(false)
 async function onSubmit() {
   if (!formValid.value) return
-  console.log('sending data')
   loading.value = true
   await sendDataToAPI()
   loading.value = false
+  await router.push(pathNames.boRtnBoardPage)
 }
 </script>
 
@@ -270,7 +261,7 @@ async function onSubmit() {
           <div class="bo-rtnNew-banner flex items-center px-10">
             <div class="text-4xl font-black text-[#021f3d]">
               <div>
-                <p class="text-2xl font-bold text-[#021f3d]">오피스</p>
+                <p class="text-2xl font-bold text-[#021f3d]">관리자</p>
                 <p class="text-4xl font-black mt-3 text-[#021f3d]">
                   트레이닝 프로그램 등록
                 </p>

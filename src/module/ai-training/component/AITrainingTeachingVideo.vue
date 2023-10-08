@@ -7,6 +7,7 @@
       preload="auto"
       style="width: 100%; height: 100%; object-fit: cover; border-radius: 0"
       @error="alert('Video 로드 실패 ' + props.exercise.videoUrl)"
+      disablePictureInPicture
     >
       <source :src="props.exercise.videoUrl" />
     </video>
@@ -40,6 +41,7 @@ const videoElement = ref(null)
 const audioElement = ref(null)
 const bgmElement = ref(null)
 const bgmUrl = computed(() => {
+  if (!bgmList.value[bgmIdx.value]) return null
   return `${FILE_SERVER_BASE_URL}/api/hyunfit/file/bgm${
     bgmList.value[bgmIdx.value]
   }.mp3`
@@ -89,11 +91,13 @@ onMounted(() => {
     numbers.push(i)
   }
 
+  let newnum = []
   for (let i = 0; i < 20; i++) {
     const randomIndex = Math.floor(Math.random() * numbers.length)
     const randomNum = numbers.splice(randomIndex, 1)[0]
-    bgmList.value.push(randomNum)
+    newnum.push(randomNum)
   }
+  bgmList.value = newnum
 })
 function playNextBgm() {
   bgmIdx.value += 1

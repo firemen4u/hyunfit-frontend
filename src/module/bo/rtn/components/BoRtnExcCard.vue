@@ -27,6 +27,7 @@
           muted
           autoplay
           class="preview-video-wrapper object-cover"
+          disablePictureInPicture
         >
           <source :src="videoSrc" />
         </video>

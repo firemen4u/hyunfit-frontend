@@ -9,11 +9,9 @@
             class="tfb-content-header flex w-full h-[200px] items-center justify-items-end rounded-t-xl"
           >
             <div class="py-12 px-10 mb-5 flex-col">
-              <p class="text-4xl mt-5 font-black text-white">
-                월간 트레이닝 피드백
-              </p>
+              <p class="text-4xl mt-5 font-black text-white">트레이너 피드백</p>
               <p class="text-xl mt-5 font-bold text-white">
-                트레이너가 작성한 내 월간 운동 보고서를 받아 볼 수 있어요
+                트레이너가 나를 위해 작성한 월간 운동 보고서를 받아 볼 수 있어요
               </p>
             </div>
           </div>
@@ -31,20 +29,22 @@
                 class="trfb-content-wrap py-4 pb-10 rounded-b-xl w-full"
                 v-if="responseFeedbackData"
               >
-                <div class="flex justify-center items-center h-[70px]">
-                  <p class="text-3xl font-bold">
-                    {{ mbrName }}
-                  </p>
-                  <p class="text-3xl">님의 피드백 보고서</p>
-                </div>
                 <div class="feedback-content-wrap px-[100px]">
+                  <div
+                    class="flex justify-start items-center h-[70px] text-lg mb-10"
+                  >
+                    <p class="font-bold">
+                      {{ mbrName }}
+                    </p>
+                    <p class="">님께,</p>
+                  </div>
                   <TrnFeedBackComponent
                     :feedbackContent="responseFeedbackData"
                   />
                 </div>
-                <div class="float-right mr-[100px] mt-[30px] text-lg font-bold">
-                  <p>트레이너 : {{ responsetrnName }}</p>
-                  <P>작성일자 : {{ responsetrnfWrittenDate }}</P>
+                <div class="float-right mr-[100px] mt-15 text-lg font-bold">
+                  <p>{{ responsetrnName }} 트레이너 드림</p>
+                  <P>{{ responsetrnfWrittenDate }}</P>
                 </div>
               </div>
               <div v-else class="flex flex-col justify-center h-[500px]">

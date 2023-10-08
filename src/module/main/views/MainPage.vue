@@ -15,15 +15,20 @@ import { onMounted, ref } from 'vue'
 import MainApi from '@/module/main/services/mainApi'
 import ApiClient from '@/services/api'
 import router, { pathNames } from '@/router'
+import TutorialDialog from '@/module/main/components/TutorialDialog.vue'
 
 const rcm = ref(null)
 const userdata = ref(null)
 onMounted(async () => {
   userdata.value = await ApiClient.me()
   if (userdata.value) {
+    userdata.value.loggedIn = true
     rcm.value = await MainApi.getRecommendations(userdata.value)
+  } else {
+    userdata.value = { loggedIn: false }
   }
 })
+const tutorialDialogOpen = ref(false)
 </script>
 
 <template>
@@ -52,7 +57,6 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-
     <MainFooter />
   </BaseContainer>
 </template>

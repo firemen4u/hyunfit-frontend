@@ -5,10 +5,11 @@
     hide-details
     clearable
     flat
-    bg-color="#F8F8F8"
     @keyup.enter="search"
     :disabled="loading"
     type="text"
+    bg-color="#F8F8F8"
+    variant="solo"
   >
     <template v-slot:append-inner>
       <button @click="search" class="p-2">
