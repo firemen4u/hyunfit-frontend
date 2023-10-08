@@ -34,30 +34,25 @@ const props = defineProps({
           alt=""
         />
       </div>
-      <div class="exit-title text-5xl font-black text-[#0d1851] mt-10 mb-10">
-        오늘의 운동이 모두 끝났어요!
-      </div>
-      <div>
-        <div class="flex text-xl items-center">
-          <PlusSvg :size="15" />
-          <CountUp
-            :start-val="Math.max(props.exitData.point - 20, 0)"
-            :end-val="props.exitData.point"
-          ></CountUp>
-          <div class="ml-1">포인트</div>
-        </div>
-        <PlusSvg :size="15" />
+      <div
+        class="flex items-center mt-5 mb-3 text-3xl text-[#0d1851] font-black"
+      >
+        <PlusSvg :size="24" />
         <CountUp
           :start-val="Math.max(~~exitData.exp - 10, 0)"
           :end-val="~~exitData.exp"
         ></CountUp>
         <div class="ml-1">경험치</div>
       </div>
+      <div class="exit-title text-5xl font-black text-[#0d1851] mt-10 mb-10">
+        오늘의 운동이 모두 끝났어요!
+      </div>
+
       <div
-        class="exit-content text-lg font-bold mb-10 tracking-wider leading-relaxed text-center"
+        class="exit-content text-lg mb-10 tracking-wider leading-relaxed text-center"
       >
         시작은 어렵지만, 시간은 빠르게 지나갔죠?<br />
-        15분만에 맺힌 이마위의 땀과 뿌듯함의 순삭!<br />
+        맺힌 이마위의 땀과 뿌듯함의 순삭!<br />
         우리, 내일도 놓치지 말아요
       </div>
       <div
@@ -66,24 +61,24 @@ const props = defineProps({
       >
         <v-btn
           height="50"
-          width="180"
+          width="200"
           rounded
           variant="outlined"
           :color="'#333333'"
           @click="goToMainPage()"
           style="font-weight: bold; font-size: 14px"
         >
-          홈으로 가기
+          <div class="text-lg">홈으로 가기</div>
         </v-btn>
         <v-btn
           height="50"
-          width="180"
+          width="200"
           color="primary"
           rounded
           @click="goToReportPage()"
           style="font-weight: bold; font-size: 14px"
         >
-          결과 자세히 보기
+          <div class="text-lg">결과 자세히 보기</div>
         </v-btn>
       </div>
       <div

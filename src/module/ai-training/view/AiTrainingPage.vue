@@ -110,7 +110,6 @@
       :exitData="exitData"
     >
     </AITrainingExit>
-    <div class="fixed z-[100] top-0 left-0">{{ scores }}</div>
   </div>
 </template>
 <script setup>
