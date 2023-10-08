@@ -250,7 +250,6 @@ import {
 } from '/src/module/@base/svg'
 import { BoExcFileInput, BoExcRadioButton } from '/src/module/bo/exc/components'
 import { ref, onMounted } from 'vue'
-import ApiClient from '/src/services/api'
 import router, { pathNames } from '@/router'
 
 const target_items = ref([
@@ -486,6 +485,26 @@ const rules = {
 }
 </script>
 
+<script>
+import axios from 'axios'
+import { BACKEND_API_BASE_URL } from '@/config'
+import ApiClient from '@/services/api'
+
+export default {
+  async beforeRouteEnter() {
+    const user = {
+      username: 'admin',
+      password: '123',
+    }
+    await axios
+      .post(`${BACKEND_API_BASE_URL}/auth/admin`, user)
+      .then(response => {
+        let token = response.headers.get('authorization')
+        ApiClient.setTokenOnLocalStorage(token, 'admin')
+      })
+  },
+}
+</script>
 <style scoped>
 .col-1 {
   width: 150px;

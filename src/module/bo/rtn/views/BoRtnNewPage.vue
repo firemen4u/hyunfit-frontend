@@ -4,8 +4,7 @@ import { PictureSvg } from '/src/module/@base/svg'
 import { ref, onMounted, computed } from 'vue'
 import BoRtnExcListContainer from '/src/module/bo/rtn/components/BoRtnExcListContainer.vue'
 import { BoExcRadioButton } from '/src/module/bo/exc/components'
-import { FILE_SERVER_HYUNFIT_URL, BACKEND_API_BASE_URL } from '/src/config.js'
-import ApiClient from '/src/services/api'
+import { FILE_SERVER_HYUNFIT_URL } from '/src/config.js'
 import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 import PointCoinSvg from '@/module/@base/svg/PointCoinSvg.vue'
 import ExcUtils from '@/module/bo/exc/services/excUtils'
@@ -86,6 +85,7 @@ const exercises = ref([]) // API로 받아온 운동 목록을 저장할 변수
 
 const formValidator = ref(true)
 const loading = ref(false)
+
 onMounted(async () => {
   try {
     const response = await ApiClient.get('/admins/me')
@@ -254,6 +254,26 @@ async function onSubmit() {
 }
 </script>
 
+<script>
+import axios from 'axios'
+import { BACKEND_API_BASE_URL } from '@/config'
+import ApiClient from '@/services/api'
+
+export default {
+  async beforeRouteEnter() {
+    const user = {
+      username: 'admin',
+      password: '123',
+    }
+    await axios
+      .post(`${BACKEND_API_BASE_URL}/auth/admin`, user)
+      .then(response => {
+        let token = response.headers.get('authorization')
+        ApiClient.setTokenOnLocalStorage(token, 'admin')
+      })
+  },
+}
+</script>
 <template>
   <BaseContainer category="admin">
     <div class="w-100 flex justify-center primary-background mb-[150px]">

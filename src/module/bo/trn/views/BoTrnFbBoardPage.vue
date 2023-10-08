@@ -49,6 +49,10 @@ import { LeftArrowSvg, RightArrowSvg } from '@/module/@base/svg'
 </script>
 
 <script>
+import axios from 'axios'
+import { BACKEND_API_BASE_URL } from '@/config'
+import ApiClient from '@/services/api'
+
 export default {
   data() {
     return {
@@ -57,6 +61,18 @@ export default {
       targetDate: null,
       reLoadKey: 0,
     }
+  },
+  async beforeRouteEnter() {
+    const user = {
+      username: 'yang',
+      password: '123',
+    }
+    await axios
+      .post(`${BACKEND_API_BASE_URL}/auth/trainer`, user)
+      .then(response => {
+        let token = response.headers.get('authorization')
+        ApiClient.setTokenOnLocalStorage(token, 'trainer')
+      })
   },
   async created() {
     await this.initializedMonth()

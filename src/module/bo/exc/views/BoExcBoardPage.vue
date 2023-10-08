@@ -93,10 +93,21 @@ import {
 } from '/src/module/bo/exc/components'
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, onBeforeMount } from 'vue'
 import router, { pathNames } from '@/router'
-import ApiClient from '/src/services/api'
 
+onBeforeMount(async () => {
+  const user = {
+    username: 'admin',
+    password: '123',
+  }
+  await axios
+    .post(`${BACKEND_API_BASE_URL}/auth/admin`, user)
+    .then(response => {
+      let token = response.headers.get('authorization')
+      ApiClient.setTokenOnLocalStorage(token, 'admin')
+    })
+})
 const goToExcNewPage = () => {
   router.push(pathNames.boExcNewPage)
 }
@@ -161,24 +172,12 @@ const fetchExercises = async () => {
 // 컴포넌트가 마운트된 후 API로부터 데이터를 가져옵니다.
 onMounted(async () => {
   await fetchExercises()
-
   // excSeq로 정렬
   exercises.value.sort((a, b) => b.excSeq - a.excSeq)
-
-  // 정렬된 운동 목록을 출력
-  console.log('Sorted Exercises by excSeq:', exercises.value)
 })
 
 watch(searchText, () => {
   currentPage.value = 1 // 검색어가 바뀔 때 페이지를 1로 초기화
-  console.log(
-    '검색어 바뀌어서 1로초기화 currentPage.value :',
-    currentPage.value
-  )
-})
-
-watch(currentPage, (newVal, oldVal) => {
-  console.log('BoExcBoardPage currentPage changed:', newVal, oldVal) // 로그 추가
 })
 
 //모달창
@@ -201,6 +200,28 @@ const deleteExercise = async excSeq => {
   }
 }
 </script>
+
+<script>
+import axios from 'axios'
+import { BACKEND_API_BASE_URL } from '@/config'
+import ApiClient from '@/services/api'
+
+export default {
+  async beforeRouteEnter() {
+    const user = {
+      username: 'admin',
+      password: '123',
+    }
+    await axios
+      .post(`${BACKEND_API_BASE_URL}/auth/admin`, user)
+      .then(response => {
+        let token = response.headers.get('authorization')
+        ApiClient.setTokenOnLocalStorage(token, 'admin')
+      })
+  },
+}
+</script>
+
 <style scoped>
 .exc-wrap {
   height: 100%;

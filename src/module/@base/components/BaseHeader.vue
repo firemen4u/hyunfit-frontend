@@ -37,23 +37,39 @@ const headerPages = [
 
 const adminPages = [
   {
-    displayName: '트레이닝 관리',
+    displayName: '라이브 클래스',
+    destination: pathNames.boTrnRsvBoardPage,
+  },
+  {
+    displayName: '회원 피드백',
+    destination: pathNames.boTrnFbBoardPage,
+  },
+  {
+    displayName: '트레이닝',
     destination: pathNames.boExcBoardPage,
   },
   {
-    displayName: '트레이닝 프로그램 관리',
+    displayName: '트레이닝 프로그램',
     destination: pathNames.boRtnBoardPage,
   },
 ]
 
 const trainerPages = [
   {
-    displayName: '라이브 클래스 관리',
+    displayName: '라이브 클래스',
     destination: pathNames.boTrnRsvBoardPage,
   },
   {
-    displayName: '회원 피드백 관리',
+    displayName: '회원 피드백',
     destination: pathNames.boTrnFbBoardPage,
+  },
+  {
+    displayName: '트레이닝',
+    destination: pathNames.boExcBoardPage,
+  },
+  {
+    displayName: '트레이닝 프로그램',
+    destination: pathNames.boRtnBoardPage,
   },
 ]
 
@@ -160,7 +176,7 @@ const userName = computed(() => {
 const userAccountType = computed(() => {
   if (!loggedIn.value) return null
   if ('mbrSeq' in userData.value) return '회원'
-  if ('admSeq' in userData.value) return '관리자'
+  if ('admSeq' in userData.value) return '트레이너'
   if ('trnSeq' in userData.value) return '트레이너'
   return 'unknown'
 })
@@ -265,14 +281,14 @@ onMounted(async () => {
                   :src="
                     userProfile
                       ? userProfile
-                      : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
+                      : 'https://fs.hyunfit.life/api/hyunfit/file/trn_9_profile.jpg'
                   "
                   alt=""
                 />
                 <img
                   v-else
                   class="h-8 w-8 rounded-full mr-1 object-cover"
-                  src="https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png"
+                  src="https://fs.hyunfit.life/api/hyunfit/file/trn_9_profile.jpg"
                   alt=""
                 />
                 <DownArrowSvg :size="22" color="#AAAAAA" />
