@@ -281,7 +281,7 @@ async function init() {
   try {
     await loadMemberData()
   } catch (e) {
-    alert('로그인이 필요한 페이지입니다.')
+    alert('로그인이 필요한 서비스입니다.')
     await router.push(pathNames.loginPage)
     return
   }

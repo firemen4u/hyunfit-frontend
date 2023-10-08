@@ -30,6 +30,9 @@ const selectedDate = ref(
 const imageLoading = ref(true)
 const reportLoading = ref(true)
 
+const scoreData = ref([])
+const scoreLoading = ref(true)
+
 const reportImageRef = ref(null)
 const reportImageUrl = ref(null)
 
@@ -94,13 +97,14 @@ async function loadReport() {
     () => scoreChartRef.value?.chart,
     () => {
       if (scoreChartRef.value?.chart) {
-        scoreChartRef.value.chart.resize(300, 140)
+        scoreChartRef.value.chart.resize(300, 110)
         watchScoreChart()
       }
     }
   )
   imageLoading.value = true
   reportLoading.value = true
+  scoreLoading.value = true
 
   charts.date.ready = false
   charts.calorie.ready = false
@@ -108,6 +112,8 @@ async function loadReport() {
   charts.target.ready = false
 
   await getReportData(memberData.value.mbrSeq, selectedDate.value)
+
+  await getScoreData(memberData.value.mbrSeq, selectedDate.value)
 
   renderCharts()
   await getReportImage()
@@ -173,6 +179,7 @@ function renderCharts() {
   let totalCalories = 0
   responseData.value.exerciseHistory.exerciseTargets.forEach(tg => {
     totalCalories += tg.totalCalories
+    console.log(tg)
     if ([1, 7].includes(tg.targetArea)) {
       targetSummaryData.등 += tg.totalCalories
     } else if ([6, 8].includes(tg.targetArea)) {
@@ -187,7 +194,7 @@ function renderCharts() {
       targetSummaryData.어깨 += tg.totalCalories
     }
   })
-
+  console.log(targetSummaryData)
   charts.target.data = {
     labels: Object.keys(targetSummaryData),
     datasets: [
@@ -211,7 +218,10 @@ async function getReportData(mbrSeq, date) {
   responseData.value = await ReportApi.getReportFor(mbrSeq, date)
   reportLoading.value = false
 }
-
+async function getScoreData(mbrSeq, date) {
+  scoreData.value = await ReportApi.getHyunfitScoreFor(mbrSeq, date)
+  scoreLoading.value = false
+}
 async function getReportImage() {
   if (reportImageUrl.value) URL.revokeObjectURL(reportImageUrl.value)
 
@@ -237,6 +247,7 @@ async function loadMemberData() {
   } catch (e) {
     console.log('ReportPage: failed to load memberData. Please log in')
     console.log(e)
+    alert('로그인이 필요한 서비스입니다.')
     await router.push(pathNames.loginPage)
   }
 }
@@ -293,7 +304,7 @@ const reportData = computed(() => {
               />
               <div class="report-summary-wrapper flex justify-between my-5">
                 <div
-                  class="report-summary-item bg-white h-40 rounded-lg shadow-lg flex flex-col items-center"
+                  class="report-summary-item bg-white h-36 rounded-lg shadow-lg flex flex-col items-center"
                 >
                   <div class="report-title text-center mb-2 mt-3">
                     이번 달 기록
@@ -362,7 +373,7 @@ const reportData = computed(() => {
                   </base-circular-loader>
                 </div>
                 <div
-                  class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center"
+                  class="report-summary-item h-36 bg-white rounded-lg shadow-lg flex flex-col items-center"
                 >
                   <div class="report-title text-center mb-2 mt-3">
                     HyunFit 스코어
@@ -370,7 +381,7 @@ const reportData = computed(() => {
 
                   <base-circular-loader
                     class="h-16"
-                    :loading="reportLoading"
+                    :loading="scoreLoading"
                     :size="30"
                   >
                     <div
@@ -380,8 +391,13 @@ const reportData = computed(() => {
                         class="flex items-baseline justify-center w-full mt-2"
                         :style="{ color: Colors.primary }"
                       >
-                        <div class="font-black text-2xl">
-                          {{ reportData?.totalCalories }}
+                        <div class="font-black text-3xl">
+                          <div v-if="scoreData[0]">
+                            {{
+                              formatNumberWithCommas(scoreData[0]?.mevAmount)
+                            }}
+                          </div>
+                          <div v-else>0</div>
                         </div>
                         <div class="ml-1 font-semibold">P</div>
                       </div>
@@ -389,7 +405,7 @@ const reportData = computed(() => {
                   </base-circular-loader>
                 </div>
                 <div
-                  class="report-summary-item h-40 bg-white rounded-lg shadow-lg flex flex-col items-center justify-center"
+                  class="report-summary-item h-36 bg-white rounded-lg shadow-lg flex flex-col items-center justify-center"
                 >
                   <div class="text-center font-bold"></div>
                   <base-circular-loader
