@@ -8,14 +8,17 @@
         class="exc-img rounded-md"
         @mouseenter="playVideo"
         @mouseleave="pauseVideo"
+        disablePictureInPicture
       >
         <source :src="videoSrc" />
       </video>
     </div>
-    <div class="exc-name mt-2 font-extrabold text-xl">
+    <div class="exc-name mt-2 font-extrabold text-lg">
       {{ exercise.excName }}
     </div>
-    <div class="exc-content flex flex-wrap">{{ exercise.excContent }}</div>
+    <div class="exc-content flex flex-wrap text-sm">
+      {{ exercise.excContent }}
+    </div>
   </div>
 </template>
 
@@ -48,7 +51,7 @@ const pauseVideo = () => {
 .exc-card {
   width: 295px;
   height: 290px;
-  padding: 20px;
+  padding: 16px;
   margin: 5px;
 }
 .exc-img {

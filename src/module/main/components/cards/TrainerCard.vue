@@ -7,7 +7,7 @@ import TrainerInfiniteScroll from '@/module/main/components/cards/TraninerInfini
     class="cursor-pointer overflow-hidden h-full w-full flex flex-col justify-start"
   >
     <div class="flex flex-col p-10">
-      <div class="main-card-subtitle mb-3 font-black">화상 트레이닝</div>
+      <div class="main-card-subtitle mb-3 font-black">라이브 클래스</div>
 
       <div class="text-3xl font-bold text-white">찾았다</div>
 

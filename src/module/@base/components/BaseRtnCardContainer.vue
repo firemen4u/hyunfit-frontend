@@ -3,8 +3,8 @@
   <div class="all-content-wrap">
     <div class="rtn-board-header-wrap flex items-center px-10">
       <div v-if="showAdmin" class="text-4xl font-black text-[#021f3d]">
-        <p class="text-2xl font-bold text-[#021f3d]">관리자</p>
-        <p class="text-4xl font-black mt-3 text-[#021f3d]">
+        <p class="text-2xl font-bold text-gray-200">트레이너</p>
+        <p class="text-4xl font-black mt-3 text-gray-200">
           트레이닝 프로그램 관리
         </p>
       </div>
@@ -114,7 +114,8 @@ const goToNewRtnPage = () => {
 </script>
 <style scoped>
 .rtn-board-header-wrap {
-  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  background-color: #434a54;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;

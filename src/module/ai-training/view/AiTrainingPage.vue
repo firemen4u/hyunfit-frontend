@@ -32,6 +32,7 @@
       <AiTrainingLoader :size="30" />
     </div>
   </div>
+
   <div v-show="!initialLoading" class="ai-training-container flex">
     <AITrainingMyVideo
       v-show="visibility.my"
@@ -106,6 +107,7 @@
     <AITrainingExit
       v-if="currentExercise?.type === 'EXIT'"
       :exitStatus="currentExercise"
+      :exitData="exitData"
     >
     </AITrainingExit>
   </div>
@@ -179,6 +181,11 @@ const visibility = reactive({
   timer: ref(false),
   exit: ref(false),
   skip: ref(true),
+})
+
+const exitData = reactive({
+  point: ref(0),
+  exp: ref(0),
 })
 
 let interval
@@ -273,7 +280,7 @@ async function init() {
   try {
     await loadMemberData()
   } catch (e) {
-    alert('로그인이 필요한 페이지입니다.')
+    alert('로그인이 필요한 서비스입니다.')
     await router.push(pathNames.loginPage)
     return
   }
@@ -307,7 +314,9 @@ function toNextExercise() {
   } else {
     if (setCount.value >= 3) {
       endExerciseTime.value = Date.now()
-      console.log('endExerciseTime : ', endExerciseTime.value)
+
+      exitData.point = rtnRewardPoint
+
       sendExerciseData()
     }
   }
@@ -359,10 +368,12 @@ async function sendExerciseData() {
     exchBadCnt: scores.bad,
     exchTotalCalories: currentExercise.value.calorie,
   }
-  const exp =
+  const exp = Math.round(
     ((data.exchExcelentCnt * 1.2 + data.exchGoodCnt + data.exchBadCnt * 0.6) /
       currentExercise.value.calorie) *
-    (data.exchExcelentCnt + data.exchGoodCnt + data.exchBadCnt)
+      (data.exchExcelentCnt + data.exchGoodCnt + data.exchBadCnt)
+  )
+  exitData.exp += exp
   const memberExp = {
     mbrSeq: memberData.value.mbrSeq,
     mevType: 1,

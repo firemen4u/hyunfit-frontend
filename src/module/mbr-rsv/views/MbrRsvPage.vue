@@ -14,7 +14,7 @@
             >
               <div class="banner-img-cover-text py-12 px-10 mb-5">
                 <p class="text-4xl font-black mt-5 text-[#021f3d]">
-                  라이브 클래스
+                  My 라이브 클래스
                 </p>
                 <p class="text-2xl font-bold mt-5 text-[#021f3d]">
                   오늘은 어떤 클래스가 있으신가요?
@@ -107,7 +107,6 @@ import MbrRsvHistoryCard from '../components/MbrRsvHistoryCard.vue'
 import MbrRsvReviewModal from '/src/module/mbr-rsv/components/MbrRsvReviewModal.vue'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import ApiClient from '/src/services/api.js'
-import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 
 let memberSource = ''
 let selectedSeq = ref('')

@@ -102,7 +102,7 @@ function triggerDistanceOkMessage() {
   distanceOkTimeout = setTimeout(() => {
     emit('distance:ok')
     distanceOkMessageTriggered.value = true
-  }, 3000)
+  }, 5000)
 }
 
 function cancelDistanceOk(score) {

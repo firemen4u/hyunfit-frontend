@@ -10,14 +10,14 @@
               class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
             >
               <div class="banner-img-cover-text py-12 px-10 mb-5">
-                <p class="text-2xl font-bold text-[#021f3d]">트레이너</p>
-                <p class="text-4xl font-black mt-3 text-[#021f3d]">
+                <p class="text-2xl font-bold text-gray-200">트레이너</p>
+                <p class="text-4xl font-black mt-3 text-gray-200">
                   회원 피드백 관리
                 </p>
               </div>
             </div>
           </div>
-          <div class="rsv-container-top primary-background">
+          <div class="rsv-container-top">
             <div class="nfb-list-outer" ref="listOuter">
               <p class="text-2xl font-black mt-5 ml-[51px]">
                 {{ year }}년 {{ formattedMonth }}월
@@ -49,6 +49,10 @@ import { LeftArrowSvg, RightArrowSvg } from '@/module/@base/svg'
 </script>
 
 <script>
+import axios from 'axios'
+import { BACKEND_API_BASE_URL } from '@/config'
+import ApiClient from '@/services/api'
+
 export default {
   data() {
     return {
@@ -57,6 +61,18 @@ export default {
       targetDate: null,
       reLoadKey: 0,
     }
+  },
+  async beforeRouteEnter() {
+    const user = {
+      username: 'yang',
+      password: '123',
+    }
+    await axios
+      .post(`${BACKEND_API_BASE_URL}/auth/trainer`, user)
+      .then(response => {
+        let token = response.headers.get('authorization')
+        ApiClient.setTokenOnLocalStorage(token, 'trainer')
+      })
   },
   async created() {
     await this.initializedMonth()
@@ -124,7 +140,8 @@ export default {
   align-items: end;
 }
 .trn-fb-banner-container {
-  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  background-color: #434a54;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;

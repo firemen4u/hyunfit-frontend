@@ -25,10 +25,10 @@ const headerPages = [
     ],
   },
   {
-    displayName: '라이브 클래스',
+    displayName: 'My 라이브 클래스',
     destination: pathNames.mbrRsvPage,
     menus: [
-      { menuName: '라이브 클래스', destination: pathNames.mbrRsvPage },
+      { menuName: 'My 라이브 클래스', destination: pathNames.mbrRsvPage },
       { menuName: '트레이너 찾기', destination: pathNames.trnSearchPage },
       { menuName: '트레이너 피드백', destination: pathNames.mbrPtFeedbackPage },
     ],
@@ -37,23 +37,39 @@ const headerPages = [
 
 const adminPages = [
   {
-    displayName: '트레이닝 관리',
+    displayName: '라이브 클래스',
+    destination: pathNames.boTrnRsvBoardPage,
+  },
+  {
+    displayName: '회원 피드백',
+    destination: pathNames.boTrnFbBoardPage,
+  },
+  {
+    displayName: '트레이닝',
     destination: pathNames.boExcBoardPage,
   },
   {
-    displayName: '트레이닝 프로그램 관리',
+    displayName: '트레이닝 프로그램',
     destination: pathNames.boRtnBoardPage,
   },
 ]
 
 const trainerPages = [
   {
-    displayName: '예약현황',
+    displayName: '라이브 클래스',
     destination: pathNames.boTrnRsvBoardPage,
   },
   {
-    displayName: '피드백 현황',
+    displayName: '회원 피드백',
     destination: pathNames.boTrnFbBoardPage,
+  },
+  {
+    displayName: '트레이닝',
+    destination: pathNames.boExcBoardPage,
+  },
+  {
+    displayName: '트레이닝 프로그램',
+    destination: pathNames.boRtnBoardPage,
   },
 ]
 
@@ -160,9 +176,16 @@ const userName = computed(() => {
 const userAccountType = computed(() => {
   if (!loggedIn.value) return null
   if ('mbrSeq' in userData.value) return '회원'
-  if ('admSeq' in userData.value) return '관리자'
+  if ('admSeq' in userData.value) return '트레이너'
   if ('trnSeq' in userData.value) return '트레이너'
   return 'unknown'
+})
+
+const defaultProfile = computed(() => {
+  if (props.category) {
+    return 'https://fs.hyunfit.life/api/hyunfit/file/trn_9_profile.jpg'
+  }
+  return 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
 })
 
 const userProfile = computed(() => {
@@ -262,11 +285,7 @@ onMounted(async () => {
                 <img
                   v-if="loggedIn"
                   class="h-8 w-8 rounded-full mr-1 object-cover"
-                  :src="
-                    userProfile
-                      ? userProfile
-                      : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
-                  "
+                  :src="userProfile ? userProfile : defaultProfile"
                   alt=""
                 />
                 <img
@@ -299,11 +318,7 @@ onMounted(async () => {
                   <img
                     v-if="loggedIn"
                     class="h-24 w-24 rounded-full object-cover"
-                    :src="
-                      userProfile
-                        ? userProfile
-                        : 'https://fs.hyunfit.life/api/hyunfit/file/default-user-profile2.png'
-                    "
+                    :src="userProfile ? userProfile : defaultProfile"
                     alt=""
                   />
                   <img

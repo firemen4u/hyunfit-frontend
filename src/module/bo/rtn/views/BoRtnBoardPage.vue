@@ -13,9 +13,25 @@
 </template>
 <script setup>
 import { BaseBodyWrapper, BaseContainer } from '/src/module/@base/views'
-import {
-  BaseRtnCardContainer,
-  BaseRtnCardGroup,
-} from '/src/module/@base/components'
+import { BaseRtnCardContainer } from '/src/module/@base/components'
 </script>
-<style></style>
+<script>
+import axios from 'axios'
+import { BACKEND_API_BASE_URL } from '@/config'
+import ApiClient from '@/services/api'
+
+export default {
+  async beforeRouteEnter() {
+    const user = {
+      username: 'admin',
+      password: '123',
+    }
+    await axios
+      .post(`${BACKEND_API_BASE_URL}/auth/admin`, user)
+      .then(response => {
+        let token = response.headers.get('authorization')
+        ApiClient.setTokenOnLocalStorage(token, 'admin')
+      })
+  },
+}
+</script>

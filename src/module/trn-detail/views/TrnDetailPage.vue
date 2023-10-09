@@ -365,7 +365,7 @@ onMounted(() => {
             </div>
 
             <div class="pt-aside mt-[76px]">
-              <div class="text-xl font-black mb-2">클래스 예약하기</div>
+              <div class="text-xl font-black mb-2">라이브 클래스 예약하기</div>
               <div class="text-sm text-neutral-600 mb-3">
                 트레이닝 받을 날짜와 시간을 선택해 주세요!
               </div>

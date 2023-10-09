@@ -251,7 +251,7 @@ const router = createRouter({
       name: pathNames.boTrnRsvBoardPage.name,
       component: BoTrnRsvBoardPage,
       meta: {
-        title: '트레이너 - 월간 라이브 클래스 | 현핏',
+        title: '트레이너 - 라이브 클래스 관리 | 현핏',
       },
     },
     {
@@ -259,7 +259,7 @@ const router = createRouter({
       name: pathNames.boTrnFbBoardPage.name,
       component: BoTrnFbBoardPage,
       meta: {
-        title: '트레이너 - 월간 피드백 | 현핏',
+        title: '트레이너 - 피드백 관리 | 현핏',
       },
     },
     {
@@ -299,7 +299,7 @@ const router = createRouter({
       name: pathNames.boExcNewPage.name,
       component: BoExcNewPage,
       meta: {
-        title: '관리자 - 트레이닝 등록 | 현핏',
+        title: '트레이너 - 트레이닝 등록 | 현핏',
       },
     },
     {
@@ -307,7 +307,7 @@ const router = createRouter({
       name: pathNames.boExcBoardPage.name,
       component: BoExcBoardPage,
       meta: {
-        title: '관리자 - 트레이닝 | 현핏',
+        title: '트레이너 - 트레이닝 | 현핏',
       },
     },
     {
@@ -315,7 +315,7 @@ const router = createRouter({
       name: pathNames.boRtnBoardPage.name,
       component: BoRtnBoardPage,
       meta: {
-        title: '관리자 - 트레이닝 프로그램 | 현핏',
+        title: '트레이너 - 트레이닝 프로그램 | 현핏',
       },
     },
     {
@@ -323,7 +323,7 @@ const router = createRouter({
       name: pathNames.boRtnNewPage.name,
       component: BoRtnNewPage,
       meta: {
-        title: '관리자 - 트레이닝 프로그램 등록 | 현핏',
+        title: '트레이너 - 트레이닝 프로그램 등록 | 현핏',
       },
     },
     {
