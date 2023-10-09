@@ -55,7 +55,8 @@
                   variant="flat"
                   :disabled="gptLoading"
                   @click="getGptFeedback(noFeedbackData.mbrSeq)"
-                  >gpt 보고서 받아보기</v-btn
+                >
+                  <div class="">gpt 보고서 받아보기</div></v-btn
                 >
               </div>
               <div>

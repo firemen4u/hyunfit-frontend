@@ -221,7 +221,7 @@
               stroke-width="0"
               stroke-linejoin="miter"
               stroke-miterlimit="2"
-              fill="#ffffff"
+              :fill="getColor()"
               stroke="#ffffff"
             ></path>
           </g>

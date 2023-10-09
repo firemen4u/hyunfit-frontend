@@ -151,64 +151,10 @@ export default {
 }
 .trn-rsv-banner-container {
   //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/backoffice-bg.svg');
-  background-color: #434a54;
+  background-color: #2f3237;
   width: 100%;
 
   background-size: cover;
   background-position-y: -20px;
-}
-</style>
-
-<style>
-.bo-primary-background {
-  position: relative;
-}
-
-.bo-primary-background::after,
-.bo-primary-background::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  width: 1115px;
-  height: 575px;
-  -webkit-filter: blur(160px);
-  filter: blur(160px);
-}
-
-.bo-primary-background::before {
-  opacity: 0.2;
-  top: 500px;
-  left: -600px;
-  -webkit-transform: rotate(144deg);
-  transform: rotate(144deg);
-  background: -webkit-gradient(
-    linear,
-    right top,
-    left top,
-    color-stop(38%, #9643ff),
-    color-stop(50%, #32393f),
-    color-stop(74%, rgba(64, 101, 119, 0.9)),
-    color-stop(120%, rgba(116, 255, 67, 0))
-  );
-  background: linear-gradient(
-    270deg,
-    #9643ff 38%,
-    #43b0ff 50%,
-    rgba(72, 184, 236, 0.9) 74%,
-    rgba(116, 255, 67, 0) 120%
-  );
-}
-
-.bo-primary-background::after {
-  top: -500px;
-  left: 100%;
-  background: -webkit-gradient(
-    linear,
-    right top,
-    left top,
-    color-stop(66%, #43b0ff),
-    color-stop(120%, rgba(116, 255, 67, 0))
-  );
-  background: linear-gradient(270deg, #43b0ff 66%, rgba(116, 255, 67, 0) 120%);
 }
 </style>

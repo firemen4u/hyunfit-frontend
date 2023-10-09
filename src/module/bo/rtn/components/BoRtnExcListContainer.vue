@@ -66,7 +66,7 @@ const paginatedExercises = computed(() => {
 const filteredExercises = computed(() => {
   let result = props.exercises
   // excType에 따른 필터링
-  if (selectedExcType.value !== 0) {
+  if (selectedExcType.value !== null) {
     result = result.filter(
       exercise => exercise.excType === selectedExcType.value
     )

@@ -199,15 +199,22 @@ onMounted(async () => {
 
 // { displayName: '로그인', destination: pathNames.loginPage },
 </script>
-
+<style>
+.base-divider {
+  background-color: #191b1e;
+}
+</style>
 <template>
-  <div class="header flex justify-center">
+  <div
+    class="header flex justify-center"
+    :class="category ? 'bg-[#191B1E]' : 'bg-[#021f3d]'"
+  >
     <div class="header-wrapper items-center">
       <div class="flex flex-row justify-between h-full">
         <!-- 타이틀-->
         <div class="flex items-center">
-          <button @click="moveToMain()" class="mr-10 cursor-pointer">
-            <HyunfitLogoMonoVer2Svg color="#ffffff" :size="160" class="ml-1" />
+          <button @click="moveToMain()" class="mr-10 cursor-pointer relative">
+            <HyunfitLogoMonoVer2Svg color="#ffffff" :size="130" class="ml-1" />
           </button>
 
           <div
@@ -385,7 +392,6 @@ onMounted(async () => {
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: #021f3d;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 100;
 }

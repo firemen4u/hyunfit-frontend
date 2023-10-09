@@ -1,6 +1,6 @@
 <template>
   <BaseContainer category="trainer" footer="false">
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center">
       <BaseBodyWrapper>
         <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10 mb-[150px]">
           <div
@@ -141,7 +141,8 @@ export default {
 }
 .trn-fb-banner-container {
   //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
-  background-color: #434a54;
+  //background-image: url('');
+  background-color: #2f3237;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;

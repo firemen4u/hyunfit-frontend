@@ -11,7 +11,7 @@ const props = defineProps({
 <template>
   <BaseHeader v-if="!noheader" :category="category" />
 
-  <div ref="app" class="w-100">
+  <div ref="app" class="w-100" :class="category ? 'bo-background' : ''">
     <div class="base-loader fixed mt-[64px] w-full z-[5]">
       <v-progress-linear
         :active="loading"
@@ -31,4 +31,27 @@ const props = defineProps({
   </div>
 </template>
 
-<style></style>
+<style>
+.bo-background {
+  background-image: url('https://i.etsystatic.com/29035216/r/il/7e7e20/3640388699/il_1080xN.3640388699_sg0x.jpg');
+  background-size: contain;
+  background-color: #2f3237;
+  background-repeat: repeat-y;
+  position: relative;
+}
+
+.bo-background::before {
+  content: '';
+  position: absolute;
+  top: 70%;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(
+    to bottom,
+    rgb(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 1)
+  );
+}
+</style>

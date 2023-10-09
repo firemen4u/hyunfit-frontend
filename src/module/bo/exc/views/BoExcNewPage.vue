@@ -1,6 +1,6 @@
 <template>
   <BaseContainer category="admin">
-    <div class="w-100 flex justify-center primary-background mb-[150px]">
+    <div class="w-100 flex justify-center mb-[150px]">
       <BaseBodyWrapper>
         <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
           <div class="bo-excNew-banner flex items-center px-10">
@@ -529,7 +529,7 @@ export default {
 }
 .bo-excNew-banner {
   //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
-  background-color: #434a54;
+  background-color: #2f3237;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;

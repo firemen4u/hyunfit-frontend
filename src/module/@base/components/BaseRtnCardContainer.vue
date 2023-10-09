@@ -1,7 +1,10 @@
 <!-- ParentComponent.vue -->
 <template>
   <div class="all-content-wrap">
-    <div class="rtn-board-header-wrap flex items-center px-10">
+    <div
+      :class="showAdmin ? 'rtn-board-admin-wrap' : 'rtn-board-header-wrap'"
+      class="flex items-center px-10"
+    >
       <div v-if="showAdmin" class="text-4xl font-black text-[#021f3d]">
         <p class="text-2xl font-bold text-gray-200">트레이너</p>
         <p class="text-4xl font-black mt-3 text-gray-200">
@@ -114,8 +117,16 @@ const goToNewRtnPage = () => {
 </script>
 <style scoped>
 .rtn-board-header-wrap {
+  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  width: 100%;
+  background-size: cover;
+  background-position-y: -20px;
+  height: 200px;
+}
+
+.rtn-board-admin-wrap {
   //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
-  background-color: #434a54;
+  background-color: #2f3237;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;

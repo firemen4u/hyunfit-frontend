@@ -276,7 +276,7 @@ export default {
 </script>
 <template>
   <BaseContainer category="admin">
-    <div class="w-100 flex justify-center primary-background mb-[150px]">
+    <div class="w-100 flex justify-center mb-[150px]">
       <BaseBodyWrapper>
         <v-form
           :disabled="loading"
@@ -287,8 +287,8 @@ export default {
           <div class="bo-rtnNew-banner flex items-center px-10">
             <div class="text-4xl font-black text-[#021f3d]">
               <div>
-                <p class="text-2xl font-bold text-[#021f3d]">트레이너</p>
-                <p class="text-4xl font-black mt-3 text-[#021f3d]">
+                <p class="text-2xl font-bold text-gray-200">트레이너</p>
+                <p class="text-4xl font-black mt-3 text-gray-200">
                   트레이닝 프로그램 등록
                 </p>
               </div>
@@ -471,7 +471,7 @@ export default {
 <style scoped>
 .bo-rtnNew-banner {
   //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
-  background-color: #434a54;
+  background-color: #2f3237;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;

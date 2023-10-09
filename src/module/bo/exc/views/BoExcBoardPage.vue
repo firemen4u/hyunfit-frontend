@@ -1,8 +1,10 @@
 <template>
   <BaseContainer category="admin">
-    <div class="w-100 flex justify-center primary-background mb-[150px]">
+    <div class="w-100 flex justify-center mb-[150px]">
       <BaseBodyWrapper>
-        <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
+        <div
+          class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden min-h-[1100px]"
+        >
           <div class="bo-excNewBoard-banner flex items-center px-10">
             <div>
               <p class="text-2xl font-bold text-gray-200">트레이너</p>
@@ -64,7 +66,12 @@
                   <BoExcCard :exercise="exercise" @openModal="openModal" />
                 </div>
               </div>
-              <div v-else>해당하는 운동이 없습니다.</div>
+              <div
+                v-else
+                class="flex justify-center text-lg font-bold text-gray-600"
+              >
+                해당하는 운동이 없습니다.
+              </div>
             </div>
             <BasePagination
               v-model="currentPage"
@@ -228,7 +235,7 @@ export default {
 }
 .bo-excNewBoard-banner {
   //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
-  background-color: #434a54;
+  background-color: #2f3237;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;
