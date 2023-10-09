@@ -94,10 +94,10 @@ export default {
               this.moveToMain(localStorage.getItem('userRoleName'))
             })
             .catch(error => {
-              console.log(error)
-              if (error.response.status === 404) {
+              if (error.response.status > 400 && error.response.status < 430) {
                 return '아이디 또는 비밀번호 오류입니다.'
               } else {
+                console.log(error)
                 alert(`로그인에 실패하였습니다 ${error}`)
               }
             })
