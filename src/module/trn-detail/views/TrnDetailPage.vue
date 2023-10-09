@@ -96,11 +96,13 @@ async function confirmReservation(trnSeq) {
     ptReservationDate: datetimeSelected.value,
     ptNoteStickers: ptReservationOptionSelected.value.join(','),
   }
+  console.log(data)
   try {
-    await postPersonalTraining(data)
+    let res = await postPersonalTraining(data)
+    console.log(res)
     setTimeout(async () => {
       reservationConfirmLoading.value = false
-      await router.push(pathNames.mbrRsvCompletionPage)
+      // await router.push(pathNames.mbrRsvCompletionPage)
     }, 1000)
   } catch (error) {
     reservationFailureReason.value = error
@@ -324,7 +326,7 @@ onMounted(() => {
                     </div>
                   </div>
                   <div
-                    v-for="(review, i) in trnData.reviews"
+                    v-for="(review, i) in trnData.reviews?.slice(0, 10)"
                     :key="i"
                     class="review-container mt-10"
                   >
