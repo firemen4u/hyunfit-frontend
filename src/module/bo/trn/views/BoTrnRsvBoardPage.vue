@@ -1,6 +1,6 @@
 <template>
   <BaseContainer category="trainer" footer="false">
-    <div class="w-100 flex justify-center primary-background">
+    <div class="w-100 flex justify-center bo-primary-background">
       <BaseBodyWrapper>
         <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10 mb-[150px]">
           <div
@@ -10,14 +10,14 @@
               class="banner-img-cover w-full h-full absolute top-0 flex items-center mt-3"
             >
               <div class="banner-img-cover-text py-12 px-10 mb-5">
-                <p class="text-2xl font-bold text-[#021f3d]">트레이너</p>
-                <p class="text-4xl font-black mt-3 text-[#021f3d]">
+                <p class="text-2xl font-bold text-gray-200">트레이너</p>
+                <p class="text-4xl font-black mt-3 text-gray-200">
                   라이브 클래스 관리
                 </p>
               </div>
             </div>
           </div>
-          <div class="rsv-container-top primary-background">
+          <div class="rsv-container-top">
             <div class="rsv-container">
               <p class="text-2xl font-black mt-5 ml-[51px]">
                 {{ year }}년 {{ formattedMonth }}월
@@ -150,9 +150,65 @@ export default {
   align-items: end;
 }
 .trn-rsv-banner-container {
-  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/backoffice-bg.svg');
+  background-color: #434a54;
   width: 100%;
+
   background-size: cover;
   background-position-y: -20px;
+}
+</style>
+
+<style>
+.bo-primary-background {
+  position: relative;
+}
+
+.bo-primary-background::after,
+.bo-primary-background::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 1115px;
+  height: 575px;
+  -webkit-filter: blur(160px);
+  filter: blur(160px);
+}
+
+.bo-primary-background::before {
+  opacity: 0.2;
+  top: 500px;
+  left: -600px;
+  -webkit-transform: rotate(144deg);
+  transform: rotate(144deg);
+  background: -webkit-gradient(
+    linear,
+    right top,
+    left top,
+    color-stop(38%, #9643ff),
+    color-stop(50%, #32393f),
+    color-stop(74%, rgba(64, 101, 119, 0.9)),
+    color-stop(120%, rgba(116, 255, 67, 0))
+  );
+  background: linear-gradient(
+    270deg,
+    #9643ff 38%,
+    #43b0ff 50%,
+    rgba(72, 184, 236, 0.9) 74%,
+    rgba(116, 255, 67, 0) 120%
+  );
+}
+
+.bo-primary-background::after {
+  top: -500px;
+  left: 100%;
+  background: -webkit-gradient(
+    linear,
+    right top,
+    left top,
+    color-stop(66%, #43b0ff),
+    color-stop(120%, rgba(116, 255, 67, 0))
+  );
+  background: linear-gradient(270deg, #43b0ff 66%, rgba(116, 255, 67, 0) 120%);
 }
 </style>

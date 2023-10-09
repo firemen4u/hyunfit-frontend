@@ -470,7 +470,8 @@ export default {
 
 <style scoped>
 .bo-rtnNew-banner {
-  background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  //background-image: url('https://fs.hyunfit.life/api/hyunfit/file/rm222-mind-14.svg');
+  background-color: #434a54;
   width: 100%;
   background-size: cover;
   background-position-y: -20px;
