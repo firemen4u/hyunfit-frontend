@@ -38,6 +38,8 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { FILE_SERVER_BASE_URL } from '@/config'
 
+const loaded = ref(false)
+
 const videoElement = ref(null)
 const audioElement = ref(null)
 const bgmElement = ref(null)
@@ -60,7 +62,12 @@ const props = defineProps({
   pauseTime: Boolean,
 })
 const emit = defineEmits(['event:ready', 'event:start'])
-
+watch(
+  () => props.exercise,
+  newVal => {
+    loaded.value = false
+  }
+)
 watch(
   () => props.breakTime,
   newVal => {
@@ -115,6 +122,7 @@ function onBgmLoaded() {
 }
 
 function onTeachingVideoReady() {
+  if (loaded.value) return
   setTimeout(() => {
     videoElement.value.play()
     if (props.exercise.type === 'GUIDE' || props.exercise.type === 'WARMUP') {
@@ -122,8 +130,10 @@ function onTeachingVideoReady() {
       bgmElement.value.play()
       bgmElement.value.volume = 0.1
     }
+    console.log('send event ready')
     emit('event:ready')
   }, 1000)
+  loaded.value = true
 }
 </script>
 

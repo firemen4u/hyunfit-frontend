@@ -96,6 +96,58 @@ onMounted(async () => {
     console.error('Failed to fetch admin data:', error)
   }
 })
+
+function insertTestData() {
+  rtn_name.value = '개발자를 위한 운동 프로그램'
+  rtn_content.value =
+    '스쿼트와 Y레이즈로 구성되어 있는 개발자를 위한 운동 프로그램입니다.'
+  selectedExercises.value = [
+    {
+      excSeq: 146,
+      admSeq: 1,
+      excName: '스쿼트',
+      excType: 2,
+      excContent:
+        '엉덩이를 뒤로 빼며 앉아 코어와 하체 근력 강화에 도움을 줍니다.',
+      excDifficulty: 3,
+      excCaloriesPerRep: 5,
+      excSetCount: 3,
+      excRepCountPerSet: 16,
+      excTimePerSetInSec: 60,
+      excCreatedDate: 1695659664924,
+      exerciseTargets: [
+        { excSeq: 146, exctgArea: 5, exctgWeight: 0.2 },
+        { excSeq: 146, exctgArea: 3, exctgWeight: 0.2 },
+        { excSeq: 146, exctgArea: 12, exctgWeight: 0.2 },
+        { excSeq: 146, exctgArea: 1, exctgWeight: 0.2 },
+      ],
+    },
+    {
+      excSeq: 110,
+      admSeq: 1,
+      excName: 'Y 레이즈',
+      excType: 1,
+      excContent:
+        '팔을 Y자로 뻗어 올려 어깨 라인과 어깨 근육 강화에 도움을 줍니다.',
+      excDifficulty: 1,
+      excCaloriesPerRep: 10,
+      excSetCount: 3,
+      excRepCountPerSet: 16,
+      excTimePerSetInSec: 30,
+      excCreatedDate: 1695657314234,
+      exerciseTargets: [
+        { excSeq: 110, exctgArea: 9, exctgWeight: 0.5 },
+        { excSeq: 110, exctgArea: 10, exctgWeight: 0.5 },
+        { excSeq: 110, exctgArea: 7, exctgWeight: 0.1 },
+      ],
+    },
+  ]
+
+  rtn_goal.value = 2
+  rtn_knee_health_considered.value = 0
+  rtn_reward_point.value = 140
+}
+
 const fetchExercises = async () => {
   try {
     exercises.value = await ApiClient.get('/exercises') // 받아온 데이터를 exercises 변수에 저장합니다.
@@ -283,7 +335,7 @@ export default {
           v-model="formValid"
           @submit.prevent="onSubmit"
         >
-          <div class="bo-rtnNew-banner flex items-center px-10">
+          <div class="bo-rtnNew-banner flex items-center px-10 relative">
             <div class="text-4xl font-black text-[#021f3d]">
               <div>
                 <p class="text-2xl font-bold text-gray-200">트레이너</p>
@@ -292,6 +344,13 @@ export default {
                 </p>
               </div>
             </div>
+            <v-btn
+              class="absolute top-[30%] left-[510px]"
+              variant="outlined"
+              color="white"
+              @click="insertTestData()"
+              ><div>시연용 데이터 입력</div></v-btn
+            >
           </div>
           <div class="rtnNew-contents-wrap px-[50px]">
             <div class="my-4">

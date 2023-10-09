@@ -9,7 +9,6 @@ import { ref, computed, watch } from 'vue'
 import RefreshSvg from '@/module/@base/svg/RefreshSvg.vue'
 import BoRtnExcListItem from '@/module/bo/rtn/components/BoRtnExcListItem.vue'
 import BoRtnExcSelectedLabel from '@/module/bo/rtn/components/BoRtnExcSelectedLabel.vue'
-import ExcUtils from '@/module/bo/exc/services/excUtils'
 
 const props = defineProps({
   modelValue: Array,
@@ -42,7 +41,7 @@ const clearExercises = () => {
 
 const searchText = ref('') // 검색 텍스트를 저장할 ref 변수
 
-const selectedExcType = ref(0) // 선택한 excType을 저장할 변수
+const selectedExcType = ref(null) // 선택한 excType을 저장할 변수
 
 // 검색 텍스트와 필터링된 운동 목록
 const updateExcType = value => {

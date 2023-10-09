@@ -3,13 +3,20 @@
     <div class="w-100 flex justify-center mb-[150px]">
       <BaseBodyWrapper>
         <div class="mt-3 bg-white shadow-lg rounded-xl overflow-hidden">
-          <div class="bo-excNew-banner flex items-center px-10">
+          <div class="bo-excNew-banner flex items-center px-10 relative">
             <div>
               <p class="text-2xl font-bold text-gray-200">트레이너</p>
               <p class="text-4xl font-black mt-3 text-gray-200">
                 트레이닝 등록
               </p>
             </div>
+            <v-btn
+              class="absolute top-[30%] left-[650px]"
+              variant="outlined"
+              color="white"
+              @click="insertTestData()"
+              ><div>시연용 데이터 입력</div></v-btn
+            >
           </div>
           <form @submit.prevent="submit" class="px-[50px] mt-6">
             <div>
@@ -37,6 +44,7 @@
                     maxlength="70"
                     variant="solo"
                     single-line
+                    no-resize
                     :rules="[rules.nonEmpty]"
                   ></v-textarea>
                 </div>
@@ -390,8 +398,6 @@ const submit = async () => {
   try {
     // exercise 등록하는 api 호출
     const firstApiResponse = await ApiClient.post('/exercises', values)
-    console.log(firstApiResponse)
-
     // exercise에 등록된 exc_seq 가져오기
     const excSeq = firstApiResponse.excSeq
     // header 코드
@@ -420,17 +426,16 @@ const submit = async () => {
         : `${splitFileName.join('.')}_${excSeq}.${extension}`
 
       formData.append('file', file, fileName)
-      // FormData 내용 확인
-      console.log('파일명 : ', fileName)
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1])
-        if (pair[1] instanceof File) {
-          console.log('File Details:')
-          console.log('Name: ', pair[1].name)
-          console.log('Size: ', pair[1].size)
-          console.log('Type: ', pair[1].type)
-        }
-      }
+
+      // for (var pair of formData.entries()) {
+      //   console.log(pair[0] + ', ' + pair[1])
+      //   if (pair[1] instanceof File) {
+      //     console.log('File Details:')
+      //     console.log('Name: ', pair[1].name)
+      //     console.log('Size: ', pair[1].size)
+      //     console.log('Type: ', pair[1].type)
+      //   }
+      // }
       try {
         const secondApiResponse = await ApiClient.post(
           `/api/hyunfit/${type}`,
@@ -438,8 +443,7 @@ const submit = async () => {
           config,
           'fs'
         )
-        console.log(`Uploaded ${type}: ${secondApiResponse}`)
-        // Promise를 반환, 성공 또는 실패를 상위 함수에게 전달
+
         return Promise.resolve()
       } catch (error) {
         console.log(`Failed to upload ${type}`, error)
@@ -481,6 +485,20 @@ const rules = {
   gtZero: value => {
     return (value && value > 0) || '값이 0보다 커야 합니다.'
   },
+}
+
+function insertTestData() {
+  exc_name.value = '사이드레터럴레이즈'
+  exc_content.value =
+    '팔을 옆으로 쭉 뻗어 올려 어깨 라인과 어깨 근육 강화에 도움을 줍니다.'
+  exc_type.value = '1'
+  exc_difficulty.value = '2'
+  exc_calories_per_rep.value = 4
+  exc_set_count.value = 3
+  excRepCountPerSet.value = 16
+  exc_time_per_set_in_sec.value = 30
+  selectedBodyParts.value = ['삼두', '측면어깨', '승모근']
+  bodyPartWeights.value = { 6: 20, 7: 30, 10: 80 }
 }
 </script>
 
