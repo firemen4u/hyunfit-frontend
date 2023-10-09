@@ -7,6 +7,7 @@
             class="shadow-lg"
             :sendToChild="sendingData"
             :index="index"
+            :month="targetMonth"
           ></ReservationSummaryCard>
         </div>
       </div>
@@ -30,7 +31,10 @@
             v-for="(reservation, index) in paginatedReservations"
             :key="index"
           >
-            <button class="rsv-list mb-1" @click="showDetailModal(reservation)">
+            <div
+              class="rsv-list mb-1 cursor-pointer"
+              @click="showDetailModal(reservation)"
+            >
               <div class="rsv-list-seq">{{ index + 1 }}</div>
               <div class="rsv-list-ptSeq">{{ reservation.ptSeq }}</div>
               <div class="rsv-list-mbrName">{{ reservation.mbrName }}</div>
@@ -41,9 +45,9 @@
                 {{ formatTime(reservation.ptReservationDate) }}
               </div>
               <div class="rsv-list-ptStatus">
-                {{ reservation.ptReservationStatus }}
+                <StatusBadge :status="reservation.ptReservationStatus" />
               </div>
-            </button>
+            </div>
           </div>
           <ReservationDetailModal
             v-model="showDetail"
@@ -64,6 +68,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import ApiClient from '/src/services/api.js'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
+import StatusBadge from '@/module/bo/trn/component/StatusBadge.vue'
 </script>
 
 <script>
@@ -104,6 +109,9 @@ export default {
         this.reservations.length
       )
       return this.reservations.slice(startIndex, endIndex)
+    },
+    targetMonth() {
+      return parseInt(this.targetDate?.split('-')[1])
     },
   },
   async mounted() {
@@ -151,7 +159,7 @@ export default {
           reservation.ptReservationStatus = '예정'
           this.sendingData.upcomingCnt = this.sendingData.upcomingCnt + 1
         } else if (reservation.ptReservationStatus === 2) {
-          reservation.ptReservationStatus = '재입장'
+          reservation.ptReservationStatus = '진행중'
         } else if (reservation.ptReservationStatus === 3) {
           reservation.ptReservationStatus = '완료'
           this.sendingData.completeCnt = this.sendingData.completeCnt + 1

@@ -76,9 +76,6 @@ async function gotoAiTraining(routine) {
     pathNames.aiTrainingPage.with(undefined, { rtnSeq: routine.rtnSeq })
   )
 }
-setTimeout(() => {
-  console.log(props.userdata)
-}, 1000)
 </script>
 
 <template>

@@ -89,7 +89,6 @@ const loading = ref(false)
 onMounted(async () => {
   try {
     const response = await ApiClient.get('/admins/me')
-    console.log('admin : ', response)
     admSeq.value = response.admSeq
     // API를 통해 운동 목록을 가져오는 함수
     await fetchExercises()

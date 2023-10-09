@@ -179,7 +179,6 @@ function renderCharts() {
   let totalCalories = 0
   responseData.value.exerciseHistory.exerciseTargets.forEach(tg => {
     totalCalories += tg.totalCalories
-    console.log(tg)
     if ([1, 7].includes(tg.targetArea)) {
       targetSummaryData.등 += tg.totalCalories
     } else if ([6, 8].includes(tg.targetArea)) {
@@ -194,7 +193,7 @@ function renderCharts() {
       targetSummaryData.어깨 += tg.totalCalories
     }
   })
-  console.log(targetSummaryData)
+
   charts.target.data = {
     labels: Object.keys(targetSummaryData),
     datasets: [

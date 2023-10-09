@@ -109,7 +109,7 @@ import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import ApiClient from '/src/services/api.js'
 
 let memberSource = ''
-let selectedSeq = ref('')
+let selectedSeq = ref(0)
 const reservingResponse = ref(null)
 const reservedResponse = ref(null)
 const modalActive = ref(false)
@@ -123,7 +123,6 @@ function toggleModal(ptSeq) {
 }
 
 const totalPages = computed(() => {
-  console.log(Math.ceil(itemsTotalPage.value.mbrPastPtCount / 5))
   return Math.ceil(itemsTotalPage.value.mbrPastPtCount / 5)
 })
 
@@ -190,13 +189,6 @@ async function init() {
     reservedResponse.value = await ApiClient.get(
       `/members/${memberSource.mbrSeq}/personal-trainings`,
       { params: paramsReserved }
-    )
-
-    console.log('reserving', reservingResponse.value)
-    console.log('reserved', reservedResponse.value)
-    console.log(
-      'reserved total items',
-      reservedResponse.value.personalTrainingDTOList.length
     )
   } catch (error) {
     console.error('API 요청 실패:', error)

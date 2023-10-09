@@ -7,6 +7,7 @@
             class="shadow-lg"
             :sendToChild="sendingData"
             :index="index"
+            :month="targetMonth"
           ></FeedbackSummaryCard>
         </div>
       </div>
@@ -41,7 +42,9 @@
                 {{ formatTarget(nofeedback.trnfSubmissionDue) }}
               </div>
               <div class="nfb-list-fbStatus">
-                {{ nofeedback.trnfContent !== null ? '완료' : '미완료' }}
+                <StatusBadge
+                  :status="nofeedback.trnfContent !== null ? '완료' : '미완료'"
+                />
               </div>
             </button>
           </div>
@@ -64,6 +67,7 @@ import CreateFeedbackModal from './CreateFeedbackModal.vue'
 import ApiClient from '/src/services/api.js'
 import BasePagination from '/src/module/@base/components/BasePagination.vue'
 import FeedbackSummaryCard from '/src/module/bo/trn/component/FeedbackSummaryCard.vue'
+import StatusBadge from '@/module/bo/trn/component/StatusBadge.vue'
 </script>
 
 <script>
@@ -100,6 +104,9 @@ export default {
         this.noFeedbackList.length
       )
       return this.noFeedbackList.slice(startIndex, endIndex)
+    },
+    targetMonth() {
+      return parseInt(this.targetDate?.split('-')[1])
     },
   },
   async mounted() {

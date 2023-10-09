@@ -126,7 +126,7 @@ const openModal = exercise => {
               />
               <v-btn variant="text" @click="clearExercises">
                 <div class="mr-1 text-gray-600">초기화</div>
-                <RefreshSvg size="15" color="#374151" />
+                <RefreshSvg :size="15" color="#374151" />
               </v-btn>
             </div>
           </div>

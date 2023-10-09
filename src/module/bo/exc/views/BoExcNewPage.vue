@@ -326,7 +326,6 @@ const admSeq = ref('1')
 onMounted(async () => {
   try {
     const response = await ApiClient.get('/admins/me')
-    console.log('admin : ', response)
     admSeq.value = response.admSeq
   } catch (error) {
     console.error('Failed to fetch admin data:', error)

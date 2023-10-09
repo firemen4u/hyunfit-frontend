@@ -1,9 +1,9 @@
 <template>
   <div class="smr-card">
-    <div :class="'mini-color-bar-' + this.index"></div>
+    <div class="mini-color-bar" :class="statusColor(settingData.status)"></div>
     <div class="card-main">
       <div class="card-header">
-        <span class="ml-3">이달의 {{ settingData.status }}</span>
+        <span class="ml-3">{{ month }}월 {{ settingData.status }}</span>
       </div>
       <div class="card-rate">
         <div class="gauge">
@@ -25,6 +25,7 @@ export default {
   props: {
     sendToChild: Object,
     index: Number,
+    month: Number,
   },
   data() {
     return {
@@ -38,6 +39,20 @@ export default {
     this.setData()
   },
   methods: {
+    statusColor(status) {
+      switch (status) {
+        case '예정':
+          return 'bg-blue-200'
+        case '완료':
+          return 'bg-green-200'
+        case '취소':
+          return 'bg-red-200'
+        case '노쇼':
+          return 'bg-gray-200'
+        case '진행률':
+          return 'bg-gray-800'
+      }
+    },
     setData() {
       if (this.index == 1) {
         if (
@@ -64,22 +79,22 @@ export default {
               '건)',
           }
         }
-      } else if (this.index == 2) {
+      } else if (this.index == 5) {
         this.settingData = {
           status: '노쇼',
           output: this.sendToChild.noShowCnt,
         }
-      } else if (this.index == 3) {
+      } else if (this.index == 4) {
         this.settingData = {
           status: '취소',
           output: this.sendToChild.cancelCnt,
         }
-      } else if (this.index == 4) {
+      } else if (this.index == 2) {
         this.settingData = {
           status: '예정',
           output: this.sendToChild.upcomingCnt,
         }
-      } else {
+      } else if (this.index == 3) {
         this.settingData = {
           status: '완료',
           output: this.sendToChild.completeCnt,
@@ -112,40 +127,11 @@ export default {
 </script>
 
 <style scoped>
-.mini-color-bar-1 {
+.mini-color-bar {
   width: 6px;
   height: 85px;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
-  background-color: #aaaaaa;
-}
-.mini-color-bar-2 {
-  width: 6px;
-  height: 85px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: rgb(195, 35, 35);
-}
-.mini-color-bar-4 {
-  width: 6px;
-  height: 85px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: rgb(255, 251, 0);
-}
-.mini-color-bar-5 {
-  width: 6px;
-  height: 85px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: rgb(19, 103, 19);
-}
-.mini-color-bar-3 {
-  width: 6px;
-  height: 85px;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background-color: rgb(255, 150, 29);
 }
 .smr-card {
   display: flex;

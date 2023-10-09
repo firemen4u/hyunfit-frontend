@@ -126,7 +126,6 @@ async function initPage() {
 
   document.title = `${trnData.value.trnName} - 트레이너 | 현핏`
 
-  console.log(trnData.value)
   await reloadDatePicker(new Date())
   lazyLoadProfileImage(trnData.value.trnProfileUrl)
 }

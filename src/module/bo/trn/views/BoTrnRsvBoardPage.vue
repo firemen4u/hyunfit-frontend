@@ -1,5 +1,5 @@
 <template>
-  <BaseContainer category="trainer" footer="false">
+  <BaseContainer category="trainer">
     <div class="w-100 flex justify-center bo-primary-background">
       <BaseBodyWrapper>
         <div class="w-full mt-3 bg-white rounded-xl shadow-lg pb-10 mb-[150px]">

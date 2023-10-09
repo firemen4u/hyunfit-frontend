@@ -5,7 +5,7 @@ import BaseDivider from '@/module/@base/components/BaseDivider.vue'
 
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
-  modelValue: Array,
+  modelValue: Object,
   title: String,
   options: Object,
   multiple: { type: Boolean, default: false },

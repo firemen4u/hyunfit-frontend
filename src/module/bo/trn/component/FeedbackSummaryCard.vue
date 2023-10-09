@@ -3,7 +3,7 @@
     <div :class="'mini-color-bar-' + this.index"></div>
     <div class="card-main">
       <div class="card-header">
-        <span class="ml-3">피드백 {{ settingData.status }}</span>
+        <span class="ml-3">{{ month }}월 {{ settingData.status }}</span>
       </div>
       <div class="card-rate">
         <div class="gauge">
@@ -25,6 +25,7 @@ export default {
   props: {
     sendToChild: Object,
     index: Number,
+    month: Number,
   },
   data() {
     return {

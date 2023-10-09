@@ -101,7 +101,7 @@
               color="primary"
               v-if="
                 reservationData.ptReservationStatus == '예정' ||
-                reservationData.ptReservationStatus == '재입장'
+                reservationData.ptReservationStatus == '진행중'
               "
               @click="enterPtRoom"
             >

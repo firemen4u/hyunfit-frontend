@@ -21,7 +21,7 @@ import RewardSvg from '@/module/@base/svg/RewardSvg.vue'
           <span
             class="absolute flex items-center justify-center w-6 h-6 bg-red-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900"
           >
-            <DumbbellSvg size="15" />
+            <DumbbellSvg :size="15" />
           </span>
           <h3
             class="flex items-center text-md font-semibold text-gray-900 dark:text-white"

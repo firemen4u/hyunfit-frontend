@@ -20,9 +20,9 @@
             <div
               class="text-2xl flex justify-center items-center font-extrabold w-full h-[70px] bg-[#2c286d] text-white"
             >
-              <LeftArrowSvg color="white" size="20" @click="prevMonth" />
+              <LeftArrowSvg color="white" :size="20" @click="prevMonth" />
               <p class="mx-5">{{ year }}년 {{ formattedMonth }}월</p>
-              <RightArrowSvg color="white" size="20" @click="nextMonth" />
+              <RightArrowSvg color="white" :size="20" @click="nextMonth" />
             </div>
             <div class="flex justify-center my-[30px]">
               <div
@@ -44,7 +44,7 @@
                 </div>
                 <div class="float-right mr-[100px] mt-15 text-lg font-bold">
                   <p>{{ responsetrnName }} 트레이너 드림</p>
-                  <P>{{ responsetrnfWrittenDate }}</P>
+                  <p>{{ responsetrnfWrittenDate }}</p>
                 </div>
               </div>
               <div v-else class="flex flex-col justify-center h-[500px]">

@@ -52,7 +52,7 @@
           :ripple="false"
         >
           <div class="flex items-center">
-            <PlusSvg size="15" />
+            <PlusSvg :size="15" />
             <div>추가</div>
           </div>
         </v-btn>
