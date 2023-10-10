@@ -488,17 +488,17 @@ const rules = {
 }
 
 function insertTestData() {
-  exc_name.value = '사이드레터럴레이즈'
+  exc_name.value = '크로스니킥'
   exc_content.value =
-    '팔을 옆으로 쭉 뻗어 올려 어깨 라인과 어깨 근육 강화에 도움을 줍니다.'
-  exc_type.value = '1'
-  exc_difficulty.value = '2'
-  exc_calories_per_rep.value = 4
+    '스탭을 사용하여 번갈아 뛰면서 복부 근력 강화와 체지방 연소에 도움을 줍니다.'
+  exc_type.value = '4'
+  exc_difficulty.value = '1'
+  exc_calories_per_rep.value = 8
   exc_set_count.value = 3
-  excRepCountPerSet.value = 16
-  exc_time_per_set_in_sec.value = 30
-  selectedBodyParts.value = ['삼두', '측면어깨', '승모근']
-  bodyPartWeights.value = { 6: 20, 7: 30, 10: 80 }
+  excRepCountPerSet.value = 40
+  exc_time_per_set_in_sec.value = 60
+  selectedBodyParts.value = ['코어', '대퇴사두']
+  bodyPartWeights.value = { 3: 40, 6: 20, 7: 30, 10: 80, 11: 50 }
 }
 </script>
 

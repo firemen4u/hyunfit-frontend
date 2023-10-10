@@ -100,26 +100,24 @@ onMounted(async () => {
 function insertTestData() {
   rtn_name.value = '개발자를 위한 운동 프로그램'
   rtn_content.value =
-    '스쿼트와 Y레이즈로 구성되어 있는 개발자를 위한 운동 프로그램입니다.'
+    '스쿼트와 사이드레터럴레이즈로 구성되어 있는 개발자를 위한 운동 프로그램입니다.'
   selectedExercises.value = [
     {
-      excSeq: 146,
+      excSeq: 123,
       admSeq: 1,
-      excName: '스쿼트',
-      excType: 2,
+      excName: '사이드레터럴레이즈',
+      excType: 1,
       excContent:
-        '엉덩이를 뒤로 빼며 앉아 코어와 하체 근력 강화에 도움을 줍니다.',
-      excDifficulty: 3,
+        '팔을 옆으로 쭉 뻗어 올려 어깨 라인과 어깨 근육 강화에 도움을 줍니다.',
+      excDifficulty: 1,
       excCaloriesPerRep: 5,
       excSetCount: 3,
       excRepCountPerSet: 16,
-      excTimePerSetInSec: 60,
-      excCreatedDate: 1695659664924,
+      excTimePerSetInSec: 30,
+      excCreatedDate: 1695657924846,
       exerciseTargets: [
-        { excSeq: 146, exctgArea: 5, exctgWeight: 0.2 },
-        { excSeq: 146, exctgArea: 3, exctgWeight: 0.2 },
-        { excSeq: 146, exctgArea: 12, exctgWeight: 0.2 },
-        { excSeq: 146, exctgArea: 1, exctgWeight: 0.2 },
+        { excSeq: 123, exctgArea: 7, exctgWeight: 0.2 },
+        { excSeq: 123, exctgArea: 10, exctgWeight: 0.8 },
       ],
     },
     {
@@ -139,6 +137,24 @@ function insertTestData() {
         { excSeq: 110, exctgArea: 9, exctgWeight: 0.5 },
         { excSeq: 110, exctgArea: 10, exctgWeight: 0.5 },
         { excSeq: 110, exctgArea: 7, exctgWeight: 0.1 },
+      ],
+    },
+    {
+      excSeq: 106,
+      admSeq: 1,
+      excName: '스케이트 런지',
+      excType: 2,
+      excContent: '스케이트를 타듯이 앉아 하체 근력 강화에 도움을 줍니다.',
+      excDifficulty: 4,
+      excCaloriesPerRep: 4,
+      excSetCount: 3,
+      excRepCountPerSet: 16,
+      excTimePerSetInSec: 30,
+      excCreatedDate: 1695656954549,
+      exerciseTargets: [
+        { excSeq: 106, exctgArea: 5, exctgWeight: 1 },
+        { excSeq: 106, exctgArea: 11, exctgWeight: 0.6 },
+        { excSeq: 106, exctgArea: 12, exctgWeight: 0.4 },
       ],
     },
   ]
