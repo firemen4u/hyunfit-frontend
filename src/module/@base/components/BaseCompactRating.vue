@@ -18,6 +18,9 @@ function fontSizeOf(size) {
 function getCountSize() {
   return { 'font-size': `${props.countSize}px` }
 }
+function formatNumberWithCommas(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
 </script>
 
 <template>
@@ -36,7 +39,7 @@ function getCountSize() {
         class="ml-0.5 text-gray-500"
         :style="getCountSize()"
       >
-        ({{ reviewCount }})
+        ({{ formatNumberWithCommas(reviewCount) }})
       </div>
     </div>
   </div>

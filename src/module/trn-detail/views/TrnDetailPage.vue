@@ -96,10 +96,8 @@ async function confirmReservation(trnSeq) {
     ptReservationDate: datetimeSelected.value,
     ptNoteStickers: ptReservationOptionSelected.value.join(','),
   }
-  console.log(data)
   try {
     let res = await postPersonalTraining(data)
-    console.log(res)
     setTimeout(async () => {
       reservationConfirmLoading.value = false
       // await router.push(pathNames.mbrRsvCompletionPage)
