@@ -1,7 +1,6 @@
 <script setup>
 import MainPlayButton from '@/module/main/components/MainPlayButton.vue'
-import { computed, ref, watch } from 'vue'
-import ExcUtils from '@/module/bo/exc/services/excUtils'
+import { ref, watch } from 'vue'
 import MainApi from '@/module/main/services/mainApi'
 import { FILE_SERVER_HYUNFIT_URL } from '@/config'
 import router, { pathNames } from '@/router'
@@ -26,7 +25,7 @@ const targets = [
 const videoSrc = ref(null)
 const routineVideoElem = ref(null)
 function randomInt() {
-  return Math.floor(Math.random() * 2)
+  return Math.floor(Math.random() * 5)
 }
 
 const videoTimeout = ref(null)
@@ -44,12 +43,12 @@ async function setRtnData(rcm) {
   rtn.rtnDurationInMin = totalMinutes(rtn.exercises)
   rtn.rtnTarget = targets[rtn.rtnTarget - 1]
   rtn.rtnExperienceLevel = levels[rtn.rtnExperienceLevel - 1]
-  if (!rtn.exercises) console.log('error! ', rtn.exercises)
+  if (!rtn?.exercises) console.log('error! rtn not found')
   videoSrc.value = `${FILE_SERVER_HYUNFIT_URL}/low_quality_preview_video_${rtn.exercises[0]?.excSeq}.mp4`
   routine.value = rtn
   setTimeout(() => {
     loading.value = false
-  }, 3000)
+  }, 2000)
 }
 
 const rcmWatcher = watch(
