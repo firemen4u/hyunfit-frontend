@@ -100,7 +100,7 @@ async function confirmReservation(trnSeq) {
     let res = await postPersonalTraining(data)
     setTimeout(async () => {
       reservationConfirmLoading.value = false
-      // await router.push(pathNames.mbrRsvCompletionPage)
+      await router.push(pathNames.mbrRsvCompletionPage)
     }, 1000)
   } catch (error) {
     reservationFailureReason.value = error
