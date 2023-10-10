@@ -99,25 +99,63 @@ onMounted(async () => {
 
 function insertTestData() {
   rtn_name.value = '개발자를 위한 운동 프로그램'
-  rtn_content.value =
-    '스쿼트와 사이드레터럴레이즈로 구성되어 있는 개발자를 위한 운동 프로그램입니다.'
+  rtn_content.value = '개발자를 위한 운동 프로그램입니다.'
   selectedExercises.value = [
     {
-      excSeq: 123,
+      excSeq: 241,
       admSeq: 1,
       excName: '사이드레터럴레이즈',
       excType: 1,
       excContent:
         '팔을 옆으로 쭉 뻗어 올려 어깨 라인과 어깨 근육 강화에 도움을 줍니다.',
-      excDifficulty: 1,
-      excCaloriesPerRep: 5,
+      excDifficulty: 2,
+      excCaloriesPerRep: 4,
       excSetCount: 3,
       excRepCountPerSet: 16,
       excTimePerSetInSec: 30,
-      excCreatedDate: 1695657924846,
+      excCreatedDate: 1696910552214,
       exerciseTargets: [
-        { excSeq: 123, exctgArea: 7, exctgWeight: 0.2 },
-        { excSeq: 123, exctgArea: 10, exctgWeight: 0.8 },
+        { excSeq: 241, exctgArea: 10, exctgWeight: 0.8 },
+        { excSeq: 241, exctgArea: 7, exctgWeight: 0.3 },
+        { excSeq: 241, exctgArea: 6, exctgWeight: 0.2 },
+      ],
+    },
+    {
+      excSeq: 111,
+      admSeq: 1,
+      excName: '업사이드토텝',
+      excType: 4,
+      excContent:
+        '두 팔을 옆으로 뻗고 다리를 번갈아 쭉쭉 뻗어 체지방 연소에 도움을 줍니다.',
+      excDifficulty: 3,
+      excCaloriesPerRep: 10,
+      excSetCount: 3,
+      excRepCountPerSet: 40,
+      excTimePerSetInSec: 60,
+      excCreatedDate: 1695657371825,
+      exerciseTargets: [
+        { excSeq: 111, exctgArea: 10, exctgWeight: 0.3 },
+        { excSeq: 111, exctgArea: 3, exctgWeight: 0.4 },
+        { excSeq: 111, exctgArea: 5, exctgWeight: 0.5 },
+        { excSeq: 111, exctgArea: 7, exctgWeight: 0.2 },
+      ],
+    },
+    {
+      excSeq: 112,
+      admSeq: 1,
+      excName: '니업',
+      excType: 4,
+      excContent:
+        '무릎을 가슴까지 접고 다시 펴는 동작을 반복하여 복부근력을 향상시킵니다.',
+      excDifficulty: 2,
+      excCaloriesPerRep: 10,
+      excSetCount: 3,
+      excRepCountPerSet: 40,
+      excTimePerSetInSec: 60,
+      excCreatedDate: 1695657429977,
+      exerciseTargets: [
+        { excSeq: 112, exctgArea: 5, exctgWeight: 0.2 },
+        { excSeq: 112, exctgArea: 11, exctgWeight: 0.8 },
       ],
     },
     {
@@ -140,22 +178,80 @@ function insertTestData() {
       ],
     },
     {
-      excSeq: 106,
+      excSeq: 118,
       admSeq: 1,
-      excName: '스케이트 런지',
+      excName: '토터치',
+      excType: 4,
+      excContent:
+        '발을 번갈아 높게 들어 손으로 닿게 하여 체지방 연소에 도움을 줍니다.',
+      excDifficulty: 1,
+      excCaloriesPerRep: 10,
+      excSetCount: 3,
+      excRepCountPerSet: 40,
+      excTimePerSetInSec: 60,
+      excCreatedDate: 1695657617729,
+      exerciseTargets: [
+        { excSeq: 118, exctgArea: 3, exctgWeight: 0.2 },
+        { excSeq: 118, exctgArea: 5, exctgWeight: 0.4 },
+        { excSeq: 118, exctgArea: 11, exctgWeight: 0.4 },
+      ],
+    },
+    {
+      excSeq: 101,
+      admSeq: 1,
+      excName: '데드리프트',
+      excType: 3,
+      excContent:
+        '바벨을 잡고 팔을 구부리지 않고 엉덩이 높이까지 들어올려 전신 근력 강화에 도움을 줍니다. ',
+      excDifficulty: 4,
+      excCaloriesPerRep: 15,
+      excSetCount: 3,
+      excRepCountPerSet: 16,
+      excTimePerSetInSec: 30,
+      excCreatedDate: 1695656493717,
+      exerciseTargets: [
+        { excSeq: 101, exctgArea: 1, exctgWeight: 0.25 },
+        { excSeq: 101, exctgArea: 5, exctgWeight: 0.25 },
+        { excSeq: 101, exctgArea: 3, exctgWeight: 0.25 },
+        { excSeq: 101, exctgArea: 12, exctgWeight: 0.25 },
+      ],
+    },
+    {
+      excSeq: 144,
+      admSeq: 1,
+      excName: '와이드스쿼트밴딩',
       excType: 2,
-      excContent: '스케이트를 타듯이 앉아 하체 근력 강화에 도움을 줍니다.',
+      excContent:
+        '다리를 넓게 벌려 내려가 버티며 코어와 하체 근력 강화에 도움을 줍니다.',
       excDifficulty: 4,
       excCaloriesPerRep: 4,
       excSetCount: 3,
       excRepCountPerSet: 16,
       excTimePerSetInSec: 30,
-      excCreatedDate: 1695656954549,
+      excCreatedDate: 1695659553136,
       exerciseTargets: [
-        { excSeq: 106, exctgArea: 5, exctgWeight: 1 },
-        { excSeq: 106, exctgArea: 11, exctgWeight: 0.6 },
-        { excSeq: 106, exctgArea: 12, exctgWeight: 0.4 },
+        { excSeq: 144, exctgArea: 5, exctgWeight: 1 },
+        { excSeq: 144, exctgArea: 12, exctgWeight: 1 },
+        { excSeq: 144, exctgArea: 9, exctgWeight: 0.6 },
+        { excSeq: 144, exctgArea: 11, exctgWeight: 0.9 },
+        { excSeq: 144, exctgArea: 3, exctgWeight: 0.9 },
+        { excSeq: 144, exctgArea: 2, exctgWeight: 0.5 },
+        { excSeq: 144, exctgArea: 1, exctgWeight: 0.3 },
       ],
+    },
+    {
+      excSeq: 143,
+      admSeq: 1,
+      excName: '사이드 밴드',
+      excType: 1,
+      excContent: '옆구리를 늘려주며 코어 강화에 도움을 줍니다.',
+      excDifficulty: 2,
+      excCaloriesPerRep: 5,
+      excSetCount: 3,
+      excRepCountPerSet: 16,
+      excTimePerSetInSec: 30,
+      excCreatedDate: 1695659504408,
+      exerciseTargets: [{ excSeq: 143, exctgArea: 11, exctgWeight: 1 }],
     },
   ]
 
@@ -392,6 +488,7 @@ export default {
                   placeholder="100자 내로 작성하세요"
                   maxlength="100"
                   variant="solo"
+                  no-resize
                   :rules="[rules.nonEmpty]"
                 ></v-textarea>
               </div>
